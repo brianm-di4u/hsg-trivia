@@ -2,12 +2,12 @@
 // It checks that every board, token, card and stamp image loads, that nothing logs an error, and that no request
 // leaves the machine.
 //
-//   node games/trivia/tools/check-file-url.mjs
+//   node tools/check-file-url.mjs
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const GAME = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ROOT = path.resolve(GAME, '..', '..');
+const ROOT = path.resolve(GAME);
 const { chromium } = await import(pathToFileURL(path.join(ROOT, 'shared', 'test-harness', 'node_modules', 'playwright', 'index.mjs')).href);
 const url = pathToFileURL(path.join(GAME, 'index.html')).href;
 const browser = await chromium.launch();

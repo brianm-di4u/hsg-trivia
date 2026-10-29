@@ -1,5 +1,5 @@
 // Writes art-src/geo/graph.json (node ids, types, districts, names, edges) from the game's own board
-// graph, so the Python map layout never duplicates it.  node games/trivia/tools/map/export-graph.mjs
+// graph, so the Python map layout never duplicates it.  node tools/map/export-graph.mjs
 import { writeFileSync } from 'node:fs';
 import { NODES, ADJ, DISTRICTS, TRAILHEAD, TOWER, START, VENT_PAIRS } from '../../src/js/board.js';
 const out = {

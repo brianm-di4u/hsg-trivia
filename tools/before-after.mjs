@@ -1,6 +1,6 @@
 // Before/after sheets: pairs each screenshot of one milestone with the same-named shot of another.
 //
-//   node games/trivia/tools/before-after.mjs [before=visual-before] [after=visual-final]
+//   node tools/before-after.mjs [before=visual-before] [after=visual-final]
 //
 // Writes screenshots/<after>/before-after/<viewport>-NN.png (desktop: 2 pairs per sheet, mobile: 3), labelled
 // BEFORE / AFTER. Renders with the harness's Chromium, so no image libraries are needed.
@@ -9,7 +9,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const GAME = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ROOT = path.resolve(GAME, '..', '..');
+const ROOT = path.resolve(GAME);
 const { chromium } = await import(pathToFileURL(path.join(ROOT, 'shared', 'test-harness', 'node_modules', 'playwright', 'index.mjs')).href);
 const [before = 'visual-before', after = 'visual-final'] = process.argv.slice(2);
 const SHOTS = path.join(GAME, 'screenshots');

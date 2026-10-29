@@ -1,5 +1,5 @@
 // Applies audit batch results to data/questions.json and prints a validation summary.
-//   node games/trivia/tools/apply-audit.mjs <dir-with-batch-N.result.json> [--write]
+//   node tools/apply-audit.mjs <dir-with-batch-N.result.json> [--write]
 // Each result record: { id, action: keep|edit|drop, set?: {...fields}, method, note }.
 // Then applies the second pass on top: second-pass.json (records with `suggested`) and
 // verify-N.result.json (records with `set`), verdicts ok|fix|drop.
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dir = process.argv[2];
 const write = process.argv.includes('--write');
-const bank = JSON.parse(fs.readFileSync(path.resolve(here, '../../../research/trivia-bank.json'), 'utf8'));
+const bank = JSON.parse(fs.readFileSync(path.resolve(here, '../research/trivia-bank.json'), 'utf8'));
 const FIELDS = new Set(['question', 'answer', 'wrong', 'explanation', 'source', 'sourceUrl', 'confidence', 'difficulty', 'era', 'category']);
 const ERAS = new Set(['ancient', 'frontier', 'gilded-spa', 'roaring', 'midcentury', 'revival', 'modern', 'any']);
 
