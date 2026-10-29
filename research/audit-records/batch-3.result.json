@@ -1,0 +1,751 @@
+[
+ {
+  "id": "hs-0001",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: 'On April 20, 1832, President Andrew Jackson signed legislation to set aside ... four sections of land including said (hot) springs'."
+ },
+ {
+  "id": "hs-0002",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS calls Hot Springs the oldest national park among current park units, predating Yellowstone by forty years."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page says 'predating Yellowstone National Park by forty years'; the '1872' in the explanation is not on the page, removed."
+ },
+ {
+  "id": "hs-0013",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: the expedition came in 1804, sent by President Jefferson to explore the southern reaches of the Louisiana Purchase."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Answer confirmed. Old explanation (Dunbar's journals reaching Jefferson before Lewis and Clark returned) is absent from the page; replaced."
+ },
+ {
+  "id": "hs-0032",
+  "action": "edit",
+  "set": {
+   "question": "In what year did a great fire sweep up the valley and destroy most of the south and central downtown area of Hot Springs?",
+   "explanation": "NPS says the great fire of 1878 destroyed most of the south and central downtown area."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Year 1878 confirmed. March 5, eight hours and 'over 1,000 homeless' are not on the page or any source found; removed from question and explanation."
+ },
+ {
+  "id": "hs-0033",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: designated the eighteenth national park on March 4, 1921; Congress had established the National Park Service on Aug. 25, 1916."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Date confirmed. Page gives Aug. 25, 1916 for the NPS but never says 'five years'; reworded to the stated dates."
+ },
+ {
+  "id": "hs-0034",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: 'designation as the eighteenth national park on March 4, 1921'."
+ },
+ {
+  "id": "hs-0056",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS describes a dense, rich archeological record with 92 sites and counting."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'92 sites and counting' confirmed. Page does not list quarries, campsites or cemeteries; removed."
+ },
+ {
+  "id": "hs-0077",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: the final metamorphosis of Bathhouse Row was completed when the Lamar opened in 1923; it closed in 1985."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Opened 1923 and closed 1985 confirmed; 'November 1985' is not on the page, removed."
+ },
+ {
+  "id": "hs-0089",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: the Fordyce was the first to close, in 1962, and was later adapted for use as a visitor center and museum."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'first to close, in 1962' confirmed. June 29 and the 1989 reopening are not on the page; removed."
+ },
+ {
+  "id": "hs-0100",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: Bathhouse Row and its environs were placed on the National Register of Historic Places on Nov. 13, 1974.",
+   "wrong": [
+    "April 20, 1832",
+    "March 4, 1921",
+    "Oct. 15, 1966"
+   ]
+  },
+  "method": "fetched sourceUrl",
+  "note": "Nov. 13, 1974 confirmed. 1987 NHL claim not on page, removed. Replaced 'May 28, 1987' distractor (a landmark-listing date) with a clearly false one."
+ },
+ {
+  "id": "hs-0119",
+  "action": "edit",
+  "set": {
+   "question": "In what decade did the government enclose Hot Springs Creek in an underground arch for flood and sewerage control?",
+   "explanation": "NPS: in 1882-83 the government enclosed Hot Springs creek in an underground arch for flood and sewerage control."
+  },
+  "method": "fetched sourceUrl",
+  "note": "1882-83 confirmed. Page says nothing about Central Avenue or a 10-year flood; both removed."
+ },
+ {
+  "id": "hs-0482",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: it provided free bathing to health seekers who could not afford the pay bathhouses; a new bathhouse opened on Reserve and Spring Streets in 1922."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'provided free bathing facilities to health seekers who could not afford' and the 1922 Reserve/Spring Streets sentence both quoted by page."
+ },
+ {
+  "id": "hs-0512",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS: the resultant bathing industry led to Hot Springs becoming known as the 'Great American Spa.'"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Nickname quote confirmed. The 'fortunes rose and fell' line is not on the page; replaced."
+ },
+ {
+  "id": "hs-0202",
+  "action": "edit",
+  "set": {
+   "question": "In what year was Hot Springs' Fogel Field built to meet the demand of over 250 major leaguers?",
+   "explanation": "The Hot Springs Park Company built it in 1912; it is also known as Fordyce Field."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Trail marker: built 1912 by Hot Springs Park Company for over 250 major leaguers. 'Overflow' and 'behind the Alligator Farm' are not stated; removed."
+ },
+ {
+  "id": "hs-0203",
+  "action": "edit",
+  "set": {
+   "explanation": "The marker says Fogel Field, built in 1912 by the Hot Springs Park Company, is also known as Fordyce Field."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'also known as Fordyce Field' confirmed. Whittington Road/Woodfin Street not on page; removed."
+ },
+ {
+  "id": "hs-0205",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Marker: 'After training in Hot Springs in 1912, twenty-two-year-old Smoky Joe Wood compiled a 34-5 record' and led Boston to World Series victory."
+ },
+ {
+  "id": "hs-0206",
+  "action": "edit",
+  "set": {
+   "explanation": "Crawford, the leader in MLB career triples (312), has his own stop on the Baseball Trail."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Marker: March 5, 1911 exhibition at Whittington Park; leader in triples (312). Explanation tightened to what the marker states."
+ },
+ {
+  "id": "hs-0221",
+  "action": "edit",
+  "set": {
+   "wrong": [
+    "Baltimore Elite Giants",
+    "Newark Eagles",
+    "Chicago American Giants"
+   ],
+   "explanation": "The marker also names the Pittsburgh Crawfords, Homestead Grays and Memphis Red Sox."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Marker names Crawfords, Grays, Memphis Red Sox, Monarchs. Black Barons appear on the Aaron marker, so swapped that distractor; added Memphis to explanation."
+ },
+ {
+  "id": "hs-0228",
+  "action": "edit",
+  "set": {
+   "explanation": "Aaron and the Indianapolis Clowns played a Negro League World Series game there on Oct. 1, 1952."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Marker: Oct. 1, 1952, 18-year-old Hank Aaron, one of 12 games. Jackie Robinson/Majestic Park 1953 line is not on the page; removed."
+ },
+ {
+  "id": "hs-0266",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Marker: 'Ruth trained here nine times'."
+ },
+ {
+  "id": "hs-0268",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Marker: Dickey 'discovered in Hot Springs while substituting for a friend in a semi-pro game at Whittington Park'."
+ },
+ {
+  "id": "hs-0269",
+  "action": "edit",
+  "set": {
+   "explanation": "Jay 'Dizzy' Dean and Paul 'Daffy' Dean, brothers from Lucas, Arkansas, have a Baseball Trail marker."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Marker confirms brothers from Lucas, Arkansas. 'More than 30' markers is not stated on the page (only counted); removed."
+ },
+ {
+  "id": "hs-0270",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Marker: tutored by John 'Mugsy' McGraw, entire career with NY Giants, 511 home runs."
+ },
+ {
+  "id": "hs-0271",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Marker: 'Bucketfoot Al' credited the hot water baths and mountain trails with saving his baseball career."
+ },
+ {
+  "id": "hs-0341",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Marker: Arlington 'was the site of the infamous arrest of New York Giant's manager John Mugsy McGraw'."
+ },
+ {
+  "id": "hs-0319",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: Campbell Arnoux was founding director, tenure lasted until 1934; station built 1924 on the new Arlington's upper floor."
+ },
+ {
+  "id": "hs-0401",
+  "action": "edit",
+  "set": {
+   "explanation": "The duo first performed on KTHS in April 1931 at a flood relief benefit, which launched their careers."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA confirms Lum and Abner started on KTHS (April 1931 benefit). Old explanation was about big-band music, unrelated; replaced."
+ },
+ {
+  "id": "hs-0402",
+  "action": "edit",
+  "set": {
+   "question": "Which Hot Springs radio station's call letters stood for \"Kome (Come) To Hot Springs\"?",
+   "explanation": "The Encyclopedia of Arkansas says the letters stood for 'Kome (come) To Hot Springs.'"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA gives only 'Kome (come) To Hot Springs'; the claim that sources disagree on spelling is not on the page, removed."
+ },
+ {
+  "id": "hs-0403",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: test broadcasts began Dec. 11, 1924; inaugural broadcast Dec. 20, 1924."
+ },
+ {
+  "id": "hs-0404",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'built in 1924 on the upper floor of the new Arlington Hotel'."
+ },
+ {
+  "id": "hs-0405",
+  "action": "edit",
+  "set": {
+   "question": "On what date did Hot Springs radio station KTHS air its inaugural program?",
+   "explanation": "The inaugural program aired at 8:30 p.m. from the ballroom."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: began Dec. 20, 1924 at 8:30 p.m., inaugural program from the ballroom. Page does not say 'regular' broadcast; reworded."
+ },
+ {
+  "id": "hs-0406",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA says the station's programs consisted mainly of live big band music from the ballrooms."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'consisted mainly of live big band music from the ballrooms'; 'hotel' dropped from the explanation."
+ },
+ {
+  "id": "hs-0407",
+  "action": "edit",
+  "set": {
+   "question": "Which organization was given Hot Springs radio station KTHS in 1928?",
+   "explanation": "EoA says the Arlington presented the station to the Chamber of Commerce as a gift in August 1928."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: gift to the Chamber of Commerce in August 1928. 'May 27, 1928' not on page; removed and question reworded from 'took over' to 'given'."
+ },
+ {
+  "id": "hs-0352",
+  "action": "edit",
+  "set": {
+   "question": "Which famous Hot Springs barbecue restaurant was finding success cooking goat meat with a traded sauce recipe by 1928?",
+   "explanation": "Alex and Gladys McClard, who ran the Westside Tourist Court, were cooking goat with the sauce by 1928."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'By 1928, they were finding success cooking goat meat'; it never says 'founded in 1928', so the question was reworded."
+ },
+ {
+  "id": "hs-0353",
+  "action": "edit",
+  "set": {
+   "question": "What meat were the McClards cooking with their barbecue sauce by 1928?",
+   "explanation": "EoA says goat is no longer on the menu, having been replaced by beef and pork."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'finding success cooking goat meat' by 1928; goat later replaced by beef and pork. 'Originally smoke' not stated, reworded."
+ },
+ {
+  "id": "hs-0354",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: destitute traveler couldn't pay $10 owed for two-month stay, offered 'the world's greatest bar-b-que sauce' recipe."
+ },
+ {
+  "id": "hs-0355",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'could not pay the $10 he owed for his two-month stay'."
+ },
+ {
+  "id": "hs-0356",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'Alex and Gladys McClard owned the Westside Tourist Court in Hot Springs in the 1920s'."
+ },
+ {
+  "id": "hs-0357",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'moved to a whitewashed stucco building at the current location in 1942'; 505 Albert Pike; sold to Lee Beasley."
+ },
+ {
+  "id": "hs-0058",
+  "action": "edit",
+  "set": {
+   "explanation": "The Arlington's history page says the original hotel opened in 1875 as the state's largest hotel."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'opened in 1875 as the state's largest hotel'. Fordyce/partners financing is not on the page; removed."
+ },
+ {
+  "id": "hs-0076",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: construction began Oct. 25, 1923, completed Nov. 28, 1924, 'just eleven months and three days later'."
+ },
+ {
+  "id": "hs-0303",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Robinson announced acceptance of VP nomination 'on the front steps of the Arlington Hotel'."
+ },
+ {
+  "id": "hs-0486",
+  "action": "edit",
+  "set": {
+   "explanation": "The Arlington's history page cites Room 443 as Capone's suite; a 2008 NBC News story says 442, so treat it as hotel lore."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'Room 443 being his personal suite'; NBC (fetched) says room 442. Smithsonian mention unverified, removed. Claim flag kept."
+ },
+ {
+  "id": "hs-0487",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: William Pinkerton 'sat on the veranda and smoked a cigar rather than retrieve his belongings'; April 5, 1923 fire, $1.6 million."
+ },
+ {
+  "id": "hs-0395",
+  "action": "edit",
+  "set": {
+   "explanation": "UALR Public Radio listed the 34th annual festival for October 10-18, 2025.",
+   "source": "UA Little Rock Public Radio: 34th Hot Springs Documentary Film Festival",
+   "sourceUrl": "https://www.ualrpublicradio.org/community-calendar/event/34th-hot-springs-documentary-film-festival-22-08-2025-15-27-11"
+  },
+  "method": "fetched alternative: https://www.ualrpublicradio.org/community-calendar/event/34th-hot-springs-documentary-film-festival-22-08-2025-15-27-11",
+  "note": "EoA says only 'each fall'. UALR listing gives October 10-18, 2025 (a preview, so worded as 'listed'). Month October confirmed."
+ },
+ {
+  "id": "hs-0425",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA calls it a qualifying event for filmmakers competing for Academy Awards in Best Documentary Short Subject."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: 'qualifying event for filmmakers competing for Academy Awards in Best Documentary Short Subject'; old wording on winners not stated."
+ },
+ {
+  "id": "hs-0426",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: traces history to 1991 when Sy Gomberg, then head of the Academy's documentary branch, visited Hot Springs."
+ },
+ {
+  "id": "hs-0457",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA: in early 2016 the festival's archives were moved to the University of Arkansas in Fayetteville."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Archives quote confirmed. Old explanation 'founding year 1991 or 1992' not stated that way (1991 history, first festival 1992); replaced."
+ },
+ {
+  "id": "hs-0500",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: the festival bills itself as 'the longest-running documentary film festival in North America'. Claim flag and 'bills itself' wording correct."
+ },
+ {
+  "id": "hs-0446",
+  "action": "edit",
+  "set": {
+   "explanation": "The first sale was never completed; in late 2003 Themeparks LLC announced it would buy the coaster."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: built first for Jazzland, 'the sale was never completed'; late 2003 Themeparks LLC 'announced that they would purchase'. Reworded from 'bought'."
+ },
+ {
+  "id": "hs-0447",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia lists 5 inversions; the ride opened on April 10, 2004."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Infobox lists 5 inversions; opened April 10, 2004. 'Suspended looping coaster' phrase not confirmed, removed."
+ },
+ {
+  "id": "hs-0448",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia's infobox lists the cost as $7,000,000; the ride opened April 10, 2004."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Infobox $7,000,000 confirmed. X-Coaster $4 million line not on the page; removed."
+ },
+ {
+  "id": "hs-0449",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: manufacturer Vekoma, model 'SLC (689m Standard)'."
+ },
+ {
+  "id": "hs-0118",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'known as Arkansas National Forest on its establishment on December 18, 1907'; renamed Ouachita National Forest April 29, 1926."
+ },
+ {
+  "id": "hs-0171",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'Forest headquarters are located in Hot Springs, Arkansas'; 1,784,457 acres."
+ },
+ {
+  "id": "hs-0172",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the trail traverses 223 miles across the region."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'traverses 223 miles (359 km)' confirmed; reworded to the page's own phrasing."
+ },
+ {
+  "id": "hs-0145",
+  "action": "edit",
+  "set": {
+   "explanation": "USGS found the water is a mix: a very small amount under 20 years old and a preponderance about 4,400 years old.",
+   "source": "USGS Professional Paper 1044-C: Abstract (npshistory.com mirror)",
+   "sourceUrl": "https://npshistory.com/publications/geology/pp/1044-C/abstract.htm"
+  },
+  "method": "fetched alternative: https://npshistory.com/publications/geology/pp/1044-C/abstract.htm",
+  "note": "Original nps.gov URL is a generic History Program page without the text. Mirror quotes 'preponderance of water about 4,400 years old'."
+ },
+ {
+  "id": "hs-0149",
+  "action": "edit",
+  "set": {
+   "source": "USGS Professional Paper 1044-C: Abstract (npshistory.com mirror)",
+   "sourceUrl": "https://npshistory.com/publications/geology/pp/1044-C/abstract.htm"
+  },
+  "method": "fetched alternative: https://npshistory.com/publications/geology/pp/1044-C/abstract.htm",
+  "note": "Mirror: 'Tritium and Carbon-14 analyses ... a very small amount of water less than 20 years old and a preponderance ... about 4,400 years old'. URL swapped."
+ },
+ {
+  "id": "hs-0150",
+  "action": "edit",
+  "set": {
+   "source": "USGS Professional Paper 1044-C: Abstract (npshistory.com mirror)",
+   "sourceUrl": "https://npshistory.com/publications/geology/pp/1044-C/abstract.htm",
+   "explanation": "USGS: rainfall infiltrates the outcrops, and the water moves slowly to depth where rocks heat it."
+  },
+  "method": "fetched alternative: https://npshistory.com/publications/geology/pp/1044-C/abstract.htm",
+  "note": "Mirror: recharge by rainfall on 'the Bigfork Chert and the Arkansas Novaculite'; water 'moves slowly to depth where it is heated'. URL swapped."
+ },
+ {
+  "id": "hs-0348",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA: pharmacist Peter E. Greene and his brother John first sold the water in 1871.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+  "note": "Company page rate-limited (429). EoA: 'In 1871, pharmacist Peter E. Greene and his brother, John Greene ... first to sell'. Central Ave HQ claim removed."
+ },
+ {
+  "id": "hs-0349",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+  "note": "EoA: pharmacist Peter E. Greene; brothers later gave the Mountain Valley name from a small nearby community. Company page rate-limited."
+ },
+ {
+  "id": "hs-0350",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA says W. N. Benton, an insurance agent formerly of St. Louis, bought the business from the Greene brothers in 1879.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+  "note": "EoA: Benton 'an insurance agent formerly of St. Louis'. 'Expanded sales nationally' not stated; replaced."
+ },
+ {
+  "id": "hs-0031",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: Pythian named for the Knights of Pythias, its proprietors, opened Dec. 27, 1914; half price for members of the insurance organization."
+ },
+ {
+  "id": "hs-0063",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: Crystal 'the first to be built for the exclusive use of African Americans', 415 Malvern Avenue, destroyed in the 1913 fire."
+ },
+ {
+  "id": "hs-0072",
+  "action": "edit",
+  "set": {
+   "question": "About how many rooms did Hot Springs' Eastman Hotel have?",
+   "explanation": "The Baseball Trail calls it 'the elegant, 500-room Eastman Hotel.'",
+   "source": "Hot Springs Historic Baseball Trail: The Eastman Hotel",
+   "sourceUrl": "https://hotspringsbaseballtrail.com/see-the-trail/the-eastman-hotel/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://hotspringsbaseballtrail.com/see-the-trail/the-eastman-hotel/",
+  "note": "HMdb returned 403. Baseball Trail page says '500-room Eastman Hotel'. Dropped (1890) and baseball/1942 claims, not on the page."
+ },
+ {
+  "id": "hs-0090",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia: the Federal Building at 100 Reserve St. was built in 1959-60 on the site of the Eastman Hotel.",
+   "source": "Wikipedia: Federal Building-U.S. Post Office and Court House (Hot Springs, Arkansas)",
+   "sourceUrl": "https://en.wikipedia.org/wiki/Federal_Building%E2%80%93U.S._Post_Office_and_Court_House_(Hot_Springs,_Arkansas)"
+  },
+  "method": "fetched alternative: https://en.wikipedia.org/wiki/Federal_Building%E2%80%93U.S._Post_Office_and_Court_House_(Hot_Springs,_Arkansas)",
+  "note": "HMdb 403. Wikipedia: 'built in 1959-60 on the site of the Eastman Hotel'; 100 Reserve Street; post office and court house."
+ },
+ {
+  "id": "hs-0141",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: '210-acre (85 ha) botanical garden'; owned by the University of Arkansas; 4.5 miles of Lake Hamilton shoreline."
+ },
+ {
+  "id": "hs-0324",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: Verna Cook Garvan 'began to develop the site in 1956'; died 1993 and left the property to UA's landscape architecture department."
+ },
+ {
+  "id": "hs-0217",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the park was renamed for Hall of Fame baseball pioneer Ban Johnson in 1935; it had been Whittington Park.",
+   "source": "Wikipedia: Ban Johnson Park",
+   "sourceUrl": "https://en.wikipedia.org/wiki/Ban_Johnson_Park"
+  },
+  "method": "fetched alternative: https://en.wikipedia.org/wiki/Ban_Johnson_Park",
+  "note": "Bullpen returned 403. Wikipedia: Whittington Park (1894-1920, 1924-1935) 'renamed after ... Ban Johnson'. Hiram Whittington link to the ballpark not shown; r..."
+ },
+ {
+  "id": "hs-0336",
+  "action": "edit",
+  "set": {
+   "question": "Which baseball historian helped authenticate the estimated 573-ft figure for Babe Ruth's Hot Springs home run?",
+   "explanation": "Wikipedia quotes Jenkinson as saying no one can confirm it with complete certainty.",
+   "source": "Wikipedia: Ban Johnson Park",
+   "sourceUrl": "https://en.wikipedia.org/wiki/Ban_Johnson_Park"
+  },
+  "method": "fetched alternative: https://en.wikipedia.org/wiki/Ban_Johnson_Park",
+  "note": "Bullpen 403. Wikipedia: 'estimated 573 feet'; Jenkinson 'helped to authenticate'; 'No one can confirm it with complete certainty'."
+ },
+ {
+  "id": "hs-0364",
+  "action": "edit",
+  "set": {
+   "answer": "About 140°F",
+   "explanation": "The article says the thermal water comes through the brewery's pipes at about 140 degrees, saving time and energy on brew day."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article says 'about 140 degrees', not 143-144; brew-day water heated to 175-176, not 160. Answer and explanation corrected. Wrong options still clearly false."
+ },
+ {
+  "id": "hs-0365",
+  "action": "edit",
+  "set": {
+   "question": "Who is the owner and brewer of Hot Springs' Superior Bathhouse Brewery?",
+   "explanation": "All About Beer identifies Rose Schweikhart as the brewery's owner/brewer."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article calls her 'owner/brewer', not 'founding'; question and explanation reworded."
+ },
+ {
+  "id": "hs-0010",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: Certificate 467 obtained for $260, sold to Hammond for $640, then half interest to Elias Rector for $600; Rector claim rested on it."
+ },
+ {
+  "id": "hs-0018",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: 1877 booklet 'The Hot Springs of Arkansas, America's Baden-Baden' from the Iron Mountain railroad, first booklet advertising Hot Springs and the baths."
+ },
+ {
+  "id": "hs-0043",
+  "action": "edit",
+  "set": {
+   "question": "What did Judge John Miller call a 'statistical improbability' in ruling on Garland County's 1946 primary poll-tax receipts?",
+   "answer": "Receipts issued in alphabetical order",
+   "explanation": "EoA says the receipts were issued in alphabetical order, in blocks of names; the GI ticket then won every seat in Garland County.",
+   "wrong": [
+    "Receipts printed in red ink",
+    "Receipts lacking the county clerk's seal",
+    "Receipts signed in pencil"
+   ]
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: receipts 'issued in alphabetical order' and 'statistical improbability'; handwriting evidence also used, so 'led to the ruling' was too strong. Reworded."
+ },
+ {
+  "id": "hs-0107",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Southern Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/southern-club-1208/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/southern-club-1208/",
+  "note": "HMdb 403. EoA: 250 Central Avenue; building now houses the Josephine Tussaud Wax Museum (entry once says Madame Tussaud)."
+ },
+ {
+  "id": "hs-0129",
+  "action": "edit",
+  "set": {
+   "answer": "1967",
+   "explanation": "EoA says Gov. Winthrop Rockefeller signed Act 128 on Feb. 22, 1967, naming quartz crystal the state mineral.",
+   "source": "Encyclopedia of Arkansas: Official State Mineral",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/official-state-mineral-3138/",
+   "era": "midcentury"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/official-state-mineral-3138/",
+  "note": "Answer 1976 was WRONG: EoA says Act 128 signed Feb. 22, 1967. Arkansas.com page has no mineral info. Fixed; Orogeny line removed."
+ },
+ {
+  "id": "hs-0175",
+  "action": "edit",
+  "set": {
+   "question": "Eagle-watch cruises at Lake Ouachita State Park in January and February look for which bird?",
+   "explanation": "Per the Democrat-Gazette, Lake Ouachita State Park runs eagle-watch cruises in winter, and DeGray Lake holds its Eagles Et Cetera festival.",
+   "source": "Arkansas Democrat-Gazette: Eagle-watching excursions take off at state parks (2019)",
+   "sourceUrl": "https://www.arkansasonline.com/news/2019/jan/10/eagle-watching-excursions-take-off-at-s/"
+  },
+  "method": "fetched alternative: https://www.arkansasonline.com/news/2019/jan/10/eagle-watching-excursions-take-off-at-s/",
+  "note": "State parks URL redirected to 404. ADG 2019: Lake Ouachita cruises seek bald eagles; DeGray festival Jan. 25-27, 2019. 'Late January' for tours not shown; re..."
+ },
+ {
+  "id": "hs-0257",
+  "action": "edit",
+  "set": {
+   "source": "KAIT: 2026 State Basketball Finals Weekend continues in Hot Springs",
+   "sourceUrl": "https://www.kait8.com/2026/03/01/2026-state-basketball-tournament-central/"
+  },
+  "method": "fetched alternative: https://www.kait8.com/2026/03/01/2026-state-basketball-tournament-central/",
+  "note": "hotsprings.org page 404; arkansastv.gov was a preview. KAIT (updated March 13) reports results from the 2026 finals at Bank OZK Arena, March 12-14."
+ },
+ {
+  "id": "hs-0327",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: This Day in Arkansas History, May 18, 1995",
+   "sourceUrl": "https://encyclopediaofarkansas.net/this-day-ar-history/may-18-1995",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/this-day-ar-history/may-18-1995",
+  "note": "EoA: family relocated 'from Hope ... where he was born, to Hot Springs in 1953'. Replaced snippet-only archived page; NPS also says born in Hope."
+ },
+ {
+  "id": "hs-0361",
+  "action": "edit",
+  "set": {
+   "question": "Which food does Oaklawn sell for 50 cents as a Saturday special on opening weekend?",
+   "wrong": [
+    "Pulled pork sandwiches",
+    "Hamburgers",
+    "Turkey legs"
+   ],
+   "explanation": "In 2013 Oaklawn's kitchen stocked 5 1/2 tons of corned beef for the opening weekend.",
+   "source": "Arkansas Democrat-Gazette (2013): Oaklawn Park opens 2013",
+   "sourceUrl": "https://www.arkansasonline.com/news/2013/jan/11/oaklawn-park-opens-2013/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.arkansasonline.com/news/2013/jan/11/oaklawn-park-opens-2013/",
+  "note": "THV11 403. ADG: 'Saturday's special of 50-cent corned beef sandwiches'; 5 1/2 tons stocked. 'Derby Day' claim dropped; hot dogs distractor swapped as unverif..."
+ },
+ {
+  "id": "hs-0394",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NWA D-G: company bottles water 'from a cold spring a dozen miles north of downtown Hot Springs'."
+ },
+ {
+  "id": "hs-0430",
+  "action": "edit",
+  "set": {
+   "explanation": "NBC News reported in April 2008 that the collection was scheduled to open April 20.",
+   "source": "NBC News (2008): Gangster museum",
+   "sourceUrl": "https://www.nbcnews.com/id/wbna24165026"
+  },
+  "method": "fetched alternative: https://www.nbcnews.com/id/wbna24165026",
+  "note": "EoA says only 'since 2008'. NBC (April 17, 2008): 'scheduled to open April 20'. 'Nation's first' has no source; removed. Source swapped to NBC."
+ },
+ {
+  "id": "hs-0467",
+  "action": "edit",
+  "set": {
+   "explanation": "NBC News reported a 2008 opening for the museum on Central Avenue."
+  },
+  "method": "fetched sourceUrl",
+  "note": "NBC (April 17, 2008): museum in a Central Avenue building scheduled to open April 20. Explanation reworded to that."
+ },
+ {
+  "id": "hs-0494",
+  "action": "edit",
+  "set": {
+   "explanation": "Roadside America says the trees are made from cat food cans and wire; Tiny Town moved to its current building in 1963.",
+   "source": "Roadside America: Tiny Town",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Roadside America page read: 'trees are made from cat food cans and wire'; 'in 1963 it moved to its current building'. Snippet tag dropped."
+ }
+]

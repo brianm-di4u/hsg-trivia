@@ -1,0 +1,652 @@
+[
+ {
+  "id": "hs-0263",
+  "verdict": "ok",
+  "issue": "confirmed: \"kicks off in January with the Smarty Jones Stakes, the first of Oaklawn's four Kentucky Derby preparatory races\""
+ },
+ {
+  "id": "hs-0366",
+  "verdict": "fix",
+  "issue": "page: \"held the Monday before Thanksgiving\"; 'each year' not stated",
+  "set": {
+   "question": "Which Hot Springs cook-off is held on the Monday before Thanksgiving?"
+  }
+ },
+ {
+  "id": "hs-0367",
+  "verdict": "ok",
+  "issue": "confirmed: \"Art Springs – a free, two-day art festival and showcase\"; \"Arts & the Park, April 24-May 3\""
+ },
+ {
+  "id": "hs-0384",
+  "verdict": "ok",
+  "issue": "confirmed: \"Holiday Lights, a multi-week display featuring nearly 5 million lights\""
+ },
+ {
+  "id": "hs-0385",
+  "verdict": "ok",
+  "issue": "confirmed: \"some 150,000 tulips\"; \"mid-March through mid-April in the Sensory Garden\""
+ },
+ {
+  "id": "hs-0386",
+  "verdict": "ok",
+  "issue": "confirmed: \"Nov. 13-15, will include a mountain bike expo\"; \"the annual Attila the Hun Mountain Bike Race\""
+ },
+ {
+  "id": "hs-0387",
+  "verdict": "ok",
+  "issue": "confirmed: \"The free, family-friendly event includes a performance by the Charlie Daniels Band\"; Spa Blast July 3"
+ },
+ {
+  "id": "hs-0388",
+  "verdict": "ok",
+  "issue": "confirmed: \"races through downtown and the Hot Springs National Park with a half marathon, a 10K, a 5K, and a 1K for children\""
+ },
+ {
+  "id": "hs-0389",
+  "verdict": "fix",
+  "issue": "Visit Hot Springs (not the event) says \"is central Arkansas' largest annual bike rally\"; attribute it",
+  "set": {
+   "question": "Which September Hot Springs event does Visit Hot Springs call central Arkansas' largest annual bike rally?"
+  }
+ },
+ {
+  "id": "hs-0391",
+  "verdict": "fix",
+  "issue": "page: \"all-ages event held outside in Hill Wheatley Plaza\"; 'downtown' not stated",
+  "set": {
+   "question": "Which Hot Springs plaza hosts the Hot Water Hills Music and Arts Festival?"
+  }
+ },
+ {
+  "id": "hs-0396",
+  "verdict": "ok",
+  "issue": "confirmed: \"Hot Springs Music Festival, May 31-June 13\" (13 of 14 days in June)"
+ },
+ {
+  "id": "hs-0397",
+  "verdict": "ok",
+  "issue": "confirmed: jazz and blues presented by Spa City Blues Society (and Jazz Society); \"performances throughout downtown\""
+ },
+ {
+  "id": "hs-0459",
+  "verdict": "ok",
+  "issue": "confirmed: \"over 20 concerts and over 250 open rehearsals\"; May 31-June 13"
+ },
+ {
+  "id": "hs-0460",
+  "verdict": "ok",
+  "issue": "confirmed: \"The 2020 VOV will bring 140-plus musicians to small venue stages\"; March 20-23"
+ },
+ {
+  "id": "hs-0468",
+  "verdict": "ok",
+  "issue": "confirmed: \"Held on the first Saturday of January at the Malco Theatre, the annual event\""
+ },
+ {
+  "id": "hs-0507",
+  "verdict": "fix",
+  "issue": "page never calls it a 'joke'; says \"The 250 foot race\" follows the Tubs races",
+  "set": {
+   "question": "According to Visit Hot Springs, how long is the \"Zero K Foot Race\"?"
+  }
+ },
+ {
+  "id": "hs-0508",
+  "verdict": "ok",
+  "issue": "confirmed: \"The 250 foot race, includes a hydration station at the 1/2 way mark\""
+ },
+ {
+  "id": "hs-0414",
+  "verdict": "ok",
+  "issue": "confirmed: \"Magic Springs Family Fun Park opened July 22, 1978\""
+ },
+ {
+  "id": "hs-0415",
+  "verdict": "ok",
+  "issue": "confirmed: opened July 22, 1978 as Magic Springs Family Fun Park under Leisure and Recreation Concepts"
+ },
+ {
+  "id": "hs-0416",
+  "verdict": "fix",
+  "issue": "page: \"It closed in 1995\"; doesn't explicitly link closure to debt or say 'since the 1980s'; foreclosure auction 1995",
+  "set": {
+   "question": "In what year did Magic Springs close, staying shut until it reopened in May 2000?",
+   "explanation": "The park closed in 1995; Fitraco bought it at a foreclosure auction that year, and it reopened on May 27, 2000, after Hot Springs voters approved a bond issue."
+  }
+ },
+ {
+  "id": "hs-0417",
+  "verdict": "ok",
+  "issue": "confirmed: \"Fitraco, a Belgian company, bought the amusement park at a foreclosure auction in 1995\"; Ed Hart of Themeparks LLC"
+ },
+ {
+  "id": "hs-0422",
+  "verdict": "fix",
+  "issue": "page lists Old No. 2 Logging Company as opening 1978 but doesn't call it 'original'; other options open 2000-02",
+  "set": {
+   "explanation": "Wikipedia lists the Arrow Dynamics log flume Old No. 2 Logging Company as opening in 1978, the park's opening year."
+  }
+ },
+ {
+  "id": "hs-0432",
+  "verdict": "ok",
+  "issue": "confirmed: reopened May 27, 2000 after Hot Springs voters approved a bond issue"
+ },
+ {
+  "id": "hs-0434",
+  "verdict": "ok",
+  "issue": "confirmed: \"after Hot Springs voters approved a bond issue providing financing for the park\""
+ },
+ {
+  "id": "hs-0435",
+  "verdict": "ok",
+  "issue": "confirmed: CNL sold in late 2016 to \"EPR Properties, a REIT based in Kansas City\"; Premier Parks, LLC assumed management"
+ },
+ {
+  "id": "hs-0436",
+  "verdict": "fix",
+  "issue": "page says Premier Parks \"would assume\" management in 2016; present-tense 'operates' not confirmed as current",
+  "set": {
+   "question": "Which company was announced to take over management of Magic Springs after EPR Properties bought the park in 2016?"
+  }
+ },
+ {
+  "id": "hs-0437",
+  "verdict": "ok",
+  "issue": "confirmed: attendance more than 362,500 in 2000, about 254,000 in 2002"
+ },
+ {
+  "id": "hs-0438",
+  "verdict": "ok",
+  "issue": "confirmed: \"It topped 400,000 in 2004 when The Gauntlet was added and the concert series was expanded.\""
+ },
+ {
+  "id": "hs-0439",
+  "verdict": "ok",
+  "issue": "confirmed: \"5,000-seat concert venue\"; \"free lawn seating... 26 rows of bench reserved seats\""
+ },
+ {
+  "id": "hs-0440",
+  "verdict": "ok",
+  "issue": "confirmed: Timberwood debuted 2003; \"Concerts are held every Saturday during the operating season.\""
+ },
+ {
+  "id": "hs-0441",
+  "verdict": "ok",
+  "issue": "confirmed: \"Concerts are held every Saturday during the operating season.\""
+ },
+ {
+  "id": "hs-0451",
+  "verdict": "ok",
+  "issue": "confirmed: Halloween festival in October as \"Magic Screams\""
+ },
+ {
+  "id": "hs-0120",
+  "verdict": "ok",
+  "issue": "confirmed: \"In the 1930s, after decades of being covered by a grate, the Display Springs were uncovered\""
+ },
+ {
+  "id": "hs-0146",
+  "verdict": "ok",
+  "issue": "confirmed: \"The roughly four dozen springs produce over 700,000 gallons of water a day\""
+ },
+ {
+  "id": "hs-0147",
+  "verdict": "ok",
+  "issue": "confirmed: \"143 degrees fahrenheit\"; \"easily the hottest springs east of the Rocky Mountains\""
+ },
+ {
+  "id": "hs-0151",
+  "verdict": "ok",
+  "issue": "confirmed: \"alpha\" and \"beta\" faults on NPS Display Spring page"
+ },
+ {
+  "id": "hs-0152",
+  "verdict": "ok",
+  "issue": "confirmed: alpha fault \"roughly follows Central Avenue and Fountain Street\"; beta follows top edge of Hot Springs Mountain"
+ },
+ {
+  "id": "hs-0153",
+  "verdict": "ok",
+  "issue": "confirmed: \"heated to roughly 160 degrees fahrenheit\"; \"roughly a mile underground\"; geothermal gradient"
+ },
+ {
+  "id": "hs-0154",
+  "verdict": "ok",
+  "issue": "confirmed: \"hottest springs east of the Rocky Mountains\"; 143 degrees average"
+ },
+ {
+  "id": "hs-0003",
+  "verdict": "ok",
+  "issue": "confirmed: \"one of only four ventures into the Louisiana Purchase commissioned by Thomas Jefferson\"; Jefferson asked Dunbar to lead"
+ },
+ {
+  "id": "hs-0004",
+  "verdict": "ok",
+  "issue": "confirmed: \"Dunbar wrote to Jefferson on August 17, 1804\"; refers to hot springs as \"the boiling springs\""
+ },
+ {
+  "id": "hs-0005",
+  "verdict": "ok",
+  "issue": "confirmed: \"Following an appropriation of $3,000 by Congress\"; expedition Oct 1804-Jan 1805"
+ },
+ {
+  "id": "hs-0006",
+  "verdict": "ok",
+  "issue": "confirmed: Nov 22, \"as Hunter cleaned his pistol... the gun discharged\"; bullet through thumb, two fingers"
+ },
+ {
+  "id": "hs-0113",
+  "verdict": "ok",
+  "issue": "confirmed: \"four principal and two inferior springs\""
+ },
+ {
+  "id": "hs-0114",
+  "verdict": "ok",
+  "issue": "confirmed: water \"averaged between 148 and 150 degrees\""
+ },
+ {
+  "id": "hs-0352",
+  "verdict": "fix",
+  "issue": "page says McClards \"were cooking goat meat\" with the sauce by 1928; 'finding success' not stated",
+  "set": {
+   "question": "Which famous Hot Springs barbecue restaurant traces its start to goat meat cooked with a traded sauce recipe by 1928?"
+  }
+ },
+ {
+  "id": "hs-0353",
+  "verdict": "ok",
+  "issue": "confirmed: by 1928 McClards cooking goat; goat later replaced by beef and pork"
+ },
+ {
+  "id": "hs-0354",
+  "verdict": "ok",
+  "issue": "confirmed: traveler who couldn't pay for two-month stay offered the sauce recipe"
+ },
+ {
+  "id": "hs-0355",
+  "verdict": "ok",
+  "issue": "confirmed: $10 owed for a two-month stay; \"the world's greatest bar-b-que sauce\""
+ },
+ {
+  "id": "hs-0356",
+  "verdict": "ok",
+  "issue": "confirmed: Alex and Gladys McClard owned the Westside Tourist Court in the 1920s"
+ },
+ {
+  "id": "hs-0357",
+  "verdict": "ok",
+  "issue": "confirmed: 1942 move to whitewashed stucco building at 505 Albert Pike; sold to Lee Beasley (2020)"
+ },
+ {
+  "id": "hs-0058",
+  "verdict": "ok",
+  "issue": "confirmed: \"The original Arlington Hotel opened in 1875 as the state's largest hotel.\""
+ },
+ {
+  "id": "hs-0076",
+  "verdict": "fix",
+  "issue": "page says \"eleven months and three days\" but its own dates (Oct 25, 1923 - Nov 28, 1924) span 13 months; ask for completion year instead",
+  "set": {
+   "question": "In which year was the current (third) Arlington Hotel completed after the 1923 fire?",
+   "answer": "1924",
+   "wrong": [
+    "1893",
+    "1923",
+    "1931"
+   ],
+   "explanation": "Per the Arlington's history page, construction on the third Arlington began Oct. 25, 1923, and the new hotel was completed Nov. 28, 1924."
+  }
+ },
+ {
+  "id": "hs-0303",
+  "verdict": "ok",
+  "issue": "confirmed: \"Senator Joe T. Robinson of Arkansas announced his acceptance of the Democratic nomination for vice president\" on the front steps"
+ },
+ {
+  "id": "hs-0486",
+  "verdict": "fix",
+  "issue": "page: \"Al Capone favored Room 443\"; the 2008 NBC News 442 claim is not on this page",
+  "set": {
+   "explanation": "The Arlington's history page says Al Capone favored Room 443, reserving the entire floor for his entourage; treat it as hotel lore."
+  }
+ },
+ {
+  "id": "hs-0487",
+  "verdict": "ok",
+  "issue": "confirmed: \"On April 5, 1923, the second Arlington burned\"; $1.6 million damage; William Pinkerton smoked a cigar on the veranda"
+ },
+ {
+  "id": "hs-0251",
+  "verdict": "ok",
+  "issue": "confirmed: \"won state football championship in 1992 and 2008\"; 1970/1978/2006 not listed"
+ },
+ {
+  "id": "hs-0262",
+  "verdict": "ok",
+  "issue": "confirmed: \"four consecutive state cross country championships (2006, 2007, 2008, 2009)\"; volleyball 2007; 3-time softball"
+ },
+ {
+  "id": "hs-0274",
+  "verdict": "ok",
+  "issue": "confirmed: \"Maroon and gold serving as the school colors\"; 6A classification"
+ },
+ {
+  "id": "hs-0275",
+  "verdict": "ok",
+  "issue": "confirmed: \"located in Pearcy, Arkansas\"; near Lake Hamilton and Lake Catherine"
+ },
+ {
+  "id": "hs-0279",
+  "verdict": "ok",
+  "issue": "confirmed: Allen McDill, \"Former MLB Pitcher (Kansas City Royals, Detroit Tigers, Boston Red Sox)\""
+ },
+ {
+  "id": "hs-0321",
+  "verdict": "ok",
+  "issue": "confirmed: \"1011 Park Avenue\"; lived there \"from 1954 to 1961\"; private residence"
+ },
+ {
+  "id": "hs-0328",
+  "verdict": "ok",
+  "issue": "confirmed: \"moved in 1961 to a home at 213 Scully Street\""
+ },
+ {
+  "id": "hs-0335",
+  "verdict": "ok",
+  "issue": "confirmed: \"On May 18, 1995, it was placed on the National Register of Historic Places.\""
+ },
+ {
+  "id": "hs-0337",
+  "verdict": "ok",
+  "issue": "confirmed: \"As it is a private residence, the home is not open for tours.\""
+ },
+ {
+  "id": "hs-0024",
+  "verdict": "fix",
+  "issue": "page: \"$100,000 was approved\" by end of June 1882, signed by President Arthur; does not say Congress approved it",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas says $100,000 was approved in 1882 and the hospital opened to patients in January 1887, the first such effort in U.S. history."
+  }
+ },
+ {
+  "id": "hs-0035",
+  "verdict": "ok",
+  "issue": "confirmed: \"largest center for treating adults afflicted with polio\"; \"army's leading center for dealing with arthritis\""
+ },
+ {
+  "id": "hs-0288",
+  "verdict": "ok",
+  "issue": "confirmed: Dr. A. S. Garnett, \"a former Confederate army surgeon,\" hosted the 1882 Palace Bathhouse dinner for Logan; Logan pledged legislation"
+ },
+ {
+  "id": "hs-0047",
+  "verdict": "ok",
+  "issue": "confirmed: \"Until the bathhouses were desegregated in 1965\"; \"School desegregation started in 1956 with a high school auto mechanics course\""
+ },
+ {
+  "id": "hs-0054",
+  "verdict": "ok",
+  "issue": "confirmed: \"37,930 (2020 Census)\""
+ },
+ {
+  "id": "hs-0320",
+  "verdict": "fix",
+  "issue": "page: Rockefeller \"ordered the Arkansas State Police to crack down on gambling\"; 'ended casino gambling in 1967' not stated (took office 1967)",
+  "set": {
+   "question": "Which Arkansas governor, soon after taking office in 1967, ordered the State Police to crack down on gambling in Hot Springs?"
+  }
+ },
+ {
+  "id": "hs-0121",
+  "verdict": "ok",
+  "issue": "confirmed: Carpenter Dam \"Solid, concrete gravity dam\" completed 1931, lake created 1932; \"Both lakes were developed by Arkansas Power & Light\""
+ },
+ {
+  "id": "hs-0122",
+  "verdict": "fix",
+  "issue": "7,200 acres and Lake Catherine 1,940 acres confirmed, but page doesn't say Catherine is 'just below' Hamilton; says \"the smaller of the two lakes\"",
+  "set": {
+   "explanation": "Wikipedia gives Lake Hamilton as 7,200 acres; Lake Catherine, the smaller of the two lakes, is about 1,940 acres."
+  }
+ },
+ {
+  "id": "hs-0312",
+  "verdict": "ok",
+  "issue": "confirmed: Lake Hamilton named after Hamilton Moses, later AP&L president and chairman; Carpenter Dam named for Flavius Josephus Carpenter"
+ },
+ {
+  "id": "hs-0186",
+  "verdict": "ok",
+  "issue": "confirmed: \"By 1914, Oaklawn was owned by Louis A. Cella and his brother Charles, both of St. Louis, Missouri\""
+ },
+ {
+  "id": "hs-0280",
+  "verdict": "fix",
+  "issue": "page says only \"the first Arkansas Derby ran in 1936\"; 'has run there since 1936' (continuous) not stated",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas' Oaklawn entry says the first Arkansas Derby ran in 1936 with a purse of $5,000."
+  }
+ },
+ {
+  "id": "hs-0398",
+  "verdict": "ok",
+  "issue": "confirmed: EoA \"Oaklawn Park opened on February 15, 1905\" (club formed 1904); Wikipedia \"opened on February 24, 1904\""
+ },
+ {
+  "id": "hs-0304",
+  "verdict": "ok",
+  "issue": "confirmed: McLaughlin \"mayor of Hot Springs... from 1927 to 1947\"; open town, gambling operators paid regular fines"
+ },
+ {
+  "id": "hs-0488",
+  "verdict": "ok",
+  "issue": "confirmed: rode daily down Central Avenue in a horse-drawn sulky with horses named Scotch and Soda"
+ },
+ {
+  "id": "hs-0489",
+  "verdict": "fix",
+  "issue": "page: riding clothes and a \"red carnation\" in his lapel; 'completed his look' is an add-on",
+  "set": {
+   "explanation": "McLaughlin rode daily down Central Avenue in a horse-drawn sulky, wearing riding clothes and a red carnation in his lapel."
+  }
+ },
+ {
+  "id": "hs-0338",
+  "verdict": "ok",
+  "issue": "confirmed: \"Dick Kelley was the stepfather of former President Bill Clinton\"; local celebrity, first grand marshal 2004"
+ },
+ {
+  "id": "hs-0368",
+  "verdict": "ok",
+  "issue": "confirmed: parade runs on \"Hot Springs's 98-foot-long Bridge Street\""
+ },
+ {
+  "id": "hs-0372",
+  "verdict": "ok",
+  "issue": "confirmed: 2023 (20th parade) Justin Moore grand marshal, Christopher McDonald parade starter"
+ },
+ {
+  "id": "hs-0378",
+  "verdict": "ok",
+  "issue": "confirmed: teams push bathtubs on wheels down Central Avenue; fans use Super Soakers and water balloons"
+ },
+ {
+  "id": "hs-0380",
+  "verdict": "ok",
+  "issue": "confirmed: named for Stueart Pennington, \"a long-time downtown merchant who pushed for the races\"; Stueart Pennington Cup"
+ },
+ {
+  "id": "hs-0383",
+  "verdict": "ok",
+  "issue": "confirmed: 2020 race moved from May 30 to Saturday, July 11 \"in an abundance of caution\" (COVID-19)"
+ },
+ {
+  "id": "hs-0501",
+  "verdict": "ok",
+  "issue": "confirmed: Room 824 \"sink that turns on and steams the room, items that fall from shelves, lights switch on and off\""
+ },
+ {
+  "id": "hs-0502",
+  "verdict": "ok",
+  "issue": "confirmed: Room 824 lights switch on and off \"between 3 and 4 a.m.\""
+ },
+ {
+  "id": "hs-0503",
+  "verdict": "fix",
+  "issue": "page: Room 443 \"the Capone Suite\", cigar smell; question states Capone stayed there as fact",
+  "set": {
+   "question": "According to Visit Hot Springs, what smell have guests reported in the Arlington Hotel's Capone Suite, Room 443, in a non-smoking hotel?"
+  }
+ },
+ {
+  "id": "hs-0099",
+  "verdict": "ok",
+  "issue": "confirmed: \"Construction began in 1982, and the structure was officially opened to the public on June 3, 1983\""
+ },
+ {
+  "id": "hs-0479",
+  "verdict": "ok",
+  "issue": "confirmed: \"wireless telegraph tower from the 1904 Louisiana Purchase Exposition\" moved to the mountain in 1906, renamed the Rix Tower"
+ },
+ {
+  "id": "hs-0160",
+  "verdict": "ok",
+  "issue": "confirmed: \"The highest point in the park, Music Mountain (1405 feet)\""
+ },
+ {
+  "id": "hs-0162",
+  "verdict": "ok",
+  "issue": "confirmed: West Mountain 2.8, Sugarloaf Mountain 2.6, Stonebridge Road 3.8 miles"
+ },
+ {
+  "id": "hs-0339",
+  "verdict": "ok",
+  "issue": "confirmed: \"Carmen Electra will serve as the celebrity grand marshal for the first ever 23rd annual\" parade, March 17, 2026"
+ },
+ {
+  "id": "hs-0376",
+  "verdict": "ok",
+  "issue": "confirmed: \"The Cheerleaders will be returning to Hot Springs for the 12th time since 2013\""
+ },
+ {
+  "id": "hs-0423",
+  "verdict": "ok",
+  "issue": "confirmed (Coasterpedia): Roaring Tornado, Arrow Dynamics launched shuttle, 1980-1989, relocated to Elitch Gardens (Sidewinder)"
+ },
+ {
+  "id": "hs-0433",
+  "verdict": "ok",
+  "issue": "confirmed (Coasterpedia): reopened May 27, 2000 \"alongside a new water park called Crystal Falls\"; branding \"dropped in 2017\""
+ },
+ {
+  "id": "hs-0475",
+  "verdict": "fix",
+  "issue": "page: free spring drew \"hundreds\" of health seekers who couldn't afford bathhouses, camp \"Ral City\"; 'on Hot Springs Mountain', 'stories of healing' not stated",
+  "set": {
+   "question": "What was \"Ral City\" in 19th-century Hot Springs?",
+   "explanation": "Because Ral Spring was free, it drew hundreds of health seekers who could not afford bathhouse fees; the encampment around the spring became known as Ral City."
+  }
+ },
+ {
+  "id": "hs-0476",
+  "verdict": "ok",
+  "issue": "confirmed: \"Ral\" likely an abbreviation of \"neuralgia\", also a term for symptoms of syphilis"
+ },
+ {
+  "id": "hs-0041",
+  "verdict": "ok",
+  "issue": "confirmed: horsecars from 1874; electric streetcars by 1895; \"replaced with buses in 1938\""
+ },
+ {
+  "id": "hs-0055",
+  "verdict": "ok",
+  "issue": "confirmed: 1960 state took over, Hot Springs Rehabilitation Center; became Arkansas Career Training Institute in 2009"
+ },
+ {
+  "id": "hs-0090",
+  "verdict": "ok",
+  "issue": "confirmed: located at 100 Reserve Street, \"built in 1959-60\" \"on the site of the Eastman Hotel\""
+ },
+ {
+  "id": "hs-0106",
+  "verdict": "ok",
+  "issue": "confirmed: \"the yellow brick portion of the abandoned Majestic\" destroyed by fire Feb 27, 2014; demolished late 2016"
+ },
+ {
+  "id": "hs-0129",
+  "verdict": "ok",
+  "issue": "confirmed: quartz crystal state mineral 1967; Gov. Rockefeller signed Act 128 on Feb. 22"
+ },
+ {
+  "id": "hs-0139",
+  "verdict": "ok",
+  "issue": "confirmed: \"More than 90 percent of the brushpiles are large, invasive cedars\"; \"20- to 25-foot range during most of the year\""
+ },
+ {
+  "id": "hs-0169",
+  "verdict": "ok",
+  "issue": "confirmed: novaculite \"a recrystallized variety of chert\"; \"recognized worldwide for its use as whetstones\"; mined in Garland/Hot Spring counties"
+ },
+ {
+  "id": "hs-0175",
+  "verdict": "ok",
+  "issue": "confirmed: eagle-watch cruises \"particularly popular through January and February\"; \"bald eagles and other birds of prey\""
+ },
+ {
+  "id": "hs-0253",
+  "verdict": "ok",
+  "issue": "confirmed: \"discontinued after the 1999 season after student-related pranks became intolerable\"; 2018 game at Lakeside"
+ },
+ {
+  "id": "hs-0281",
+  "verdict": "ok",
+  "issue": "confirmed: Fordyce \"vice chair of the commission\"; \"business interest in showing that the expedition discovered the location of Hot Springs\""
+ },
+ {
+  "id": "hs-0309",
+  "verdict": "ok",
+  "issue": "confirmed: \"first National Park Service Ranger to be killed in the line of duty\"; \"murdered by bootleggers on March 12, 1927\""
+ },
+ {
+  "id": "hs-0330",
+  "verdict": "ok",
+  "issue": "confirmed: \"born on August 4, 1955\" in Hot Springs; Academy Award for Best Adapted Screenplay for Sling Blade"
+ },
+ {
+  "id": "hs-0375",
+  "verdict": "ok",
+  "issue": "confirmed: Vincent \"Vinny\" Chapman, Savannah Bananas' \"Dancing Umpire\", special guest at 23rd parade on March 17, 2026"
+ },
+ {
+  "id": "hs-0382",
+  "verdict": "ok",
+  "issue": "confirmed: 2018 was \"the 13th annual Running Of The Tubs and the first time with the World Championship at stake\""
+ },
+ {
+  "id": "hs-0412",
+  "verdict": "ok",
+  "issue": "confirmed: KTHS moved to 1090 kilocycles in 1941; call letters changed to KAAY in September 1962"
+ },
+ {
+  "id": "hs-0461",
+  "verdict": "ok",
+  "issue": "confirmed: \"most of the scenes were filmed\" in Alabama; at least three in Arkansas incl. Arlington Resort Hotel, Fordyce Bath House"
+ },
+ {
+  "id": "hs-0480",
+  "verdict": "ok",
+  "issue": "confirmed: trail documents Hot Springs as the \"Birthplace of Spring Baseball\"; Spalding and Anson brought White Stockings in 1886"
+ },
+ {
+  "id": "hs-0492",
+  "verdict": "ok",
+  "issue": "confirmed: Luciano arrested April 1, 1936 \"walking along federal property along Bathhouse Row\""
+ },
+ {
+  "id": "hs-0510",
+  "verdict": "ok",
+  "issue": "confirmed: motto \"Quartz Crystal Capital of the World\"; US 270 \"leads east 36 miles to Hot Springs\" from Mount Ida"
+ }
+]

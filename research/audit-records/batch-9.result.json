@@ -1,0 +1,70 @@
+[
+ {
+  "id": "hs-0193",
+  "action": "edit",
+  "set": {
+   "explanation": "KNWA says Ruth was added at first base because the Red Sox's original first baseman was late to camp."
+  },
+  "method": "coordinator review",
+  "note": "Batch-2 auditor flagged first-base fact as implied by KNWA wording; explanation restated to the source's own words, dropped the 'second homer' add-on."
+ },
+ {
+  "id": "hs-0276",
+  "action": "edit",
+  "set": {
+   "question": "At which stadium did Lakeside beat Lake Hamilton 49-42 on Aug. 25, 2023?",
+   "explanation": "The Sentinel-Record's photo caption places the game at Wolf Stadium."
+  },
+  "method": "fetched sourceUrl (coordinator)",
+  "note": "Caption quote 'at Wolf Stadium' confirmed; question narrowed to what the page states instead of inferring the school's home field."
+ },
+ {
+  "id": "hs-0308",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA calls McMath a hometown war hero who organized fellow WWII veterans; he went on to win the governorship in 1948."
+  },
+  "method": "fetched sourceUrl (coordinator)",
+  "note": "EoA: GI ticket lost every race except McMath's primary; removed the unsupported 'won prosecuting attorney in 1946' phrasing."
+ },
+ {
+  "id": "hs-0329",
+  "action": "drop",
+  "method": "fetched alternatives (coordinator): Christianity Today; arkansas.com 403",
+  "note": "Baptism location only on a fan site (MOOF Life); Christianity Today gives age ten but not the church. Dropped."
+ },
+ {
+  "id": "hs-0430",
+  "action": "edit",
+  "set": {
+   "question": "In what year was the Gangster Museum of America scheduled to open on Central Avenue?",
+   "answer": "2008",
+   "wrong": [
+    "1967",
+    "1988",
+    "2019"
+   ],
+   "explanation": "NBC News reported in April 2008 that the museum was scheduled to open April 20."
+  },
+  "method": "coordinator review",
+  "note": "Source only previews the opening; reworded to 'scheduled to open' per the time-wording rule."
+ },
+ {
+  "id": "hs-0467",
+  "action": "edit",
+  "set": {
+   "explanation": "NBC News reported in April 2008 that the Gangster Museum of America was scheduled to open on Central Avenue."
+  },
+  "method": "coordinator review",
+  "note": "Matched the explanation to the preview wording of the 2008 NBC report."
+ },
+ {
+  "id": "hs-0230",
+  "action": "edit",
+  "set": {
+   "question": "In which of these years did the Hot Springs Bathers win a Cotton States League title?"
+  },
+  "method": "coordinator review (screenshot inspection)",
+  "note": "Explanation lists other title years (1941, 1950); question reworded to \"which of these years\" so only one option is correct."
+ }
+]

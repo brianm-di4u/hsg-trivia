@@ -1,0 +1,637 @@
+[
+ {
+  "id": "hs-0025",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0038",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0045",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0102",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0159",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0176",
+  "verdict": "fix",
+  "issue": "Explanation said August is the driest month; the page text only says rainfall is highest in May (6.51 in. in table).",
+  "set": {
+   "explanation": "Wikipedia says rainfall is highest in May, which averages about 6.5 inches."
+  }
+ },
+ {
+  "id": "hs-0177",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0178",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0182",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0183",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0185",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0188",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0215",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0240",
+  "verdict": "fix",
+  "issue": "Page says in 2018 track was 'installing' a bronze sculpture by Peniston, not that it was installed; 'of the horse' not stated.",
+  "set": {
+   "explanation": "Wikipedia says that in 2018 the track was installing a life-sized bronze sculpture by James Peniston."
+  }
+ },
+ {
+  "id": "hs-0311",
+  "verdict": "ok",
+  "issue": "confirmed: 'Machine domination ... abruptly ended in 1946'; Ricks reform mayor 1947-49; EOA GI Revolt entry covers McMath vs McLaughlin"
+ },
+ {
+  "id": "hs-0340",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0342",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0343",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0344",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0345",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0399",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0470",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0202",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0203",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0205",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0206",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0221",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0228",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0266",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0268",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0269",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0270",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0271",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0341",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0199",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0200",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0201",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0247",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0248",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0249",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0250",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0184",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0190",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0191",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0192",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0194",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0244",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0015",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0016",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0044",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0287",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0474",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0209",
+  "verdict": "ok",
+  "issue": "confirmed: infobox Vapors (1906); Vaporites 1908-09, Arkansas State League 1906, 1908-09"
+ },
+ {
+  "id": "hs-0229",
+  "verdict": "ok",
+  "issue": "confirmed: infobox 'Class C (1938-1941, 1947-1955)', Cotton States League"
+ },
+ {
+  "id": "hs-0230",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0231",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0232",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0036",
+  "verdict": "fix",
+  "issue": "Page: 'eventually came to own a controlling interest in the Southern Club'; 'by about 1940' not stated. Belvedere/Pastime were real Hot Springs clubs.",
+  "set": {
+   "question": "Which Central Avenue gaming house did Owney Madden eventually come to own a controlling interest in?",
+   "wrong": [
+    "The Starlight Room",
+    "The Silver Slipper",
+    "The Golden Crown Club"
+   ]
+  }
+ },
+ {
+  "id": "hs-0305",
+  "verdict": "fix",
+  "issue": "Page: Madden 'turned a failing Harlem night spot ... into the Cotton Club'; does not say he ran it or retired from it.",
+  "set": {
+   "question": "Which famous Harlem nightclub did Owney Madden create out of a failing night spot?"
+  }
+ },
+ {
+  "id": "hs-0306",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0307",
+  "verdict": "fix",
+  "issue": "Marriage date Nov. 26, 1935 and postmaster's daughter stated; location (Hot Springs) not explicitly stated.",
+  "set": {
+   "question": "Hot Springs gift-shop clerk Agnes Demby married Owney Madden in 1935. Whose daughter was she?"
+  }
+ },
+ {
+  "id": "hs-0318",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0325",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0333",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0413",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0031",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0063",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0295",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0046",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0408",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0411",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0123",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0124",
+  "verdict": "ok",
+  "issue": "confirmed: infobox 'Flat-slab buttress'; Ambursen Construction built it"
+ },
+ {
+  "id": "hs-0313",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0145",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0149",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0150",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0315",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0316",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0331",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0334",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0431",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0455",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0395",
+  "verdict": "fix",
+  "issue": "Listing only gives the 34th festival as Oct 10-18, 2025; 'is held' in October each year not stated.",
+  "set": {
+   "question": "In which month was the 34th Hot Springs Documentary Film Festival scheduled to run in 2025?"
+  }
+ },
+ {
+  "id": "hs-0458",
+  "verdict": "fix",
+  "issue": "Listing names Arlington Resort Hotel & Spa as venue; 'main venue' not stated.",
+  "set": {
+   "explanation": "The listing said it would run Oct. 10-18, 2025, at the Arlington Resort Hotel & Spa."
+  }
+ },
+ {
+  "id": "hs-0469",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0447",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0448",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0449",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0126",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0511",
+  "verdict": "fix",
+  "issue": "Page says 'non-stinging' jellyfish, not 'harmless'.",
+  "set": {
+   "question": "Which non-stinging invertebrates are found in Lake Ouachita?"
+  }
+ },
+ {
+  "id": "hs-0135",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0136",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0364",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0365",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0410",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0491",
+  "verdict": "fix",
+  "issue": "Page gives ~10 ft/400 lb for two birds together (Black Diamond and Whirlwind); Q implies one bird.",
+  "set": {
+   "question": "Which of these was the name of one of Thomas Cockburn's largest and most popular ostriches at Hot Springs' Ostrich Farm?",
+   "explanation": "The Encyclopedia of Arkansas says Black Diamond and Whirlwind, among Cockburn's largest ostriches, became quite popular; the birds were almost ten feet tall and about 400 pounds."
+  }
+ },
+ {
+  "id": "hs-0010",
+  "verdict": "fix",
+  "issue": "Page: certificates created by Congress in 1815; no 'created after earthquakes'; $600 was for half interest.",
+  "set": {
+   "explanation": "Congress created New Madrid certificates in 1815 for land lost in the 1811-12 quakes; Certificate 467 was sold for $260, then $640, and half of it for $600."
+  }
+ },
+ {
+  "id": "hs-0012",
+  "verdict": "ok",
+  "issue": "confirmed: 'Novaculite mining for whetstone use began as early as 1818 in the Hot Springs region'"
+ },
+ {
+  "id": "hs-0028",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0059",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0088",
+  "verdict": "fix",
+  "issue": "Page: Jacobs bought building in 1927, expanded it and encased front in dark Pittsburgh glass; 1927 date is for purchase.",
+  "set": {
+   "question": "After buying the Southern Club building in 1927, what material did William Jacobs use to encase its front, helping hide the gambling?"
+  }
+ },
+ {
+  "id": "hs-0108",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0128",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0140",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0148",
+  "verdict": "fix",
+  "issue": "'Wikipedia counts 43 presumed still flowing' is not on the USGS page.",
+  "set": {
+   "explanation": "USGS says the park is best known for its 47 hot springs, which emerge from Hot Springs Mountain at an average temperature of 143 degrees Fahrenheit."
+  }
+ },
+ {
+  "id": "hs-0179",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0242",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0286",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0301",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0346",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0362",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0393",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0409",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0462",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0467",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0494",
+  "verdict": "ok",
+  "issue": "confirmed on source page"
+ },
+ {
+  "id": "hs-0505",
+  "verdict": "fix",
+  "issue": "Page: hotel director of operations relays secondhand stories of 'an image of a lady in a white gown walking'; not a guest account.",
+  "set": {
+   "explanation": "The Sentinel-Record quotes the hotel's director of operations, who had heard stories of an image of a lady in a white gown walking on the seventh floor."
+  }
+ }
+]

@@ -1,0 +1,730 @@
+[
+ {
+  "id": "hs-0050",
+  "action": "edit",
+  "set": {
+   "explanation": "In 1946 a record 649,270 baths were taken; bathhouse visitation decreased after 1946."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'By 1979 only 96,000 baths' confirmed. Explanation 'peaked/sharply' replaced with stated 1946 record."
+ },
+ {
+  "id": "hs-0064",
+  "action": "edit",
+  "set": {
+   "explanation": "The Fordyce was the most elaborate and most expensive of the bathhouses, the cost including fixtures and furniture."
+  },
+  "method": "fetched sourceUrl",
+  "note": "$212,749.55 confirmed. Explanation 'most luxurious' reworded to 'most elaborate and most expensive'."
+ },
+ {
+  "id": "hs-0065",
+  "action": "edit",
+  "set": {
+   "explanation": "The massive stained-glass skylight is in the men's area, with the DeSoto fountain centered on the floor directly below it."
+  },
+  "method": "fetched sourceUrl",
+  "note": "DeSoto fountain under skylight confirmed. Removed Condi-Neal/St. Louis glass claim (not in source)."
+ },
+ {
+  "id": "hs-0066",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'Green tile medallions (paterae)' and concrete painted to imitate ornamental tile both stated."
+ },
+ {
+  "id": "hs-0067",
+  "action": "edit",
+  "set": {
+   "explanation": "The dark-panelled den has an inglenook fireplace with flanking benches and carved mascarons on the ends of the ceiling beams."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Roycroft/Dutch Den with inglenook confirmed. Dropped 'carved faces' gloss; reworded to source."
+ },
+ {
+  "id": "hs-0068",
+  "action": "edit",
+  "set": {
+   "explanation": "The Quapaw was built on the sites of two earlier bathhouses, the Horseshoe and the Magnesia."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Horseshoe and Magnesia confirmed. Removed unstated 'Victorian-era'."
+ },
+ {
+  "id": "hs-0069",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'cream-colored brick', white stucco trim and brass 'Buckstaff Baths' lettering all stated."
+ },
+ {
+  "id": "hs-0070",
+  "action": "edit",
+  "set": {
+   "explanation": "Army engineer Lt. Robert Stevens designed the reservation's entrances, including the historic main entrance."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Two bronze federal eagles confirmed. Explanation: source does not credit Stevens with the balustrade; reworded."
+ },
+ {
+  "id": "hs-0075",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Fordyce basement 'spring number 46' stated; Hale and Quapaw basements have display springs."
+ },
+ {
+  "id": "hs-0080",
+  "action": "edit",
+  "set": {
+   "explanation": "Thompson, Sanders & Ginocchio's late-1930s remodel changed the facade from neo-Classical revival to Mission Style in 1939-40.",
+   "wrong": [
+    "Art Deco",
+    "Gothic Revival",
+    "Craftsman"
+   ]
+  },
+  "method": "fetched sourceUrl",
+  "note": "Mission style 1939-40 confirmed. Roof claim not tied to remodel; reworded. Replaced 'Neoclassical' (prior style) with Craftsman."
+ },
+ {
+  "id": "hs-0081",
+  "action": "edit",
+  "set": {
+   "explanation": "The pool was installed in 1931 to treat paralysis; the Maurice was the only bathhouse to employ a registered physical therapist."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Pool 'to treat various forms of paralysis' confirmed; therapist claim made accurate (Maurice-wide)."
+ },
+ {
+  "id": "hs-0082",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quapaw 'large central dome ... brilliantly colored tiles ... small copper cupola' and chevron mosaic stated."
+ },
+ {
+  "id": "hs-0083",
+  "action": "edit",
+  "set": {
+   "explanation": "Named for an owner, it was renamed Quapaw after a tufa cavity found in excavation was promoted as an Indian cave."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Platt confirmed. Removed unstated 'Native artifacts were found'; source says tufa cavity found."
+ },
+ {
+  "id": "hs-0084",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Sculpin, scalloped shells, originally gold now white all stated."
+ },
+ {
+  "id": "hs-0085",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Ozark twin towers with three-tiered setbacks; 1922 Spanish Colonial Revival, vague Art Deco - stated."
+ },
+ {
+  "id": "hs-0086",
+  "action": "edit",
+  "set": {
+   "explanation": "Work began in the 1930s on the promenade behind the bathhouses, which was finally completed in the early 1960s."
+  },
+  "method": "fetched sourceUrl",
+  "note": "1930s start confirmed. Explanation 'late 1950s' not stated; source says early 1960s."
+ },
+ {
+  "id": "hs-0087",
+  "action": "edit",
+  "set": {
+   "explanation": "The Spanish Colonial Revival building was designed by NPS architects and still serves as the park's administrative core."
+  },
+  "method": "fetched sourceUrl",
+  "note": "1936 confirmed. Removed unsupported 'mistaken for a bathhouse' claim."
+ },
+ {
+  "id": "hs-0091",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Noble fountain moved 1957; Maurice Spring fountain 1903; admin fountain 1936 - all stated."
+ },
+ {
+  "id": "hs-0092",
+  "action": "edit",
+  "set": {
+   "explanation": "A new jug fountain on the sidewalk in front of the Administration building was installed in 1966."
+  },
+  "method": "fetched sourceUrl",
+  "note": "1966 confirmed. Removed unstated 'people fill containers with hot water'."
+ },
+ {
+  "id": "hs-0096",
+  "action": "edit",
+  "set": {
+   "explanation": "The Fordyce closed June 29, 1962, and has served as the park visitor center since 1989."
+  },
+  "method": "fetched sourceUrl",
+  "note": "1989 confirmed. Removed 'May 13, 1989' (not in source); closed June 29, 1962 stated."
+ },
+ {
+  "id": "hs-0097",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'bathhouse operations ended in November 1985'; Lamar closed 1985 leaving Buckstaff - stated."
+ },
+ {
+  "id": "hs-0098",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NHL May 28, 1987 and NRHP Nov 13, 1974 both stated."
+ },
+ {
+  "id": "hs-0103",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Reopened as Quapaw Baths & Spa July 2008; NPS restored 2004 - stated."
+ },
+ {
+  "id": "hs-0104",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Ozark reopened 2014 as Hot Springs NP Cultural Center; artist-in-residence displays - stated."
+ },
+ {
+  "id": "hs-0105",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Lamar renovated into offices and Bathhouse Row Emporium; interim visitor center 2012-13 - stated."
+ },
+ {
+  "id": "hs-0109",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'contains eight bathhouses' listing the same eight; located on Central Ave."
+ },
+ {
+  "id": "hs-0289",
+  "action": "edit",
+  "set": {
+   "explanation": "George Mann and Eugene John Stern designed or remodeled the Fordyce, Hale, Maurice and Ozark bathhouses and designed the 1924 Arlington."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Mann & Stern: Fordyce, Ozark (Row page), 1924 Arlington (Arlington page) confirmed. 'At least five' unsupported; source shows four."
+ },
+ {
+  "id": "hs-0290",
+  "action": "edit",
+  "set": {
+   "explanation": "Harry C. Schwebke of Hot Springs designed the Superior, completed in 1916 as the northernmost bathhouse on the Row."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Schwebke 1916 confirmed. Removed unverified 'NPS/EOA Harvey' spelling claim."
+ },
+ {
+  "id": "hs-0291",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Gleim of Chicago, built 1911-12, remodeled by Mann & Stern 1915 - stated."
+ },
+ {
+  "id": "hs-0478",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'electric cave' sweat cave behind the Hale, closed 1911 - stated."
+ },
+ {
+  "id": "hs-0019",
+  "action": "edit",
+  "set": {
+   "explanation": "The Government free bathhouse for the indigent was established under an act of Congress of December 16, 1878."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Dec 16, 1878 confirmed. Removed 'mud hole spring' claim (not in brochure)."
+ },
+ {
+  "id": "hs-0020",
+  "action": "edit",
+  "set": {
+   "explanation": "Applicants swore they could not pay; a false oath carried a fine up to $25, up to 30 days in jail, or both."
+  },
+  "method": "fetched sourceUrl",
+  "note": "87,040 free baths in 1919 confirmed. Reworded oath penalty to source; dropped 'pauper oath' label."
+ },
+ {
+  "id": "hs-0021",
+  "action": "edit",
+  "set": {
+   "question": "In 1920, what range did single-bath prices at Hot Springs' bathhouses span, before attendant fees?",
+   "explanation": "Rates were fixed by the Secretary of the Interior; the 1920 scale ran from $0.50 to $0.80 per single bath."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Table runs $0.50 (Pythian) to $0.80; Pythian is not on the Row, so question no longer says 'Bathhouse Row'."
+ },
+ {
+  "id": "hs-0022",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'course of 21 baths'; course prices $9.00-$15.00 in table."
+ },
+ {
+  "id": "hs-0023",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'not to exceed 20 cents for a single bath, or $4 per course of 21 baths' stated."
+ },
+ {
+  "id": "hs-0116",
+  "action": "edit",
+  "set": {
+   "question": "In what year was Yale's Bertram Boltwood authorized to study the radioactivity of the Hot Springs waters?",
+   "explanation": "He concluded the radioactivity came from dissolved radium emanation, a gas, not from radium salts."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'In 1904 the Secretary ... authorized Dr. Bertram B. Boltwood'. Reworded Q (results printed 1905); removed 'radon'."
+ },
+ {
+  "id": "hs-0039",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Second Arlington burned April 5, 1923, killing one fireman, ~$1.6 million damage - stated."
+ },
+ {
+  "id": "hs-0111",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Address 239 Central Avenue; hotel at the 'Y' of Central Ave and Fountain St - stated."
+ },
+ {
+  "id": "hs-0112",
+  "action": "edit",
+  "set": {
+   "question": "How many successive Arlington Hotel buildings has Hot Springs had?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Three buildings (1875, 1892-93, 1924) confirmed, but the 1924 hotel is not on the original site, so 'same site' was wrong."
+ },
+ {
+  "id": "hs-0293",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Fordyce and two other entrepreneurs financed first Arlington, opened 1875 - stated; Fordyce Bathhouse per Row page."
+ },
+ {
+  "id": "hs-0310",
+  "action": "edit",
+  "set": {
+   "question": "Which notorious gangster rented an entire floor of the Arlington Hotel in the 1930s?",
+   "explanation": "Al Capone, a favorite vacation guest at the Arlington, rented an entire floor for his staff and bodyguards."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Capone rented a floor in 1930s - stated. Removed unstated 'Al Capone Suite' and 'Chicago'."
+ },
+ {
+  "id": "hs-0209",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Hot Springs Vapors (1906), Vaporites (1908-09), Arkansas State League - stated in infobox."
+ },
+ {
+  "id": "hs-0229",
+  "action": "edit",
+  "set": {
+   "question": "In which minor league did the Hot Springs Bathers play in 1938-41 and 1947-55?",
+   "explanation": "The Bathers played in the Class C Cotton States League in 1938-1941 and 1947-1955."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Class C Cotton States League confirmed; team did not play 1942-46. Removed unsupported 'league folded'."
+ },
+ {
+  "id": "hs-0230",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "League champions 1941, 1948, 1950 - stated."
+ },
+ {
+  "id": "hs-0231",
+  "action": "edit",
+  "set": {
+   "explanation": "The league tried to evict the Bathers for signing the Tugersons; the eviction was not permanent, but the brothers never played a regular season game."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Tugerson brothers confirmed. Removed 'April 15, 1953 reinstated' (not in source)."
+ },
+ {
+  "id": "hs-0232",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Kansas City Athletics 1955; earlier Cubs, Tigers, White Sox, Cardinals - stated."
+ },
+ {
+  "id": "hs-0186",
+  "action": "edit",
+  "set": {
+   "question": "Which St. Louis family owned Oaklawn racetrack by 1914?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "'By 1914, Oaklawn was owned by Louis A. Cella and his brother Charles, both of St. Louis'. No purchase date given, so 'since' reworded."
+ },
+ {
+  "id": "hs-0214",
+  "action": "edit",
+  "set": {
+   "explanation": "The first Arkansas Derby ran at Oaklawn Park in 1936 with a purse of $5,000."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'ran in 1936 with a purse of $5,000' confirmed. Removed $500,000-by-1984 claim (not stated)."
+ },
+ {
+  "id": "hs-0280",
+  "action": "edit",
+  "set": {
+   "question": "Which Hot Springs racetrack hosts the Arkansas Derby?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Arkansas Derby began 1936 at Oaklawn confirmed; 'each spring' not stated, removed."
+ },
+ {
+  "id": "hs-0398",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says Oaklawn opened February 24, 1904; the Encyclopedia of Arkansas says it opened February 15, 1905 (the Jockey Club formed in 1904).",
+   "source": "Encyclopedia of Arkansas: Oaklawn Park; Wikipedia: Oaklawn Racing Casino Resort",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl + alternative: https://en.wikipedia.org/wiki/Oaklawn_Racing_Casino_Resort",
+  "note": "EOA: Jockey Club 1904, 'opened Feb 15, 1905'. Wikipedia: 'opened on February 24, 1904'. Both fetched; attribution kept."
+ },
+ {
+  "id": "hs-0014",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Garland County created April 5, 1873; Hot Springs chosen seat; old county seat 'in Rockport near Malvern (Hot Spring County)'."
+ },
+ {
+  "id": "hs-0472",
+  "action": "edit",
+  "set": {
+   "explanation": "Indians quarried novaculite from bedrock deposits in the hills around Hot Springs for many thousands of years."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Novaculite quarrying confirmed. Removed NPS '92 archeological sites' (not on EOA page)."
+ },
+ {
+  "id": "hs-0473",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'the nation's first federal reservation'; April 20, 1832 bill signed by Jackson."
+ },
+ {
+  "id": "hs-0073",
+  "action": "edit",
+  "set": {
+   "explanation": "During Prohibition the Ohio Club officially became the Ohio Cigar Store, a front with a fake wall."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Founded 1905 confirmed. Removed 'speakeasy' and 'casino until 1967' (EOA gives no closing date)."
+ },
+ {
+  "id": "hs-0294",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'founded by John Coffee Williams and his nephew, Sam Watt, in 1905' - stated."
+ },
+ {
+  "id": "hs-0477",
+  "action": "edit",
+  "set": {
+   "question": "Which Hot Springs bar, founded in 1905, does the Encyclopedia of Arkansas say is 'considered' Arkansas's oldest continually operating bar?",
+   "explanation": "The Encyclopedia of Arkansas says the Ohio Club \"is considered Arkansas's oldest continually operating bar.\""
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote confirmed; EOA does not say by whom or certify it. Question now attributes the claim. Confidence stays claim."
+ },
+ {
+  "id": "hs-0187",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Cella brothers of St. Louis owned Oaklawn by 1914 - quoted on page."
+ },
+ {
+  "id": "hs-0243",
+  "action": "edit",
+  "set": {
+   "explanation": "It recognized increases in attendance and wagering at the track over the previous five years."
+  },
+  "method": "fetched sourceUrl",
+  "note": "2005 Eclipse Award of Merit; 'first racetrack in the country to receive an Eclipse Award'. Reworded 'five straight years of growth'."
+ },
+ {
+  "id": "hs-0297",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'1910 fair attended by former president Theodore Roosevelt'; state fair on infield 1906-1914 - stated."
+ },
+ {
+  "id": "hs-0323",
+  "action": "edit",
+  "set": {
+   "question": "Maxine Temple Jones's 1983 autobiography was titled \"Maxine ___: The Life and Times of a Hot Springs Madam.\" What fills the blank?",
+   "explanation": "She published it in 1983 under the name Maxine Jones; her business ran from 1945 to the early 1970s."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Title Maxine Call Me Madam: The Life and Times of a Hot Springs Madam confirmed; Q reworded so answer matches full title."
+ },
+ {
+  "id": "hs-0332",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'from 1945 to the early 1970s'; 'managed a lucrative brothel operation that catered to politicians, businessmen, and mobsters'."
+ },
+ {
+  "id": "hs-0359",
+  "action": "edit",
+  "set": {
+   "explanation": "The Central Avenue Hotel, which Maxine bought, was renovated in 1989 and reopened in 1991 under that name."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Reopened 1991 as Maxine's Coffee House and Puzzle Bar confirmed. Removed 'now a live-music venue' (not stated)."
+ },
+ {
+  "id": "hs-0049",
+  "action": "edit",
+  "set": {
+   "question": "According to Wikipedia, in what year did Gov. Winthrop Rockefeller end Hot Springs' casino revival?",
+   "explanation": "A casino revival during Gov. Orval Faubus's administration (1955-1967) was ended in 1967 by Republican Gov. Winthrop Rockefeller."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'ended in 1967 by ... Winthrop Rockefeller'. 'State Police raids' and 1964 last-bets claim not in source; wording attributed."
+ },
+ {
+  "id": "hs-0317",
+  "action": "edit",
+  "set": {
+   "question": "Which office did Sid McMath hold in Garland County from 1947, before becoming governor?",
+   "explanation": "He served as prosecuting attorney for the 18th Judicial District (Garland and Montgomery Counties) from 1947 and won the 1948 governor's race."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'served as prosecuting attorney for the 18th Judicial District ... starting in 1947'; 1946 election win not explicit, reworded."
+ },
+ {
+  "id": "hs-0059",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "'built in 1882 as the Avenue Hotel and was renamed the Majestic in 1888'."
+ },
+ {
+  "id": "hs-0060",
+  "action": "edit",
+  "set": {
+   "question": "What was Hot Springs' Central Avenue originally called before it was named Central Avenue by the late 1870s?",
+   "explanation": "The street, originally Valley Street, was named Central Avenue by the late 1870s to reflect its status as the commercial center."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Valley Street confirmed. EOA says 'By the late 1870s' (no exact renaming year); wording softened."
+ },
+ {
+  "id": "hs-0168",
+  "action": "edit",
+  "set": {
+   "question": "Hot Springs lies in the Ouachita Mountains. What is unusual about their trend compared with many U.S. ranges?",
+   "explanation": "Unlike many ranges in the United States, the Ouachitas are mostly east-west trending."
+  },
+  "method": "fetched sourceUrl",
+  "note": "East-west trend confirmed. Removed unstated 'most U.S. ranges trend north-south'; Q clarified."
+ },
+ {
+  "id": "hs-0170",
+  "action": "edit",
+  "set": {
+   "explanation": "The maple-leaf oak (Quercus acerifolia) is found at only four sites worldwide, all of them in the Ouachitas."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Maple-leaf oak, four sites, all in Ouachitas - stated. Removed 'endemic plants' claim."
+ },
+ {
+  "id": "hs-0189",
+  "action": "edit",
+  "set": {
+   "explanation": "Cap Anson brought the 1886 White Stockings to Hot Springs; the article calls A.G. Spalding's team \"now known as the Chicago Cubs.\"",
+   "source": "Hot Springs Historic Baseball Trail: Baseball's Golden Days in Hot Springs",
+   "sourceUrl": "https://hotspringsbaseballtrail.com/untold-stories/baseballs-golden-days-in-hot-springs/"
+  },
+  "method": "fetched alternative: https://hotspringsbaseballtrail.com/untold-stories/baseballs-golden-days-in-hot-springs/",
+  "note": "arkansas.com page lacks 1886/Cubs. Trail article states Anson 1886, Spalding team 'now known as the Chicago Cubs'."
+ },
+ {
+  "id": "hs-0498",
+  "action": "edit",
+  "set": {
+   "question": "According to Arkansas Tourism, how many historical markers make up Hot Springs' Historic Baseball Trail?",
+   "explanation": "Arkansas Tourism's trail page cites \"26 historical markers located all over the city.\""
+  },
+  "method": "fetched sourceUrl",
+  "note": "arkansas.com says '26 historical markers'. '32 entries' note and SABR attribution not verifiable; removed. Claim flag kept."
+ },
+ {
+  "id": "hs-0410",
+  "action": "edit",
+  "set": {
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA fetched: Ostrich Farm 'operated until 1953'; Thomas A. Cockburn established it in 1900."
+ },
+ {
+  "id": "hs-0491",
+  "action": "edit",
+  "set": {
+   "question": "What was the name of the almost ten-foot-tall, 400-pound ostrich at Hot Springs' Ostrich Farm?",
+   "explanation": "Black Diamond stood almost ten feet tall, weighed about 400 pounds and appeared at Oaklawn Park during state fairs from 1906 to 1914.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Black Diamond size and Oaklawn fair appearances stated. 1924 death by younger birds NOT stated; removed."
+ },
+ {
+  "id": "hs-0475",
+  "action": "edit",
+  "set": {
+   "explanation": "Stories of healing and free access drew hundreds of health seekers; an encampment around Ral Springs became known as Ral City."
+  },
+  "method": "fetched sourceUrl",
+  "note": "NPS: encampment known as Ral City; spring midway up Hot Springs Mountain; visitors 'could not afford' bathhouses. Reworded."
+ },
+ {
+  "id": "hs-0476",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS says \"neuralgia\" was also another term for symptoms of syphilis, a venereal disease."
+  },
+  "method": "fetched sourceUrl",
+  "note": "NPS: name 'likely a shortened form of neuralgia'; also term for syphilis symptoms. Reworded 'euphemism'."
+ },
+ {
+  "id": "hs-0055",
+  "action": "edit",
+  "set": {
+   "question": "Which institute was established in 2009 at the facility that began as Hot Springs' Army and Navy hospital?",
+   "explanation": "In 1960 the hospital was turned over to the state and became the Hot Springs Rehabilitation Center."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page says mission changed 2009 'when the Arkansas Career Training Institute was established' (not a rename); Q reworded."
+ },
+ {
+  "id": "hs-0095",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Founded 1970 by John A. Cooper Sr.; opened June 1, 1970; 20,000 acres from Dierks; 'gated community' - all stated."
+ },
+ {
+  "id": "hs-0139",
+  "action": "edit",
+  "set": {
+   "explanation": "AGFC said the brush piles would sit in the 20- to 25-foot range most of the year, on points near the mid-lake islands."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Over 90% cedar confirmed. Explanation reworded to 'most of the year' and main-lake points near islands."
+ },
+ {
+  "id": "hs-0142",
+  "action": "edit",
+  "set": {
+   "question": "How many miles of trail make up Phase One of Hot Springs' Northwoods trail system, which began opening in 2018?",
+   "answer": "14",
+   "wrong": [
+    "4",
+    "44",
+    "140"
+   ],
+   "explanation": "Seven of Phase I's 14 miles opened Nov. 17, 2018; the finished system is described as about 44 miles.",
+   "source": "Singletracks: Northwoods Trails",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Fetched: 7 of 14 Phase I miles opened Nov 17, 2018; total '44 miles' (not 44.6). Q/answer clarified, snippet tag removed."
+ },
+ {
+  "id": "hs-0295",
+  "action": "edit",
+  "set": {
+   "source": "NPS: African Americans and the Hot Springs Baths",
+   "sourceUrl": "https://www.nps.gov/articles/000/african-americans-and-the-hot-springs-baths.htm",
+   "confidence": "confirmed",
+   "explanation": "Bailey also designed the Woodmen of the Union Building in 1922, according to the NPS."
+  },
+  "method": "fetched alternative: https://www.nps.gov/articles/000/african-americans-and-the-hot-springs-baths.htm",
+  "note": "LOC 403. NPS: Bailey of Tuskegee designed building; hotel opened Dec 27, 1914; Bailey designed Woodmen of the Union Bldg 1922."
+ },
+ {
+  "id": "hs-0298",
+  "action": "edit",
+  "set": {
+   "source": "Wikipedia: Arkansas Alligator Farm and Petting Zoo",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Full article fetched: 'H. L. Campbell founded the farm in 1902 because he thought the area needed a tourist attraction in addition to the baths'."
+ },
+ {
+  "id": "hs-0379",
+  "action": "edit",
+  "set": {
+   "answer": "2006",
+   "explanation": "Visit Hot Springs billed the 2026 races as the 20th running since the races began in 2006. Racers push their tubs the length of Bathhouse Row.",
+   "source": "Visit Hot Springs: Running of the Tubs 2026 press release",
+   "sourceUrl": "https://hotsprings.org/media-room/press-releases/first-ever-running-of-the-tubs-website-provides-registration-fun-and-background-information-for-2026-world-championship-bathtub/"
+  },
+  "method": "fetched alternative: hotsprings.org press release",
+  "note": "Answer WRONG: arkansas.com page silent; press release says 'since the races began in 2006'; 2016 was '11th annual'. Removed 'honor Bathhouse Row'."
+ },
+ {
+  "id": "hs-0381",
+  "action": "edit",
+  "set": {
+   "question": "What is the first-responder heat, with police and firefighter tubs, at Hot Springs' Running of the Tubs called?",
+   "explanation": "In 2016 it featured tubs from the Fire and Police Departments and a corrections team, and ran without stops, on the same Saturday as the other races."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Name confirmed. 'Day before main races' is WRONG: same Saturday. 2016 field also included an ADC Ouachita River Unit team; Q widened."
+ },
+ {
+  "id": "hs-0462",
+  "action": "edit",
+  "set": {
+   "question": "Which Bathhouse Row building was one of three Hot Springs locations used to film the movie Arkansas?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article: Arlington, Maxine's and Fordyce Bath House on Bathhouse Row. '2020' release year not in source; removed."
+ },
+ {
+  "id": "hs-0463",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Entry names Orlando Bloom, Kirsten Dunst, 2005; 'partially filmed in Eureka Springs and Hot Springs'."
+ },
+ {
+  "id": "hs-0504",
+  "action": "edit",
+  "set": {
+   "question": "How long is the route of the St. Patrick's Day parade that Hot Springs bills as the world's shortest?",
+   "answer": "98 feet",
+   "wrong": [
+    "89 feet",
+    "198 feet",
+    "9.8 feet"
+   ],
+   "explanation": "The Encyclopedia of Arkansas calls it a ninety-eight-foot parade route; Adamsville, R.I.'s rival parade was 89 feet.",
+   "source": "Encyclopedia of Arkansas: World's Shortest St. Patrick's Day Parade",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: EOA World's Shortest St. Patrick's Day Parade entry",
+  "note": "G&G 403. Maryville MO / 99.9 ft not in EOA, Yahoo or search; rebuilt as 98-ft question. EOA: 98-ft route, Adamsville 89 ft."
+ },
+ {
+  "id": "hs-0505",
+  "action": "edit",
+  "set": {
+   "explanation": "The Sentinel-Record reports a guest account of an image of a lady in a white gown walking on the seventh floor."
+  },
+  "method": "fetched sourceUrl",
+  "note": "7th floor and 'lady in a white gown walking' stated. Ghostly bellman on 4th floor NOT stated; removed. Claim flag kept."
+ }
+]

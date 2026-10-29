@@ -1,0 +1,750 @@
+[
+ {
+  "id": "hs-0263",
+  "action": "edit",
+  "set": {
+   "explanation": "The Smarty Jones Stakes opens Oaklawn's live season in January, per Visit Hot Springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'first of Oaklawn's four Kentucky Derby preparatory races'; never calls Arkansas Derby a finale. Explanation rewritten."
+ },
+ {
+  "id": "hs-0366",
+  "action": "edit",
+  "set": {
+   "explanation": "Visit Hot Springs says the cook-off is held the Monday before Thanksgiving."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'held the Monday before Thanksgiving'. Old explanation was unsupported filler; replaced."
+ },
+ {
+  "id": "hs-0367",
+  "action": "edit",
+  "set": {
+   "question": "Which free, two-day art festival and showcase does Visit Hot Springs highlight among its events?",
+   "explanation": "Visit Hot Springs calls it a free, two-day art festival and showcase; it listed Arts & the Park as April 24 to May 3 in 2020."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'Art Springs - a free, two-day art festival and showcase'; tie to Arts & the Park not explicit, so reworded (dates are 2020)."
+ },
+ {
+  "id": "hs-0384",
+  "action": "edit",
+  "set": {
+   "explanation": "Visit Hot Springs describes a multi-week display featuring nearly 5 million lights."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'nearly 5 million lights'. No 2014 4-million figure on page; removed."
+ },
+ {
+  "id": "hs-0385",
+  "action": "edit",
+  "set": {
+   "explanation": "The Tulip Extravaganza runs mid-March through mid-April in the Sensory Garden, per Visit Hot Springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'mid-March through mid-April in the Sensory Garden with some 150,000 tulips'. Old explanation (late Feb) contradicted page."
+ },
+ {
+  "id": "hs-0386",
+  "action": "edit",
+  "set": {
+   "explanation": "The Güdrun Mountain Biking Festival (Nov. 13-15 in the 2020 listing) includes the annual Attila the Hun Mountain Bike Race."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'annual Attila the Hun Mountain Bike Race' in Gudrun festival, Nov 13-15 (2020 listing). Explanation made specific."
+ },
+ {
+  "id": "hs-0387",
+  "action": "edit",
+  "set": {
+   "explanation": "A 2020 Visit Hot Springs preview billed it as free and family-friendly, with fireworks and a Charlie Daniels Band performance."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'free, family-friendly' at Oaklawn Fri July 3, Charlie Daniels Band (2020 preview). Explanation reworded as billing, not fact."
+ },
+ {
+  "id": "hs-0388",
+  "action": "edit",
+  "set": {
+   "explanation": "The 2020 listing (Nov. 13-15) also included a 10K, a 5K and a 1K for children."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Nov 13-15, races 'through downtown and the Hot Springs National Park'; half marathon, 10K, 5K, kids' 1K. Added dates."
+ },
+ {
+  "id": "hs-0389",
+  "action": "edit",
+  "set": {
+   "question": "Which September Hot Springs event bills itself as central Arkansas' largest annual bike rally?",
+   "explanation": "The 2020 listing (Sept. 10-12) featured a parade, poker runs, a bike show and live music."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'central Arkansas' largest annual bike rally' (self-billing). Question said 'motorcycle'; changed to 'bike rally'. Kept claim."
+ },
+ {
+  "id": "hs-0390",
+  "action": "edit",
+  "set": {
+   "explanation": "Blues Traveler was announced for Monday, March 16, the day before the parade."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Mar 2020 preview, future tense: Foghat 'on Tuesday, following the parade'; Blues Traveler Monday Mar 16. Question already says 'announced'."
+ },
+ {
+  "id": "hs-0391",
+  "action": "edit",
+  "set": {
+   "explanation": "The 2020 listing had the Hot Water Hills festival on Oct. 2-3."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'Hill Wheatley Plaza'; Oct 2-3 (2020 listing). Explanation made specific."
+ },
+ {
+  "id": "hs-0396",
+  "action": "edit",
+  "set": {
+   "question": "Most of the Hot Springs Music Festival's two-week run falls in which month?",
+   "explanation": "Visit Hot Springs listed the 2020 festival as May 31 to June 13."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: festival runs May 31 to June 13 (2020), so 'early June' was wrong. Reworded question to 'most of the run'; fixed explanation."
+ },
+ {
+  "id": "hs-0397",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'jazz and blues music presented by the Spa City Blues Society and the Hot Springs Jazz Society', throughout downtown."
+ },
+ {
+  "id": "hs-0459",
+  "action": "edit",
+  "set": {
+   "explanation": "Visit Hot Springs lists over 20 concerts and over 250 open rehearsals for the festival's May 31-June 13, 2020 run."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'over 20 concerts and over 250 open rehearsals'; May 31-June 13. Explanation tied to page."
+ },
+ {
+  "id": "hs-0460",
+  "action": "edit",
+  "set": {
+   "question": "Which March indie music festival in Hot Springs brings 140-plus musicians to small venue stages?",
+   "explanation": "The 2020 Valley of the Vapors Independent Music Festival (March 20-23) planned 140-plus musicians on small venue stages."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'Valley of the Vapors Independent Music Festival', March 20-23, 140-plus musicians; name origin not explained, so question rewritten."
+ },
+ {
+  "id": "hs-0466",
+  "action": "edit",
+  "set": {
+   "question": "Which comic and pop-culture convention is held in Hot Springs in September?",
+   "explanation": "The 2020 listing (Sept. 18-20) named guests including actress Lori Petty and Rodger Bumpass, the voice of Squidward."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'a pop culture & comic convention'; Sept 18-20 (2020). Petty/Bumpass were 2020 listed guests, not 'past' guests. Fixed."
+ },
+ {
+  "id": "hs-0468",
+  "action": "edit",
+  "set": {
+   "explanation": "The annual Arkansas Shorts film night is held on the first Saturday of January at the Malco Theatre."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'Held on the first Saturday of January at the Malco Theatre'. Documentary-festival claim not on page; removed."
+ },
+ {
+  "id": "hs-0507",
+  "action": "edit",
+  "set": {
+   "question": "According to Visit Hot Springs, how long is the joke \"Zero K Foot Race\"?",
+   "explanation": "The 250-foot race follows directly after the Running of the Tubs races."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'a 250 foot race'. Attributed to Visit Hot Springs in question; explanation tied to page."
+ },
+ {
+  "id": "hs-0508",
+  "action": "edit",
+  "set": {
+   "explanation": "Visit Hot Springs says the 250-foot race includes a hydration station at the halfway mark."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'includes a hydration station at the 1/2 way mark'. Removed unsupported 'tongue-in-cheek records' line."
+ },
+ {
+  "id": "hs-0184",
+  "action": "edit",
+  "set": {
+   "question": "According to a 2011 engineering measurement, about how far did Babe Ruth's 1918 Whittington Park home run travel?",
+   "explanation": "B&F Engineering measured it at 573 feet in 2011; a Boston newspaper had thought it went more than 500 feet.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 'B&F Engineering measured ... in 2011 and found it was 573 feet'. Jenkinson not on page; removed. Question attributes the figure."
+ },
+ {
+  "id": "hs-0190",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'On March 17, 1918 (St. Patrick's Day), he launched a mammoth home run from Whittington Park'."
+ },
+ {
+  "id": "hs-0191",
+  "action": "edit",
+  "set": {
+   "explanation": "The article says Ruth was mostly a pitcher at the time."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page has Ruth in Red Sox lineup and 'he was mostly a pitcher'. Explanation reworded to match."
+ },
+ {
+  "id": "hs-0192",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'game at Whittington Park against the Brooklyn Dodgers, Ruth hit two home runs'."
+ },
+ {
+  "id": "hs-0193",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: added to lineup 'as the Red Sox's original first baseman was late to camp'; first base implied, not explicit (SABR/search agree)."
+ },
+ {
+  "id": "hs-0194",
+  "action": "edit",
+  "set": {
+   "explanation": "The homer flew over the right-field fence and across the street."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'In the sixth inning, Ruth launched a homer that flew over the right-field fence'. 'Whittington Avenue' not on page."
+ },
+ {
+  "id": "hs-0195",
+  "action": "edit",
+  "set": {
+   "explanation": "The homer flew over the right-field fence, across the street and landed in an alligator farm."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'flew over the right-field fence, across the street and landed in an alligator farm'. Ban Johnson renaming not on page; removed."
+ },
+ {
+  "id": "hs-0244",
+  "action": "edit",
+  "set": {
+   "explanation": "B&F Engineering did the measurement; a Boston newspaper had thought the drive went more than 500 feet."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'B&F Engineering measured the distance in 2011'; Boston paper 'more than 500 feet'. Minor wording fix."
+ },
+ {
+  "id": "hs-0120",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Display Springs uncovered after decades under a grate (1930s)."
+ },
+ {
+  "id": "hs-0146",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS says the springs produce over 700,000 gallons of water a day."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'produce over 700,000 gallons of water a day'. Removed 'other sources up to 1 million' (not on page)."
+ },
+ {
+  "id": "hs-0147",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quotes: 'average temperature of 143 degrees fahrenheit'; 'easily the hottest springs east of the Rocky Mountains'."
+ },
+ {
+  "id": "hs-0151",
+  "action": "edit",
+  "set": {
+   "question": "What are the names of the two faults the National Park Service says help carry Hot Springs' heated water back to the surface?",
+   "explanation": "NPS says fault lines help direct the heated water back to the surface."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: faults 'named alpha and beta'; no 'geologists'/'thrust' naming; 'Fault lines help direct the heated water back to the surface'. Reworded."
+ },
+ {
+  "id": "hs-0152",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: alpha fault roughly follows Central Avenue and Fountain Street; beta follows top edge of Hot Springs Mountain."
+ },
+ {
+  "id": "hs-0153",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: heated 'to roughly 160 degrees fahrenheit'; geothermal gradient; roughly a mile underground."
+ },
+ {
+  "id": "hs-0154",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS says the springs average 143 degrees Fahrenheit."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'easily the hottest springs east of the Rocky Mountains'. Removed '(62C)' not on page."
+ },
+ {
+  "id": "hs-0015",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: tracks 'three feet wide'; 'converted to a standard gauge line in 1889'."
+ },
+ {
+  "id": "hs-0016",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quotes: 'twenty-one-mile distance'; 'most of a day' cut to 'one hour'."
+ },
+ {
+  "id": "hs-0044",
+  "action": "edit",
+  "set": {
+   "explanation": "The entry says the last passenger train to and from Hot Springs, on the Missouri Pacific, ran in 1964."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: last passenger train (Missouri Pacific) 'ran in 1964'."
+ },
+ {
+  "id": "hs-0287",
+  "action": "edit",
+  "set": {
+   "question": "Which of Joseph \"Diamond Jo\" Reynolds's businesses became known as the \"Diamond Jo Line\"?",
+   "answer": "His upper Mississippi steamboat fleet",
+   "explanation": "Reynolds also ran a successful leather tanning company in Chicago and traded grain."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Chicago tanning and grain trading; steamboat fleet 'became known as the Diamond Jo Line'. 'Best known' unsupported; question reframed."
+ },
+ {
+  "id": "hs-0474",
+  "action": "edit",
+  "set": {
+   "explanation": "He created the trademark after another J. Reynolds caused confusion among customers."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: nickname after another J. Reynolds caused customer confusion; trademark marked shipments inside a diamond. Explanation fixed."
+ },
+ {
+  "id": "hs-0057",
+  "action": "edit",
+  "set": {
+   "wrong": [
+    "Ponce de Leon",
+    "Andrew Jackson",
+    "Thomas Jefferson"
+   ],
+   "explanation": "The entry describes a life-sized de Soto statue in the men's bath hall; most historians discredit the de Soto legend."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'life-sized statue of de Soto ... in the men's bath hall'. Skylight not tied to statue. Swapped distractor Neptune (a Neptune scene exists there)."
+ },
+ {
+  "id": "hs-0061",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'oldest surviving bathhouse, the Hale, was constructed in 1892-93'; other Row bathhouses dated 1911-1923."
+ },
+ {
+  "id": "hs-0062",
+  "action": "edit",
+  "set": {
+   "source": "NPS: Buckstaff Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/buckstaff-bathhouse.htm",
+   "explanation": "NPS says the Buckstaff opened on February 1, 1912, and has been in continuous operation since."
+  },
+  "method": "fetched alternative: https://www.nps.gov/hosp/learn/historyculture/buckstaff-bathhouse.htm",
+  "note": "EoA lacks 'continuous since 1912' and names Quapaw too. NPS Buckstaff page: 'continuous operation since opening its doors in 1912'."
+ },
+ {
+  "id": "hs-0078",
+  "action": "edit",
+  "set": {
+   "explanation": "The entry says the Quapaw got its name from Indian artifacts found while excavating its basement."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'acquired its name from the discovery of Indian artifacts during the excavation of the basement'. Platt/tufa not on page; removed."
+ },
+ {
+  "id": "hs-0079",
+  "action": "edit",
+  "set": {
+   "explanation": "The entry says the addition was meant to treat various forms of paralysis."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: addition 'inspired by treatments President Franklin D. Roosevelt received in Warm Springs, Georgia'; page says paralysis, no therapist."
+ },
+ {
+  "id": "hs-0026",
+  "action": "edit",
+  "set": {
+   "explanation": "Ulma Madlock was ironing at her Church Street home when the iron ignited a curtain."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: Ulma Madlock ironing at Church Street home, 'the iron ignited a curtain'. Stove claim not on page."
+ },
+ {
+  "id": "hs-0027",
+  "action": "edit",
+  "set": {
+   "explanation": "Firefighters came by train from Little Rock around 8 p.m., but their hoses did not fit the local hydrants."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'fire hoses from Little Rock did not fit the Hot Springs fire hydrants'; arrived by train about 8 p.m."
+ },
+ {
+  "id": "hs-0029",
+  "action": "edit",
+  "set": {
+   "explanation": "The entry puts the damage at $10 million."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'left more than 2,500 people homeless'; $10 million damage. '700 homes' not on page; removed."
+ },
+ {
+  "id": "hs-0030",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: wooden-shingle roofs outlawed; fire department doubled."
+ },
+ {
+  "id": "hs-0321",
+  "action": "edit",
+  "set": {
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'located at 1011 Park Avenue'; lived there 1954-1961; private residence; NR 1995. Upgraded to confirmed."
+ },
+ {
+  "id": "hs-0328",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'moved in 1961 to a home at 213 Scully Street'."
+ },
+ {
+  "id": "hs-0335",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'On May 18, 1995, it was placed on the National Register of Historic Places.'"
+ },
+ {
+  "id": "hs-0337",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'As it is a private residence, the home is not open for tours.'"
+ },
+ {
+  "id": "hs-0046",
+  "action": "edit",
+  "set": {
+   "explanation": "Twelve injuries were reported; Gazette reporters photographed the club's slot machines and craps tables."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'January 4, 1963'; 'Twelve injuries'; Gazette photographed slot machines and craps tables. 'Front-page' not on page."
+ },
+ {
+  "id": "hs-0408",
+  "action": "edit",
+  "set": {
+   "explanation": "Bennett wrote that he first sang it at the Vapors, during a rehearsal for a later Fairmont Hotel appearance."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: Bennett 'first sang' the song at the Vapors in rehearsal. Liberace/Patti Page not on page; removed."
+ },
+ {
+  "id": "hs-0411",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: club 'opened in 1960' at 315 Park Avenue; Dane Harris built it with Owney Madden."
+ },
+ {
+  "id": "hs-0126",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quotes: 'Blakely Mountain Dam'; 'The dam is 231 feet tall'; built 'from 1948 to 1953' by Army Corps."
+ },
+ {
+  "id": "hs-0127",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia's infobox lists 200 islands for the lake."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia infobox lists 200 islands; numbered markers not mentioned; removed."
+ },
+ {
+  "id": "hs-0511",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'rare jellyfish (non-stinging) and sponges found in very few freshwater lakes'."
+ },
+ {
+  "id": "hs-0315",
+  "action": "edit",
+  "set": {
+   "explanation": "Madden lived in Hot Springs until his death in 1965 at age 73."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quotes: 'on condition that he never return to New York'; 'lived in Hot Springs until his death in 1965'. 'Mid-1930s' not on page."
+ },
+ {
+  "id": "hs-0316",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: Luciano taken into custody 1936; 'following an extradition battle, transported back East'."
+ },
+ {
+  "id": "hs-0331",
+  "action": "edit",
+  "set": {
+   "explanation": "The Mob Museum says Madden lived in Hot Springs until his death in 1965 at age 73."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'death in 1965 at age 73'. Emphysema/April 24 not on page; removed."
+ },
+ {
+  "id": "hs-0378",
+  "action": "edit",
+  "set": {
+   "source": "Visit Hot Springs: 2020 version of the World Championship Running of the Tubs (press release)",
+   "sourceUrl": "https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
+   "explanation": "Spectators join in with Super Soakers and water balloons."
+  },
+  "method": "fetched alternative: https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
+  "note": "Original page is a thin video post. 2020 release: 'pushing their bathtubs - on wheels of course - down Central Avenue'; water balloons."
+ },
+ {
+  "id": "hs-0380",
+  "action": "edit",
+  "set": {
+   "source": "Visit Hot Springs: 2020 version of the World Championship Running of the Tubs (press release)",
+   "sourceUrl": "https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
+   "explanation": "Visit Hot Springs calls Pennington a long-time downtown merchant who pushed for the bathtub races."
+  },
+  "method": "fetched alternative: https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
+  "note": "Original page silent on who he was. 2020 release: 'a long-time downtown merchant'; cup named for him on event page."
+ },
+ {
+  "id": "hs-0383",
+  "action": "edit",
+  "set": {
+   "source": "Visit Hot Springs: 2020 version of the World Championship Running of the Tubs (press release)",
+   "sourceUrl": "https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
+   "question": "In what year did organizers announce a move of Hot Springs' Running of the Tubs from May 30 to July 11 because of COVID-19?",
+   "explanation": "Organizers cited \"an abundance of caution\" over the COVID-19 pandemic when moving the races."
+  },
+  "method": "fetched alternative: https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
+  "note": "Release: moved May 30 to July 11 'in an abundance of caution' (COVID-19). A 2026 release says no 2020 races; 2019 cancel claim dropped. Reworded."
+ },
+ {
+  "id": "hs-0074",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'built and opened in 1893'; Charles Dugan and Dan Stuart."
+ },
+ {
+  "id": "hs-0088",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quotes: 'dark Pittsburgh glass'; 'help Jacobs conceal the gambling'; Capone 'always sat at an elevated table'."
+ },
+ {
+  "id": "hs-0140",
+  "action": "edit",
+  "set": {
+   "source": "AGFC: Tourney anglers catch a couple of whopper bass in Lake Hamilton"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quotes: 11-pound largemouth; 'Texas rig with a Zoom Speed Craw'; 'Green Pumpkin Magic'; dated May 29, 2024. Fixed article title."
+ },
+ {
+  "id": "hs-0174",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Arkansas Game and Fish Commission State Fish Hatcheries",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/arkansas-game-and-fish-commission-state-fish-hatcheries-2539/",
+   "explanation": "The entry places it on the south side of Lake Hamilton, which is also its water source."
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/arkansas-game-and-fish-commission-state-fish-hatcheries-2539/",
+  "note": "AGFC page says only 'near' the hatchery. EoA: 'located on the south side of Lake Hamilton'; 'Its water source is Lake Hamilton'."
+ },
+ {
+  "id": "hs-0252",
+  "action": "edit",
+  "set": {
+   "question": "What was the score of the Aug. 25, 2023 football game between Lakeside and Lake Hamilton at Wolf Stadium?",
+   "explanation": "Lakeside beat the Lake Hamilton Wolves 49-42 in Pearcy, according to the Sentinel-Record."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: Lakeside beat Lake Hamilton 49-42 on Aug 25, 2023 at Wolf Stadium. Series actually resumed 2018, so question reworded."
+ },
+ {
+  "id": "hs-0276",
+  "action": "edit",
+  "set": {
+   "explanation": "Lakeside beat the Lake Hamilton Wolves 49-42 there on Aug. 25, 2023."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article: game at Wolf Stadium in Pearcy, Lakeside won 'on their own turf' (Wolves); search confirms Wolf Stadium is Lake Hamilton's home."
+ },
+ {
+  "id": "hs-0339",
+  "action": "edit",
+  "set": {
+   "question": "Who was announced as grand marshal of the 2026 World's Shortest St. Patrick's Day Parade in Hot Springs?",
+   "explanation": "IrishCentral reported she would join the previously announced Dallas Cowboys Cheerleaders at the 23rd annual parade."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article (Nov 19, 2025) is future tense: Electra 'will serve' as grand marshal of the 23rd parade, March 17, 2026. Reworded to 'announced'."
+ },
+ {
+  "id": "hs-0376",
+  "action": "edit",
+  "set": {
+   "question": "Which cheerleading squad was announced for Hot Springs' 2026 St. Patrick's Day parade alongside grand marshal Carmen Electra?",
+   "explanation": "IrishCentral said it would be the squad's 12th return to Hot Springs since 2013."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article: Electra 'will join the previously announced Dallas Cowboys Cheerleaders'; not 'ride with'; 2020 claim not on page. Reworded."
+ },
+ {
+  "id": "hs-0012",
+  "action": "edit",
+  "set": {
+   "explanation": "The Arkansas Archeological Survey says whetstone mining has been an Arkansas industry since the early 1800s."
+  },
+  "method": "fetched sourceUrl",
+  "note": "PDF text: 'Novaculite mining for whetstone use began as early as 1818 in the Hot Springs region'. County line not in PDF; removed."
+ },
+ {
+  "id": "hs-0017",
+  "action": "edit",
+  "set": {
+   "explanation": "The line was converted to standard gauge in about three hours, after several months of preparation.",
+   "source": "Wikipedia: Hot Springs Railroad",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'On October 16, 1889, ... converted ... to a standard-gauge railway in about three hours'. Pullman line unsupported; removed."
+ },
+ {
+  "id": "hs-0048",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the association bought it in 1950; the hotel closed in 1981."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'purchased in 1950 by the National Baptist Association'; closed 1981. Dropped disputed 1948 mention."
+ },
+ {
+  "id": "hs-0106",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Quote: fire destroyed the 'yellow brick portion'; hotel demolished in 'late 2016'."
+ },
+ {
+  "id": "hs-0133",
+  "action": "edit",
+  "set": {
+   "source": "Explore the Village (Hot Springs Village): Lakes",
+   "sourceUrl": "https://explorethevillage.com/web/pages/lakes",
+   "explanation": "The Hot Springs Village site lists Lake Balboa at 944 acres.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://explorethevillage.com/web/pages/lakes",
+  "note": "PressReader gave 403. explorethevillage.com: 'At 944 acres, Lake Balboa is the largest lake in Hot Springs Village.'"
+ },
+ {
+  "id": "hs-0169",
+  "action": "edit",
+  "set": {
+   "explanation": "The Arkansas Geological Survey calls novaculite a recrystallized variety of chert made of very small quartz grains."
+  },
+  "method": "fetched sourceUrl",
+  "note": "AGS page: novaculite 'a recrystallized variety of chert' of very small quartz grains; whetstones processed near Hot Springs. Tightened."
+ },
+ {
+  "id": "hs-0264",
+  "action": "edit",
+  "set": {
+   "explanation": "The article lists winners from Sunny's Halo (1983) through Mystik Dan (2024)."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: Arkansas Derby 'has produced eight Kentucky Derby winners' (dated July 10, 2024). 'First winner' claim not on page."
+ },
+ {
+  "id": "hs-0301",
+  "action": "edit",
+  "set": {
+   "explanation": "The list gives Alan Ladd as an actor born September 3, 1913, in Hot Springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'Actor. Born September 3, 1913, in Hot Springs, Arkansas'. 'Best-known native sons' not on page."
+ },
+ {
+  "id": "hs-0362",
+  "action": "edit",
+  "set": {
+   "source": "The Takeout: The Arkansas Barbecue Restaurant Loved By President Bill Clinton",
+   "sourceUrl": "https://www.thetakeout.com/1696751/mcclard-bbq-arkansas-bill-clinton",
+   "question": "After which president moved to Washington did McClard's get official calls asking for its barbecue to be picked up by Air Force One?",
+   "explanation": "The Takeout says the calls began once the Clintons moved to D.C."
+  },
+  "method": "fetched alternative: https://www.thetakeout.com/1696751/mcclard-bbq-arkansas-bill-clinton",
+  "note": "hotsprings.org page lacks Clinton. The Takeout: after Clintons moved to D.C., 'official phone calls' asked for barbecue pickup by Air Force One."
+ },
+ {
+  "id": "hs-0393",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "question": "How many U.S. presidents does the Encyclopedia of Arkansas say have enjoyed Mountain Valley water?",
+   "explanation": "The entry says Elvis Presley and thirteen U.S. presidents have enjoyed the water.",
+   "confidence": "claim"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote: 'Elvis Presley and thirteen U.S. presidents' enjoyed the water. Page states it; still an attributed promotional-style claim."
+ },
+ {
+  "id": "hs-0458",
+  "action": "edit",
+  "set": {
+   "question": "Which edition of the Hot Springs Documentary Film Festival was scheduled for October 2025?",
+   "explanation": "The listing said it would run Oct. 10-18, 2025, with the Arlington as the main venue."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Listing is future tense: 'will take place October 10-18, 2025'; main venue Arlington. Reworded to 'scheduled'."
+ },
+ {
+  "id": "hs-0465",
+  "action": "edit",
+  "set": {
+   "explanation": "The article says Visit Hot Springs' Bill Solleder, the film commissioner, issues film permits."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article: Adams directing 'Betrayed Within', partly filmed at the Arlington; Solleder, film commissioner, issues permits."
+ },
+ {
+  "id": "hs-0495",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Keller Bramwell Breland",
+   "sourceUrl": "https://encyclopediaofarkansas.net/?p=3997",
+   "wrong": [
+    "Dolphins",
+    "Monkeys",
+    "Goats"
+   ],
+   "explanation": "The entry says the Brelands opened the IQ Zoo in 1955; rabbits, ducks and raccoons also performed there."
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/?p=3997",
+  "note": "APA page returned empty. EoA Breland entry: chickens 'walked tightropes, dispensed souvenirs and fortune cards'; IQ Zoo 1955. Swapped Parrots distractor."
+ }
+]

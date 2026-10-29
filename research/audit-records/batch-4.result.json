@@ -1,0 +1,762 @@
+[
+ {
+  "id": "hs-0025",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'From April 2-12, 1914, several Pentecostal leaders gathered in Hot Springs to form ... Assemblies of God'. Matches."
+ },
+ {
+  "id": "hs-0038",
+  "action": "edit",
+  "set": {
+   "explanation": "The Army took over most of the hotels in August 1944; the center closed in December 1945."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Answer matches 'more than 32,000'. Explanation said 'hotels'; source says 'most of the hotels' - fixed."
+ },
+ {
+  "id": "hs-0045",
+  "action": "edit",
+  "set": {
+   "explanation": "The grounds were sold to the state for one dollar; the hospital's military era ended April 1, 1960."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: sold to Arkansas for one dollar, closed Apr 1 1960. EOA Army-Navy confirms Apr 1 1960 handover and rehab-center use."
+ },
+ {
+  "id": "hs-0102",
+  "action": "edit",
+  "set": {
+   "explanation": "The Superior Bathhouse Brewery and Distillery has occupied the Superior Bathhouse since 2012."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'has occupied Superior Bathhouse since 2012'. 1916 building year is not on the Wikipedia page; removed."
+ },
+ {
+  "id": "hs-0117",
+  "action": "edit",
+  "set": {
+   "explanation": "The government enclosed the creek in an underground arch in 1882-83 for flood and sewerage control.",
+   "source": "NPS: Bathhouse Row",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/bathhouse-row.htm"
+  },
+  "method": "fetched alternative: https://www.nps.gov/hosp/learn/historyculture/bathhouse-row.htm",
+  "note": "Wikipedia says tunnel under Row but not 1882-83. NPS: 'In 1882-83 the government enclosed Hot Springs creek in an underground arch'."
+ },
+ {
+  "id": "hs-0159",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the creek flows from Whittington Avenue through the southern city before emptying into Lake Hamilton."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'emptying into Lake Hamilton'. 'Surfaces south of the Row' not stated on page; replaced."
+ },
+ {
+  "id": "hs-0176",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Climate table: May wettest 6.51 in; August driest 3.60 in. Matches question and explanation."
+ },
+ {
+  "id": "hs-0177",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'highest temperature was 115 F, recorded in 1936 and 1986'. Matches."
+ },
+ {
+  "id": "hs-0178",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia's climate table lists average annual snowfall of 1.1 inches."
+  },
+  "method": "fetched sourceUrl",
+  "note": "1.1 in/yr confirmed. 'Most falls Jan and Feb' not supported (table shows Jan-Mar); replaced."
+ },
+ {
+  "id": "hs-0182",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia credits A.G. Spalding and Cap Anson with introducing pre-season training in Hot Springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: first welcomed MLB in 1886 with the White Stockings. 'Boil out' not on page; removed."
+ },
+ {
+  "id": "hs-0183",
+  "action": "edit",
+  "set": {
+   "question": "Where did Babe Ruth's famous long home run of March 17, 1918, in Hot Springs land?",
+   "explanation": "The exhibition game was at Whittington Park; Wikipedia says Ruth hit a home run into the Arkansas Alligator Farm and Petting Zoo."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia confirms ball into Alligator Farm at Whittington Park. 'Second home run' and fence/avenue details not stated; removed."
+ },
+ {
+  "id": "hs-0185",
+  "action": "edit",
+  "set": {
+   "question": "Which baseball star bought and donated basketball uniforms to Hot Springs High School in 1912?",
+   "explanation": "The uniforms were in the Pittsburgh Pirates colors of black and gold."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'Wagner purchased and donated basketball uniforms ... in 1912', Pirates black and gold. Removed claim that they 'gave' school colors."
+ },
+ {
+  "id": "hs-0215",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: Crawfords used Fogel Field 1932-35; Homestead Grays 1930 and 1931. Matches."
+ },
+ {
+  "id": "hs-0240",
+  "action": "edit",
+  "set": {
+   "explanation": "In 2018 the track installed a life-sized bronze sculpture of the horse by James Peniston."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia confirms 2015 win and 2018 sculpture; American Pharoah page confirms 2015 Arkansas Derby win and Triple Crown. 'Unveiled' -> 'installed'."
+ },
+ {
+  "id": "hs-0311",
+  "action": "edit",
+  "set": {
+   "explanation": "Earl T. Ricks served as reform mayor in 1947-49."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: machine ended 1946, names McLaughlin; Ricks 'reform mayor (1947-49)'. 'Replaced McLaughlin' wording softened."
+ },
+ {
+  "id": "hs-0330",
+  "action": "edit",
+  "set": {
+   "explanation": "Thornton won the Academy Award for Best Adapted Screenplay for Sling Blade (1996).",
+   "source": "Wikipedia: Billy Bob Thornton",
+   "sourceUrl": "https://en.wikipedia.org/wiki/Billy_Bob_Thornton"
+  },
+  "method": "fetched alternative: https://en.wikipedia.org/wiki/Billy_Bob_Thornton",
+  "note": "Thornton page: born Aug 4, 1955 in Hot Springs; Best Adapted Screenplay Oscar. City page lacks birth date and Thornton article lacks First Boys of Spring."
+ },
+ {
+  "id": "hs-0340",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia lists DiMaggio among the famous people treated at the hospital."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'Famous people treated at the hospital included Joe DiMaggio'. 100,000-patient figure is not on this page (it is on EOA); removed."
+ },
+ {
+  "id": "hs-0342",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: Rector 'won a silver medal at the Olympics and was the first Olympian from Arkansas'. Matches."
+ },
+ {
+  "id": "hs-0343",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia notables: Stinson 'fourth woman in the United States to obtain a pilot's certificate', moved to Hot Springs. Matches."
+ },
+ {
+  "id": "hs-0344",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says Runyan, born in Hot Springs, won two PGA championships and is in the World Golf Hall of Fame."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'golfer born in Hot Springs; went on to win two PGA championships and is a member of the World Golf Hall of Fame'. Explanation made specific."
+ },
+ {
+  "id": "hs-0345",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia calls her a Metropolitan Opera diva who was a Hot Springs resident for many years."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'Metropolitan Opera diva, resident for many years'. Explanation made specific."
+ },
+ {
+  "id": "hs-0399",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the farm was founded on Whittington Avenue in 1902."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'Founded on Whittington Avenue in 1902'. 'Oldest attraction' (EOA) is not on this page; removed."
+ },
+ {
+  "id": "hs-0470",
+  "action": "edit",
+  "set": {
+   "question": "Which Hot Springs racetrack's winter-spring meet is sometimes called the \"Fifth Season\"?",
+   "explanation": "Wikipedia says the Oaklawn meet, held December through May, is sometimes called the \"Fifth Season\"."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: meet 'held from December through May ... sometimes called the Fifth Season'. Essex/Sportsman's remarks not on page; removed, wording hedged."
+ },
+ {
+  "id": "hs-0210",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Infobox 'Established: 1887'; moved to Emory Street in 1968. Matches."
+ },
+ {
+  "id": "hs-0238",
+  "action": "edit",
+  "set": {
+   "explanation": "The boys' team also won a state title in 1998."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Girls titles 1990, 1997, 1998, 2015, 2018; boys 1932, 1996, 1998. Only 1997-98 are consecutive. Removed 'double-crown' inference."
+ },
+ {
+  "id": "hs-0259",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Alumni: 'Shameka Christon (2000) - WNBA's Chicago Sky'. Matches."
+ },
+ {
+  "id": "hs-0260",
+  "action": "edit",
+  "set": {
+   "question": "Which Hot Springs High alumnus is a 2016 Olympian and 2002 World Junior Championships gold medalist?",
+   "explanation": "Wikipedia lists Hicks (class of 2000) as a 2016 Olympian and 2002 gold medalist, and a two-time NCAA indoor 60 m hurdles champion."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page says '(2000) 2016 Olympian, 2002 Gold Medalist', mentions 2002 World Juniors; does not say 'hurdles champion' for that title, so removed that wording."
+ },
+ {
+  "id": "hs-0277",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: Hot Springs World Class High School; public magnet; IB school since 2004. Matches."
+ },
+ {
+  "id": "hs-0278",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia lists black and gold as the school colors, with the Trojan as its emblem."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Black and gold confirmed. Wagner link is not on the HSHS page; removed."
+ },
+ {
+  "id": "hs-0322",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia lists Clinton among Hot Springs High's notable alumni; he graduated in 1964."
+  },
+  "method": "fetched sourceUrl",
+  "note": "'Bill Clinton graduated in 1964' confirmed. 'Moved from Hope in 1953' not on page and Clinton Wikipedia says family moved in 1950; removed."
+ },
+ {
+  "id": "hs-0326",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia's notable-alumni list for the school includes Clinton, who graduated in 1964."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Graduation 1964 confirmed. '1011 Park Avenue' not on this page; removed."
+ },
+ {
+  "id": "hs-0225",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: founded 1928; enrollment 1,114 (2023-2024). Matches."
+ },
+ {
+  "id": "hs-0226",
+  "action": "edit",
+  "set": {
+   "question": "In which of these years did Lakeside High School win a basketball state title?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Titles 1945 and 2000. Question said 'which year' though two are valid; reworded so only 1945 is among options."
+ },
+ {
+  "id": "hs-0236",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: lost 1975 title game to Stuttgart; 'never captured the title'; 5A South champion 2019. Matches."
+ },
+ {
+  "id": "hs-0258",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Alumni: 'Landon Trusty (2000) ... played in NFL for the Dallas Cowboys, San Diego Chargers, and the Denver Broncos'; Keljin Blevins NBA. Matches."
+ },
+ {
+  "id": "hs-0272",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Mascot Rams; infobox rivals Hot Springs Trojans, Lake Hamilton Wolves. Matches."
+ },
+ {
+  "id": "hs-0273",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia's infobox lists the school colors as blue and gold."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Blue and gold confirmed. Removed unrelated 'no hex values' remark."
+ },
+ {
+  "id": "hs-0047",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'desegregated in 1965'; 'School desegregation started in 1956 with a high school auto mechanics course'. Matches."
+ },
+ {
+  "id": "hs-0051",
+  "action": "edit",
+  "set": {
+   "question": "On what date did Hot Springs' Majestic Hotel catch fire?",
+   "explanation": "The Encyclopedia of Arkansas says the downtown landmark caught fire on Feb. 27, 2014."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'On February 27, 2014, the Majestic Hotel ... caught fire.' No '20 hours', injuries or 'older section' in EOA; removed those."
+ },
+ {
+  "id": "hs-0054",
+  "action": "edit",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas lists the city's 2020 Census population as 37,930."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: '37,930 (2020 Census)'. Garland County 100,180 not on EOA page (Wikipedia Garland County confirms it); explanation reworded."
+ },
+ {
+  "id": "hs-0320",
+  "action": "edit",
+  "set": {
+   "explanation": "Soon after taking office in 1967, Rockefeller ordered the State Police to crack down on gambling in Hot Springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA gives no months or slot machines. (Old State House record says Oct 1967 raids seized slot machines.) Reworded to EOA."
+ },
+ {
+  "id": "hs-0497",
+  "action": "edit",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas says the parade began in 2004 and takes place on Bridge Street."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'began in 2004 and takes place on Bridge Street'. 98 ft not on EOA (hotsprings.org says 'may only be 98 feet'); removed. Claim wording kept."
+ },
+ {
+  "id": "hs-0227",
+  "action": "edit",
+  "set": {
+   "explanation": "The list names Hot Springs, Blytheville and De Queen together for 1934."
+  },
+  "method": "fetched sourceUrl",
+  "note": "List: '1934 - Hot Springs, Blytheville, De Queen'. 'Co-championship' label not stated; reworded."
+ },
+ {
+  "id": "hs-0237",
+  "action": "edit",
+  "set": {
+   "question": "In which of these years did the Hot Springs Trojans win a state football title?",
+   "explanation": "The list also shows Hot Springs as champion in 1934 and 1972."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Hot Springs listed 1934, 1970, 1972. Reworded question so only 1970 appears among options; removed unsupported 'AAA' label."
+ },
+ {
+  "id": "hs-0239",
+  "action": "edit",
+  "set": {
+   "explanation": "The list shows Mountain Pine as the Class A champion in both 1978 and 1979."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Rows: '1978 ... Mountain Pine', '1979 ... Mountain Pine' (Class A column). Removed unsupported 'Red Devils / 2A'."
+ },
+ {
+  "id": "hs-0254",
+  "action": "edit",
+  "set": {
+   "question": "Which Garland County school won the Class 2A state football title in 2006?",
+   "explanation": "The list shows Jessieville as the 2006 Class 2A champion."
+  },
+  "method": "fetched sourceUrl",
+  "note": "2006 row Class 2A: Jessieville. 'Lions' and '3A-4 league' not on page; removed."
+ },
+ {
+  "id": "hs-0255",
+  "action": "edit",
+  "set": {
+   "question": "Which Garland County school won the Class 3A state football title in 2009?",
+   "explanation": "The list shows Fountain Lake as the 2009 Class 3A champion."
+  },
+  "method": "fetched sourceUrl",
+  "note": "2009 row Class 3A: Fountain Lake. 'Cobras' and 'plays 4A' not on page; removed."
+ },
+ {
+  "id": "hs-0318",
+  "action": "edit",
+  "set": {
+   "explanation": "The Brelands helped Skinner with Project Pigeon; the pigeon-guided missile system worked but was never used."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA confirms Project Pigeon and Skinner link; 'worked but was never used' is EOA's wording."
+ },
+ {
+  "id": "hs-0325",
+  "action": "edit",
+  "set": {
+   "explanation": "Both Keller and Marian Breland were trained by Skinner in graduate school at the University of Minnesota.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: both 'were students of B. F. Skinner', trained by him at Univ. of Minnesota. Now directly confirmed."
+ },
+ {
+  "id": "hs-0333",
+  "action": "edit",
+  "set": {
+   "explanation": "EOA credits them with starting Animal Behavior Enterprises, the first commercial application of operant conditioning."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Students-of-Skinner and IQ Zoo confirmed. 'Positive reinforcement' not in EOA; replaced."
+ },
+ {
+  "id": "hs-0413",
+  "action": "edit",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas says the Brelands opened the IQ Zoo in 1955.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'In 1955, Keller and Marian opened the IQ Zoo at 380 Whittington Avenue'. 1954 caption not seen; removed. Decade answer holds."
+ },
+ {
+  "id": "hs-0024",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'first combined general hospital for both U.S. Army and Navy patients'; $100,000 approved 1882; opened 1887. Matches."
+ },
+ {
+  "id": "hs-0035",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: WWII 'largest center for treating adults afflicted with polio'; 'army's leading center for ... arthritis'. Matches."
+ },
+ {
+  "id": "hs-0288",
+  "action": "edit",
+  "set": {
+   "question": "Which U.S. senator, honored at an 1882 Palace Bathhouse dinner, promised to seek funding for a Hot Springs military hospital?",
+   "explanation": "Dr. A. S. Garnett, a former Confederate surgeon, hosted the dinner honoring Logan, a former Union general."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: Logan 'promised to introduce legislation for an appropriation'; Garnett 'a former Confederate army surgeon' hosted. Wording aligned."
+ },
+ {
+  "id": "hs-0123",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: Remmel Dam 1924; both dams on NRHP Sept 4, 1992; Carpenter Dam 1931 forms other lake. Matches."
+ },
+ {
+  "id": "hs-0124",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'Ambursen-type buttressed dam', style 'Flat-slab buttress'; builders Ford, Bacon & Davis / Ambursen Construction. Matches."
+ },
+ {
+  "id": "hs-0313",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the lake is named after Harvey Couch's daughter, Catherine."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Answer confirmed. Couchwood-estate-on-shore claim not on page; removed."
+ },
+ {
+  "id": "hs-0304",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'two decades as mayor, 1927 to 1947'; 'open town'; fines as license fees. Matches."
+ },
+ {
+  "id": "hs-0488",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: sulky 'pulled by his horses, Scotch and Soda'; rode daily down Central Avenue; red carnation. Matches."
+ },
+ {
+  "id": "hs-0489",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'riding costume with a red carnation in his lapel'. Matches."
+ },
+ {
+  "id": "hs-0360",
+  "action": "edit",
+  "set": {
+   "question": "What new restaurant focused on wings and tenders did Magic Springs announce for 2026?",
+   "explanation": "A park official said in May 2026 there would be no new rides or attractions that season."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article (May 11, 2026) only previews: 'We'll have a new restaurant this year ... The Chicken Coop'; 'won't have any new rides'. Reworded as announced."
+ },
+ {
+  "id": "hs-0450",
+  "action": "edit",
+  "set": {
+   "question": "According to Magic Springs, about how many seasonal workers does it employ?",
+   "explanation": "A park official said in May 2026 it employs nearly 600 people for the season, many of them teens in first jobs.",
+   "confidence": "claim"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Quote 'We employ nearly 600 people for the season' is the park's own figure, not independently verified; question now attributed, flag claim."
+ },
+ {
+  "id": "hs-0452",
+  "action": "edit",
+  "set": {
+   "question": "What admission price was announced for both Magic Springs parks on 2026 \"Cooler Sundays\"?",
+   "explanation": "On Cooler Sundays guests could bring their own food, drinks and a cooler."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Article: Sundays 'will be known as' Cooler Sundays; 'cooler, for $36.99 for admission to both parks'. Announcement, so reworded."
+ },
+ {
+  "id": "hs-0053",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: quarter 'released for circulation on April 19, 2010, the first coin issued in the America the Beautiful Quarters Program'. Matches."
+ },
+ {
+  "id": "hs-0093",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: Fordyce 'adapted for use as the park visitor center and museum, reopened on May 13, 1989'. Matches."
+ },
+ {
+  "id": "hs-0134",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "AGFC: walleye 22 lbs 11 oz, Greers Ferry Lake, Al Nelson, 03/12/1982. Distractors are other records."
+ },
+ {
+  "id": "hs-0137",
+  "action": "edit",
+  "set": {
+   "wrong": [
+    "16 lb 4 oz",
+    "22 lb 11 oz",
+    "41 lb 8 oz"
+   ],
+   "explanation": "AGFC lists it as caught at Beaver Lake Tailwater on 04/28/2000."
+  },
+  "method": "fetched sourceUrl",
+  "note": "AGFC striped bass 64 lbs 8 oz, Beaver Lake Tailwater, 04/28/2000. Removed Ouachita remark; swapped 27-5 (hybrid record) distractor."
+ },
+ {
+  "id": "hs-0188",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says Hot Springs first welcomed Major League Baseball in 1886 with the Chicago White Stockings.",
+   "source": "Wikipedia: Hot Springs, Arkansas",
+   "sourceUrl": "https://en.wikipedia.org/wiki/Hot_Springs,_Arkansas",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://en.wikipedia.org/wiki/Hot_Springs,_Arkansas",
+  "note": "Flagged. EOA page states White Stockings spring training but no year in what I saw; Wikipedia states 1886. Source swapped, 'via search' dropped."
+ },
+ {
+  "id": "hs-0300",
+  "action": "edit",
+  "set": {
+   "question": "Which White Stockings club president, along with Cap Anson, is credited with bringing pre-season training to Hot Springs in 1886?",
+   "wrong": [
+    "Charles Comiskey",
+    "Ban Johnson",
+    "John McGraw"
+   ],
+   "explanation": "EOA names A. G. Spalding as White Stockings president; Wikipedia credits Spalding and Anson with introducing pre-season training in Hot Springs.",
+   "source": "Encyclopedia of Arkansas: Major League Spring Training in Hot Springs",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: Spalding 'president of the Chicago White Stockings'; 'boil out' absent. 'Chose' unsupported. Cap Anson was a distractor but is credited, so replaced."
+ },
+ {
+  "id": "hs-0256",
+  "action": "edit",
+  "set": {
+   "explanation": "A resolution making the 35-second shot clock mandatory for all schools by 2022-23 passed in 2020.",
+   "source": "Delta Plex News: AAA shot clock resolution",
+   "sourceUrl": "https://www.deltaplexnews.com/?p=102513"
+  },
+  "method": "fetched alternative: https://www.deltaplexnews.com/?p=102513",
+  "note": "KTLO 403. Delta Plex: '35-second shot clock mandatory for all schools by the 2022-2023 school year passed 183-69'. Arkansas Online confirms 35 seconds."
+ },
+ {
+  "id": "hs-0261",
+  "action": "edit",
+  "set": {
+   "explanation": "The resolution made a 35-second shot clock mandatory for all schools by the 2022-23 school year.",
+   "source": "Delta Plex News: AAA shot clock resolution",
+   "sourceUrl": "https://www.deltaplexnews.com/?p=102513"
+  },
+  "method": "fetched alternative: https://www.deltaplexnews.com/?p=102513",
+  "note": "KTLO 403. Delta Plex: resolution 'passed 183-69'. '10th state' is not on that page (Arkansas Online Aug 2 said 'would become'), so removed."
+ },
+ {
+  "id": "hs-0427",
+  "action": "edit",
+  "set": {
+   "explanation": "It is a two-week annual event held every June."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: classical music field; apprentices and mentors; two-week June event. 'More than 20 concerts' not stated; removed."
+ },
+ {
+  "id": "hs-0428",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EOA: founded 1995 by Richard and Laura Rosenberg; Richard conductor and former Pennsylvania Ballet music director. Matches."
+ },
+ {
+  "id": "hs-0028",
+  "action": "edit",
+  "set": {
+   "explanation": "It began at about 3 a.m.; the cause was never determined, and nearly 400 buildings were destroyed."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'approximately 3:00 a.m. on February 25, 1905 ... Grand Central Hotel'; cause never determined; 'nearly 400 buildings'; up to 25 dead."
+ },
+ {
+  "id": "hs-0042",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the park was built in the 1930s by the CCC; three stone-and-wood cabins are on the National Register."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: 'built in the 1930s by the Civilian Conservation Corps'; 'Three stone-and-wood cabins ...' NRHP-listed. Wording made precise."
+ },
+ {
+  "id": "hs-0108",
+  "action": "edit",
+  "set": {
+   "explanation": "Designed by architects Maurice Jennings and David McKee of Fayetteville; it officially opened in September 2006."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'wood-and-glass chapel', official opening September 2006, designed by Jennings and McKee. Thorncrown-model claim not on page; removed."
+ },
+ {
+  "id": "hs-0128",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: park 'preserves the site of the historic Three Sisters springs' (curative waters); 360 acres; opened 1955. Matches."
+ },
+ {
+  "id": "hs-0180",
+  "action": "edit",
+  "set": {
+   "question": "Which community southeast of Hot Springs sits on an igneous complex known for lodestone and other minerals?",
+   "explanation": "Its minerals include magnetite (often as lodestone), rutile and perovskite."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wikipedia: community 'southeast of Hot Springs'; igneous complex; magnetite 'often as lodestone', rutile, perovskite. Dropped 'rare'."
+ },
+ {
+  "id": "hs-0253",
+  "action": "edit",
+  "set": {
+   "question": "After which football season did Lakeside and Lake Hamilton stop playing each other, until the series resumed in 2018?",
+   "answer": "1999",
+   "wrong": [
+    "1989",
+    "2004",
+    "2009"
+   ],
+   "explanation": "The Sentinel-Record said the series was discontinued after the 1999 season amid student pranks, and resumes in 2018.",
+   "source": "Sentinel-Record: Rams, Wolves renew football series",
+   "sourceUrl": "https://www.hotsr.com/news/2017/jun/06/rams-wolves-renew-football-series-for-1/",
+   "difficulty": "medium",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.hotsr.com/news/2017/jun/06/rams-wolves-renew-football-series-for-1/",
+  "note": "THV11 403. Series resumed 2018, not 2023, so 'before 2023' was wrong; article gives no year count, so question now asks last season (1999)."
+ },
+ {
+  "id": "hs-0329",
+  "action": "edit",
+  "set": {
+   "explanation": "He began attending Park Place Baptist Church at age eight and was baptized at ten, per Christianity Today and MOOF Life.",
+   "source": "MOOF Life: Bill Clinton's Baptism at Park Place Baptist Church",
+   "sourceUrl": "https://www.mooflife.com/billclinton/moment/bill-clintons-baptism-at-park-place-baptist-church-in-arkansas",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.mooflife.com/billclinton/moment/bill-clintons-baptism-at-park-place-baptist-church-in-arkansas",
+  "note": "arkansas.com page lacks it. MOOF: 'baptized at Park Place Baptist Church in Hot Springs' (age 10); weak site, CT corroborates. Address dropped."
+ },
+ {
+  "id": "hs-0358",
+  "action": "edit",
+  "set": {
+   "question": "According to The Nibble, which legislative chamber has been served Mountain Valley water since the 1920s?",
+   "explanation": "The Nibble says the water has been served in the United States Senate since the 1920s.",
+   "confidence": "claim"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Nibble: 'served in the United States Senate since the 1920s' (unattributed narrative). 'By 1920' company claim absent from page; wording attributed, flag claim."
+ },
+ {
+  "id": "hs-0400",
+  "action": "edit",
+  "set": {
+   "explanation": "EOA says Happy Hollow began as a picture studio and was a popular Hot Springs attraction from the late 1800s until the 1940s.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EOA: 'Photographer Norman McLeod owned and operated Happy Hollow from the time of its founding'; 'began as a picture studio'. Bathtub removed."
+ },
+ {
+  "id": "hs-0429",
+  "action": "edit",
+  "set": {
+   "explanation": "AFAR says the bar is named for its original owner, Maxine Temple Jones; shows run Thursdays through Saturdays.",
+   "source": "AFAR: Where to hear music in the national parks",
+   "sourceUrl": "https://www.afar.com/magazine/where-to-hear-music-in-the-national-parks",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.afar.com/magazine/where-to-hear-music-in-the-national-parks",
+  "note": "Roadtrippers 403. AFAR: named after original owner Maxine Temple Jones; live music Thu-Sat. EOA: Jones a madam. 1991 reopening was another business; removed."
+ },
+ {
+  "id": "hs-0469",
+  "action": "edit",
+  "set": {
+   "question": "Which Hot Springs hotel was scheduled to host the 34th Documentary Film Festival in October 2025?",
+   "explanation": "A listing said the festival would run Oct. 10-18, 2025, at the Arlington, with opening and closing nights at Oaklawn.",
+   "source": "UA Little Rock Public Radio: 34th Hot Springs Documentary Film Festival",
+   "sourceUrl": "https://www.ualrpublicradio.org/community-calendar/event/34th-hot-springs-documentary-film-festival-22-08-2025-15-27-11",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.ualrpublicradio.org/community-calendar/event/34th-hot-springs-documentary-film-festival-22-08-2025-15-27-11",
+  "note": "arkansas.com events page doesn't mention it. UALR listing says it 'will take place' at the Arlington; preview only, so reworded 'scheduled'. KTHS claim removed."
+ },
+ {
+  "id": "hs-0492",
+  "action": "edit",
+  "set": {
+   "question": "Where in Hot Springs was Lucky Luciano walking when he was arrested in 1936?",
+   "answer": "Along Bathhouse Row",
+   "wrong": [
+    "At Oaklawn Park",
+    "At the Vapors",
+    "At the train depot"
+   ],
+   "explanation": "Legends of America says he was arrested while walking on federal property along Bathhouse Row.",
+   "difficulty": "medium",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Legends: single account (Bathhouse Row); Mob Museum: 'strolling near the bathhouses'. No source shows a dispute, so question replaced."
+ }
+]

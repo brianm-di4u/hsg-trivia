@@ -1,0 +1,625 @@
+[
+ {
+  "id": "hs-0196",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1894 Whittington Park opened as a replacement for the Hot Springs Baseball Grounds.'"
+ },
+ {
+  "id": "hs-0197",
+  "verdict": "ok",
+  "issue": "confirmed: infobox '260 RF; 400 CF; 340 LF'"
+ },
+ {
+  "id": "hs-0198",
+  "verdict": "fix",
+  "issue": "Q says 'every spring' but page only says 'trained for over a decade'; Wagner 'star in those years' not stated",
+  "set": {
+   "question": "Which major league team trained at Hot Springs' Whittington Park from 1901 to 1916?",
+   "explanation": "Hall of Fame shortstop Honus Wagner became a fixture in Hot Springs while the Pirates trained there."
+  }
+ },
+ {
+  "id": "hs-0204",
+  "verdict": "ok",
+  "issue": "confirmed: 'Negro league Hot Springs Arlingtons from 1896 to 1903 and the Hot Springs Blues in 1904'"
+ },
+ {
+  "id": "hs-0211",
+  "verdict": "ok",
+  "issue": "confirmed: 'last minute replacement at first base, his first time at a position other than pitcher'"
+ },
+ {
+  "id": "hs-0218",
+  "verdict": "ok",
+  "issue": "confirmed: 'McKee Park (1921-23)'; 'Whittington Park (1894-1920, 1924-1935)'"
+ },
+ {
+  "id": "hs-0219",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1936, Doan installed lights'; 'In 1938, the right field fence was heightened by 15 feet'"
+ },
+ {
+  "id": "hs-0220",
+  "verdict": "ok",
+  "issue": "confirmed: 'Sam Guinn Field was built in 1933 at 497 Crescent Avenue to host Negro leagues spring training.'"
+ },
+ {
+  "id": "hs-0222",
+  "verdict": "ok",
+  "issue": "confirmed: 'From 1933 to 1938... All-Star Baseball School'; '1938 topping at 450 attendees'"
+ },
+ {
+  "id": "hs-0223",
+  "verdict": "ok",
+  "issue": "confirmed: George Barr Umpire School (1935-1947), 'first ever umpire instructional school'"
+ },
+ {
+  "id": "hs-0224",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1939, Hornsby... started the Rogers Hornsby Baseball College'; 'housed at Majestic Field'"
+ },
+ {
+  "id": "hs-0245",
+  "verdict": "ok",
+  "issue": "confirmed: 'asphalt parking lot for the Weyerhaeuser Company. There is a home plate marker'"
+ },
+ {
+  "id": "hs-0246",
+  "verdict": "ok",
+  "issue": "confirmed: 'cement bleachers... fan section called the Wolves Den'; Baseball Trail Park, 1201 Whittington Ave, city park system"
+ },
+ {
+  "id": "hs-0267",
+  "verdict": "ok",
+  "issue": "confirmed: 'Over 130 ... Hall of Fame players, including Babe Ruth, Cy Young... Ty Cobb... Walter Johnson... Satchel Paige'"
+ },
+ {
+  "id": "hs-0314",
+  "verdict": "ok",
+  "issue": "confirmed: 'Babe Didrickson, who attended in 1934'; instructors list includes Hornsby and Bob Feller"
+ },
+ {
+  "id": "hs-0336",
+  "verdict": "ok",
+  "issue": "confirmed: 'Bill Jenkinson... helped to authenticate the 573-foot home run'; 'No one can confirm it with complete certainty'"
+ },
+ {
+  "id": "hs-0456",
+  "verdict": "ok",
+  "issue": "confirmed: narrated by Billy Bob Thornton; 'Produced by Larry Foley'; MLB Network from Feb 2016"
+ },
+ {
+  "id": "hs-0481",
+  "verdict": "ok",
+  "issue": "confirmed: first HR 'landed in a wood pile'; 'two long home runs that day'; alligator farm HR on St Patrick's Day"
+ },
+ {
+  "id": "hs-0002",
+  "verdict": "ok",
+  "issue": "confirmed: 'predating Yellowstone National Park by forty years'"
+ },
+ {
+  "id": "hs-0013",
+  "verdict": "ok",
+  "issue": "confirmed: 'Dunbar-Hunter Expedition came here in 1804, sent by President Thomas Jefferson'"
+ },
+ {
+  "id": "hs-0032",
+  "verdict": "ok",
+  "issue": "confirmed: 'destroying most of the south and central downtown area'; great fire of 1878"
+ },
+ {
+  "id": "hs-0033",
+  "verdict": "ok",
+  "issue": "confirmed: 'eighteenth national park on March 4, 1921'; NPS established Aug 25, 1916"
+ },
+ {
+  "id": "hs-0034",
+  "verdict": "ok",
+  "issue": "confirmed: 'eighteenth national park on March 4, 1921'"
+ },
+ {
+  "id": "hs-0056",
+  "verdict": "ok",
+  "issue": "confirmed: '92 sites and counting'"
+ },
+ {
+  "id": "hs-0077",
+  "verdict": "ok",
+  "issue": "confirmed: Lamar opened 1923, 'final metamorphosis of Bathhouse Row'; closed 1985"
+ },
+ {
+  "id": "hs-0089",
+  "verdict": "ok",
+  "issue": "confirmed: 'Fordyce Bathhouse was the first to close, in 1962'; adapted as visitor center and museum"
+ },
+ {
+  "id": "hs-0100",
+  "verdict": "ok",
+  "issue": "confirmed: National Register 'November 13, 1974'"
+ },
+ {
+  "id": "hs-0119",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1882-83 the government enclosed Hot Springs creek in an underground arch'"
+ },
+ {
+  "id": "hs-0482",
+  "verdict": "ok",
+  "issue": "confirmed: 'provided free bathing facilities to health seekers who could not afford the cost of the pay bathhouses'; new bathhouse on Reserve and Spring 1922"
+ },
+ {
+  "id": "hs-0512",
+  "verdict": "ok",
+  "issue": "confirmed: became known as the 'Great American Spa'"
+ },
+ {
+  "id": "hs-0007",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1828, Ludovicus Belding, his wife, and children came from Massachusetts... built a small hotel'"
+ },
+ {
+  "id": "hs-0008",
+  "verdict": "ok",
+  "issue": "confirmed: 'On August 24, 1818, the Quapaw ceded the land'"
+ },
+ {
+  "id": "hs-0009",
+  "verdict": "ok",
+  "issue": "confirmed: 'From May 6 to July 14, 1862, Hot Springs was the state capital'"
+ },
+ {
+  "id": "hs-0011",
+  "verdict": "ok",
+  "issue": "confirmed: 'created on April 5, 1873, from parts of Hot Spring, Montgomery, and Saline counties'"
+ },
+ {
+  "id": "hs-0282",
+  "verdict": "ok",
+  "issue": "confirmed: Prudhomme 'built the first real settlement... lived there for two years'; trappers Cates and Percival joined him"
+ },
+ {
+  "id": "hs-0283",
+  "verdict": "ok",
+  "issue": "confirmed: Percival 'built log cabins to rent to the growing number of visitors'"
+ },
+ {
+  "id": "hs-0284",
+  "verdict": "ok",
+  "issue": "confirmed: Gov. Henry Massie Rector moved to Hot Springs; capital May 6-July 14, 1862"
+ },
+ {
+  "id": "hs-0285",
+  "verdict": "ok",
+  "issue": "confirmed: named for Garland, 'governor in 1874, U.S. senator 1876-1885, U.S. attorney general in 1885'"
+ },
+ {
+  "id": "hs-0471",
+  "verdict": "ok",
+  "issue": "confirmed: Spanish explorers 1541; 'no absolute proof exists' de Soto visited"
+ },
+ {
+  "id": "hs-0019",
+  "verdict": "ok",
+  "issue": "confirmed: 'act of Congress of December 16, 1878'"
+ },
+ {
+  "id": "hs-0020",
+  "verdict": "ok",
+  "issue": "confirmed: 87,040 baths in 1919; oath of inability to pay; false oath fine to $25 or 30 days or both"
+ },
+ {
+  "id": "hs-0021",
+  "verdict": "ok",
+  "issue": "confirmed: rates table $0.50 to $0.80 per bath; fixed by Secretary of the Interior"
+ },
+ {
+  "id": "hs-0022",
+  "verdict": "ok",
+  "issue": "confirmed: course of 21 baths, $9.00 to $15.00"
+ },
+ {
+  "id": "hs-0023",
+  "verdict": "ok",
+  "issue": "confirmed: attendants 'not to exceed 20 cents for a single bath, or $4 per course of 21 baths'"
+ },
+ {
+  "id": "hs-0116",
+  "verdict": "ok",
+  "issue": "confirmed: Boltwood of Yale authorized to report on radioactivity; 'dissolved radium emanation (a gas)'"
+ },
+ {
+  "id": "hs-0319",
+  "verdict": "ok",
+  "issue": "confirmed: 'founding director was Campbell Arnoux, whose tenure lasted until 1934'"
+ },
+ {
+  "id": "hs-0402",
+  "verdict": "ok",
+  "issue": "confirmed: call letters stood for 'Kome (come) To Hot Springs'"
+ },
+ {
+  "id": "hs-0403",
+  "verdict": "ok",
+  "issue": "confirmed: 'Test broadcasts began on December 11, 1924'"
+ },
+ {
+  "id": "hs-0404",
+  "verdict": "ok",
+  "issue": "confirmed: 'built in 1924 on the upper floor of the new Arlington Hotel'"
+ },
+ {
+  "id": "hs-0406",
+  "verdict": "ok",
+  "issue": "confirmed: 'mainly live big band music from the ballrooms'"
+ },
+ {
+  "id": "hs-0407",
+  "verdict": "ok",
+  "issue": "confirmed: 'In August 1928, the Arlington Hotel presented KTHS to the Hot Springs Chamber of Commerce'"
+ },
+ {
+  "id": "hs-0163",
+  "verdict": "fix",
+  "issue": "Page does not say 'brick' or 'behind Bathhouse Row'; gives 0.5 mi, National Recreation Trail",
+  "set": {
+   "question": "How long is the Grand Promenade, the National Recreation Trail in Hot Springs National Park?"
+  }
+ },
+ {
+  "id": "hs-0164",
+  "verdict": "ok",
+  "issue": "confirmed: Oertel Trail (formerly Dead Chief Trail) 1.4 mi, 670-863 ft"
+ },
+ {
+  "id": "hs-0165",
+  "verdict": "ok",
+  "issue": "confirmed: Short Cut Trail 21.1% grade, 0.2 mi; next steepest Gulpha Gorge 13.8%, Peak 12.6%"
+ },
+ {
+  "id": "hs-0166",
+  "verdict": "fix",
+  "issue": "Distractor 'White' risky: page says map shows white but trail is 'blazed pink'",
+  "set": {
+   "wrong": [
+    "Orange",
+    "Blue",
+    "Yellow"
+   ]
+  }
+ },
+ {
+  "id": "hs-0167",
+  "verdict": "ok",
+  "issue": "confirmed: Goat Rock overlook on North Mountain; Goat Rock Trail 886-1,067 ft"
+ },
+ {
+  "id": "hs-0225",
+  "verdict": "ok",
+  "issue": "confirmed: 'founded in 1928'; infobox 1,114 (2023-2024)"
+ },
+ {
+  "id": "hs-0226",
+  "verdict": "ok",
+  "issue": "confirmed: 'won two state basketball championships (1945, 2000)'"
+ },
+ {
+  "id": "hs-0258",
+  "verdict": "fix",
+  "issue": "Page lists 'Landon Trusty (2000)' with no 'class of'",
+  "set": {
+   "question": "Which Lakeside High alumnus played in the NFL for the Cowboys, Chargers and Broncos?"
+  }
+ },
+ {
+  "id": "hs-0272",
+  "verdict": "ok",
+  "issue": "confirmed: 'The Lakeside team mascot is the Rams'; rivals Hot Springs Trojans, Lake Hamilton Wolves"
+ },
+ {
+  "id": "hs-0273",
+  "verdict": "ok",
+  "issue": "confirmed: infobox colors 'Blue and gold'"
+ },
+ {
+  "id": "hs-0347",
+  "verdict": "ok",
+  "issue": "confirmed: known locally as 'Lockett's Spring Water'; 1871 pharmacist Peter E. Greene and brother John"
+ },
+ {
+  "id": "hs-0348",
+  "verdict": "ok",
+  "issue": "confirmed: Mountain Valley, first sold 1871 by Greene brothers"
+ },
+ {
+  "id": "hs-0349",
+  "verdict": "ok",
+  "issue": "confirmed: 'pharmacist Peter E. Greene'; 'renamed the water Mountain Valley after a small community nearby'"
+ },
+ {
+  "id": "hs-0350",
+  "verdict": "ok",
+  "issue": "confirmed: 'W. N. Benton, an insurance agent formerly of St. Louis' bought business 1879"
+ },
+ {
+  "id": "hs-0483",
+  "verdict": "ok",
+  "issue": "confirmed: Campbell 'brought the reptiles back from the Everglades in Florida'; raised for hides, sold live to zoos"
+ },
+ {
+  "id": "hs-0484",
+  "verdict": "ok",
+  "issue": "confirmed: museum featured a 'Merman,' allegedly a mummified aquatic creature"
+ },
+ {
+  "id": "hs-0493",
+  "verdict": "ok",
+  "issue": "confirmed: by 1929 sold to Danny Older, 'Hot Springs Gator Farm'; Bridges Sr. 1947, 'Arkansas Alligator Farm'"
+ },
+ {
+  "id": "hs-0506",
+  "verdict": "ok",
+  "issue": "confirmed: 'the oldest still-operating attraction in Hot Springs'; founded 1902 by H. L. Campbell"
+ },
+ {
+  "id": "hs-0073",
+  "verdict": "ok",
+  "issue": "confirmed: 'founded by John Coffee Williams and his nephew, Sam Watt, in 1905'; Ohio Cigar Store front with fake wall"
+ },
+ {
+  "id": "hs-0294",
+  "verdict": "ok",
+  "issue": "confirmed: founded by Williams and nephew Sam Watt in 1905"
+ },
+ {
+  "id": "hs-0477",
+  "verdict": "ok",
+  "issue": "confirmed: 'is considered Arkansas's oldest continually operating bar'"
+ },
+ {
+  "id": "hs-0130",
+  "verdict": "ok",
+  "issue": "confirmed: 'a reservoir on the Caddo River'; dam ~8 mi above confluence with Ouachita"
+ },
+ {
+  "id": "hs-0131",
+  "verdict": "ok",
+  "issue": "confirmed: 'first pump back capable impoundment in the history of the Corps of Engineers'"
+ },
+ {
+  "id": "hs-0132",
+  "verdict": "ok",
+  "issue": "confirmed: infobox max depth 200 ft, average 47 ft"
+ },
+ {
+  "id": "hs-0208",
+  "verdict": "ok",
+  "issue": "confirmed: 'On March 28, 1887, Cap Anson hit three home runs here.'; 1886 Spalding and Anson brought White Stockings"
+ },
+ {
+  "id": "hs-0299",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1886, baseball legends A. G. Spalding and Cap Anson brought the Chicago White Stockings'"
+ },
+ {
+  "id": "hs-0302",
+  "verdict": "ok",
+  "issue": "confirmed: team 'joined by fellow Hall of Famers Mike Kelly and John Clarkson, as well as future evangelist Billy Sunday'"
+ },
+ {
+  "id": "hs-0323",
+  "verdict": "ok",
+  "issue": "confirmed: autobiography 'Maxine Call Me Madam: The Life and Times of a Hot Springs Madam', under Maxine Jones, 1983"
+ },
+ {
+  "id": "hs-0332",
+  "verdict": "ok",
+  "issue": "confirmed: 'during the period from 1945 to the early 1970s'; clients politicians, businessmen, mobsters"
+ },
+ {
+  "id": "hs-0359",
+  "verdict": "ok",
+  "issue": "confirmed: Central Avenue Hotel 'renovated in 1989 and reopened in 1991 as Maxine's Coffee House and Puzzle Bar'"
+ },
+ {
+  "id": "hs-0360",
+  "verdict": "ok",
+  "issue": "confirmed: Whisenhunt: new restaurant 'The Chicken Coop'; 'won't have any new rides or attractions this season' (May 2026)"
+ },
+ {
+  "id": "hs-0450",
+  "verdict": "ok",
+  "issue": "confirmed: 'We employ nearly 600 people for the season'; teens' first-time jobs"
+ },
+ {
+  "id": "hs-0452",
+  "verdict": "ok",
+  "issue": "confirmed: Cooler Sundays '$36.99 for admission to both parks', bring own food/beverages/cooler"
+ },
+ {
+  "id": "hs-0426",
+  "verdict": "ok",
+  "issue": "confirmed: 1991 Sy Gomberg, 'then head of the documentary branch of the Academy'"
+ },
+ {
+  "id": "hs-0457",
+  "verdict": "ok",
+  "issue": "confirmed: 'In early 2016... archives were moved to the University of Arkansas in Fayetteville'"
+ },
+ {
+  "id": "hs-0500",
+  "verdict": "ok",
+  "issue": "confirmed: 'Billing itself as the longest-running documentary film festival in North America'; qualifying event for Best Documentary Short Subject"
+ },
+ {
+  "id": "hs-0049",
+  "verdict": "ok",
+  "issue": "confirmed: casino revival under Faubus (1955-1967) 'was ended in 1967 by' Gov. Winthrop Rockefeller"
+ },
+ {
+  "id": "hs-0317",
+  "verdict": "ok",
+  "issue": "confirmed: prosecuting attorney, 18th Judicial District (Garland and Montgomery) starting 1947; won 1948 governor race"
+ },
+ {
+  "id": "hs-0071",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1906 a new steel tower opened'; 'Rix Tower included an elevator'"
+ },
+ {
+  "id": "hs-0292",
+  "verdict": "fix",
+  "issue": "Page: Woolman built 'a wooden observation tower' in 1877; 'first' and 'to make way for' not stated",
+  "set": {
+   "question": "Who built a wooden observation tower on Hot Springs Mountain in 1877?",
+   "explanation": "In 1906 the old Woolman Observatory was removed and a new steel tower opened on the mountain."
+  }
+ },
+ {
+  "id": "hs-0168",
+  "verdict": "ok",
+  "issue": "confirmed: 'Unlike many ranges in the United States, the Ouachitas are mostly east-west trending.'"
+ },
+ {
+  "id": "hs-0170",
+  "verdict": "ok",
+  "issue": "confirmed: maple-leaf oak 'found at only four sites worldwide, all of which are in the Ouachitas'"
+ },
+ {
+  "id": "hs-0256",
+  "verdict": "ok",
+  "issue": "confirmed: resolution '35-second shot clock mandatory for all schools by the 2022-2023 school year passed 183-69' (Aug 2020)"
+ },
+ {
+  "id": "hs-0261",
+  "verdict": "ok",
+  "issue": "confirmed: 'passed 183-69'; article dated Aug 3, 2020"
+ },
+ {
+  "id": "hs-0427",
+  "verdict": "ok",
+  "issue": "confirmed: festival of apprentices and mentors in 'the classical music field'; two-week annual event every June"
+ },
+ {
+  "id": "hs-0428",
+  "verdict": "ok",
+  "issue": "confirmed: founded 1995 by Richard and Laura Rosenberg; Richard was 'music director of the Pennsylvania Ballet'"
+ },
+ {
+  "id": "hs-0472",
+  "verdict": "ok",
+  "issue": "confirmed: Indians 'quarried novaculite from bedrock deposits in the hills around Hot Springs'"
+ },
+ {
+  "id": "hs-0473",
+  "verdict": "ok",
+  "issue": "confirmed: county 'is home to the nation's first federal reservation'"
+ },
+ {
+  "id": "hs-0042",
+  "verdict": "ok",
+  "issue": "confirmed: 'built in the 1930s by the Civilian Conservation Corps'; three cabins on the Register"
+ },
+ {
+  "id": "hs-0048",
+  "verdict": "ok",
+  "issue": "confirmed: purchased 1950 by 'National Baptist Association, U.S.A'; 'In 1981, it closed'"
+ },
+ {
+  "id": "hs-0095",
+  "verdict": "ok",
+  "issue": "confirmed: Cooper Sr.; 'officially opened on June 1, 1970'; 20,000 acres from Dierks Forests; gated community"
+ },
+ {
+  "id": "hs-0101",
+  "verdict": "ok",
+  "issue": "confirmed: Hale Bathhouse is now the Hotel Hale, nine suites with soaking tubs piped with hot springs mineral water"
+ },
+ {
+  "id": "hs-0133",
+  "verdict": "ok",
+  "issue": "confirmed: 'At 944 acres, Lake Balboa is the largest lake in Hot Springs Village.'"
+ },
+ {
+  "id": "hs-0138",
+  "verdict": "ok",
+  "issue": "confirmed: 'striped bass do not reproduce naturally in the wild' except Arkansas River; stocked in Beaver, Hamilton, Norfork, Ouachita; 'each year'"
+ },
+ {
+  "id": "hs-0173",
+  "verdict": "fix",
+  "issue": "Page: stocked 'seasonally', Nov through April; 'each winter' not stated",
+  "set": {
+   "question": "Which fish does the AGFC stock from November through April in the Ouachita River tailwaters below Carpenter Dam?",
+   "explanation": "The AGFC stocks catchable rainbow trout there to take advantage of cooler water temperatures."
+  }
+ },
+ {
+  "id": "hs-0174",
+  "verdict": "ok",
+  "issue": "confirmed: Hulsey hatchery 'on the south side of Lake Hamilton', water source Lake Hamilton"
+ },
+ {
+  "id": "hs-0257",
+  "verdict": "fix",
+  "issue": "Page shows Thu/Fri results but Sat games only scheduled; 'finals ran' overstated",
+  "set": {
+   "explanation": "KAIT listed the 2026 finals weekend at Bank OZK Arena in Hot Springs, with games on March 12, 13 and 14."
+  }
+ },
+ {
+  "id": "hs-0264",
+  "verdict": "ok",
+  "issue": "confirmed: Arkansas Derby 'has produced eight Kentucky Derby winners including Sunny's Halo (1983)'; Mystik Dan (2024) listed"
+ },
+ {
+  "id": "hs-0324",
+  "verdict": "ok",
+  "issue": "confirmed: 'began to develop the site in 1956'; left to Univ of Arkansas 'upon her death in 1993'"
+ },
+ {
+  "id": "hs-0327",
+  "verdict": "ok",
+  "issue": "confirmed: from 'Hope (Hempstead County), where he was born, to Hot Springs in 1953'"
+ },
+ {
+  "id": "hs-0379",
+  "verdict": "ok",
+  "issue": "confirmed: '20th Running since the races began in 2006'; push tubs 'the length of World Famous Bathhouse Row'"
+ },
+ {
+  "id": "hs-0381",
+  "verdict": "ok",
+  "issue": "confirmed: Battle of the Badges; Fire, Police, corrections team tubs; 'run without stops'; same Saturday"
+ },
+ {
+  "id": "hs-0429",
+  "verdict": "fix",
+  "issue": "Page does not call Maxine 'famous'; says named for original owner Maxine Temple Jones",
+  "set": {
+   "question": "Which Hot Springs live-music venue is named for its original owner, a former madam?"
+  }
+ },
+ {
+  "id": "hs-0430",
+  "verdict": "fix",
+  "issue": "EoA says museum operating 'since 2008' at 510 Central Ave; NBC/April 20 'scheduled' not on page",
+  "set": {
+   "question": "In what year did the Gangster Museum of America open on Central Avenue?",
+   "explanation": "The Encyclopedia of Arkansas says the museum has operated since 2008 at 510 Central Avenue in downtown Hot Springs."
+  }
+ },
+ {
+  "id": "hs-0485",
+  "verdict": "fix",
+  "issue": "Page: Mutuals 'perhaps the first' spring training away from home; 1869 not verified",
+  "set": {
+   "explanation": "Wikipedia says Hot Springs 'has been called' the birthplace, but the New York Mutuals went to New Orleans, perhaps the first team to train away from home."
+  }
+ },
+ {
+  "id": "hs-0490",
+  "verdict": "ok",
+  "issue": "confirmed: 'Bridge Street became famous in the 1940s when Ripley's Believe It Or Not designated it the shortest street in the world'"
+ }
+]

@@ -1,0 +1,632 @@
+[
+ {
+  "id": "hs-0050",
+  "verdict": "ok",
+  "issue": "confirmed: 'By 1979 only 96,000 baths'; 649,270 in 1946"
+ },
+ {
+  "id": "hs-0064",
+  "verdict": "ok",
+  "issue": "confirmed: cost $212,749.55 incl. fixtures and furniture; built 1914-15"
+ },
+ {
+  "id": "hs-0065",
+  "verdict": "ok",
+  "issue": "confirmed: DeSoto fountain centered below massive skylight"
+ },
+ {
+  "id": "hs-0066",
+  "verdict": "ok",
+  "issue": "confirmed: Green tile medallions; concrete painted imitating tiles"
+ },
+ {
+  "id": "hs-0067",
+  "verdict": "ok",
+  "issue": "confirmed: inglenook fireplace, flanking benches, mascarons"
+ },
+ {
+  "id": "hs-0068",
+  "verdict": "ok",
+  "issue": "confirmed: built 1922 on sites of Horseshoe and Magnesia"
+ },
+ {
+  "id": "hs-0069",
+  "verdict": "ok",
+  "issue": "confirmed: cream brick, white stucco, brass 'Buckstaff Baths'"
+ },
+ {
+  "id": "hs-0070",
+  "verdict": "ok",
+  "issue": "confirmed: two bronze federal eagles; Army engineer Lt. Robert Stevens; 1890s entrance"
+ },
+ {
+  "id": "hs-0075",
+  "verdict": "fix",
+  "issue": "Only Fordyce has spring 46 in glazed-tile room; Hale has 'a display spring', Quapaw 'a tufa chamber housing the Quapaw spring'.",
+  "set": {
+   "explanation": "Its basement has a glazed-tile room with an arched ceiling over the natural hot spring; the Hale and Quapaw basements also show springs."
+  }
+ },
+ {
+  "id": "hs-0080",
+  "verdict": "ok",
+  "issue": "confirmed: facade changed to Mission Style 1939-40 by Thompson, Sanders, Ginocchio"
+ },
+ {
+  "id": "hs-0081",
+  "verdict": "ok",
+  "issue": "confirmed: 1931 pool to treat paralysis; only one with registered physical therapist"
+ },
+ {
+  "id": "hs-0082",
+  "verdict": "ok",
+  "issue": "confirmed: Quapaw 'large central dome ... capped with small copper cupola'"
+ },
+ {
+  "id": "hs-0083",
+  "verdict": "fix",
+  "issue": "'Named for an owner' not on page; page: originally Platt Bathhouse, owners promoted tufa cavity as an Indian cave.",
+  "set": {
+   "explanation": "After a tufa cavity turned up during excavation, the owners promoted it as an Indian cave and chose the name Quapaw instead of Platt."
+  }
+ },
+ {
+  "id": "hs-0084",
+  "verdict": "ok",
+  "issue": "confirmed: sculpins originally gold, now white; scalloped shells"
+ },
+ {
+  "id": "hs-0085",
+  "verdict": "ok",
+  "issue": "confirmed: Ozark twin towers three-tiered setbacks, vague Art Deco"
+ },
+ {
+  "id": "hs-0086",
+  "verdict": "ok",
+  "issue": "confirmed: promenade began 1930s, completed early 1960s"
+ },
+ {
+  "id": "hs-0087",
+  "verdict": "ok",
+  "issue": "confirmed: Admin Building 1936, Spanish Colonial Revival, administrative core"
+ },
+ {
+  "id": "hs-0091",
+  "verdict": "ok",
+  "issue": "confirmed: Noble fountain moved 1957; Maurice Spring 1903; Admin 1936"
+ },
+ {
+  "id": "hs-0092",
+  "verdict": "ok",
+  "issue": "confirmed: new jug fountain installed 1966"
+ },
+ {
+  "id": "hs-0096",
+  "verdict": "ok",
+  "issue": "confirmed: closed June 29, 1962; visitor center since 1989"
+ },
+ {
+  "id": "hs-0097",
+  "verdict": "fix",
+  "issue": "'After 1985 only Buckstaff operated' misleading: Quapaw reopened 2008; page: Lamar closure left Buckstaff as only one operating.",
+  "set": {
+   "explanation": "The Lamar's baths ended in November 1985, leaving the Buckstaff as the only bathhouse still operating on the Row until the Quapaw reopened in 2008."
+  }
+ },
+ {
+  "id": "hs-0098",
+  "verdict": "ok",
+  "issue": "confirmed: NHL May 28, 1987; NRHP Nov 13, 1974"
+ },
+ {
+  "id": "hs-0103",
+  "verdict": "ok",
+  "issue": "confirmed: reopened as Quapaw Baths & Spa July 2008; NPS restored 2004"
+ },
+ {
+  "id": "hs-0104",
+  "verdict": "ok",
+  "issue": "confirmed: Ozark reopened 2014 as Hot Springs NP Cultural Center; artist in residence"
+ },
+ {
+  "id": "hs-0105",
+  "verdict": "ok",
+  "issue": "confirmed: Lamar has Bathhouse Row Emporium; interim visitor center"
+ },
+ {
+  "id": "hs-0109",
+  "verdict": "ok",
+  "issue": "confirmed: eight bathhouses listed"
+ },
+ {
+  "id": "hs-0289",
+  "verdict": "fix",
+  "issue": "Page credits Mann & Stern with Fordyce, Hale reno, Maurice remodel, Ozark; 1924 Arlington is on Arlington page, not this one.",
+  "set": {
+   "explanation": "George Mann and Eugene John Stern of Little Rock designed the Fordyce and Ozark, the 1914 Hale renovation and the 1915 Maurice remodel."
+  }
+ },
+ {
+  "id": "hs-0290",
+  "verdict": "ok",
+  "issue": "confirmed: Schwebke of Hot Springs; completed 1916; northernmost"
+ },
+ {
+  "id": "hs-0291",
+  "verdict": "ok",
+  "issue": "confirmed: George Gleim Jr. of Chicago; 1911-12; Mann & Stern 1915"
+ },
+ {
+  "id": "hs-0478",
+  "verdict": "ok",
+  "issue": "confirmed: 'electric cave' closed in 1911"
+ },
+ {
+  "id": "hs-0210",
+  "verdict": "ok",
+  "issue": "confirmed: Established 1887; moved to Emory Street 1968"
+ },
+ {
+  "id": "hs-0238",
+  "verdict": "ok",
+  "issue": "confirmed: girls titles 1990, 1997, 1998, 2015, 2018; boys 1998"
+ },
+ {
+  "id": "hs-0259",
+  "verdict": "ok",
+  "issue": "confirmed: 'Shameka Christon (2000) - WNBA's Chicago Sky'"
+ },
+ {
+  "id": "hs-0260",
+  "verdict": "ok",
+  "issue": "confirmed: Hicks (2000) 2016 Olympian, 2002 Gold Medalist World Junior Championships; 2x NCAA indoor 60m hurdles"
+ },
+ {
+  "id": "hs-0277",
+  "verdict": "ok",
+  "issue": "confirmed: Hot Springs World Class High School; magnet; IB since 2004"
+ },
+ {
+  "id": "hs-0278",
+  "verdict": "ok",
+  "issue": "confirmed: black and gold; Trojan"
+ },
+ {
+  "id": "hs-0322",
+  "verdict": "ok",
+  "issue": "confirmed: 'Bill Clinton graduated in 1964'"
+ },
+ {
+  "id": "hs-0326",
+  "verdict": "ok",
+  "issue": "confirmed: Clinton graduated 1964"
+ },
+ {
+  "id": "hs-0212",
+  "verdict": "ok",
+  "issue": "confirmed: city declared holiday; more than 3,000 attended"
+ },
+ {
+  "id": "hs-0213",
+  "verdict": "ok",
+  "issue": "confirmed: 'In 1907, political problems forced the closure'; reopened 1916"
+ },
+ {
+  "id": "hs-0234",
+  "verdict": "ok",
+  "issue": "confirmed: Racing Festival of the South created 1974"
+ },
+ {
+  "id": "hs-0235",
+  "verdict": "ok",
+  "issue": "confirmed: 1983 handle $168,740,923; attendance 1,303,223"
+ },
+ {
+  "id": "hs-0265",
+  "verdict": "ok",
+  "issue": "confirmed: dirt track one mile; chute for 6 furlongs"
+ },
+ {
+  "id": "hs-0296",
+  "verdict": "ok",
+  "issue": "confirmed: Zachary Taylor Davis 1904 clubhouse; later Comiskey and Wrigley"
+ },
+ {
+  "id": "hs-0454",
+  "verdict": "ok",
+  "issue": "confirmed: Amendment 100, approved 2018, full casino April 1, 2019"
+ },
+ {
+  "id": "hs-0418",
+  "verdict": "ok",
+  "issue": "confirmed: Roaring Tiger, Circus World, Haines City FL; Florida Hurricane 1987"
+ },
+ {
+  "id": "hs-0419",
+  "verdict": "ok",
+  "issue": "confirmed: 'purchased the Florida Hurricane for $10,000 in 1991'; ~$900,000 relocating"
+ },
+ {
+  "id": "hs-0420",
+  "verdict": "ok",
+  "issue": "confirmed: 95-foot lift hill; drops 92 ft at 45 degrees"
+ },
+ {
+  "id": "hs-0421",
+  "verdict": "ok",
+  "issue": "confirmed: Wood - Out and back"
+ },
+ {
+  "id": "hs-0442",
+  "verdict": "ok",
+  "issue": "confirmed: '2025 season marks official retirement'; remains standing but not operating"
+ },
+ {
+  "id": "hs-0496",
+  "verdict": "ok",
+  "issue": "confirmed: MJ visited frequently in 1980s; opened May 30, 1992"
+ },
+ {
+  "id": "hs-0039",
+  "verdict": "ok",
+  "issue": "confirmed: burned April 5, 1923; one fireman; $1.6 million"
+ },
+ {
+  "id": "hs-0111",
+  "verdict": "ok",
+  "issue": "confirmed: 239 Central Avenue; 'Y' at Central Ave and Fountain St"
+ },
+ {
+  "id": "hs-0112",
+  "verdict": "ok",
+  "issue": "confirmed: 1875, 1892-93, 1924"
+ },
+ {
+  "id": "hs-0293",
+  "verdict": "fix",
+  "issue": "Explanation says Fordyce later built the Fordyce Bathhouse; Arlington page doesn't state it.",
+  "set": {
+   "explanation": "Samuel W. Fordyce and two other entrepreneurs financed the first luxury hotel in the area, the first Arlington, which opened in 1875."
+  }
+ },
+ {
+  "id": "hs-0310",
+  "verdict": "fix",
+  "issue": "Page: 'favorite vacation spot for Al Capone, who rented out an entire floor'; says spot, not 'guest'.",
+  "set": {
+   "explanation": "In the 1930s the Arlington was a favorite vacation spot for Al Capone, who rented out an entire floor for his staff and bodyguards."
+  }
+ },
+ {
+  "id": "hs-0026",
+  "verdict": "ok",
+  "issue": "confirmed: Ulma Madlock ironing, iron ignited curtain"
+ },
+ {
+  "id": "hs-0027",
+  "verdict": "ok",
+  "issue": "confirmed: hoses from Little Rock did not fit hydrants; arrived ~8 p.m."
+ },
+ {
+  "id": "hs-0029",
+  "verdict": "ok",
+  "issue": "confirmed: more than 2,500 homeless; $10 million"
+ },
+ {
+  "id": "hs-0030",
+  "verdict": "ok",
+  "issue": "confirmed: wooden-shingled roofs outlawed; fire dept doubled"
+ },
+ {
+  "id": "hs-0155",
+  "verdict": "ok",
+  "issue": "confirmed: bicarbonate 130.0, silica 53.0, calcium 47.0 ppm"
+ },
+ {
+  "id": "hs-0157",
+  "verdict": "fix",
+  "issue": "Page: drinking water from hot-water jug fountains; cold springs Happy Hollow/Whittington ozone-treated; jug-fountain link not stated.",
+  "set": {
+   "question": "Which two cold water springs in Hot Springs National Park are treated using ozone filtration?",
+   "explanation": "Wikipedia says drinking water comes from several hot water jug fountains; the two cold water springs, Happy Hollow and Whittington, are treated using ozone filtration."
+  }
+ },
+ {
+  "id": "hs-0158",
+  "verdict": "ok",
+  "issue": "confirmed: radioactivity primarily due to dissolved radon gas, with some radium"
+ },
+ {
+  "id": "hs-0181",
+  "verdict": "ok",
+  "issue": "confirmed: bison, elk, cougar, Gregory's wolf left after European settlement"
+ },
+ {
+  "id": "hs-0370",
+  "verdict": "ok",
+  "issue": "confirmed: Arrison: 2003 downtown restaurant, 'why don't we have a parade?'; first parade next year"
+ },
+ {
+  "id": "hs-0373",
+  "verdict": "ok",
+  "issue": "confirmed: AP: Bertinelli grand marshal, Flav official starter (Mar 17, 2025)"
+ },
+ {
+  "id": "hs-0377",
+  "verdict": "ok",
+  "issue": "confirmed: 'more than 30,000 people watch each year'; first parade ~1,500"
+ },
+ {
+  "id": "hs-0509",
+  "verdict": "fix",
+  "issue": "KY3/AP never says 'world's shortest street'; EOA: Ripley's listed Bridge St as 'world's shortest street in everyday use', 98 ft.",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas says Ripley's Believe It or Not! recognized Bridge Street as the world's shortest street in everyday use; it is ninety-eight feet long.",
+   "source": "Encyclopedia of Arkansas: World's Shortest St. Patrick's Day Parade",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/"
+  }
+ },
+ {
+  "id": "hs-0057",
+  "verdict": "ok",
+  "issue": "confirmed: life-sized statue of de Soto; most historians discredit legend"
+ },
+ {
+  "id": "hs-0078",
+  "verdict": "ok",
+  "issue": "confirmed: Indian artifacts found excavating basement"
+ },
+ {
+  "id": "hs-0079",
+  "verdict": "ok",
+  "issue": "confirmed: FDR's care at Warm Springs, Georgia; treat paralysis"
+ },
+ {
+  "id": "hs-0118",
+  "verdict": "ok",
+  "issue": "confirmed: Arkansas National Forest, renamed April 29, 1926"
+ },
+ {
+  "id": "hs-0171",
+  "verdict": "ok",
+  "issue": "confirmed: HQ Hot Springs; 1,784,457 acres"
+ },
+ {
+  "id": "hs-0172",
+  "verdict": "ok",
+  "issue": "confirmed: traverses 223 miles"
+ },
+ {
+  "id": "hs-0187",
+  "verdict": "ok",
+  "issue": "confirmed: Cellas 'both of St. Louis, Missouri'"
+ },
+ {
+  "id": "hs-0243",
+  "verdict": "ok",
+  "issue": "confirmed: 2005 Eclipse Award of Merit; first racetrack to receive an Eclipse Award"
+ },
+ {
+  "id": "hs-0297",
+  "verdict": "ok",
+  "issue": "confirmed: 1910 fair attended by former president Theodore Roosevelt; infield 1906-1914"
+ },
+ {
+  "id": "hs-0237",
+  "verdict": "ok",
+  "issue": "confirmed: Hot Springs champion 1934, 1970, 1972 only"
+ },
+ {
+  "id": "hs-0239",
+  "verdict": "ok",
+  "issue": "confirmed: Mountain Pine Class A 1978 and 1979"
+ },
+ {
+  "id": "hs-0254",
+  "verdict": "ok",
+  "issue": "confirmed: Jessieville 2006 Class 2A"
+ },
+ {
+  "id": "hs-0351",
+  "verdict": "fix",
+  "issue": "Page says 'smallest of all the bathhouses', not 'Bathhouse Row bathhouses'.",
+  "set": {
+   "explanation": "Arkansas.com also calls it the smallest of all the bathhouses."
+  }
+ },
+ {
+  "id": "hs-0363",
+  "verdict": "ok",
+  "issue": "confirmed: 'only brewery in the world to brew with 100% natural thermal spring water'"
+ },
+ {
+  "id": "hs-0499",
+  "verdict": "ok",
+  "issue": "confirmed: 'only brewery in a US National Park'"
+ },
+ {
+  "id": "hs-0369",
+  "verdict": "ok",
+  "issue": "confirmed: March 17, 2004; idea from 2003 gathering"
+ },
+ {
+  "id": "hs-0371",
+  "verdict": "ok",
+  "issue": "confirmed: grand marshals George Wendt, Mike Rowe, Kevin Bacon"
+ },
+ {
+  "id": "hs-0504",
+  "verdict": "ok",
+  "issue": "confirmed: 'ninety-eight-foot'; Adamsville RI 89 feet"
+ },
+ {
+  "id": "hs-0037",
+  "verdict": "ok",
+  "issue": "confirmed: 'almost twenty-four percent'; alphabetical blocks single handwriting"
+ },
+ {
+  "id": "hs-0308",
+  "verdict": "fix",
+  "issue": "Page: McMath launched a 1948 campaign for governor; 'went on to win' only implied.",
+  "set": {
+   "explanation": "EoA calls McMath a hometown war hero who organized fellow WWII veterans to challenge the Hot Springs political establishment; he campaigned for governor in 1948."
+  }
+ },
+ {
+  "id": "hs-0053",
+  "verdict": "ok",
+  "issue": "confirmed: released April 19, 2010, first America the Beautiful coin"
+ },
+ {
+  "id": "hs-0093",
+  "verdict": "ok",
+  "issue": "confirmed: Fordyce reopened May 13, 1989 as visitor center/museum"
+ },
+ {
+  "id": "hs-0134",
+  "verdict": "ok",
+  "issue": "confirmed: Walleye 22 lbs 11 oz Greers Ferry Lake 03/12/1982 Al Nelson"
+ },
+ {
+  "id": "hs-0137",
+  "verdict": "ok",
+  "issue": "confirmed: Striped bass 64 lbs 8 oz Beaver Lake Tailwater 04/28/2000"
+ },
+ {
+  "id": "hs-0252",
+  "verdict": "ok",
+  "issue": "confirmed: Lakeside beat Lake Hamilton 49-42, Pearcy"
+ },
+ {
+  "id": "hs-0276",
+  "verdict": "ok",
+  "issue": "confirmed: caption places game 'at Wolf Stadium'"
+ },
+ {
+  "id": "hs-0374",
+  "verdict": "ok",
+  "issue": "confirmed: release March 10, 2026; Matt Iseman Official Starter; March 17"
+ },
+ {
+  "id": "hs-0392",
+  "verdict": "ok",
+  "issue": "confirmed: 'The 23rd edition'; parade March 17, 2026"
+ },
+ {
+  "id": "hs-0443",
+  "verdict": "ok",
+  "issue": "confirmed: Maurer Sohne SkyLoop XT-150; first of its kind in North America"
+ },
+ {
+  "id": "hs-0445",
+  "verdict": "ok",
+  "issue": "confirmed: 65 mph; single train 2 cars 12 riders; 500 riders/hr"
+ },
+ {
+  "id": "hs-0017",
+  "verdict": "ok",
+  "issue": "confirmed: 'in about three hours, after several months of preparation'"
+ },
+ {
+  "id": "hs-0018",
+  "verdict": "ok",
+  "issue": "confirmed: 1877 booklet 'America's Baden-Baden'; first to produce booklet"
+ },
+ {
+  "id": "hs-0062",
+  "verdict": "ok",
+  "issue": "confirmed: continuous operation since opened Feb 1, 1912"
+ },
+ {
+  "id": "hs-0072",
+  "verdict": "ok",
+  "issue": "confirmed: 'elegant, 500-room Eastman Hotel'"
+ },
+ {
+  "id": "hs-0110",
+  "verdict": "ok",
+  "issue": "confirmed: Buckstaff 509 Central; Quapaw 413 Central"
+ },
+ {
+  "id": "hs-0117",
+  "verdict": "ok",
+  "issue": "confirmed: 1882-83 govt enclosed Hot Springs creek in underground arch"
+ },
+ {
+  "id": "hs-0142",
+  "verdict": "ok",
+  "issue": "confirmed: Phase I 14 miles; 7 opened Nov 17, 2018; 44 miles total"
+ },
+ {
+  "id": "hs-0143",
+  "verdict": "ok",
+  "issue": "confirmed: derived from Latin meaning 'razor stone'"
+ },
+ {
+  "id": "hs-0180",
+  "verdict": "ok",
+  "issue": "confirmed: southeast of Hot Springs; magnetite mostly lodestone; rutile, perovskite"
+ },
+ {
+  "id": "hs-0189",
+  "verdict": "fix",
+  "issue": "'Cap Anson brought the 1886 team to Hot Springs' not stated; page: Anson manager, Spalding owned team (now Cubs).",
+  "set": {
+   "explanation": "The article says in 1886 Hall of Famer Cap Anson managed the White Stockings, owned by A.G. Spalding, 'now known as the Chicago Cubs.'"
+  }
+ },
+ {
+  "id": "hs-0298",
+  "verdict": "ok",
+  "issue": "confirmed: 'H. L. Campbell founded the farm in 1902' ... tourist attraction in addition to baths"
+ },
+ {
+  "id": "hs-0300",
+  "verdict": "fix",
+  "issue": "EOA credits Spalding alone ('decided to train in a warmer climate'); Anson only playing-manager; Wikipedia claim not on page.",
+  "set": {
+   "question": "Which Chicago White Stockings club president decided to take his team to Hot Springs for spring training in 1886?",
+   "explanation": "EOA says A. G. Spalding, president of the White Stockings, decided to train in a warmer climate; Cap Anson was the playing-manager."
+  }
+ },
+ {
+  "id": "hs-0358",
+  "verdict": "ok",
+  "issue": "confirmed: 'served in the United States Senate since the 1920s'"
+ },
+ {
+  "id": "hs-0361",
+  "verdict": "ok",
+  "issue": "confirmed: 50-cent corned beef sandwiches Saturday; 5 1/2 tons corned beef"
+ },
+ {
+  "id": "hs-0394",
+  "verdict": "ok",
+  "issue": "confirmed: 'cold spring a dozen miles north of downtown Hot Springs'"
+ },
+ {
+  "id": "hs-0400",
+  "verdict": "ok",
+  "issue": "confirmed: Norman McLeod; began as picture studio; late 1800s-1940s"
+ },
+ {
+  "id": "hs-0463",
+  "verdict": "ok",
+  "issue": "confirmed: 'Elizabethtown (2005) was partially filmed in Eureka Springs and Hot Springs'"
+ },
+ {
+  "id": "hs-0464",
+  "verdict": "ok",
+  "issue": "confirmed: Magician's Raincoat; week at Malco Theatre"
+ },
+ {
+  "id": "hs-0495",
+  "verdict": "ok",
+  "issue": "confirmed: chickens walked tightropes, fortune cards; Brelands 1955"
+ },
+ {
+  "id": "hs-0498",
+  "verdict": "ok",
+  "issue": "confirmed: '26 historical markers located all over the city'"
+ }
+]

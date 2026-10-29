@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Valley of Vapors Trivia Trail</title>
+<meta name="description" content="An original trivia board game about Hot Springs, Arkansas. Part of the open-source Hot Springs Games collection (MIT).">
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body class="scene-title">
+<div id="stage"><canvas id="board" role="img" aria-label="Illustrated map of Hot Springs: the trivia trail through eight districts and up to the Mountain Tower"></canvas>
+  <div id="board-tools"><button id="btn-zoom" class="btn ghost small" data-key="btn-zoom">Close-up</button></div>
+</div>
+<header id="topbar">
+  <button id="btn-home" class="brand" data-key="btn-home" aria-label="Main menu"><span class="brand-mark" aria-hidden="true">♨</span><span class="brand-text">Trivia Trail</span></button>
+  <span class="spacer"></span>
+  <button id="btn-help" class="tb" data-key="btn-help" aria-label="How to play (?)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.2 9.3a2.9 2.9 0 1 1 4.3 2.5c-.9.5-1.5 1.1-1.5 2.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.3" fill="currentColor"/></svg></button>
+  <button id="btn-sound" class="tb" data-key="btn-sound" aria-label="Mute sound (M)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="x" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  <button id="btn-settings" class="tb" data-key="btn-settings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+</header>
+<main id="scenes">
+  <section id="scene-title" class="page" aria-label="Title"></section>
+  <section id="scene-setup" class="page" aria-label="Trip setup" hidden></section>
+  <section id="scene-quiz" class="page" aria-label="Quiz" hidden></section>
+  <section id="scene-era" class="page" aria-label="Era Express" hidden></section>
+  <section id="scene-results" class="page" aria-label="Results" hidden></section>
+  <section id="scene-help" class="page" aria-label="How to play" hidden></section>
+  <section id="scene-settings" class="page" aria-label="Settings" hidden></section>
+  <section id="scene-win" class="page" aria-label="Winner" hidden></section>
+  <section id="scene-game" hidden></section>
+</main>
+<aside id="panel" aria-label="Turn panel"></aside>
+<div id="modal" hidden></div>
+<div id="live" class="sr-only" aria-live="polite"></div>
+<!-- @inline ../data/questions.json as QUESTIONS -->
+<!-- @inline ../data/timeline-lite.json as TIMELINE -->
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

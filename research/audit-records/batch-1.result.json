@@ -1,0 +1,746 @@
+[
+ {
+  "id": "hs-0414",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"Opened July 22, 1978\" as Magic Springs Family Fun Park. Explanation supported."
+ },
+ {
+  "id": "hs-0415",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: opened July 22, 1978 as Magic Springs Family Fun Park, run by Leisure and Recreation Concepts."
+ },
+ {
+  "id": "hs-0416",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"It closed in 1995\"; reopened 2000; investors burdened by debt, sold 1980s. Supported."
+ },
+ {
+  "id": "hs-0417",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Fitraco \"a Belgian company, bought the amusement park at a foreclosure auction in 1995\"; Ed Hart approached by Fitraco."
+ },
+ {
+  "id": "hs-0422",
+  "action": "edit",
+  "set": {
+   "question": "Which of these Magic Springs rides dates to the park's 1978 opening?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Old No. 2 log flume, Arrow, 1978. Fearless Flyers also 1978, and park closed 1995-99, so \"has run since\" reworded."
+ },
+ {
+  "id": "hs-0424",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Sky Hook built 1910 as Von Roll cargo crane in Switzerland, used at 1937 Paris World's Fair; later Six Flags Over Texas/Georgia."
+ },
+ {
+  "id": "hs-0432",
+  "action": "edit",
+  "set": {
+   "explanation": "Magic Springs and Crystal Falls reopened on May 27, 2000, after voters approved a bond issue."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Reopened May 27, 2000 confirmed; \"some rides not ready\" not on page, removed."
+ },
+ {
+  "id": "hs-0434",
+  "action": "edit",
+  "set": {
+   "explanation": "Hot Springs voters approved a bond issue providing financing for the park before it reopened on May 27, 2000."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page says voters approved bond issue \"providing financing for the park\"; water-park-specific claim removed."
+ },
+ {
+  "id": "hs-0435",
+  "action": "edit",
+  "set": {
+   "question": "Which real estate investment trust bought Magic Springs from CNL in a late-2016 sale?",
+   "explanation": "CNL sold the park to EPR Properties, a Kansas City REIT, in late 2016; Premier Parks, LLC took over management."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page dates sale to \"late 2016\" (infobox gives no date), so \"since 2017\" reworded; explanation rewritten."
+ },
+ {
+  "id": "hs-0436",
+  "action": "edit",
+  "set": {
+   "wrong": [
+    "Parks! America",
+    "Cedar Fair",
+    "Merlin Entertainments"
+   ]
+  },
+  "method": "fetched sourceUrl",
+  "note": "Infobox: operated by Premier Parks, LLC; PARC and AMP earlier. Swapped Six Flags distractor (Premier Parks was Six Flags' old name) for Parks! America."
+ },
+ {
+  "id": "hs-0437",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"Attendance totaled more than 362,500 in 2000\"; ~254,000 in 2002. Supported."
+ },
+ {
+  "id": "hs-0438",
+  "action": "edit",
+  "set": {
+   "question": "In what year did Magic Springs' attendance top 400,000 after its reopening?",
+   "explanation": "Attendance topped 400,000 in 2004, when The Gauntlet was added and the concert series was expanded."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: topped 400,000 in 2004 when Gauntlet added and concerts expanded; removed \"reverse slump\" claim, \"after its reopening\"."
+ },
+ {
+  "id": "hs-0439",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"state-of-the-art 5,000-seat concert venue\"; lawn free, 26 rows bench reserved seating."
+ },
+ {
+  "id": "hs-0440",
+  "action": "edit",
+  "set": {
+   "explanation": "The amphitheater debuted in 2003; concerts are held every Saturday during the operating season."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: amphitheater debuted 2003. Removed unsourced \"biggest draws\"; used \"every Saturday\" quote."
+ },
+ {
+  "id": "hs-0441",
+  "action": "edit",
+  "set": {
+   "explanation": "Concerts at the Timberwood Amphitheater are held every Saturday during the operating season."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: \"Concerts are held every Saturday during the operating season.\" 2026 lineup not on page, removed."
+ },
+ {
+  "id": "hs-0451",
+  "action": "edit",
+  "set": {
+   "explanation": "Magic Springs becomes \"Magic Screams\" for a Halloween festival in October."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Halloween festival in October transformed into \"Magic Screams\". Removed unsourced \"stretches season\"."
+ },
+ {
+  "id": "hs-0453",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: June 9, 2007 power outage left 12 riders stranded upside down, 150 ft up, for 30 minutes."
+ },
+ {
+  "id": "hs-0007",
+  "action": "edit",
+  "set": {
+   "explanation": "Ludovicus Belding and his family came from Massachusetts in 1828 and built a small hotel for visitors to the springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: 1828 Belding came from Massachusetts, built small hotel. \"Within months\" not stated; removed."
+ },
+ {
+  "id": "hs-0008",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"On August 24, 1818, the Quapaw ceded the land around the hot springs to the United States.\""
+ },
+ {
+  "id": "hs-0009",
+  "action": "edit",
+  "set": {
+   "question": "During which dates in 1862 was Hot Springs the capital of Arkansas?",
+   "explanation": "Gov. Henry Rector moved state government to Hot Springs, which was the state capital from May 6 to July 14, 1862."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: \"From May 6 to July 14, 1862, Hot Springs was the state capital\"; no \"Confederate\" or Pea Ridge mention, removed."
+ },
+ {
+  "id": "hs-0011",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Garland County created April 5, 1873 from parts of Hot Spring, Montgomery, Saline counties."
+ },
+ {
+  "id": "hs-0282",
+  "action": "edit",
+  "set": {
+   "question": "Who built the first real settlement at the Arkansas hot springs in 1807 and lived there for two years?",
+   "answer": "Jean Pierre Emanuel Prudhomme",
+   "explanation": "Prudhomme, an ailing Red River plantation owner, built the first real settlement; trappers Isaac Cates and John Percival joined him."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Jean Pierre Emanuel Prudhomme built first real settlement 1807, lived there two years; \"Frenchman\" not stated, removed."
+ },
+ {
+  "id": "hs-0283",
+  "action": "edit",
+  "set": {
+   "explanation": "Trapper John Percival built log cabins to rent to the growing number of visitors to the springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Percival \"built log cabins to rent to the growing number of visitors\"; spelling \"Perciful\" and \"first permanent settler\" not on page, removed."
+ },
+ {
+  "id": "hs-0284",
+  "action": "edit",
+  "set": {
+   "explanation": "Gov. Henry Massie Rector moved state government to Hot Springs, which was the state capital from May 6 to July 14, 1862."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Gov. Henry Massie Rector moved state government to Hot Springs; capital May 6-July 14, 1862. Reworded explanation to what page says."
+ },
+ {
+  "id": "hs-0285",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: named for Garland, \"governor in 1874, U.S. senator from 1876 to 1885,\" attorney general 1885."
+ },
+ {
+  "id": "hs-0471",
+  "action": "edit",
+  "set": {
+   "explanation": "Spanish explorers passed through Garland County in 1541, but no absolute proof exists that de Soto visited the springs."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Spanish explorers passed through 1541, \"no absolute proof exists\" of local tradition. Explanation aligned."
+ },
+ {
+  "id": "hs-0003",
+  "action": "edit",
+  "set": {
+   "explanation": "It was one of only four ventures into the Louisiana Purchase commissioned by Jefferson."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Jefferson sent Dunbar and Hunter; \"one of only four ventures\" he commissioned. Wording aligned."
+ },
+ {
+  "id": "hs-0004",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Dunbar wrote Jefferson Aug 17, 1804, referring to a location he named \"the boiling springs\"."
+ },
+ {
+  "id": "hs-0005",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"Following an appropriation of $3,000 by Congress, preparation began in earnest.\""
+ },
+ {
+  "id": "hs-0006",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: Nov 22, Hunter cleaning pistol on flatboat, gun discharged, ripped thumb, lacerated two fingers."
+ },
+ {
+  "id": "hs-0113",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: \"four principal and two inferior springs\"."
+ },
+ {
+  "id": "hs-0114",
+  "action": "edit",
+  "set": {
+   "explanation": "The explorers measured the water temperature, which averaged between 148 and 150 degrees."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: temp \"averaged between 148 and 150 degrees\"; modern 143F average not on page, removed."
+ },
+ {
+  "id": "hs-0115",
+  "action": "edit",
+  "set": {
+   "explanation": "They camped at the confluence of Calfait Creek (today Gulpha Creek), also called Ellis Landing."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: camped at confluence of Calfait Creek (today Gulpha Creek), also Ellis Landing, by Dec 7. Explanation aligned."
+ },
+ {
+  "id": "hs-0338",
+  "action": "edit",
+  "set": {
+   "question": "Which relative of Bill Clinton was the first grand marshal of the World's Shortest St. Patrick's Day Parade in 2004?",
+   "explanation": "Dick Kelley, a local celebrity, was the parade's first grand marshal in 2004; he was Bill Clinton's stepfather."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Dick Kelley \"the very first grand marshal\" in 2004, Clinton's stepfather. Bob Wheeler not on page; \"a first\" -> \"the first\"."
+ },
+ {
+  "id": "hs-0368",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page: parade on \"98-foot-long Bridge Street,\" \"world's shortest working street\"."
+ },
+ {
+  "id": "hs-0369",
+  "action": "edit",
+  "set": {
+   "question": "According to the Encyclopedia of Arkansas, in what year was the first World's Shortest St. Patrick's Day Parade held?",
+   "explanation": "It says \"The First Ever First Annual\" parade was held March 17, 2004; the idea came from a 2003 gathering.",
+   "source": "Encyclopedia of Arkansas: World's Shortest St. Patrick's Day Parade",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/",
+  "note": "Visit Hot Springs 2026 release says 2003 but blog/EoA say first parade March 17, 2004; reworded to EoA attribution."
+ },
+ {
+  "id": "hs-0370",
+  "action": "edit",
+  "set": {
+   "question": "Which Visit Hot Springs CEO says the shortest St. Patrick's parade idea arose in 2003 when he and friends were at a downtown restaurant?",
+   "explanation": "Steve Arrison recalls he and friends asked, \"why don't we have a parade?\" The first parade followed the next year.",
+   "source": "AP via KY3: Arkansas city boasts world's shortest St. Patrick's Day parade at 98 feet",
+   "sourceUrl": "https://www.ky3.com/2025/03/18/arkansas-city-boasts-worlds-shortest-st-patricks-day-parade-98-feet/"
+  },
+  "method": "fetched alternative: https://www.ky3.com/2025/03/18/arkansas-city-boasts-worlds-shortest-st-patricks-day-parade-98-feet/",
+  "note": "Visit Hot Springs blog lacks Arrison. AP/KY3: Arrison says idea arose 2003 with friends at restaurant. Reworded as his account."
+ },
+ {
+  "id": "hs-0371",
+  "action": "edit",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas says the parade came to include celebrity grand marshals such as Wendt, Rowe and Bacon.",
+   "source": "Encyclopedia of Arkansas: World's Shortest St. Patrick's Day Parade",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/",
+  "note": "Wendt/Rowe not on Visit Hot Springs blog; EoA: parade \"came to include celebrity grand marshals such as George Wendt\", Rowe, Bacon. \"Each year\" removed."
+ },
+ {
+  "id": "hs-0372",
+  "action": "edit",
+  "set": {
+   "explanation": "The 2023 article names Justin Moore grand marshal of the 20th parade, with Christopher McDonald as starter."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Justin Moore \"Grand Marshal for the upcoming 20th parade\" (2023 article). \"Change every year\" not stated; explanation rewritten."
+ },
+ {
+  "id": "hs-0155",
+  "action": "edit",
+  "set": {
+   "question": "According to Wikipedia's water-chemistry table, which constituent of Hot Springs' thermal water has the highest concentration?",
+   "explanation": "The table lists bicarbonate at 130.0 ppm, ahead of silica (53.0) and calcium (47.0)."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki table: bicarbonate 130.0 ppm, silica 53.0, calcium 47.0; \"most abundant\" is inferred from table, so reworded to table."
+ },
+ {
+  "id": "hs-0156",
+  "action": "edit",
+  "set": {
+   "explanation": "Dissolved minerals in the water precipitate to form the white-to-tan travertine, or tufa rock, seen near the spring openings."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: \"precipitate to form the white to tan travertine or tufa rock\" near spring openings. Removed \"evaporating\"."
+ },
+ {
+  "id": "hs-0157",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wiki: \"Two cold water springs (Happy Hollow and Whittington Springs) are treated using ozone filtration.\""
+ },
+ {
+  "id": "hs-0158",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the measurable radioactivity is primarily due to dissolved radon gas, with some radium."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: radioactivity \"primarily due to dissolved radon gas, with some radium\". Sun comparison wording loosely stated; rewritten."
+ },
+ {
+  "id": "hs-0181",
+  "action": "edit",
+  "set": {
+   "question": "Which big cat left the Hot Springs area after European settlement, according to Wikipedia?",
+   "wrong": [
+    "Snow leopard",
+    "Lynx",
+    "Cheetah"
+   ],
+   "explanation": "Wikipedia says plains bison, Eastern elk, North American cougar and Gregory's wolf left the region after European settlement."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: \"Plains bison, Eastern elk, North American cougar and Gregory's wolf left the region\"; no red wolf. Reworded; Jaguar distractor (historic range) swapped."
+ },
+ {
+  "id": "hs-0251",
+  "action": "edit",
+  "set": {
+   "question": "In which of these years did Lake Hamilton High School win a state football title?"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: football titles 1992 and 2008; reworded question to \"of these years\" since two years are true (1992 not a distractor)."
+ },
+ {
+  "id": "hs-0262",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wiki: boys cross country \"four consecutive state championships (2006-2009)\"; volleyball 2007; softball 2007, 2009, 2012."
+ },
+ {
+  "id": "hs-0274",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wiki: maroon and gold; compete in 6A."
+ },
+ {
+  "id": "hs-0275",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wiki: school in Pearcy, \"located near Lake Hamilton and Lake Catherine\"."
+ },
+ {
+  "id": "hs-0279",
+  "action": "keep",
+  "method": "fetched sourceUrl; also en.wikipedia.org/wiki/Allen_McDill",
+  "note": "Wiki alumni: \"Allen McDill, Former MLB Pitcher (Kansas City Royals, Detroit Tigers, Boston Red Sox)\"."
+ },
+ {
+  "id": "hs-0483",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: H. L. Campbell 1902, reptiles from Florida's Everglades; raised for hides, sold live to zoos."
+ },
+ {
+  "id": "hs-0484",
+  "action": "edit",
+  "set": {
+   "explanation": "The Encyclopedia of Arkansas says the farm's museum displayed a \"Merman,\" said to be a mummified aquatic creature.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: museum displayed a \"Merman,\" said to be a mummified aquatic creature. \"Classic sideshow gaff\" not stated; removed."
+ },
+ {
+  "id": "hs-0493",
+  "action": "edit",
+  "set": {
+   "explanation": "Jack Bridges Sr. bought it in 1947, and it became the Arkansas Alligator Farm."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: by 1929 Danny Older owned it as Hot Springs Gator Farm; Jack Bridges Sr. bought it 1947, became Arkansas Alligator Farm."
+ },
+ {
+  "id": "hs-0506",
+  "action": "edit",
+  "set": {
+   "confidence": "claim"
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: \"oldest still-operating attraction in Hot Springs\"; founded 1902 by Campbell. Superlative attributed to EoA in question; flagged claim."
+ },
+ {
+  "id": "hs-0094",
+  "action": "edit",
+  "set": {
+   "explanation": "The lattice steel observation tower was officially opened to the public on June 3, 1983."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: \"216-foot high observation tower\", opened June 3, 1983. \"Replacing a 165-ft tower\" not stated (165 ft is a 1924 caption); removed."
+ },
+ {
+  "id": "hs-0099",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Wiki: \"officially opened to the public on June 3, 1983\"; \"Construction began in 1982.\""
+ },
+ {
+  "id": "hs-0479",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia says the wireless telegraph tower from the 1904 Louisiana Purchase Exposition was moved to the mountain in 1906."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: 1904 Louisiana Purchase Exposition wireless telegraph tower moved 1906, renamed Rix Tower. NPS silent; kept as Wikipedia-attributed claim."
+ },
+ {
+  "id": "hs-0160",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS gives Music Mountain's elevation as 1405 feet."
+  },
+  "method": "fetched sourceUrl",
+  "note": "NPS: \"The highest point in the park, Music Mountain (1405 feet)\". \"West end\" not confirmed; removed."
+ },
+ {
+  "id": "hs-0161",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: \"Sunset Trail is the longest trail in Hot Springs National Park\"; about 10 miles one-way."
+ },
+ {
+  "id": "hs-0162",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "NPS: West Mountain 2.8, Sugarloaf Mountain 2.6, Stonebridge Road 3.8 miles."
+ },
+ {
+  "id": "hs-0334",
+  "action": "edit",
+  "set": {
+   "explanation": "Governor Bill Clinton formally dedicated the museum on April 22, 1979; Winthrop Rockefeller had envisioned it in the mid-1960s.",
+   "source": "Encyclopedia of Arkansas: Mid-America Science Museum",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mid-america-science-museum-4095/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl; also https://encyclopediaofarkansas.net/entries/mid-america-science-museum-4095/",
+  "note": "midamericamuseum.org: dedicated by then-Gov. Bill Clinton, April 22, 1979. EoA supports Rockefeller envisioning it mid-1960s; summary resolved."
+ },
+ {
+  "id": "hs-0431",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Mid-America Science Museum",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mid-america-science-museum-4095/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/mid-america-science-museum-4095/",
+  "note": "Museum site lacks \"Caged Lightning\"/voltage. EoA: \"Caged Lightning,\" conical Tesla coil, 1.5 million volts, Guinness Aug 2007."
+ },
+ {
+  "id": "hs-0455",
+  "action": "edit",
+  "set": {
+   "source": "Encyclopedia of Arkansas: Mid-America Science Museum",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mid-america-science-museum-4095/"
+  },
+  "method": "fetched alternative: https://encyclopediaofarkansas.net/entries/mid-america-science-museum-4095/",
+  "note": "Museum site lacks 1.5M volts. EoA: \"1.5 million volts of electrical energy\"; Guinness Aug 2007 most powerful conical Tesla Coil."
+ },
+ {
+  "id": "hs-0037",
+  "action": "edit",
+  "set": {
+   "explanation": "Receipts came in alphabetical blocks of names that each appeared to be in one person's handwriting."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: Miller threw out \"almost twenty-four percent\"; blocks of names appeared in one person's handwriting. Explanation tightened."
+ },
+ {
+  "id": "hs-0308",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: Sid McMath led the GI Revolt, elected prosecuting attorney 1946, governor 1948; challenged Mayor Leo P. McLaughlin."
+ },
+ {
+  "id": "hs-0071",
+  "action": "edit",
+  "set": {
+   "explanation": "The steel Rix Tower, opened in 1906, had an elevator to carry visitors to the top."
+  },
+  "method": "fetched sourceUrl",
+  "note": "NPS: Rix Tower steel, opened 1906, elevator, taken down July 13, 1971. Height ~165 ft and telescope not on page; removed."
+ },
+ {
+  "id": "hs-0292",
+  "action": "edit",
+  "set": {
+   "explanation": "The wooden tower was removed in 1906 to make way for a new steel tower."
+  },
+  "method": "fetched sourceUrl",
+  "note": "NPS: Enoch Woolman built wooden tower 1877; removed 1906 for new steel tower. \"Lightning\" not stated; fixed."
+ },
+ {
+  "id": "hs-0143",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: name comes from Latin meaning \"razor stone\"."
+ },
+ {
+  "id": "hs-0144",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "EoA: Washita \"dull luster...more porous and less dense\"; Arkansas \"extremely fine-grained with a waxy luster\"."
+ },
+ {
+  "id": "hs-0208",
+  "action": "edit",
+  "set": {
+   "explanation": "Anson and A. G. Spalding brought the Chicago White Stockings to the grounds in 1886 to train and play spring games."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: \"On March 28, 1887, Cap Anson hit three home runs here.\" \"First brought\" not stated; explanation rewritten."
+ },
+ {
+  "id": "hs-0302",
+  "action": "edit",
+  "set": {
+   "explanation": "Mike \"King\" Kelly and John Clarkson, fellow Hall of Famers, were also with the 1886 White Stockings.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: \"future evangelist Billy Sunday\"; Kelly and Clarkson \"fellow Hall of Famers\". Summary resolved by fetch."
+ },
+ {
+  "id": "hs-0374",
+  "action": "edit",
+  "set": {
+   "question": "Which TV host was announced as the official starter of Hot Springs' 2026 World's Shortest St. Patrick's Day Parade?",
+   "explanation": "A March 10, 2026 release named American Ninja Warrior host Matt Iseman official starter for the March 17 parade."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Release dated March 10, 2026 previews parade; Matt Iseman \"Official Starter\". 2025 Flav claim not on page, removed; reworded as announced."
+ },
+ {
+  "id": "hs-0392",
+  "action": "edit",
+  "set": {
+   "explanation": "A March 10, 2026 release billed the March 17 parade as the 23rd edition of the little parade."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Release: \"23rd edition\", \"First Ever 23rd Annual\"; it says parade began 2003 (conflicts with 2004), so debut sentence removed."
+ },
+ {
+  "id": "hs-0501",
+  "action": "edit",
+  "set": {
+   "question": "According to Visit Hot Springs, reports of a bathroom sink turning on and steaming up the room come from which Arlington Hotel room?",
+   "explanation": "Visit Hot Springs reports a sink turning on, items falling off shelves, and lights switching on and off in Room 824.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: Room 824 \"reports of the bathroom sink turning on and steaming up the room,\" lights 3-4 a.m. \"Most haunted\" not stated; reworded as reports."
+ },
+ {
+  "id": "hs-0502",
+  "action": "edit",
+  "set": {
+   "explanation": "Visit Hot Springs also reports the bathroom sink turning on and steaming up the room, and items falling off shelves.",
+   "confidence": "confirmed"
+  },
+  "method": "fetched sourceUrl",
+  "note": "Page: lights \"turning on and off between the hours of 3 and 4 a.m.\" in Room 824; sink steaming. Explanation tightened."
+ },
+ {
+  "id": "hs-0052",
+  "action": "edit",
+  "set": {
+   "explanation": "NPS celebrated the groundbreaking on Aug. 19, 2025; the Maurice is the last Bathhouse Row building to undergo rehabilitation.",
+   "source": "NPS: Groundbreaking celebrated for Maurice Bathhouse rehabilitation",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/news/maurice-gaoa-groundbreaking.htm"
+  },
+  "method": "fetched alternative: https://www.nps.gov/hosp/learn/news/maurice-gaoa-groundbreaking.htm",
+  "note": "KUAF said \"nearly $32 million\", work \"this fall\". NPS release Aug 19, 2025: groundbreaking, $31.6 Million GAOA fund, last to be rehabilitated."
+ },
+ {
+  "id": "hs-0101",
+  "action": "edit",
+  "set": {
+   "question": "Which Bathhouse Row bathhouse is now the nine-suite Hotel Hale?",
+   "explanation": "NPS says the Hale Bathhouse is now Hotel Hale, with 9 suites whose soaking tubs get hot springs mineral water.",
+   "source": "NPS: Hale Bathhouse",
+   "sourceUrl": "https://www.nps.gov/places/hale-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.nps.gov/places/hale-bathhouse.htm",
+  "note": "NPS case study lacks room count/opening date. NPS Hale page: \"9 individual suites\", hot springs mineral water in tubs. \"2019\" dropped."
+ },
+ {
+  "id": "hs-0138",
+  "action": "edit",
+  "set": {
+   "explanation": "AGFC says striped bass do not reproduce naturally in the wild, apart from one Arkansas River population; Lake Ouachita is one of four lakes it stocks.",
+   "source": "Arkansas Game & Fish Commission: Striped Bass",
+   "sourceUrl": "https://www.agfc.com/fishing/more-species/striped-bass/"
+  },
+  "method": "fetched alternative: https://www.agfc.com/fishing/more-species/striped-bass/",
+  "note": "Minutes docx 403. AGFC: striped bass \"do not reproduce naturally in the wild\" (exception Arkansas River); Ouachita stocked. Walleye claim removed."
+ },
+ {
+  "id": "hs-0148",
+  "action": "edit",
+  "set": {
+   "question": "According to the USGS, how many hot springs emerge from Hot Springs Mountain in Hot Springs National Park?",
+   "explanation": "USGS says the park is best known for its 47 hot springs, which average 143 degrees Fahrenheit. Wikipedia counts 43 presumed still flowing.",
+   "source": "USGS: Hot Springs National Park",
+   "sourceUrl": "https://www.usgs.gov/geology-and-ecology-of-national-parks/hot-springs-national-park"
+  },
+  "method": "fetched alternative: https://www.usgs.gov/geology-and-ecology-of-national-parks/hot-springs-national-park",
+  "note": "Britannica 403. Count disputed (USGS 47 vs Wikipedia 43 flowing); reworded to USGS attribution. No 43 distractor."
+ },
+ {
+  "id": "hs-0281",
+  "action": "edit",
+  "set": {
+   "explanation": "EoA says Fordyce had a business interest in showing the expedition found Hot Springs; later research revised the commission's route."
+  },
+  "method": "fetched sourceUrl",
+  "note": "EoA: John R. Fordyce \"vice chair\", \"business interest in showing\" expedition found Hot Springs. \"Discredited\" unstated; fixed."
+ },
+ {
+  "id": "hs-0299",
+  "action": "edit",
+  "set": {
+   "question": "Which White Stockings player, with owner A. G. Spalding, brought the Chicago team to Hot Springs in 1886 to train?",
+   "explanation": "The Baseball Trail says A. G. Spalding and Cap Anson brought the Chicago White Stockings to the field to train and play spring games.",
+   "source": "Hot Springs Historic Baseball Trail: Hot Springs Baseball Grounds",
+   "sourceUrl": "https://hotspringsbaseballtrail.com/see-the-trail/hot-springs-baseball-grounds/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://hotspringsbaseballtrail.com/see-the-trail/hot-springs-baseball-grounds/",
+  "note": "HMdb 403. Baseball Trail: Spalding and Anson brought White Stockings 1886 to train; \"playing-manager\"/\"first camp\" not stated, reworded."
+ },
+ {
+  "id": "hs-0375",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "Page (Dec 4, 2025): Chapman, \"Dancing Umpire,\" \"will be a special guest celebrity for the 23rd edition\"; March 17, 2026. Announced wording ok."
+ },
+ {
+  "id": "hs-0382",
+  "action": "keep",
+  "method": "fetched sourceUrl",
+  "note": "KARK release: 13th annual Running of the Tubs, June 2, 2018, first time World Championship at stake."
+ },
+ {
+  "id": "hs-0461",
+  "action": "edit",
+  "set": {
+   "question": "Which 2020 Liam Hemsworth film, despite its title, was mostly filmed in Alabama, with at least three scenes shot in Arkansas?",
+   "explanation": "KKYR says at least three scenes were shot in Arkansas, including at the Arlington Resort Hotel and the Fordyce Bath House; most scenes were filmed in Alabama."
+  },
+  "method": "fetched sourceUrl",
+  "note": "KKYR: \"At least three scenes were shot in Arkansas\" (Arlington, Fordyce Bath House); most in Alabama. \"Only three in Hot Springs\" overstated; reworded."
+ },
+ {
+  "id": "hs-0464",
+  "action": "edit",
+  "set": {
+   "explanation": "The Sentinel-Record says much of the film was shot in downtown Hot Springs, including a week at the Malco Theatre.",
+   "source": "Hot Springs Sentinel-Record: The Magician's Raincoat",
+   "sourceUrl": "https://www.hotsr.com/news/2023/jun/24/watch-magicians-raincoat-magical-adventure-movie/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://www.hotsr.com/news/2023/jun/24/watch-magicians-raincoat-magical-adventure-movie/",
+  "note": "PressReader 403. Sentinel-Record (hotsr.com, 6/24/2023): filming included \"a week at the Malco Theatre\"; \"Much of the film was shot in downtown\"."
+ },
+ {
+  "id": "hs-0503",
+  "action": "edit",
+  "set": {
+   "question": "According to Visit Hot Springs, what smell have guests reported at the Arlington Hotel, where Al Capone stayed in Room 443?",
+   "answer": "A cigar",
+   "explanation": "Visit Hot Springs lists Room 443 as the Capone Suite and says guests have reported the smell of a cigar in the non-smoking hotel.",
+   "source": "Visit Hot Springs: Haunt Springs",
+   "sourceUrl": "https://hotsprings.org/blog/spa-stories-to-tell-in-the-dark-haunt-springs/",
+   "confidence": "confirmed"
+  },
+  "method": "fetched alternative: https://hotsprings.org/blog/spa-stories-to-tell-in-the-dark-haunt-springs/",
+  "note": "Haunted Rooms lacks Capone/cigar. Visit Hot Springs: Room 443 Capone Suite; \"smell of a cigar in the non-smoking hotel\". 2015 claim dropped."
+ },
+ {
+  "id": "hs-0510",
+  "action": "edit",
+  "set": {
+   "explanation": "Wikipedia gives Mount Ida's motto as \"Quartz Crystal Capital of the World\"; Hot Springs is about 36 miles east of it."
+  },
+  "method": "fetched sourceUrl",
+  "note": "Wiki: motto \"Quartz Crystal Capital of the World\"; Hot Springs ~36 mi east of Mount Ida. Crystal Dig not on page; removed. Self-described -> claim."
+ }
+]
