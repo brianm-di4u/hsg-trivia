@@ -127,10 +127,11 @@ function titleHTML() {
 function defaultSetup() { return { seats: [{ name: '', kind: 'human', level: 'medium' }, { name: '', kind: 'ai', level: 'medium' }], target: 6 }; }
 function setupHTML() {
   const su = ui.setup || (ui.setup = defaultSetup());
+  const names = Game.defaultNames(su.seats);
   const rows = su.seats.map((s, i) => `<li class="seat">
       ${tokenIco({ shape: ['circle', 'square', 'triangle', 'diamond', 'star', 'hexagon'][i], color: ['#D7263D', '#1D5BD6', '#14904A', '#F2A90C', '#8A43C4', '#F4F1EA'][i] }, 26)}
       <label class="sr-only" for="seat-name-${i}">Seat ${i + 1} name (${TOKEN_NAMES[i]} token)</label>
-      <input id="seat-name-${i}" data-key="name${i}" data-seat="${i}" class="seat-name" maxlength="16" placeholder="${s.kind === 'ai' ? Game.AI_NAMES[s.level] : 'Traveler ' + (i + 1)}" value="${esc(s.name)}">
+      <input id="seat-name-${i}" data-key="name${i}" data-seat="${i}" class="seat-name" maxlength="16" placeholder="${esc(names[i])}" value="${esc(s.name)}">
       <label class="sr-only" for="seat-kind-${i}">Seat ${i + 1} player type</label>
       <select id="seat-kind-${i}" data-key="kind${i}" data-seatkind="${i}">
         ${[['human', 'Human'], ['ai:easy', 'AI · Easy'], ['ai:medium', 'AI · Medium'], ['ai:hard', 'AI · Hard']].map(([v, l]) => `<option value="${v}"${(s.kind === 'human' ? 'human' : 'ai:' + s.level) === v ? ' selected' : ''}>${l}</option>`).join('')}

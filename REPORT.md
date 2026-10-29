@@ -98,18 +98,18 @@ a single source.
 
 ## Test results
 
-`node shared/test-harness/run.mjs games/trivia --milestone final`: **58/58 passed** across desktop and
+`node shared/test-harness/run.mjs games/trivia --milestone final`: **59/59 passed** across desktop and
 mobile, with no console errors and no external requests.
 
 - 87 screenshots are in `screenshots/final/` (44 desktop, 43 mobile), and **every one was opened and
   inspected**.
 - `screenshots/index.html` is the current gallery.
-- 22 defects were found and fixed through screenshots and tests. They are logged in `DEV-PLAN.md` §5.
+- 23 defects were found and fixed through screenshots and tests. They are logged in `DEV-PLAN.md` §5.
   Examples: icons misreading as animals or a phone handset, a modal captured mid-fade, a passport stamp
   label overflowing its ring, the postcard title colliding with its stamp box, and a contrast failure
   on Nature & Lakes.
 
-Milestone runs: `m1` (8/8), `m2` (52/57: two real bugs, D7 and D8), `m3` (57/57), `final` (58/58).
+Milestone runs: `m1` (8/8), `m2` (52/57: two real bugs, D7 and D8), `m3` (57/57), `final` (59/59 after the review fix; 58/58 before).
 
 ## Performance
 
@@ -163,6 +163,6 @@ Trimming was already done by design:
 ## Files
 
 `index.html` (built) · `src/` (sources) · `data/questions.json` (audited bank) · `data/timeline-lite.json` ·
-`tools/` (timeline subset, audit merge, audit log) · `tests/` (8 files, 58 runs) · `research/town-content.md` ·
+`tools/` (timeline subset, audit merge, audit log) · `tests/` (7 test files + helpers, 59 runs) · `research/town-content.md` ·
 `research/question-audit.md` · `research/audit-records/` · `SAMPLES.md` · `MECHANICS.md` · `PRD.md` ·
 `DEV-PLAN.md` · `REPORT.md`. Nothing outside `games/trivia/` was modified; nothing was committed.

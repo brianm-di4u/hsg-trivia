@@ -15,6 +15,18 @@ export const G = {
 
 export const AI_NAMES = { easy: 'Doc Vapor', medium: 'Miss Promenade', hard: 'The Professor' };
 const AI_EXTRA = ['Ticket Taker', 'Trail Boss', 'Lady Tufa'];
+const AI_POOL = [AI_NAMES.easy, AI_NAMES.medium, AI_NAMES.hard, ...AI_EXTRA]; // six names for up to six AI seats
+
+// Default name for every seat, never repeating: humans are "Traveler N"; each AI seat takes its level's
+// name if still free, else the next unused name in AI_POOL. Names a player typed are reserved first.
+export function defaultNames(seats) {
+  const used = new Set(seats.map((s) => (s.name || '').trim()).filter(Boolean));
+  return seats.map((s, i) => {
+    if (s.kind !== 'ai') { const n = `Traveler ${i + 1}`; used.add(n); return n; }
+    const n = [AI_NAMES[s.level || 'medium'], ...AI_POOL].find((x) => !used.has(x)) || `Traveler ${i + 1}`;
+    used.add(n); return n;
+  });
+}
 const AI_ACC = { easy: { easy: 0.6, medium: 0.4, hard: 0.25 }, medium: { easy: 0.8, medium: 0.6, hard: 0.4 }, hard: { easy: 0.92, medium: 0.8, hard: 0.65 } };
 export const TARGETS = [{ n: 4, label: 'Day Trip' }, { n: 6, label: 'Weekend' }, { n: 8, label: 'Grand Tour' }];
 
@@ -32,13 +44,11 @@ const aiDelay = (base) => (G.state.settings.aiSpeed === 'fast' ? Math.min(220, b
 export function newTrail({ players, target = 6 }) {
   clearTimers();
   const seats = (players && players.length ? players : [{ kind: 'human' }, { kind: 'ai', level: 'medium' }]).slice(0, 6);
-  const usedNames = new Set();
+  const defaults = defaultNames(seats);
   G.state.trail = {
     target, round: 1, turn: 0, phase: 'roll', roll: null, rerolled: false, dests: [], sel: 0,
     players: seats.map((s, i) => {
-      let name = (s.name || '').trim();
-      if (!name) name = s.kind === 'ai' ? (usedNames.has(AI_NAMES[s.level || 'medium']) ? AI_EXTRA[i % 3] : AI_NAMES[s.level || 'medium']) : `Traveler ${i + 1}`;
-      usedNames.add(name);
+      const name = (s.name || '').trim() || defaults[i];
       return { id: i, name, kind: s.kind === 'ai' ? 'ai' : 'human', level: s.level || 'medium', shape: TOKEN_SHAPES[i], color: TOKEN_COLORS[i],
         node: START, stamps: [], tickets: 3, skill: 0.35, skip: false, correct: 0, answered: 0, catStats: {}, streak: 0 };
     }),

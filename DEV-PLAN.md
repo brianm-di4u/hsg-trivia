@@ -101,4 +101,5 @@ All tests in `tests/*.test.mjs`, both viewports unless noted. Screenshot names a
 | D20 | final | mobile 17 | Win screen showed downtown, and the confetti burst at the tower was off-screen | Win backdrop camera centers on the tower | fixed |
 | D21 | final | mobile 18 | 50/50 left two blank holes in the single-column answer list | Removed answers collapse (`display: none`) | fixed |
 | D22 | final | contrast script | Nature & Lakes key letters white on #009E73 were 3.42:1 | Category color darkened to #007A5A (5.34:1); all eight category/ink pairs now 5.2–7.5:1 | fixed |
+| D23 | review | review + mobile 02 | AI seats defaulted to the same name (three "Miss Promenade"); after the fix, long default names were clipped in the mobile name field | Shared `defaultNames()` (no repeats for up to 6 seats, typed names reserved) used by setup and game start; mobile seat grid tightened | fixed |
 | D16 | M3 | screenshot 09 | "Keys 0–5" hint shown on touch devices | Hint hidden with `@media (hover: none)` | fixed |

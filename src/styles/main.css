@@ -247,7 +247,9 @@ textarea#share { width: 100%; font-family: var(--font-mono); border: 2px solid v
   .page { padding: 12px 10px; }
   .page-card { padding: 16px; }
   .mcard, .qcard { padding: 14px; }
-  .seat { grid-template-columns: 26px minmax(0, 1fr) 128px 44px; gap: 6px; }
+  .seat { grid-template-columns: 22px minmax(0, 1fr) 120px 44px; gap: 4px; }
+  .seat input, .seat select { font-size: 0.92rem; padding: 6px 8px; }
+  .seat select { padding: 6px 0 6px 6px; }
   .eras, .legend, .passport .stamps { grid-template-columns: 1fr; }
   .menu.small { grid-template-columns: 1fr 1fr; }
   .dests { max-height: none; }

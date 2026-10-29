@@ -20,6 +20,9 @@ export const tests = [
       for (let i = 0; i < 4; i++) await t.game('act', 'ui', 'seat-add');
       await t.page.selectOption('#seat-kind-2', 'ai:easy');
       await t.page.selectOption('#seat-kind-3', 'ai:hard');
+      const placeholders = await t.page.$$eval('.seat-name', (els) => els.map((e) => e.placeholder));
+      t.equal(new Set(placeholders).size, 6, `six distinct default names (${placeholders.join(', ')})`);
+      t.equal(placeholders, ['Traveler 1', 'Miss Promenade', 'Doc Vapor', 'The Professor', 'Ticket Taker', 'Trail Boss'], 'default names by seat');
       await t.page.fill('#seat-name-0', 'Ada');
       await t.game('act', 'ui', 'target', '8');
       const n = await t.page.locator('.seat').count();
@@ -32,7 +35,24 @@ export const tests = [
       t.equal(s.trail.target, 8, 'grand tour target');
       t.equal(s.trail.players.map((p) => p.kind + (p.kind === 'ai' ? ':' + p.level : '')).slice(0, 4), ['human', 'ai:medium', 'ai:easy', 'ai:hard'], 'seat kinds');
       t.equal(new Set(s.trail.players.map((p) => p.shape)).size, 6, 'six distinct token shapes');
+      t.equal(new Set(s.trail.players.map((p) => p.name)).size, 6, `six distinct player names (${s.trail.players.map((p) => p.name).join(', ')})`);
       await t.game('act', 'stopAI');
+    },
+  },
+  {
+    name: 'six unnamed AI seats get distinct names',
+    viewports: ['desktop'],
+    async run(t) {
+      for (const level of ['easy', 'medium', 'hard']) {
+        const st = await t.game('newGame', { mode: 'trail', players: Array.from({ length: 6 }, () => ({ kind: 'ai', level })), target: 4 });
+        await t.game('act', 'stopAI');
+        const names = st.trail.players.map((p) => p.name);
+        t.equal(new Set(names).size, 6, `six distinct names for six ${level} AI seats (${names.join(', ')})`);
+      }
+      // A typed name that matches an AI default is never reused for another seat.
+      const st = await t.game('newGame', { mode: 'trail', players: [{ kind: 'human', name: 'Miss Promenade' }, ...Array.from({ length: 5 }, () => ({ kind: 'ai', level: 'medium' }))], target: 4 });
+      await t.game('act', 'stopAI');
+      t.equal(new Set(st.trail.players.map((p) => p.name)).size, 6, 'typed name reserved');
     },
   },
   {

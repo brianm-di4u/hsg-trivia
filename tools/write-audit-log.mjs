@@ -100,7 +100,9 @@ For the full text of any change, diff \`data/questions.json\` against \`research
    and distractor overlap. Second-pass verdicts over all ${second.size} checked: ${Object.entries(v2).map(([k, v]) => `${k} ${v}`).join(', ')}.
    Fixes were folded in on top of the first pass.
 6. **Screenshot review.** One more fix (hs-0230) came from reading a question in the game: its
-   explanation listed other title years, so the question became "which of these years".
+   explanation listed other title years, so the question became "which of these years". In review,
+   hs-0266's explanation ("Ruth has his own marker") was found not to support the answer "Nine"; it now
+   quotes the trail page ("trained here nine times"), re-fetched 2026-10-28.
 7. **Validation.** \`apply-audit.mjs\` checks every record: three distractors, no distractor equal to the
    answer, no duplicates, valid confidence/difficulty/era, explanation ≤ 220 chars, http(s) source URL.
    The test \`perf.test.mjs › bank is the audited copy\` re-checks this inside the built game.

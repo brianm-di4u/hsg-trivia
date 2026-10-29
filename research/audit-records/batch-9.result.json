@@ -66,5 +66,14 @@
   },
   "method": "coordinator review (screenshot inspection)",
   "note": "Explanation lists other title years (1941, 1950); question reworded to \"which of these years\" so only one option is correct."
+ },
+ {
+  "id": "hs-0266",
+  "action": "edit",
+  "set": {
+   "explanation": "The Baseball Trail says Ruth trained here nine times and became a very familiar face around Hot Springs."
+  },
+  "method": "fetched sourceUrl (coordinator review)",
+  "note": "Old explanation (\"Ruth has his own marker on the trail\") did not support the answer. Trail page: \"Ruth trained here nine times and became a very familiar face around Hot Springs.\""
  }
 ]

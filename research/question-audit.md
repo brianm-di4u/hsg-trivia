@@ -12,8 +12,8 @@ For the full text of any change, diff `data/questions.json` against `research/tr
 | Questions in the research bank | 512 |
 | Questions in the audited bank | 511 |
 | Dropped | 1 |
-| Changed (any field) | 349 |
-| Unchanged after both passes | 162 |
+| Changed (any field) | 350 |
+| Unchanged after both passes | 161 |
 | Confidence before | confirmed 470, summary 21, claim 21 |
 | Confidence after | confirmed 491, claim 20 |
 | "via search" sources remaining | 0 |
@@ -28,7 +28,7 @@ For the full text of any change, diff `data/questions.json` against `research/tr
    only previews ("announced", "scheduled"); attribute promotional claims in the question and set the
    `claim` flag; re-verify or drop the ten flagged ids; replace blocked sources (HMdb, PressReader,
    Baseball-Reference, rate-limited sites) with a page that was actually read, updating `source`/`sourceUrl`.
-   Result: keep 179, edit 332, drop 1 (batch-9 holds coordinator overrides).
+   Result: keep 178, edit 333, drop 1 (batch-9 holds coordinator overrides).
 3. **Coordinator review.** The coordinator re-fetched the items the auditors flagged as weak (hs-0276
    Wolf Stadium caption, hs-0292 NPS tower page, hs-0308 EoA GI Revolt, hs-0329 baptism) and fixed or dropped
    them (`batch-9.result.json`). hs-0329 was dropped: the baptism location is only on a fan site.
@@ -39,7 +39,9 @@ For the full text of any change, diff `data/questions.json` against `research/tr
    and distractor overlap. Second-pass verdicts over all 511 checked: ok 455, fix 56.
    Fixes were folded in on top of the first pass.
 6. **Screenshot review.** One more fix (hs-0230) came from reading a question in the game: its
-   explanation listed other title years, so the question became "which of these years".
+   explanation listed other title years, so the question became "which of these years". In review,
+   hs-0266's explanation ("Ruth has his own marker") was found not to support the answer "Nine"; it now
+   quotes the trail page ("trained here nine times"), re-fetched 2026-10-28.
 7. **Validation.** `apply-audit.mjs` checks every record: three distractors, no distractor equal to the
    answer, no duplicates, valid confidence/difficulty/era, explanation ≤ 220 chars, http(s) source URL.
    The test `perf.test.mjs › bank is the audited copy` re-checks this inside the built game.
@@ -68,7 +70,7 @@ spring counts) are either avoided, attributed to a named source, or asked as "so
 | hs-0133 | What is the largest lake in Hot Springs Village? | kept (confirmed) | Explore the Village (Hot Springs Village): Lakes | PressReader gave 403. explorethevillage.com: 'At 944 acres, Lake Balboa is the largest lake in Hot Springs Village.' |
 | hs-0464 | Which 2023 film spent a week shooting at Hot Springs' Malco… | kept (confirmed) | Hot Springs Sentinel-Record: The Magician's Raincoat | PressReader 403. Sentinel-Record (hotsr.com, 6/24/2023): filming included "a week at the Malco Theatre"; "Much of the film was shot in downtown". |
 
-## Every change (350 questions; ⚑ = flagged id)
+## Every change (351 questions; ⚑ = flagged id)
 
 | id | What changed | Verification | Notes |
 |---|---|---|---|
@@ -241,6 +243,7 @@ spring counts) are either avoided, attributed to a named source, or asked as "so
 | hs-0261 | explanation; source → Delta Plex News: AAA shot clock resolution | fetched alternative: https://www.deltaplexnews.com/?p=102513 · 2nd pass (verify-2.result.json): ok | 1st: KTLO 403. Delta Plex: resolution 'passed 183-69'. '10th state' is not on that page (Arkansas Online Aug 2 said 'would become'), so removed. |
 | hs-0263 | explanation | fetched sourceUrl · 2nd pass (verify-1.result.json): ok | 1st: Page: 'first of Oaklawn's four Kentucky Derby preparatory races'; never calls Arkansas Derby a finale. Explanation rewritten. |
 | hs-0264 | explanation | fetched sourceUrl · 2nd pass (verify-2.result.json): ok | 1st: Quote: Arkansas Derby 'has produced eight Kentucky Derby winners' (dated July 10, 2024). 'First winner' claim not on page. |
+| hs-0266 | explanation | fetched sourceUrl (coordinator review) · 2nd pass (verify-3.result.json): ok | 1st: Old explanation ("Ruth has his own marker on the trail") did not support the answer. Trail page: "Ruth trained here nine times and became a very familiar face around Hot Springs." |
 | hs-0269 | explanation | fetched sourceUrl · 2nd pass (verify-3.result.json): ok | 1st: Marker confirms brothers from Lucas, Arkansas. 'More than 30' markers is not stated on the page (only counted); removed. |
 | hs-0273 | explanation | fetched sourceUrl · 2nd pass (verify-2.result.json): ok | 1st: Blue and gold confirmed. Removed unrelated 'no hex values' remark. |
 | hs-0276 | question; explanation | fetched sourceUrl (coordinator) · 2nd pass (verify-4.result.json): ok | 1st: Caption quote 'at Wolf Stadium' confirmed; question narrowed to what the page states instead of inferring the school's home field. |
@@ -423,7 +426,7 @@ spring counts) are either avoided, attributed to a named source, or asked as "so
 | hs-0511 | question | fetched sourceUrl · 2nd pass (verify-3.result.json): fix | 1st: Quote: 'rare jellyfish (non-stinging) and sponges found in very few freshwater lakes'. — 2nd: Page says 'non-stinging' jellyfish, not 'harmless'. |
 | hs-0512 | explanation | fetched sourceUrl · 2nd pass (verify-2.result.json): ok | 1st: Nickname quote confirmed. The 'fortunes rose and fell' line is not on the page; replaced. |
 
-## Unchanged questions (162)
+## Unchanged questions (161)
 
 Each was confirmed against its source in the first pass and, unless marked "—", again in the second.
 
@@ -525,7 +528,6 @@ Each was confirmed against its source in the first pass and, unless marked "—"
 | hs-0259 | fetched sourceUrl | ok |
 | hs-0262 | fetched sourceUrl | ok |
 | hs-0265 | fetched sourceUrl | ok |
-| hs-0266 | fetched sourceUrl | ok |
 | hs-0267 | fetched sourceUrl | ok |
 | hs-0268 | fetched sourceUrl | ok |
 | hs-0270 | fetched sourceUrl | ok |
