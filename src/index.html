@@ -6,9 +6,11 @@
 <title>Valley of Vapors Trivia Trail</title>
 <meta name="description" content="An original trivia board game about Hot Springs, Arkansas. Part of the open-source Hot Springs Games collection (MIT).">
 <link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/art.css">
+<link rel="stylesheet" href="styles/feel.css">
 </head>
 <body class="scene-title">
-<div id="stage"><canvas id="board" role="img" aria-label="Illustrated map of Hot Springs: the trivia trail through eight districts and up to the Mountain Tower"></canvas>
+<div id="stage"><canvas id="board" role="img" aria-label="Tabletop map of Hot Springs, looking east across Bathhouse Row to Hot Springs Mountain: the trivia trail through eight districts and up to the Mountain Tower"></canvas>
   <div id="board-tools"><button id="btn-zoom" class="btn ghost small" data-key="btn-zoom">Close-up</button></div>
 </div>
 <header id="topbar">
@@ -34,6 +36,8 @@
 <div id="live" class="sr-only" aria-live="polite"></div>
 <!-- @inline ../data/questions.json as QUESTIONS -->
 <!-- @inline ../data/timeline-lite.json as TIMELINE -->
+<!-- @inline ../data/board-geo.json as BOARD_GEO -->
+<!-- @inline ../assets/manifest.json as ASSET_MANIFEST -->
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

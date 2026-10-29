@@ -1,0 +1,248 @@
+{
+ "token-circle": {
+  "file": "token-circle.webp",
+  "w": 208,
+  "h": 240,
+  "bytes": 4660
+ },
+ "token-square": {
+  "file": "token-square.webp",
+  "w": 208,
+  "h": 240,
+  "bytes": 3224
+ },
+ "token-triangle": {
+  "file": "token-triangle.webp",
+  "w": 208,
+  "h": 240,
+  "bytes": 3564
+ },
+ "token-diamond": {
+  "file": "token-diamond.webp",
+  "w": 208,
+  "h": 240,
+  "bytes": 4626
+ },
+ "token-star": {
+  "file": "token-star.webp",
+  "w": 208,
+  "h": 240,
+  "bytes": 5076
+ },
+ "token-hexagon": {
+  "file": "token-hexagon.webp",
+  "w": 208,
+  "h": 240,
+  "bytes": 4208
+ },
+ "stamp-row": {
+  "file": "stamp-row.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 31460
+ },
+ "stamp-bridge": {
+  "file": "stamp-bridge.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 47524
+ },
+ "stamp-central": {
+  "file": "stamp-central.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 29346
+ },
+ "stamp-oaklawn": {
+  "file": "stamp-oaklawn.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 41322
+ },
+ "stamp-lakes": {
+  "file": "stamp-lakes.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 44744
+ },
+ "stamp-ballfields": {
+  "file": "stamp-ballfields.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 32154
+ },
+ "stamp-hollow": {
+  "file": "stamp-hollow.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 79616
+ },
+ "stamp-park": {
+  "file": "stamp-park.webp",
+  "w": 360,
+  "h": 360,
+  "bytes": 58832
+ },
+ "land-row": {
+  "file": "land-row.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 148434
+ },
+ "land-bridge": {
+  "file": "land-bridge.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 169624
+ },
+ "land-central": {
+  "file": "land-central.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 142128
+ },
+ "land-oaklawn": {
+  "file": "land-oaklawn.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 135382
+ },
+ "land-lakes": {
+  "file": "land-lakes.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 140718
+ },
+ "land-ballfields": {
+  "file": "land-ballfields.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 133462
+ },
+ "land-hollow": {
+  "file": "land-hollow.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 199650
+ },
+ "land-park": {
+  "file": "land-park.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 145016
+ },
+ "land-tower": {
+  "file": "land-tower.webp",
+  "w": 1200,
+  "h": 500,
+  "bytes": 127560
+ },
+ "board-day": {
+  "file": "board-day.webp",
+  "w": 3200,
+  "h": 2842,
+  "bytes": 1617348
+ },
+ "board-day-lo": {
+  "file": "board-day-lo.webp",
+  "w": 1600,
+  "h": 1421,
+  "bytes": 611484
+ },
+ "board-night": {
+  "file": "board-night.webp",
+  "w": 3200,
+  "h": 2842,
+  "bytes": 606086
+ },
+ "board-night-lo": {
+  "file": "board-night-lo.webp",
+  "w": 1600,
+  "h": 1421,
+  "bytes": 237352
+ },
+ "pawn-circle": {
+  "file": "pawn-circle.webp",
+  "w": 96,
+  "h": 110,
+  "bytes": 2614
+ },
+ "pawn-square": {
+  "file": "pawn-square.webp",
+  "w": 96,
+  "h": 110,
+  "bytes": 1860
+ },
+ "pawn-triangle": {
+  "file": "pawn-triangle.webp",
+  "w": 96,
+  "h": 110,
+  "bytes": 2184
+ },
+ "pawn-diamond": {
+  "file": "pawn-diamond.webp",
+  "w": 96,
+  "h": 110,
+  "bytes": 2686
+ },
+ "pawn-star": {
+  "file": "pawn-star.webp",
+  "w": 96,
+  "h": 110,
+  "bytes": 2884
+ },
+ "pawn-hexagon": {
+  "file": "pawn-hexagon.webp",
+  "w": 96,
+  "h": 110,
+  "bytes": 2354
+ },
+ "standee-arlington": {
+  "file": "standee-arlington.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 32074
+ },
+ "standee-tower": {
+  "file": "standee-tower.webp",
+  "w": 256,
+  "h": 384,
+  "bytes": 18410
+ },
+ "standee-oaklawn": {
+  "file": "standee-oaklawn.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 27814
+ },
+ "standee-ballpark": {
+  "file": "standee-ballpark.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 26504
+ },
+ "standee-hollow": {
+  "file": "standee-hollow.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 37306
+ },
+ "standee-motel": {
+  "file": "standee-motel.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 24732
+ },
+ "standee-dam": {
+  "file": "standee-dam.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 26906
+ },
+ "standee-bridge": {
+  "file": "standee-bridge.webp",
+  "w": 320,
+  "h": 320,
+  "bytes": 31566
+ }
+}

@@ -1,0 +1,1053 @@
+{
+ "nodes": [
+  {
+   "id": 0,
+   "type": "start",
+   "district": null,
+   "name": "Arlington Lawn · Fountain Street",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 1,
+   "type": "cat",
+   "district": "row",
+   "name": "Superior",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 2,
+   "type": "cat",
+   "district": "row",
+   "name": "Hale",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 3,
+   "type": "vent",
+   "district": "row",
+   "name": "Display Spring vent",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 4,
+   "type": "cat",
+   "district": "row",
+   "name": "Fordyce",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 5,
+   "type": "landmark",
+   "district": "row",
+   "name": "Quapaw Baths",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 6,
+   "type": "trailhead",
+   "district": "row",
+   "name": "Grand Promenade trailhead",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 7,
+   "type": "cat",
+   "district": "row",
+   "name": "Buckstaff",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 8,
+   "type": "cat",
+   "district": "bridge",
+   "name": "Reserve Street",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 9,
+   "type": "postcard",
+   "district": "bridge",
+   "name": "Postcard",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 10,
+   "type": "cat",
+   "district": "bridge",
+   "name": "Malvern Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 11,
+   "type": "landmark",
+   "district": "bridge",
+   "name": "Bridge Street",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 12,
+   "type": "cat",
+   "district": "bridge",
+   "name": "Malco Theatre",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 13,
+   "type": "vent",
+   "district": "bridge",
+   "name": "Steam vent",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 14,
+   "type": "cat",
+   "district": "bridge",
+   "name": "Downtown",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 15,
+   "type": "cat",
+   "district": "central",
+   "name": "Central Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 16,
+   "type": "jury",
+   "district": "central",
+   "name": "Grand Jury",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 17,
+   "type": "cat",
+   "district": "central",
+   "name": "Ohio Club",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 18,
+   "type": "postcard",
+   "district": "central",
+   "name": "Postcard",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 19,
+   "type": "cat",
+   "district": "central",
+   "name": "Southern Club",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 20,
+   "type": "cat",
+   "district": "central",
+   "name": "Medical Arts",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 21,
+   "type": "landmark",
+   "district": "central",
+   "name": "Arlington Hotel",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 22,
+   "type": "cat",
+   "district": "oaklawn",
+   "name": "Grandstand",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 23,
+   "type": "wager",
+   "district": "oaklawn",
+   "name": "Post Time",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 24,
+   "type": "cat",
+   "district": "oaklawn",
+   "name": "Paddock",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 25,
+   "type": "landmark",
+   "district": "oaklawn",
+   "name": "Oaklawn",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 26,
+   "type": "wager",
+   "district": "oaklawn",
+   "name": "Post Time",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 27,
+   "type": "cat",
+   "district": "oaklawn",
+   "name": "Homestretch",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 28,
+   "type": "trolley",
+   "district": "oaklawn",
+   "name": "Trolley stop",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 29,
+   "type": "cat",
+   "district": "lakes",
+   "name": "Lake Hamilton",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 30,
+   "type": "vent",
+   "district": "lakes",
+   "name": "Creek mouth vent",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 31,
+   "type": "cat",
+   "district": "lakes",
+   "name": "Garvan Gardens",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 32,
+   "type": "landmark",
+   "district": "lakes",
+   "name": "Lake Ouachita",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 33,
+   "type": "cat",
+   "district": "lakes",
+   "name": "Blakely Mountain Dam",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 34,
+   "type": "postcard",
+   "district": "lakes",
+   "name": "Postcard",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 35,
+   "type": "cat",
+   "district": "lakes",
+   "name": "Lake Ouachita State Park",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 36,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Ban Johnson Field",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 37,
+   "type": "warp",
+   "district": "ballfields",
+   "name": "Time Warp",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 38,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Fogel Field",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 39,
+   "type": "landmark",
+   "district": "ballfields",
+   "name": "Whittington Park",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 40,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Baseball Trail",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 41,
+   "type": "trolley",
+   "district": "ballfields",
+   "name": "Trolley stop",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 42,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Whittington Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 43,
+   "type": "cat",
+   "district": "hollow",
+   "name": "Goat Rock",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 44,
+   "type": "jury",
+   "district": "hollow",
+   "name": "Grand Jury",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 45,
+   "type": "cat",
+   "district": "hollow",
+   "name": "North Mountain",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 46,
+   "type": "landmark",
+   "district": "hollow",
+   "name": "Happy Hollow",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 47,
+   "type": "vent",
+   "district": "hollow",
+   "name": "Happy Hollow Spring vent",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 48,
+   "type": "warp",
+   "district": "hollow",
+   "name": "Time Warp",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 49,
+   "type": "cat",
+   "district": "hollow",
+   "name": "Fountain Street",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 50,
+   "type": "cat",
+   "district": "park",
+   "name": "Velda Rose",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 51,
+   "type": "trolley",
+   "district": "park",
+   "name": "Trolley stop",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 52,
+   "type": "cat",
+   "district": "park",
+   "name": "Motor courts",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 53,
+   "type": "landmark",
+   "district": "park",
+   "name": "Park Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 54,
+   "type": "cat",
+   "district": "park",
+   "name": "Tourist courts",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 55,
+   "type": "postcard",
+   "district": "park",
+   "name": "Postcard",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 56,
+   "type": "cat",
+   "district": "park",
+   "name": "Mountainaire",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 57,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Whittington Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 58,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Whittington Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 59,
+   "type": "cat",
+   "district": "ballfields",
+   "name": "Whittington Avenue",
+   "cost": 1,
+   "spur": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 60,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Grand Promenade",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 61,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Grand Promenade",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 62,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Trail fork",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 63,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Short Cut (21.1% grade)",
+   "cost": 2,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 64,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Short Cut (21.1% grade)",
+   "cost": 2,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 65,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Peak Trail (12.6% grade)",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 66,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Peak Trail (12.6% grade)",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 67,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Peak Trail (12.6% grade)",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 68,
+   "type": "trail",
+   "district": "mountain",
+   "name": "Peak Trail (12.6% grade)",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "id": 69,
+   "type": "tower",
+   "district": "mountain",
+   "name": "Hot Springs Mountain Tower",
+   "cost": 1,
+   "spur": true,
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "edges": [
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   21
+  ],
+  [
+   0,
+   49
+  ],
+  [
+   0,
+   57
+  ],
+  [
+   1,
+   2
+  ],
+  [
+   2,
+   3
+  ],
+  [
+   3,
+   4
+  ],
+  [
+   4,
+   5
+  ],
+  [
+   5,
+   6
+  ],
+  [
+   6,
+   7
+  ],
+  [
+   6,
+   60
+  ],
+  [
+   7,
+   8
+  ],
+  [
+   8,
+   9
+  ],
+  [
+   9,
+   10
+  ],
+  [
+   10,
+   11
+  ],
+  [
+   11,
+   12
+  ],
+  [
+   11,
+   22
+  ],
+  [
+   12,
+   13
+  ],
+  [
+   13,
+   14
+  ],
+  [
+   14,
+   15
+  ],
+  [
+   15,
+   16
+  ],
+  [
+   16,
+   17
+  ],
+  [
+   17,
+   18
+  ],
+  [
+   18,
+   19
+  ],
+  [
+   19,
+   20
+  ],
+  [
+   20,
+   21
+  ],
+  [
+   22,
+   23
+  ],
+  [
+   23,
+   24
+  ],
+  [
+   24,
+   25
+  ],
+  [
+   25,
+   26
+  ],
+  [
+   26,
+   27
+  ],
+  [
+   27,
+   28
+  ],
+  [
+   28,
+   29
+  ],
+  [
+   29,
+   30
+  ],
+  [
+   30,
+   31
+  ],
+  [
+   31,
+   32
+  ],
+  [
+   32,
+   33
+  ],
+  [
+   33,
+   34
+  ],
+  [
+   34,
+   35
+  ],
+  [
+   35,
+   36
+  ],
+  [
+   36,
+   37
+  ],
+  [
+   37,
+   38
+  ],
+  [
+   38,
+   39
+  ],
+  [
+   39,
+   40
+  ],
+  [
+   40,
+   41
+  ],
+  [
+   41,
+   42
+  ],
+  [
+   42,
+   50
+  ],
+  [
+   42,
+   59
+  ],
+  [
+   43,
+   44
+  ],
+  [
+   43,
+   56
+  ],
+  [
+   44,
+   45
+  ],
+  [
+   45,
+   46
+  ],
+  [
+   46,
+   47
+  ],
+  [
+   47,
+   48
+  ],
+  [
+   48,
+   49
+  ],
+  [
+   50,
+   51
+  ],
+  [
+   51,
+   52
+  ],
+  [
+   52,
+   53
+  ],
+  [
+   53,
+   54
+  ],
+  [
+   54,
+   55
+  ],
+  [
+   55,
+   56
+  ],
+  [
+   57,
+   58
+  ],
+  [
+   58,
+   59
+  ],
+  [
+   60,
+   61
+  ],
+  [
+   61,
+   62
+  ],
+  [
+   62,
+   63
+  ],
+  [
+   62,
+   65
+  ],
+  [
+   63,
+   64
+  ],
+  [
+   64,
+   69
+  ],
+  [
+   65,
+   66
+  ],
+  [
+   66,
+   67
+  ],
+  [
+   67,
+   68
+  ],
+  [
+   68,
+   69
+  ]
+ ],
+ "districts": [
+  {
+   "key": "row",
+   "name": "Bathhouse Row",
+   "cat": "Places & Landmarks"
+  },
+  {
+   "key": "bridge",
+   "name": "Bridge Street",
+   "cat": "Food & Culture"
+  },
+  {
+   "key": "central",
+   "name": "Central Avenue",
+   "cat": "History"
+  },
+  {
+   "key": "oaklawn",
+   "name": "Oaklawn",
+   "cat": "Entertainment"
+  },
+  {
+   "key": "lakes",
+   "name": "The Lakes",
+   "cat": "Nature & Lakes"
+  },
+  {
+   "key": "ballfields",
+   "name": "The Ballfields",
+   "cat": "Sports"
+  },
+  {
+   "key": "hollow",
+   "name": "Happy Hollow",
+   "cat": "Legends & Oddities"
+  },
+  {
+   "key": "park",
+   "name": "Park Avenue",
+   "cat": "People"
+  }
+ ],
+ "trailhead": 6,
+ "tower": 69,
+ "start": 0,
+ "vents": [
+  [
+   3,
+   30
+  ],
+  [
+   13,
+   47
+  ]
+ ]
+}

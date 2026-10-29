@@ -1,0 +1,365 @@
+{
+ "quality": 0.84,
+ "items": [
+  {
+   "name": "board-day",
+   "src": "blender/renders/board-day-3200.png",
+   "w": 3200,
+   "h": 2842,
+   "fit": "cover",
+   "quality": 0.82
+  },
+  {
+   "name": "board-day-lo",
+   "src": "blender/renders/board-day-3200.png",
+   "w": 1600,
+   "h": 1421,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "board-night",
+   "src": "blender/renders/board-night-3200.png",
+   "w": 3200,
+   "h": 2842,
+   "fit": "cover",
+   "quality": 0.82
+  },
+  {
+   "name": "board-night-lo",
+   "src": "blender/renders/board-night-3200.png",
+   "w": 1600,
+   "h": 1421,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "token-circle",
+   "src": "tokens/token-circle.png",
+   "w": 208,
+   "h": 240,
+   "fit": "contain"
+  },
+  {
+   "name": "token-square",
+   "src": "tokens/token-square.png",
+   "w": 208,
+   "h": 240,
+   "fit": "contain"
+  },
+  {
+   "name": "token-triangle",
+   "src": "tokens/token-triangle.png",
+   "w": 208,
+   "h": 240,
+   "fit": "contain"
+  },
+  {
+   "name": "token-diamond",
+   "src": "tokens/token-diamond.png",
+   "w": 208,
+   "h": 240,
+   "fit": "contain"
+  },
+  {
+   "name": "token-star",
+   "src": "tokens/token-star.png",
+   "w": 208,
+   "h": 240,
+   "fit": "contain"
+  },
+  {
+   "name": "token-hexagon",
+   "src": "tokens/token-hexagon.png",
+   "w": 208,
+   "h": 240,
+   "fit": "contain"
+  },
+  {
+   "name": "stamp-row",
+   "src": "pilot-stamp-row.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-bridge",
+   "src": "stamp-bridge.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-central",
+   "src": "stamp-central.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-oaklawn",
+   "src": "stamp-oaklawn.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-lakes",
+   "src": "stamp-lakes.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-ballfields",
+   "src": "stamp-ballfields.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-hollow",
+   "src": "stamp-hollow.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "stamp-park",
+   "src": "stamp-park.png",
+   "w": 360,
+   "h": 360,
+   "fit": "contain",
+   "keyWhite": 40
+  },
+  {
+   "name": "land-row",
+   "src": "pilot-row.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-bridge",
+   "src": "land-bridge.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-central",
+   "src": "land-central.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-oaklawn",
+   "src": "land-oaklawn.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-lakes",
+   "src": "land-lakes.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-ballfields",
+   "src": "land-ballfields.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-hollow",
+   "src": "land-hollow.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-park",
+   "src": "land-park.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "land-tower",
+   "src": "land-tower.png",
+   "w": 1200,
+   "h": 500,
+   "fit": "cover",
+   "quality": 0.8
+  },
+  {
+   "name": "pawn-circle",
+   "src": "tokens/token-circle.png",
+   "w": 96,
+   "h": 110,
+   "fit": "contain",
+   "crop": [
+    0.08,
+    0,
+    0.84,
+    0.8
+   ]
+  },
+  {
+   "name": "pawn-square",
+   "src": "tokens/token-square.png",
+   "w": 96,
+   "h": 110,
+   "fit": "contain",
+   "crop": [
+    0.08,
+    0,
+    0.84,
+    0.8
+   ]
+  },
+  {
+   "name": "pawn-triangle",
+   "src": "tokens/token-triangle.png",
+   "w": 96,
+   "h": 110,
+   "fit": "contain",
+   "crop": [
+    0.08,
+    0,
+    0.84,
+    0.8
+   ]
+  },
+  {
+   "name": "pawn-diamond",
+   "src": "tokens/token-diamond.png",
+   "w": 96,
+   "h": 110,
+   "fit": "contain",
+   "crop": [
+    0.08,
+    0,
+    0.84,
+    0.8
+   ]
+  },
+  {
+   "name": "pawn-star",
+   "src": "tokens/token-star.png",
+   "w": 96,
+   "h": 110,
+   "fit": "contain",
+   "crop": [
+    0.08,
+    0,
+    0.84,
+    0.8
+   ]
+  },
+  {
+   "name": "pawn-hexagon",
+   "src": "tokens/token-hexagon.png",
+   "w": 96,
+   "h": 110,
+   "fit": "contain",
+   "crop": [
+    0.08,
+    0,
+    0.84,
+    0.8
+   ]
+  },
+  {
+   "name": "standee-arlington",
+   "src": "standee-arlington.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-tower",
+   "src": "standee-tower.png",
+   "w": 256,
+   "h": 384,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-oaklawn",
+   "src": "standee-oaklawn.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-ballpark",
+   "src": "standee-ballpark.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-hollow",
+   "src": "standee-hollow.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-motel",
+   "src": "standee-motel.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-dam",
+   "src": "standee-dam.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  },
+  {
+   "name": "standee-bridge",
+   "src": "standee-bridge.png",
+   "w": 320,
+   "h": 320,
+   "fit": "contain",
+   "keyWhite": 22,
+   "trim": true
+  }
+ ]
+}

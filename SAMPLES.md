@@ -58,3 +58,21 @@ to each destination for token animation.
 
 Nothing from any commercial trivia board game (board shape, wedge tokens, category colors or names)
 was used or consulted.
+
+## Visual pass: data, art and benchmarks
+
+No third-party code is vendored. The map and art come from public data and from original generated art.
+
+| Item | Source | License | Where it is used |
+|---|---|---|---|
+| Terrain | USGS 3DEP elevation (ImageServer exportImage, 1/3 arc-second and finer) | Public domain | `tools/map/` builds the board render; raw files are in `art-src/geo/raw/` (git-ignored, refetchable) |
+| Streets, railroads | US Census TIGERweb, Transportation layers 2/6/8/9 | Public domain | board render |
+| Lakes, creeks | USGS National Hydrography Dataset, layers 6 and 12 | Public domain | board render |
+| Downtown building footprints, trails, the Oaklawn oval, Blakely Mountain Dam | OpenStreetMap via the Overpass API | ODbL 1.0, © OpenStreetMap contributors | board render. Attribution is printed on the board and in How to play |
+| Point anchors | `research/geo-anchors.json` (GNIS, NRHP and Wikipedia coordinates, plus centroids derived from OSM) | facts, cited per point | `tools/map/layout.py` |
+| Landmark paintings and passport stamps | Original images generated with OpenAI image generation through Codex. Prompts are recorded in the visual pass notes: no text, no logos, no real people | Project's own (MIT) | `assets/land-*.webp`, `assets/stamp-*.webp` |
+| Board diorama and token sprites | Rendered in Blender 5.2 (Cycles) by our own scripts in `tools/map/` | Project's own (MIT) | `assets/board-*.webp`, `assets/token-*.webp` |
+
+**Benchmarks** for the visual review are store screenshots of Ticket to Ride, Trivial Pursuit Live! 2,
+Wingspan, NEW MONOPOLY, Trivia Crack and Root. They are kept in `benchmarks/` (git-ignored) with a README
+of their source URLs. They were used only to compare quality; no art, layout, characters or trademarks were copied.

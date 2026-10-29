@@ -26,6 +26,27 @@ export const tests = [
     },
   },
   {
+    // Busiest board: six tokens, steam, a pulsing destination set, zoomed in (follow camera), night art.
+    name: 'busiest scene fps, art download',
+    async run(t) {
+      await t.game('setState', { settings: { theme: 'dark' } });
+      await soloGame(t, { players: [{ kind: 'human' }, ...Array.from({ length: 5 }, () => ({ kind: 'ai', level: 'medium' }))], settings: { theme: 'dark' } });
+      await t.game('act', 'stopAI');
+      const st = await t.state();
+      if (st.ui.camera !== 'follow') await t.game('act', 'ui', 'zoom');
+      await t.game('act', 'roll', 6);
+      await phase(t, 'choose');
+      const fps = await t.fps(2500);
+      const art = await t.page.evaluate(() => performance.getEntriesByType('resource').filter((r) => /\/assets\//.test(r.name))
+        .map((r) => ({ n: r.name.split('/').pop(), kb: Math.round((r.encodedBodySize || r.transferSize || 0) / 1024) })));
+      const kb = art.reduce((a, r) => a + r.kb, 0);
+      t.log(`busiest fps ${fps} · art requests ${art.length} · ${kb} KB (${art.filter((r) => r.n.startsWith('board')).map((r) => r.n).join(', ')})`);
+      t.expect(fps >= (t.viewport === 'mobile' ? 30 : 55), `busiest fps ${fps}`);
+      t.expect(kb <= 6 * 1024, `art download ${kb} KB ≤ 6 MB`);
+      await t.game('setState', { settings: { theme: 'auto' } });
+    },
+  },
+  {
     name: 'bank is the audited copy; no repeats; adaptive skill',
     viewports: ['desktop'],
     async run(t) {

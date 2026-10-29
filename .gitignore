@@ -1,0 +1,4 @@
+# Raw downloaded map data (USGS / Census / NHD / OSM): refetchable from the queries in research/map-projection.md
+art-src/geo/raw/
+# Token renders (rebuilt by tools/map/tokens.py); the packed WebP files in assets/ ship
+art-src/tokens/*.png

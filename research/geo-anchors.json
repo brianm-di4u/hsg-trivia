@@ -1,0 +1,76 @@
+{
+  "_meta": {
+    "description": "Geo anchors for the Hot Springs tabletop board. WGS84 decimal degrees. confidence: surveyed = coordinate published by GNIS, NRHP/NPGallery, Wikipedia, or HMdb GPS; derived = computed by us from OpenStreetMap geometry or NPS UTM points (+/- 5-15 m); approx = estimate for a site with no exact published point.",
+    "rowReference": "NRHP point for the Bathhouse Row district (34.513889, -93.053611) is the origin for every distance and bearing in bathhouse-row-layout.md.",
+    "compiled": "2026-10-28",
+    "osmLicense": "OSM-derived points (c) OpenStreetMap contributors, ODbL"
+  },
+
+  "rowRef":            { "lat": 34.513889, "lon": -93.053611, "name": "Bathhouse Row NHL district (NRHP point)", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "centralReserve":    { "lat": 34.511616, "lon": -93.054023, "name": "Central Ave / Reserve St intersection (south end of the Row)", "source": "https://www.openstreetmap.org/way/695791275", "confidence": "derived" },
+  "centralFountain":   { "lat": 34.516248, "lon": -93.053389, "name": "Central Ave / Fountain St intersection (north end of the Row; Central bends NW here)", "source": "https://www.openstreetmap.org/way/695791275", "confidence": "derived" },
+  "parkWhittingtonY":  { "lat": 34.518767, "lon": -93.055844, "name": "The Y: Central Ave ends; Park Ave goes N and Whittington Ave goes W", "source": "https://www.openstreetmap.org/way/1302627169", "confidence": "derived" },
+
+  "superior":  { "lat": 34.514870, "lon": -93.053311, "name": "Superior Bathhouse (329 Central Ave), northernmost", "source": "https://www.openstreetmap.org/way/1002548146", "confidence": "derived" },
+  "hale":      { "lat": 34.514551, "lon": -93.053363, "name": "Hale Bathhouse / Hotel Hale (341 Central Ave)", "source": "https://www.openstreetmap.org/way/1002531001", "confidence": "derived" },
+  "maurice":   { "lat": 34.514091, "lon": -93.053400, "name": "Maurice Bathhouse (359 Central Ave per OSM; 355 per SAH Archipedia)", "source": "https://www.openstreetmap.org/way/1213679525", "confidence": "derived" },
+  "fordyce":   { "lat": 34.513714, "lon": -93.053473, "name": "Fordyce Bathhouse, park visitor center (369 Central Ave)", "source": "https://www.openstreetmap.org/way/999352516", "confidence": "derived" },
+  "quapaw":    { "lat": 34.513245, "lon": -93.053581, "name": "Quapaw Bathhouse (413 Central Ave)", "source": "https://www.openstreetmap.org/way/1002546215", "confidence": "derived" },
+  "ozark":     { "lat": 34.512765, "lon": -93.053622, "name": "Ozark Bathhouse (425 Central Ave; 491 in one archive)", "source": "https://www.openstreetmap.org/way/1213679527", "confidence": "derived" },
+  "buckstaff": { "lat": 34.512428, "lon": -93.053597, "name": "Buckstaff Bathhouse (509 Central Ave)", "source": "https://www.openstreetmap.org/way/999348743", "confidence": "derived" },
+  "lamar":     { "lat": 34.512151, "lon": -93.053563, "name": "Lamar Bathhouse (515 Central Ave), southernmost bathhouse", "source": "https://www.openstreetmap.org/way/1213679526", "confidence": "derived" },
+  "admin":     { "lat": 34.511910, "lon": -93.053584, "name": "NPS Administration Building, 1936 (101 Reserve St)", "source": "https://www.openstreetmap.org/way/1213970861", "confidence": "derived" },
+
+  "mainEntrance":    { "lat": 34.513900, "lon": -93.053560, "name": "Original main entrance and eagle pylons, between the Maurice and Fordyce", "source": "https://npgallery.nps.gov/NRHP/GetAsset/NHLS/74000275_text", "confidence": "approx" },
+  "displaySpring":   { "lat": 34.514086, "lon": -93.053074, "name": "Maurice Historic Display Spring (open-air, on the hillside behind the Maurice)", "source": "https://www.openstreetmap.org/node/11247323174", "confidence": "derived" },
+  "noble":           { "lat": 34.511773, "lon": -93.053185, "name": "Noble Fountain, Reserve St entrance (south end) of the Grand Promenade", "source": "https://www.nps.gov/places/noble-fountain-hot.htm", "confidence": "approx" },
+  "hotWaterCascade": { "lat": 34.516057, "lon": -93.052644, "name": "Thermal (Hot) Water Cascade, Arlington Lawn (from CLI UTM 15N 495168 E / 3819379 N)", "source": "https://npshistory.com/publications/hosp/cli-bathhouse-row.pdf", "confidence": "derived" },
+  "grandPromenadeS": { "lat": 34.511738, "lon": -93.053097, "name": "Grand Promenade south end, Reserve St stairs", "source": "https://www.openstreetmap.org/way/1213970864", "confidence": "derived" },
+  "grandPromenadeN": { "lat": 34.517648, "lon": -93.051002, "name": "Grand Promenade north end, Fountain St ramp", "source": "https://www.openstreetmap.org/way/1531073695", "confidence": "derived" },
+  "peakTrailhead":   { "lat": 34.514544, "lon": -93.053008, "name": "Peak Trail lower end, on the Grand Promenade behind the Hale", "source": "https://www.openstreetmap.org/way/982266806", "confidence": "derived" },
+  "peakTrailTop":    { "lat": 34.517071, "lon": -93.046009, "name": "Peak Trail upper end at Hot Springs Mountain Tower", "source": "https://www.openstreetmap.org/way/982266806", "confidence": "derived" },
+  "shortCutLower":   { "lat": 34.513841, "lon": -93.050261, "name": "Short Cut Trail lower end (Oertel Trail side)", "source": "https://www.openstreetmap.org/way/626283169", "confidence": "derived" },
+  "shortCutUpper":   { "lat": 34.515577, "lon": -93.047820, "name": "Short Cut Trail upper end (Hot Springs Mountain Trail / picnic area)", "source": "https://www.openstreetmap.org/way/626283169", "confidence": "derived" },
+
+  "arlington":   { "lat": 34.516667, "lon": -93.053056, "name": "Arlington Hotel (1924), 239 Central Ave, between Central and Fountain", "source": "https://en.wikipedia.org/wiki/Arlington_Hotel_(Hot_Springs_National_Park)", "confidence": "surveyed" },
+  "tower":       { "lat": 34.517228, "lon": -93.046106, "name": "Hot Springs Mountain Tower (216 ft)", "source": "https://en.wikipedia.org/wiki/Hot_Springs_Mountain_Tower", "confidence": "surveyed" },
+  "hotSpringsMtnSummit": { "lat": 34.517554, "lon": -93.045650, "name": "Hot Springs Mountain summit (GNIS 57949)", "source": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5", "confidence": "surveyed" },
+
+  "ohioClub":     { "lat": 34.514916, "lon": -93.053751, "name": "Ohio Club, 336 Central Ave (across from the Superior)", "source": "https://nominatim.openstreetmap.org/search?q=336+Central+Avenue,+Hot+Springs,+Arkansas", "confidence": "derived" },
+  "southernClub": { "lat": 34.516103, "lon": -93.053511, "name": "Southern Club / Wax Museum, 250 Central Ave", "source": "https://www.openstreetmap.org/way/1002532568", "confidence": "derived" },
+  "medicalArts":  { "lat": 34.516389, "lon": -93.053889, "name": "Medical Arts Building, 236 Central Ave", "source": "https://en.wikipedia.org/wiki/Medical_Arts_Building_(Hot_Springs,_Arkansas)", "confidence": "surveyed" },
+  "malco":        { "lat": 34.508967, "lon": -93.054236, "name": "Malco Theatre, 817 Central Ave (Wikipedia article gives 34.510556, -93.054167: conflict)", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "bridgeSt":     { "lat": 34.509449, "lon": -93.053737, "name": "Bridge Street midpoint (runs E-W from Central to Malvern)", "source": "https://www.openstreetmap.org/way/12805886", "confidence": "derived" },
+  "creekDaylight": { "lat": 34.507257, "lon": -93.052004, "name": "Hot Springs Creek leaves its culvert and runs in the open", "source": "https://www.openstreetmap.org/way/1213972844", "confidence": "derived" },
+  "fountainStBend": { "lat": 34.518796, "lon": -93.048881, "name": "Fountain St bend, about 1,650 ft up from Central (Happy Hollow markers)", "source": "https://www.openstreetmap.org/way/12810305", "confidence": "derived" },
+  "armyNavyHospital": { "lat": 34.512022, "lon": -93.050383, "name": "Army and Navy Hospital HD, Reserve St", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "federalBuilding": { "lat": 34.511667, "lon": -93.053889, "name": "Federal Building / Post Office, 100 Reserve St (Eastman Hotel site)", "source": "https://en.wikipedia.org/wiki/Federal_Building%E2%80%93U.S._Post_Office_and_Court_House_(Hot_Springs,_Arkansas)", "confidence": "surveyed" },
+
+  "velda":       { "lat": 34.521000, "lon": -93.055500, "name": "Velda Rose Tower Motor Hotel, 218 Park Ave", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "mountainaire": { "lat": 34.530556, "lon": -93.042222, "name": "Mountainaire Hotel Historic District, 1100 Park Ave", "source": "https://en.wikipedia.org/wiki/Mountainaire_Hotel_Historic_District", "confidence": "surveyed" },
+  "parkAveCourtsS": { "lat": 34.521389, "lon": -93.054722, "name": "Park Ave motor-court strip, south end (Langdon Filling Station, 311 Park)", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "parkAveCourtsN": { "lat": 34.531389, "lon": -93.045833, "name": "Park Ave strip, north end (1011 Park Ave)", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "happyHollow": { "lat": 34.518744, "lon": -93.049133, "name": "Happy Hollow (McLeod's amusement park) and spring markers, Fountain St", "source": "https://www.hmdb.org/m.asp?m=145652", "confidence": "approx" },
+
+  "whittingtonPark": { "lat": 34.516620, "lon": -93.065770, "name": "Whittington Park Historic District (Whittington Ave & Sabie St)", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "banJohnson":  { "lat": 34.515100, "lon": -93.074030, "name": "Whittington Park ballpark / Ban Johnson Park site, 870 Whittington Ave", "source": "https://en.wikipedia.org/wiki/Ban_Johnson_Park", "confidence": "surveyed" },
+  "fogelField":  { "lat": 34.515083, "lon": -93.073217, "name": "Fogel Field site, 847 Whittington Ave (Alligator Farm)", "source": "https://en.wikipedia.org/wiki/Fogel_Field", "confidence": "surveyed" },
+  "majesticPark": { "lat": 34.495457, "lon": -93.051642, "name": "Majestic Park, 109 W Belding St", "source": "https://en.wikipedia.org/wiki/Majestic_Park", "confidence": "surveyed" },
+  "oaklawn":     { "lat": 34.484999, "lon": -93.057096, "name": "Oaklawn Racing Casino Resort, 2705 Central Ave", "source": "https://en.wikipedia.org/wiki/Oaklawn_Racing_Casino_Resort", "confidence": "surveyed" },
+
+  "northMountain": { "lat": 34.526479, "lon": -93.041568, "name": "North Mountain summit (GNIS 58276)", "source": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5", "confidence": "surveyed" },
+  "westMountain":  { "lat": 34.506650, "lon": -93.101058, "name": "West Mountain summit (GNIS 58856), about 2.75 mi WSW of the Row; the park's West Mountain Drive overlooks are much closer", "source": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5", "confidence": "surveyed" },
+  "westMountainOverlook": { "lat": 34.508525, "lon": -93.067495, "name": "West Mountain Drive (in-park summit drive), sample point", "source": "https://www.openstreetmap.org/way/12808471", "confidence": "approx" },
+  "sugarloaf":     { "lat": 34.520191, "lon": -93.080752, "name": "Sugarloaf Mountain summit (GNIS 78487)", "source": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5", "confidence": "surveyed" },
+  "goatRock":      { "lat": 34.527262, "lon": -93.039179, "name": "Goat Rock viewpoint, North Mountain", "source": "https://www.openstreetmap.org/node/4465433144", "confidence": "derived" },
+
+  "lakeHamiltonShore": { "lat": 34.463510, "lon": -93.044330, "name": "Lake Hamilton: shore point nearest the Row (head of the Hot Springs Creek arm)", "source": "https://www.openstreetmap.org/relation/1950316", "confidence": "derived" },
+  "garvanGardens":     { "lat": 34.434700, "lon": -93.045600, "name": "Garvan Woodland Gardens, Lake Hamilton", "source": "https://en.wikipedia.org/wiki/Garvan_Woodland_Gardens", "confidence": "surveyed" },
+  "carpenterDam":      { "lat": 34.442222, "lon": -93.025833, "name": "Carpenter Dam (forms Lake Hamilton; Lake Catherine below it)", "source": "https://en.wikipedia.org/wiki/National_Register_of_Historic_Places_listings_in_Garland_County,_Arkansas", "confidence": "surveyed" },
+  "lakeCatherineShore": { "lat": 34.472170, "lon": -92.986580, "name": "Lake Catherine: shore point nearest the Row", "source": "https://www.openstreetmap.org/relation/3368421", "confidence": "derived" },
+  "lakeCatherineSP":   { "lat": 34.437945, "lon": -92.917989, "name": "Lake Catherine State Park", "source": "https://en.wikipedia.org/wiki/Lake_Catherine_State_Park", "confidence": "surveyed" },
+  "remmelDam":         { "lat": 34.426953, "lon": -92.894326, "name": "Remmel Dam (forms Lake Catherine)", "source": "https://www.openstreetmap.org/way/250878739", "confidence": "derived" },
+  "lakeOuachitaShore": { "lat": 34.574100, "lon": -93.193590, "name": "Lake Ouachita: shore point nearest the Row (by Blakely Mountain Dam)", "source": "https://www.openstreetmap.org/relation/1909083", "confidence": "derived" },
+  "lakeOuachitaSP":    { "lat": 34.618640, "lon": -93.177295, "name": "Lake Ouachita State Park", "source": "https://en.wikipedia.org/wiki/Lake_Ouachita_State_Park", "confidence": "surveyed" },
+  "blakelyDam":        { "lat": 34.572505, "lon": -93.194801, "name": "Blakely Mountain Dam (forms Lake Ouachita)", "source": "https://www.openstreetmap.org/way/561503496", "confidence": "derived" }
+}

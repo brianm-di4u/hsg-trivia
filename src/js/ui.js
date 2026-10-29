@@ -8,20 +8,43 @@ import * as Game from './game.js';
 import { G } from './game.js';
 import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
+import * as Assets from './assets.js';
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { modal: null, setup: null, menuOpen: false, focusNext: null, modalAt: 0 };
+export const ui = { modal: null, setup: null, menuOpen: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
-const tokenIco = (p, size = 22) => `<canvas class="tok" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-shape="${p.shape}" data-tcolor="${p.color}" aria-hidden="true"></canvas>`;
+const tokenIco = (p, size = 22) => (Assets.has('pawn-' + p.shape)
+  ? `<img class="tok pawn" src="assets/pawn-${p.shape}.webp" alt="" width="${Math.round(size * 0.87)}" height="${size}" aria-hidden="true">`
+  : `<canvas class="tok" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-shape="${p.shape}" data-tcolor="${p.color}" aria-hidden="true"></canvas>`);
 const btn = (act, label, { arg = '', cls = '', key = '', hint = '', dis = false, auto = false } = {}) =>
   `<button class="btn ${cls}" data-act="${act}" data-arg="${esc(arg)}" data-key="${esc(key || act + ':' + arg)}"${dis ? ' disabled' : ''}${auto ? ' data-autofocus' : ''}>${label}${hint ? `<span class="kbd" aria-hidden="true">${hint}</span>` : ''}</button>`;
 const TICKET = '<svg class="ticket" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 2h20v4a2 2 0 0 0 0 4v4H2v-4a2 2 0 0 0 0-4z" fill="currentColor"/><path d="M15 3v10" stroke="var(--color-surface)" stroke-width="1.4" stroke-dasharray="1.6 1.4"/></svg>';
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
+// Painted art (assets/), used only when the manifest lists it; every use has a non-art fallback.
+const artSrc = (name) => (Assets.has(name) ? `assets/${name}.webp` : null);
+const DIST_OF = Object.fromEntries(DISTRICTS.map((d) => [d.cat, d]));
+const SUBJECT_ART = [
+  [/arlington/i, 'central', 'Central Avenue'], [/mountain tower|hot springs mountain/i, 'tower', 'Hot Springs Mountain'],
+  [/oaklawn|racing|derby|thoroughbred|jockey/i, 'oaklawn', 'Oaklawn'], [/bathhouse|bath house|bathhouse row|fordyce|quapaw|buckstaff|maurice|superior|ozark|lamar|hale bath/i, 'row', 'Bathhouse Row'],
+  [/lake (ouachita|hamilton|catherine)|garvan|dam\b|fishing|bass/i, 'lakes', 'The Lakes'], [/whittington|ballpark|spring training|baseball|majestic park|fogel|ban johnson/i, 'ballfields', 'The Ballfields'],
+  [/happy hollow|mcleod/i, 'hollow', 'Happy Hollow'], [/park avenue|motor court|motel|velda rose/i, 'park', 'Park Avenue'], [/bridge street|parade/i, 'bridge', 'Bridge Street'],
+];
+function cardArt(q) {
+  const text = q.text + ' ' + (q.choices[q.correctIndex] || '');
+  for (const [re, key, name] of SUBJECT_ART) if (re.test(text) && artSrc('land-' + key)) return { src: artSrc('land-' + key), name };
+  const d = DIST_OF[q.category]; return d && artSrc('land-' + d.key) ? { src: artSrc('land-' + d.key), name: d.name } : null;
+}
+const STAMP_ROT = { row: -9, bridge: 6, central: -4, oaklawn: 8, lakes: -7, ballfields: 5, hollow: -11, park: 7 };
+const stampImg = (d, have, size = 92) => {
+  const src = artSrc('stamp-' + d.key);
+  return src ? `<img class="stampimg" src="${src}" alt="" width="${size}" height="${size}" style="--rot:${STAMP_ROT[d.key] || 0}deg" aria-hidden="true">`
+    : `<canvas class="stampc" width="${size * 2}" height="${size * 2}" data-d="${d.key}" data-have="${have ? 1 : 0}" style="width:${size}px;height:${size}px" aria-hidden="true"></canvas>`;
+};
 
 function paintCanvases(root) {
   root.querySelectorAll('canvas.ico').forEach((c) => {
@@ -107,7 +130,9 @@ function updateTopbar() {
 function titleHTML() {
   const sv = G.save.data; const has = G.save.data.trail && G.save.data.trail.phase !== 'over';
   const daily = sv.daily && sv.daily.results && sv.daily.results[G.today()];
+  const hero = artSrc('land-row');
   return `<div class="page-card title-card">
+    ${hero ? `<div class="title-art"><img src="${hero}" alt="" aria-hidden="true"></div>` : ''}
     <p class="eyebrow">Hot Springs, Arkansas</p>
     <h1 class="logo">Valley of Vapors<span>Trivia Trail</span></h1>
     <p class="tag">Answer your way across the Spa City, fill your passport with landmark stamps, then race up to the Mountain Tower for the Summit question.</p>
@@ -151,6 +176,17 @@ function setupHTML() {
 }
 
 // ---------- game panel ----------
+// The roll shows on a steam-pressure gauge: the needle swings once per new roll, then rests on the number.
+function gaugeHTML(t) {
+  const key = t.round + ':' + t.turn + ':' + t.roll;
+  const spin = ui.gaugeKey !== key; ui.gaugeKey = key;
+  const ang = (i) => -135 + (i - 1) * 54;
+  const marks = [1, 2, 3, 4, 5, 6].map((i) => {
+    const a = ((ang(i) - 90) * Math.PI) / 180;
+    return `<text x="${(30 + Math.cos(a) * 17).toFixed(1)}" y="${(31.6 + Math.sin(a) * 17).toFixed(1)}"${i === t.roll ? ' class="on"' : ''}>${i}</text>`;
+  }).join('');
+  return `<svg class="gauge${spin ? ' spin' : ''}" viewBox="0 0 60 60" style="--a:${ang(t.roll)}deg" aria-hidden="true"><circle cx="30" cy="30" r="28" class="g-rim"/><circle cx="30" cy="30" r="24.5" class="g-face"/><path class="g-arc" d="M11.6 48.4 A26 26 0 1 1 48.4 48.4"/>${marks}<g class="g-needle"><path d="M30 32 L30 10"/><circle cx="30" cy="30" r="3.4"/></g></svg>`;
+}
 function stampPips(p) {
   return `<span class="pips" aria-label="${p.stamps.length} stamps">${DISTRICTS.map((d) => { const have = p.stamps.includes(d.cat); const c = CAT[d.cat]; return have ? ico(c.icon, c.color, c.ink, 16, 'pip') : '<span class="pip empty"></span>'; }).join('')}</span>`;
 }
@@ -175,7 +211,7 @@ function panelHTML() {
           <span class="num" aria-hidden="true">${i + 1}</span>${c && (n.type === 'cat' || n.type === 'landmark') ? ico(c.icon, c.color, c.ink, 24) : ico(n.type === 'tower' ? 'tower' : n.type === 'trail' ? 'trailhead' : ({ start: 'star' }[n.type] || n.type), '', 'currentColor', 24)}
           <span class="dtext"><span class="dname">${esc(n.name)}</span><span class="dsub">${esc(kind)} · ${esc(dn)}</span></span></button></li>`;
       }).join('');
-      action = `<p class="status">${who} rolled <span class="die" aria-label="${t.roll}">${t.roll}</span> ${ai ? 'and is choosing…' : '— pick where to stop:'}</p>
+      action = `<p class="status rolled">${gaugeHTML(t)}<span>${who} rolled <span class="die" aria-label="${t.roll}">${t.roll}</span> ${ai ? 'and is choosing…' : '— pick where to stop:'}</span></p>
         <ol class="dests" aria-label="Destinations">${list}</ol>
         ${!ai && !t.rerolled ? btn('reroll', 'Re-roll · 1 ticket', { cls: 'ghost small', hint: 'R', dis: p.tickets < 1 }) : ''}`;
       break;
@@ -185,14 +221,20 @@ function panelHTML() {
     case 'stuck': action = `<p class="status">No space is exactly ${t.roll} away — ${who} waits in the steam.</p>`; break;
     case 'landed': action = `<p class="status">${who} stops at ${esc(NODES[p.node].name)}.</p>`; break;
     case 'over': action = `<p class="status">${who} wins!</p>`; break;
-    default: action = `<p class="status">${who}${ai ? ' is thinking…' : '’s turn'}</p>`;
+    default: action = `<p class="status">${who} ${ai ? 'is thinking…' : ['question', 'feedback'].includes(t.phase) ? 'answers at ' + esc(NODES[p.node].name) : '— your move'}</p>`;
   }
-  const players = t.players.map((q, i) => `<li class="pl${i === t.turn ? ' on' : ''}">${tokenIco(q, 22)}
+  const players = t.players.map((q, i) => `<li class="pl${i === t.turn ? ' on' : ''}" style="--pc:${q.color}">${tokenIco(q, 30)}
       <span class="pname">${esc(q.name)}${q.kind === 'ai' ? ` <small>AI · ${q.level}</small>` : ''}${q.skip ? ' <small class="warn">skips next</small>' : ''}</span>
       ${stampPips(q)}<span class="pstat"><span>${q.stamps.length}/${t.target}</span><span class="tix" title="Bath tickets">${TICKET}<span class="sr-only">tickets:</span> ${q.tickets}</span></span></li>`).join('');
   const el = Game.eligible(p);
-  return `<div class="turn" style="--pc:${p.color}">${tokenIco(p, 30)}<div><div class="tname">${esc(p.name)}’s turn</div><div class="tsub">Round ${t.round} · ${p.stamps.length}/${t.target} stamps · ${plural(p.tickets, 'ticket')}${el ? ' · <strong class="ok">Trail open!</strong>' : ''}</div></div></div>
+  // Where the active token stands: the district painting, its blurb and the space name.
+  const here = NODES[p.node]; const hd = here.district && DISTRICT[here.district];
+  const hsrc = hd ? artSrc('land-' + hd.key) : here.district === 'mountain' ? artSrc('land-tower') : artSrc('land-row');
+  const hname = hd ? hd.name : here.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown';
+  const herecard = hsrc ? `<figure class="here"><img src="${hsrc}" alt="" aria-hidden="true"><figcaption><strong>${esc(here.name)}</strong><span>${esc(hname)}${hd ? ' · ' + esc(hd.blurb) : ''}</span></figcaption></figure>` : '';
+  return `<div class="turn" style="--pc:${p.color}">${tokenIco(p, 44)}<div><div class="tname">${esc(p.name)}’s turn</div><div class="tsub">Round ${t.round} · ${p.stamps.length}/${t.target} stamps · ${plural(p.tickets, 'ticket')}${el ? ' · <strong class="ok">Trail open!</strong>' : ''}</div></div></div>
     <div class="action">${action}</div>
+    ${herecard}
     <ol class="players" aria-label="Travelers">${players}</ol>
     <div class="tools">${btn('passport', 'Passport', { cls: 'ghost small', hint: 'P' })}${btn('menu', 'Menu', { cls: 'ghost small', hint: 'Esc' })}</div>
     <ul class="log" aria-label="Recent events">${t.log.slice(0, 4).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
@@ -210,14 +252,24 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
     if (answered) { if (i === q.correctIndex) cls += ' right'; else if (i === q.chosen) cls += ' wrong'; else cls += ' dim'; }
     if (gone) cls += ' gone';
     const mark = answered && i === q.correctIndex ? '<span class="mark" aria-label="correct answer">✔</span>' : answered && i === q.chosen ? '<span class="mark" aria-label="your answer">✘</span>' : '';
+    if (answered && i === q.correctIndex && q.correct) cls += ' burst';
     return `<button class="${cls}" data-act="answer" data-arg="${i}" data-key="ans${i}"${answered || gone || !canAnswer ? ' disabled' : ''}${!answered && i === 0 && canAnswer ? ' data-autofocus' : ''}><span class="key" aria-hidden="true">${'ABCD'[i]}</span><span class="atext">${esc(txt)}</span>${mark}</button>`;
   }).join('');
-  const fb = answered ? `<div class="fb ${q.correct ? 'ok' : 'bad'}" role="status">
+  const dist = DIST_OF[q.category];
+  const art = cardArt(q); const banner = art && art.src;
+  const fresh = !answered;
+  if (fresh && ui.revealQ !== q.id) { ui.revealQ = q.id; ui.revealAt = performance.now(); }
+  if (answered && ui.answeredQ !== q.id) { ui.answeredQ = q.id; ui.answerAt = performance.now(); }
+  const slam = answered && dist && (q.outcome || []).some((o) => o.startsWith('Stamp earned')) ? `<div class="slam" aria-hidden="true">${stampImg(dist, true, 104)}</div>` : '';
+  const gain = answered && q.correct ? (q.outcome || []).find((o) => /^\+\d|^Won \d/.test(o)) : null;
+  const fly = gain ? `<span class="flyup" aria-hidden="true">${esc(gain.replace(/^Won /, '+'))}</span>` : '';
+  const fb = answered ? `<div class="fb ${q.correct ? 'ok' : 'bad'}" role="status">${slam}${fly}
       <p class="verdict">${q.correct ? 'Correct!' : q.chosen === -1 ? 'Time’s up!' : 'Not quite.'} ${q.outcome && q.outcome.length ? `<span class="outcome">${esc(q.outcome.join(' · '))}</span>` : ''}</p>
       ${!q.correct ? `<p class="ansline">Answer: <strong>${esc(q.choices[q.correctIndex])}</strong></p>` : ''}
       <p class="expl">${esc(q.explanation)}</p>
       <p class="src">Source: ${esc(q.source)}</p></div>` : '';
-  return `<div class="qcard" style="--cat:${c.color};--catink:${c.ink}">
+  return `<div class="qcard${banner ? ' has-art' : ''}${fresh ? ' reveal' : ''}${slam ? ' slammed' : ''}" style="--cat:${c.color};--catink:${c.ink}">
+    ${banner ? `<div class="qbanner"><img class="qart" src="${banner}" alt="" aria-hidden="true"><span class="qcap">Illustration · ${esc(art.name)}</span></div>` : ''}
     <div class="qhead">${ico(c.icon, c.color, c.ink, 40)}<div class="qh"><div class="qcat" id="mtitle">${esc(q.category)}</div><div class="qmeta">${DIFF_LABEL[q.difficulty]} · ${esc(eraName(q.era))}</div></div>${badge}</div>
     ${purposeLine ? `<p class="purpose">${purposeLine}</p>` : ''}
     ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left"><div class="bar" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div>` : ''}
@@ -242,7 +294,7 @@ function modalHTML() {
       const n = NODES[p.node];
       const stampOf = () => (DISTRICT[n.district] ? DISTRICT[n.district].stamp : '');
       const purpose = ({
-        district: () => `${esc(n.name)} · answer for tickets (Easy +1 · Medium +2 · Hard +3)`,
+        district: () => `<span class="chip-pay">+${({ easy: 1, medium: 2, hard: 3 })[q.difficulty]} ${({ easy: 1, medium: 2, hard: 3 })[q.difficulty] === 1 ? 'ticket' : 'tickets'}</span> ${esc(n.name)}`,
         landmark: () => q.hadStamp ? `${esc(n.name)} · you already hold this stamp — answer for 2 tickets` : `<strong>Landmark!</strong> Answer to win the <strong>${esc(stampOf())}</strong> stamp`,
         warpLandmark: () => `<strong>Time-warp landmark!</strong> Answer to win the <strong>${esc(stampOf())}</strong> stamp`,
         wager: () => `<strong>Post Time</strong> · wager: ${plural(q.wager || 0, 'ticket')}${q.difficulty === 'hard' ? ' · hard question pays double' : ''}`,
@@ -292,7 +344,8 @@ function modalHTML() {
     case 'jury': return `<div class="mcard"><div class="mhead">${ico('jury', '#9A2A1C', '#FFFFFF', 44)}<h2 id="mtitle">Grand Jury!</h2></div><p>You’ve been called before the grand jury. Answer a <strong>Legends &amp; Oddities</strong> question, or sit out your next turn.</p><div class="mfoot">${cont('Face the jury')}</div></div>`;
     case 'summit': {
       const c = CAT[pd.cat];
-      return `<div class="mcard center"><div class="mhead">${ico('tower', '#8C877C', '#FFFFFF', 44)}<h2 id="mtitle">The Summit question</h2></div><p>You climbed to the 216-ft Mountain Tower. The weather vane swings to…</p><p class="vane">${ico(c.icon, c.color, c.ink, 48)}<strong>${esc(c.id)}</strong></p><p class="hint">A hard question. Get it right to win; miss and you head back to the trailhead.</p><div class="mfoot">${cont('Take the question')}</div></div>`;
+      const tw = artSrc('land-tower');
+      return `<div class="mcard center summit">${tw ? `<div class="mbanner"><img src="${tw}" alt="" aria-hidden="true"></div>` : ''}<div class="mhead">${ico('tower', '#8C877C', '#FFFFFF', 44)}<h2 id="mtitle">The Summit question</h2></div><p>You climbed to the 216-ft Mountain Tower. The weather vane swings to…</p><p class="vane">${ico(c.icon, c.color, c.ink, 48)}<strong>${esc(c.id)}</strong></p><p class="hint">A hard question. Get it right to win; miss and you head back to the trailhead.</p><div class="mfoot">${cont('Take the question')}</div></div>`;
     }
     default: return '';
   }
@@ -301,9 +354,9 @@ function modalHTML() {
 function passportHTML() {
   const t = Game.T(); const p = Game.cur();
   const stamps = DISTRICTS.map((d) => { const have = p.stamps.includes(d.cat); const cs = p.catStats[d.cat] || [0, 0];
-    return `<li class="stamp${have ? ' have' : ''}"><canvas class="stampc" width="180" height="180" data-d="${d.key}" data-have="${have ? 1 : 0}" style="width:90px;height:90px" aria-hidden="true"></canvas>
+    return `<li class="stamp${have ? ' have' : ''}">${stampImg(d, have)}
       <div><strong>${esc(d.name)}</strong><small>${esc(d.cat)} · ${have ? 'stamped' : 'not yet'}</small><small>${esc(d.blurb)}</small><small>${cs[1] ? `${cs[0]}/${cs[1]} right` : 'no questions yet'}</small></div></li>`; }).join('');
-  return `<div class="mcard passport"><h2 id="mtitle">${esc(p.name)}’s passport</h2>
+  return `<div class="mcard passport"><div class="pp-cover"><span class="pp-seal" aria-hidden="true">♨</span><h2 id="mtitle">${esc(p.name)}’s passport</h2><span class="pp-sub">Valley of Vapors · Hot Springs</span></div>
     <p>${p.stamps.length} of ${t.target} stamps needed · ${plural(p.tickets, 'ticket')} · ${p.answered ? Math.round((100 * p.correct) / p.answered) : 0}% right</p>
     <ul class="stamps">${stamps}</ul>
     <p class="hint">Stamps come from answering correctly on a district’s gold-ringed landmark. ${Game.eligible(p) ? 'Your trail to the Mountain Tower is open — head to the Grand Promenade trailhead behind Bathhouse Row.' : ''}</p>
@@ -357,8 +410,11 @@ function winHTML() {
   const t = Game.T(); if (!t || t.winner === null) return '';
   const w = t.players[t.winner];
   const order = t.players.slice().sort((a, b) => (b.id === t.winner) - (a.id === t.winner) || b.stamps.length - a.stamps.length || b.tickets - a.tickets);
-  return `<div class="page-card win-card"><p class="eyebrow">Summit reached · round ${t.round}</p>${tokenIco(w, 64)}<h2>${esc(w.name)} conquered the Mountain Tower!</h2>
+  const tw = artSrc('land-tower');
+  const podium = order.slice(0, 3).map((p, i) => `<li class="pod p${i + 1}"><span class="place">${['1st', '2nd', '3rd'][i]}</span>${tokenIco(p, 30)}<strong>${esc(p.name)}</strong><span class="pstamps">${DISTRICTS.map((d) => (p.stamps.includes(d.cat) ? `<span class="mini" style="--c:${CAT[d.cat].color}" title="${esc(d.stamp)}"></span>` : '')).join('')}</span><small>${plural(p.stamps.length, 'stamp')} · ${plural(p.tickets, 'ticket')}</small></li>`).join('');
+  return `<div class="page-card win-card">${tw ? `<div class="win-art"><img src="${tw}" alt="" aria-hidden="true"></div>` : ''}<p class="eyebrow">Summit reached · round ${t.round}</p><div class="plinth" aria-hidden="true">${tokenIco(w, 96)}<span class="plinth-top"></span></div><div class="win-stamps" aria-hidden="true">${DISTRICTS.filter((d) => w.stamps.includes(d.cat)).map((d, i) => `<span style="--i:${i}">${stampImg(d, true, 46)}</span>`).join('')}</div><h2>${esc(w.name)} conquered the Mountain Tower!</h2>
     <p>Three towers have stood on Hot Springs Mountain since 1877; today’s rises 216 feet.</p>
+    <ol class="podium">${podium}</ol>
     <table class="standings"><thead><tr><th>Traveler</th><th>Stamps</th><th>Tickets</th><th>Right</th></tr></thead><tbody>
     ${order.map((p) => `<tr><td>${tokenIco(p, 18)} ${esc(p.name)}</td><td>${p.stamps.length}</td><td>${p.tickets}</td><td>${p.correct}/${p.answered}</td></tr>`).join('')}</tbody></table>
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${btn('restart', 'Play again', { cls: 'primary', auto: true })}</div></div>`;
@@ -378,6 +434,8 @@ function helpHTML() {
     <h3>Special spaces</h3><ul class="legend">${sp.map(([, i, t]) => `<li>${ico(i, '', 'currentColor', 26)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Keyboard</h3><p class="keys"><kbd>Space</kbd> roll · <kbd>←</kbd><kbd>→</kbd> or <kbd>1</kbd>–<kbd>9</kbd> pick a space · <kbd>Enter</kbd> confirm / continue · <kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>F</kbd> 50/50 · <kbd>R</kbd> re-roll · <kbd>T</kbd> trolley · <kbd>P</kbd> passport · <kbd>Z</kbd> zoom · <kbd>M</kbd> mute · <kbd>Esc</kbd> menu</p>
     <h3>About the facts</h3><p>Questions come from a sourced research corpus and were audited against their sources. “Local claim” marks how a place bills itself. Real Hot Springs places appear as setting only; no business, park or school endorses or is affiliated with this game. Characters are fictional.</p>
+    <h3>About the map</h3><p>The board is a model of the real valley, seen from the west: Bathhouse Row’s eight bathhouses stand in their true north-to-south order (Superior, Hale, Maurice, Fordyce, Quapaw, Ozark, Buckstaff, Lamar), with Hot Springs Mountain and its tower behind. Downtown is magnified and Central Avenue is drawn wider so both sidewalks can carry spaces; directions from the Row are true. Oaklawn and the three lakes are moved closer and ringed with a dashed line, and their plates give the real distance. The paintings on question cards are illustrations, not photographs.</p>
+    <p class="hint">Terrain: USGS 3DEP. Streets: US Census TIGER. Lakes and creeks: USGS National Hydrography Dataset (all public domain). Building footprints and trails: © OpenStreetMap contributors (ODbL).</p>
     <div class="row">${btn('back', 'Back', { cls: 'primary', auto: true })}</div></div>`;
 }
 

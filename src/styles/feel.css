@@ -1,0 +1,76 @@
+/* Milestone 4: game feel and table presence. Rewards that fly, a light burst behind the right answer,
+   pawn plaques, the winner's plinth, a stronger category band, styled selects, and mobile fixes. */
+
+/* Pawn sprites in the HUD. */
+img.tok.pawn { display: block; object-fit: contain; filter: drop-shadow(0 2px 1.5px rgba(0,0,0,0.35)); }
+.pl { grid-template-columns: 34px 1fr auto; border-left: 4px solid transparent; }
+.pl.on { border-left-color: var(--pc); box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+.turn img.tok.pawn { margin: -6px 0 -4px; }
+
+/* Reward chip on the card (replaces the rules strip). */
+.chip-pay { display: inline-block; font-weight: 800; padding: 1px 9px; border-radius: var(--radius-pill); background: var(--cat); color: var(--catink); margin-right: 6px; }
+.purpose { font-size: 0.95rem; }
+
+/* Category identity: a bold colour band under the art and a bigger category name. */
+.qcard.has-art .qbanner::after { height: 9px; }
+.qcat { font-size: 1.32rem; color: var(--cat); filter: brightness(0.82) saturate(1.1); }
+body[data-theme="dark"] .qcat { filter: brightness(1.25); }
+
+/* Light burst behind the right answer, and the reward rising from the feedback. */
+.ans.burst { position: relative; overflow: visible; z-index: 1; }
+.ans.burst::before { content: ""; position: absolute; inset: -18px -10px; z-index: -1; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, rgba(255,226,140,0.55) 0 7deg, rgba(255,226,140,0) 7deg 18deg);
+  -webkit-mask: radial-gradient(closest-side, #000 40%, transparent 100%); mask: radial-gradient(closest-side, #000 40%, transparent 100%);
+  animation: rays 0.9s ease-out both; }
+@keyframes rays { 0% { opacity: 0; transform: scale(0.4) rotate(-20deg); } 40% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25) rotate(25deg); } }
+.flyup { position: absolute; right: 16px; top: 6px; font-weight: 900; font-size: 1.25rem; color: #b5761e; text-shadow: 0 1px 0 #fff, 0 0 10px rgba(255,220,120,0.9);
+  pointer-events: none; animation: flyup 0.85s 0.1s ease-out both; }
+body[data-theme="dark"] .flyup { color: #ffd76a; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+@keyframes flyup { 0% { opacity: 0; transform: translateY(10px) scale(0.7); } 25% { opacity: 1; transform: translateY(-4px) scale(1.15); } 100% { opacity: 0; transform: translateY(-46px) scale(1); } }
+/* when a stamp slams in, the reward rises from the left so they never collide */
+.qcard.slammed .flyup { right: auto; left: 16px; }
+
+/* The winner on a brass plinth, with stamps dealt in. */
+.plinth { position: relative; display: flex; justify-content: center; margin: 4px auto 0; width: 140px; height: 112px; }
+.plinth img.tok { position: relative; z-index: 1; animation: rise-pawn 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+.plinth-top { position: absolute; bottom: 2px; left: 26px; right: 26px; height: 18px; border-radius: 50%; background: radial-gradient(ellipse at 40% 30%, #f3d98a, #b58b3a 60%, #6d5121); box-shadow: 0 6px 10px rgba(0,0,0,0.3); }
+@keyframes rise-pawn { from { transform: translateY(-40px) scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }
+.win-stamps { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; margin: 4px 0 2px; min-height: 8px; }
+.win-stamps span { animation: deal 0.45s calc(0.5s + var(--i) * 0.12s) cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+@keyframes deal { from { transform: scale(2.4) rotate(-20deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Setup: selects styled as pills instead of native boxes. */
+.seat select { appearance: none; -webkit-appearance: none; border-radius: var(--radius-pill); font-weight: 600; padding: 6px 28px 6px 12px;
+  background: var(--color-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238E3622' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 10px center / 11px 8px; }
+.seat input { border-radius: var(--radius-pill); }
+
+/* Mobile: the stamp lands on the card's art band, never over text; denser destination list. */
+@media (max-width: 760px) {
+  .slam { right: 6px; top: 6px; width: 70px; height: 70px; }
+  .qcard.slammed .fb { padding-right: 84px; min-height: 84px; }
+  .dests { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .dest { grid-template-columns: 22px 1fr; padding: 6px 8px; min-height: 52px; }
+  .dest .ico { display: none; }
+  .dest .dsub { font-size: 0.74rem; }
+  .plinth { height: 92px; }
+}
+body.reduced .ans.burst::before, body.reduced .flyup, body.reduced .plinth img.tok, body.reduced .win-stamps span { animation: none; }
+body.reduced .flyup { display: none; }
+@media (prefers-reduced-motion: reduce) { .ans.burst::before, .flyup, .plinth img.tok, .win-stamps span { animation: none; } .flyup { display: none; } }
+
+.standings td img.tok, .listb img.tok { display: inline-block; vertical-align: middle; margin-right: 4px; }
+
+/* Round 3: short viewports keep every button on screen; a stronger timer; a desaturated wrong pick. */
+@media (max-height: 860px) {
+  .title-art { height: 108px; } .win-art { height: 112px; } .mbanner { height: 96px; }
+  .title-card { margin-top: 0; } .page { padding-top: 12px; }
+  .win-card .podium { margin: 8px 0 4px; } .plinth { height: 92px; } .plinth img.tok { width: 70px; height: 80px; }
+  .win-card .standings td, .win-card .standings th { padding: 3px 6px; }
+}
+.timer { height: 10px; } .timer .bar.low { animation: tpulse 0.6s ease-in-out infinite alternate; }
+@keyframes tpulse { from { opacity: 1; } to { opacity: 0.55; } }
+body.reduced .timer .bar.low { animation: none; }
+.ans.wrong { filter: saturate(0.6); }
+.flyup { top: 12px; }
+@keyframes flyup { 0% { opacity: 0; transform: translateY(6px) scale(0.7); } 25% { opacity: 1; transform: translateY(-2px) scale(1.15); } 100% { opacity: 0; transform: translateY(-20px) scale(1); } }
+@media (max-width: 760px) { #board-tools { top: auto; bottom: 6px; left: 6px; right: auto; } }

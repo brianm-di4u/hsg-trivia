@@ -1,7 +1,7 @@
 // Boot, main loop, save/load, input wiring and the window.__game test hooks.
 import { makeRng, deepMerge, todayISO } from './util.js';
 import { BANK } from './data.js';
-import { NODES, ADJ, START, TOWER, TRAILHEAD, TROLLEYS, LANDMARK, VENT_PAIRS, SPUR_ENTRY } from './board.js';
+import { NODES, ADJ, START, TOWER, TRAILHEAD, TROLLEYS, LANDMARK, VENT_PAIRS, SPUR_ENTRY, BOARD_W, BOARD_H } from './board.js';
 import * as Game from './game.js';
 import { G } from './game.js';
 import * as Quiz from './quiz.js';
@@ -9,6 +9,7 @@ import * as R from './render.js';
 import * as UI from './ui.js';
 import { ui } from './ui.js';
 import { sfx, setAudio, unlockAudio, audioStats } from './audio.js';
+import { ART } from './assets.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
 const DEFAULT_SETTINGS = { sound: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' };
@@ -55,7 +56,7 @@ function applySettings() {
   setAudio({ on: s.sound, volume: s.volume });
   const dark = s.theme === 'dark' || (s.theme === 'auto' && mq('(prefers-color-scheme: dark)'));
   document.body.dataset.theme = dark ? 'dark' : 'light';
-  R.setTheme(dark ? 'dark' : 'light');
+  R.setTheme(dark ? 'dark' : 'light'); R.requestArt();
   R.view.reduced = s.motion === 'reduced' || (s.motion === 'auto' && mq('(prefers-reduced-motion: reduce)'));
   document.body.classList.toggle('reduced', R.view.reduced);
   document.documentElement.style.fontSize = (16 * s.textScale) + 'px';
@@ -67,11 +68,11 @@ function scene(name) {
   if (name !== 'game') Game.stopAI();
   const backdrop = name !== 'game';
   R.view.backdrop = backdrop;
-  if (backdrop) { R.view.mode = 'fit'; const tw = NODES[TOWER]; R.view.backdropFocus = name === 'win' ? { x: tw.x - 60, y: tw.y - 50, at: 0.8 } : null; }
+  if (backdrop) { R.view.mode = 'fit'; const tw = R.towerTop(); R.view.backdropFocus = name === 'win' ? { x: tw.x - 40, y: tw.y + 20, at: 0.72 } : null; }
   else { R.view.mode = R.view.w < 700 ? 'follow' : 'fit'; R.view.manual = false; }
   if (name === 'setup' && !ui.setup) ui.setup = null;
   UI.showScene(name);
-  R.resize(); R.snapCamera();
+  R.resize(); R.snapCamera(); R.requestArt();
   if (name === 'game') Game.aiMaybe();
 }
 let prevScene = 'title';
@@ -90,7 +91,7 @@ G.hooks.effect = (kind, p) => {
   const tp = R.tokenPos(p);
   if (kind === 'stamp') { sfx('stamp'); R.burst(tp.x, tp.y - 10, ['#D9A23A', '#FFFFFF', '#A9432C'], 30); }
   if (kind === 'steam') R.burst(tp.x, tp.y - 10, ['rgba(255,255,255,0.9)', 'rgba(200,230,230,0.8)'], 20);
-  if (kind === 'win') { const n = NODES[TOWER]; R.burst(n.x, n.y - 80, ['#D7263D', '#1D5BD6', '#F2A90C', '#14904A', '#FFFFFF'], 90, 'confetti'); }
+  if (kind === 'win') { const n = R.towerTop(); R.burst(n.x, n.y, ['#D7263D', '#1D5BD6', '#F2A90C', '#14904A', '#FFFFFF'], 90, 'confetti'); }
 };
 
 function newState() {
@@ -279,14 +280,16 @@ function trapFocus(e) {
 // ---------- loop ----------
 let lastT = 0; let tickSec = -1; let fpsFrames = 0;
 function loop(ts) {
-  const dt = Math.min(0.05, lastT ? (ts - lastT) / 1000 : 0.016); lastT = ts; fpsFrames++;
+  // Animation steps are capped at 50 ms so a stall never teleports tokens; the answer timer runs on wall-clock
+  // time (capped at 0.5 s for a backgrounded tab), so a 10 s timer is 10 s even on a slow device.
+  const raw = lastT ? (ts - lastT) / 1000 : 0.016; const dt = Math.min(0.05, raw); const tdt = Math.min(0.5, raw); lastT = ts; fpsFrames++;
   const st = G.state;
   // question timer (humans only in the Trail Game)
   const q = st.question;
   const human = st.mode !== 'trail' || (st.trail && Game.cur().kind === 'human');
   const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
   if (open) {
-    q.timeLeft -= dt;
+    q.timeLeft -= tdt;
     const sec = Math.ceil(q.timeLeft);
     if (sec !== tickSec && sec <= 5 && sec > 0) { tickSec = sec; sfx('tick'); }
     if (q.timeLeft <= 0) { q.timeLeft = 0; UI.announce('Time is up.'); Game.answer('timeout'); if (st.mode !== 'trail') Quiz.settle(); }
@@ -310,6 +313,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     ui: { modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
+    art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));
 }
 
@@ -328,8 +332,8 @@ window.__game = {
     if (s.asked) st.asked = s.asked.slice();
     UI.update(); return true;
   },
-  // Idle = no tween, camera settled, and the modal's 0.22 s rise transition has finished.
-  isIdle() { return !R.isAnimating() && R.camSettled() && (R.view.reduced || performance.now() - ui.modalAt > 300); },
+  // Idle = no tween, camera settled, board art decoded, and the modal's 0.22 s rise transition has finished.
+  isIdle() { const now = performance.now(); return !R.isAnimating() && R.camSettled() && !R.artBusy() && (R.view.reduced || (now - ui.modalAt > 300 && now - ui.revealAt > 760 && now - (ui.answerAt || 0) > 1000)); },
   scene(name) { scene(name); return G.state.scene; },
   newGame(opts = {}) {
     if (opts.seed !== undefined) this.seed(opts.seed);
@@ -361,6 +365,9 @@ window.__game = {
       case 'stopAI': Game.stopAI(); return true;
       case 'adj': return ADJ[args[0]].slice();
       case 'aiSample': return Game.aiAccuracySample(args[0], args[1]);
+      // board geometry for tests: node positions and radii (board units), and a node's position on screen (CSS px)
+      case 'geo': return { w: BOARD_W, h: BOARD_H, nodes: NODES.map((n) => ({ x: n.x, y: n.y, r: R.spaceR(n), type: n.type })) };
+      case 'screenOf': { const n = NODES[args[0]]; const [x, y] = R.worldToScreen(n.x, n.y); const r = document.querySelector('#board').getBoundingClientRect(); return [r.left + x, r.top + y]; }
       default: return false;
     }
   },

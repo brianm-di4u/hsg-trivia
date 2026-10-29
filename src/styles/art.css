@@ -1,0 +1,139 @@
+/* Visual pass: painted art (assets/), the category reveal, answer feedback, stamp slam, passport
+   booklet, title hero, summit and win art. Every rule degrades to the plain card when the art is off. */
+
+/* Question card: the district painting slides open, then the category badge flips in. */
+.qcard.has-art { border-top: 0; padding-top: 0; overflow: hidden; }
+.qbanner { position: relative; margin: 0 -20px 12px; height: 112px; background: var(--cat); overflow: hidden; }
+.qbanner .qart { display: block; width: 100%; height: 100%; object-fit: cover; }
+.qbanner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--cat); }
+.qbanner::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.35) 100%); }
+.qcap { position: absolute; right: 10px; bottom: 9px; z-index: 2; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.02em; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+.qcard.has-art .qhead { margin-top: -10px; position: relative; z-index: 2; align-items: center; }
+.qcard.has-art .qhead .ico { width: 56px !important; height: 56px !important; margin-top: -34px; border-radius: 50%; box-shadow: 0 0 0 4px var(--card-bg), 0 4px 10px rgba(0,0,0,0.35); background: var(--card-bg); align-self: flex-start; }
+.qcard.has-art .qh { padding-top: 2px; }
+.qcard.reveal .qart { animation: qreveal 0.62s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.qcard.reveal .qhead .ico { animation: badgeflip 0.62s 0.12s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+.qcard.reveal .qcat { animation: fadeup 0.4s 0.28s both; }
+@keyframes qreveal { from { clip-path: inset(0 50% 0 50%); transform: scale(1.18); } to { clip-path: inset(0 0 0 0); transform: none; } }
+@keyframes badgeflip { 0% { transform: perspective(320px) rotateY(90deg) scale(0.6); } 70% { transform: perspective(320px) rotateY(-14deg) scale(1.1); } 100% { transform: none; } }
+@keyframes fadeup { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Answer feedback: the right answer fills green and pops; a wrong pick shakes. */
+.ans.right { background: var(--color-success); border-color: var(--color-success); color: #fff; opacity: 1; animation: pop 0.32s ease-out; }
+.ans.right .key { background: #fff; color: var(--color-success); }
+.ans.right .mark { color: #fff; }
+.ans.wrong { animation: shake 0.36s ease-out; }
+body[data-theme="dark"] .ans.right, body[data-theme="dark"] .ans.right .mark { color: #0c2416; }
+body[data-theme="dark"] .ans.right .key { background: #0c2416; color: #5FD38A; }
+@keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.045); } 100% { transform: scale(1); } }
+@keyframes shake { 0%, 100% { transform: none; } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+
+/* Stamp slam: the district ink stamp lands on the card with a thump. */
+.fb { position: relative; }
+.slam { position: absolute; right: 6px; top: -46px; width: 104px; height: 104px; pointer-events: none; z-index: 3; }
+.slam .stampimg { width: 100%; height: 100%; transform: rotate(var(--rot)); animation: slam 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+.slam::before { content: ""; position: absolute; inset: 10%; border-radius: 50%; border: 3px solid var(--cat); opacity: 0; animation: inkring 0.6s 0.2s ease-out; }
+.qcard.slammed { animation: thump 0.32s 0.22s ease-out; }
+@keyframes slam { 0% { transform: rotate(calc(var(--rot) - 18deg)) scale(2.6); opacity: 0; } 55% { transform: rotate(var(--rot)) scale(0.9); opacity: 1; } 100% { transform: rotate(var(--rot)) scale(1); opacity: 1; } }
+@keyframes inkring { 0% { opacity: 0.7; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes thump { 0%, 100% { transform: none; } 35% { transform: translateY(3px) scale(0.995); } }
+
+/* Passport: a stitched two-page booklet; earned stamps are inked, missing ones are faint. */
+.mcard.passport { background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.35), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(120,90,50,0.035) 0 1px, transparent 1px 4px), #f4ead2;
+  color: #2c2418; border-color: #b99a62; overflow: hidden; }
+body[data-theme="dark"] .mcard.passport { background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 4px), #2a2433; color: #e8dfcc; border-color: #6b5a3a; }
+.pp-cover { display: grid; grid-template-columns: 44px 1fr; align-items: center; column-gap: 10px; margin: -20px -20px 12px; padding: 14px 20px; background: linear-gradient(180deg, #23433a, #1b342d); color: #f1e2b8; border-bottom: 3px solid #c9a14a; }
+.pp-cover h2 { color: #f6e9c4; }
+.pp-seal { grid-row: span 2; font-size: 1.7rem; text-align: center; width: 44px; height: 44px; line-height: 42px; border-radius: 50%; border: 2px solid #c9a14a; }
+.pp-sub { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: #d9c58f; }
+.passport .stamps { position: relative; column-gap: 28px; row-gap: 12px; }
+.passport .stamps::before { content: ""; position: absolute; left: 50%; top: -6px; bottom: -6px; border-left: 2px dashed rgba(140,100,50,0.45); }
+.stampimg { display: block; flex: 0 0 auto; transform: rotate(var(--rot)); }
+.stamp:not(.have) .stampimg { opacity: 0.13; filter: grayscale(1) contrast(0.6); transform: none; }
+.passport .stamp small { color: inherit; opacity: 0.78; }
+
+/* Title: a painted hero of Bathhouse Row across the top of the card. */
+.title-art { margin: -24px -24px 14px; height: 150px; overflow: hidden; border-radius: 10px 10px 0 0; position: relative; }
+.title-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.title-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, var(--page-bg)); }
+
+/* Summit and win: the tower painting; podium cards for the top three. */
+.mbanner { margin: -20px -20px 10px; height: 120px; overflow: hidden; border-radius: 10px 10px 0 0; }
+.mbanner img, .win-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.win-art { margin: -24px -24px 12px; height: 170px; overflow: hidden; border-radius: 10px 10px 0 0; }
+.podium { list-style: none; padding: 0; margin: 14px 0 6px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.pod { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px; border-radius: var(--radius-lg); border: 2px solid var(--color-border); background: var(--color-bg); }
+.pod.p1 { border-color: #c9a14a; box-shadow: 0 0 0 3px rgba(201,161,74,0.25); }
+.pod .place { font-family: var(--font-serif-victorian); font-weight: 700; color: var(--color-primary); }
+.pstamps { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; min-height: 12px; }
+.pstamps .mini { width: 11px; height: 11px; border-radius: 50%; background: var(--c); border: 1.5px solid rgba(0,0,0,0.35); }
+.pod small { color: var(--color-muted); }
+
+/* Numbers in body type, not monospace; a readable log. */
+.qt-prog, .qt-score, .results-card .score, .pstat, .die, .btn.chip, .era-yrs { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+.log { font-size: 0.9rem; color: var(--color-text); }
+.log li { opacity: 0.8; } .log li:first-child { opacity: 1; }
+
+@media (max-width: 760px) {
+  .qbanner { height: 76px; margin: 0 -14px 10px; }
+  .qcard.has-art .qhead { margin-top: -8px; }
+  .qcard.has-art .qhead .ico { width: 46px !important; height: 46px !important; margin-top: -28px; }
+  .pp-cover { margin: -14px -14px 10px; }
+  .passport .stamps::before { display: none; }
+  .title-art { margin: -16px -16px 12px; height: 104px; }
+  .mbanner { margin: -14px -14px 10px; height: 92px; }
+  .win-art { margin: -16px -16px 10px; height: 120px; }
+  .slam { width: 84px; height: 84px; top: -36px; }
+}
+body.reduced .qcard.reveal .qart, body.reduced .qcard.reveal .qhead .ico, body.reduced .qcard.reveal .qcat, body.reduced .ans.right,
+body.reduced .ans.wrong, body.reduced .slam .stampimg, body.reduced .slam::before, body.reduced .qcard.slammed { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .qcard.reveal .qart, .qcard.reveal .qhead .ico, .qcard.reveal .qcat, .ans.right, .ans.wrong, .slam .stampimg, .slam::before, .qcard.slammed { animation: none; }
+}
+
+/* Steam gauge for the roll (brass rim, cream face, needle swings to the number). */
+.status.rolled { display: flex; align-items: center; gap: 10px; }
+.gauge { width: 58px; height: 58px; flex: 0 0 auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+.gauge .g-rim { fill: #b58b3a; stroke: #6d5121; stroke-width: 1.5; }
+.gauge .g-face { fill: #fbf3df; stroke: #8a6a2a; stroke-width: 1; }
+.gauge .g-arc { fill: none; stroke: #c2410c; stroke-width: 2.4; stroke-dasharray: 2 2.6; opacity: 0.7; }
+.gauge text { font: 700 8.5px system-ui, sans-serif; fill: #4a3a22; text-anchor: middle; dominant-baseline: middle; }
+.gauge text.on { fill: #8E3622; font-size: 11px; }
+.gauge .g-needle { transform-origin: 30px 30px; transform: rotate(var(--a)); }
+.gauge .g-needle path { stroke: #8E3622; stroke-width: 2.6; stroke-linecap: round; }
+.gauge .g-needle circle { fill: #3a2a14; }
+.gauge.spin .g-needle { animation: needle 0.9s cubic-bezier(0.3, 1.6, 0.45, 1) both; }
+@keyframes needle { 0% { transform: rotate(-135deg); } 45% { transform: rotate(150deg); } 100% { transform: rotate(var(--a)); } }
+body.reduced .gauge.spin .g-needle { animation: none; }
+.status.rolled .die { width: 24px; height: 24px; font-size: 0.95rem; }
+
+/* The Continue bar joins the bottom of the card it belongs to. */
+.sheet > .qcard:has(+ .mfoot), .quiz-wrap > .qcard:has(+ .mfoot) { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.sheet > .qcard + .mfoot, .quiz-wrap > .qcard + .mfoot { margin-top: 0; border-top: 1px dashed var(--card-edge); border-top-left-radius: 0; border-top-right-radius: 0; box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+
+/* Enamel buttons and paper panels. */
+.btn.primary { background: linear-gradient(180deg, #a8462c, #8E3622 55%, #7a2d1b); border-color: #6b2615;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 2px 0 #5a200f, 0 4px 10px rgba(0,0,0,0.18); text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+.btn.primary:active:not([disabled]) { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 0 #5a200f; }
+body[data-theme="dark"] .btn.primary { background: linear-gradient(180deg, #e3c25a, #D4AF37 55%, #b8952a); border-color: #8f7219; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 0 #6e5711; text-shadow: none; }
+#panel { background: repeating-linear-gradient(0deg, rgba(120,90,50,0.03) 0 1px, transparent 1px 4px), var(--color-surface); }
+.page-card { background: radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.4), transparent 55%), var(--page-bg); }
+body[data-theme="dark"] .page-card { background: var(--page-bg); }
+
+/* Mobile: the map toggle is a compact chip in the board corner; long dialogs keep their footer in view. */
+@media (max-width: 760px) {
+  #board-tools { right: 6px; bottom: auto; top: 6px; }
+  #board-tools .btn { min-height: 44px; padding: 4px 12px; font-size: 0.85rem; opacity: 0.94; }
+  .mcard.passport .mfoot { position: sticky; bottom: -14px; background: inherit; padding: 8px 0; margin-bottom: -6px; }
+}
+
+/* Side panel: a small painted card for where the active token stands. */
+.here { margin: 0; border-radius: var(--radius-lg); overflow: hidden; border: 2px solid var(--color-border); background: var(--color-bg); order: 5; }
+.here img { display: block; width: 100%; height: 92px; object-fit: cover; }
+.here figcaption { padding: 6px 10px 8px; display: flex; flex-direction: column; gap: 1px; }
+.here figcaption strong { font-family: var(--font-serif-victorian); }
+.here figcaption span { font-size: 0.82rem; color: var(--color-muted); }
+#panel .players { order: 3; } #panel .tools { order: 4; } #panel .log { order: 6; }
+@media (max-width: 760px) { .here { display: none; } }

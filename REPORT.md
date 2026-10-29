@@ -1,5 +1,7 @@
 # REPORT — Valley of Vapors Trivia Trail (`games/trivia`)
 
+> **Visual pass (2026-10-29).** The board, tokens, cards, passport and win screen were rebuilt. See [VISUAL-PLAN.md](VISUAL-PLAN.md) and [VISUAL-REPORT.md](VISUAL-REPORT.md). The rules and the question bank are unchanged, except for district space names and two outer-loop links. The game now loads its art from `assets/` (4.8 MB of WebP, 41 files) beside `index.html` (534 KB), and works from `file://` (`tools/check-file-url.mjs`). Final run: 70/70 tests at both viewports; 59–60 fps in the busiest scene.
+
 ## What was built
 
 An original trivia board game about Hot Springs, Arkansas, shipped as one self-contained
@@ -65,7 +67,7 @@ a single source.
 | AC5 adaptive difficulty | **Met** | skill rises after correct answers and falls after wrong ones (perf.test) |
 | AC6 setup 1–6, AI levels, target | **Met** | visual.test › setup with six seats (02) |
 | AC7 exact-step destinations | **Met** | specials.test › gating, Short Cut cost, Tower absorbs |
-| AC8 choose by click/tap, button, keys | **Met** | Panel buttons and keyboard are tested. Board tap is implemented and hand-checked in code but **not covered by an automated test** |
+| AC8 choose by click/tap, button, keys | **Met** | Panel buttons and keyboard are tested. Board tap and click are covered by art.test › tapping a highlighted space (both viewports; real touch via CDP on mobile) |
 | AC9–AC10 tickets, stamps, passport | **Met** | trail.test; shots 08, 28 |
 | AC11 vent | **Met** | shot 11 |
 | AC12 Post Time | **Met** | win and loss settled (shot 09) |
@@ -82,7 +84,7 @@ a single source.
 | AC23 Quick 10 | **Met** | shots 22, 22b, 23 |
 | AC24 Era Express | **Met** | all 10 questions come from the chosen era (shots 24, 25) |
 | AC25 Daily | **Met** | same ids and choice order on replay, a different set the next day (shots 26, 27) |
-| AC26 illustrated map | **Met** | shots 03, 04, 35 |
+| AC26 illustrated map | **Met (superseded)** | The visual pass replaced the code-drawn map with a Blender-rendered diorama built from real map data. The vector board remains as the `?art=0` fallback (shot 41). See VISUAL-REPORT.md |
 | AC27 animation/effects | **Met** | Verified only on stills and by state: hops, the steam loop, the stamp burst (28) and confetti (17) |
 | AC28 synthesized audio | **Met** | Audio is created after a gesture, sounds fire and M mutes. Sound quality was **not listened to** (headless) |
 | AC29 title/help/settings | **Met** | shots 01, 29, 30 |
@@ -92,8 +94,8 @@ a single source.
 | AC33 reduced motion | **Met** | Media query and setting; moves finish instantly (33) |
 | AC34 text size, contrast, themes | **Met** | Shown at 130% (34) and in the dark theme (35–35d). Every category key pair is ≥ 5.18:1 after the D22 fix, and the shared tokens pass 4.5:1 |
 | AC35 mobile | **Met** | `checkLayout()` runs in every test. All 43 mobile shots were inspected and all controls are ≥ 44 px |
-| AC36 single file, no requests, no errors | **Met** | 468 KB. The harness blocks external requests and fails on console errors. The `https://` strings in the file are inlined `sourceUrl` data, never fetched |
-| AC37 performance | **Met** | 60.4 fps on the board, 60.4 while moving, 60.5 on the title; heap 9.5 MB; `loadMs` 99 |
+| AC36 single file, no requests, no errors | **Met, amended** | Visual pass: the HTML is 534 KB and self-contained, plus art loaded from `assets/` with new Image() (works under file://; listed in the inlined manifest so a missing file is never requested). Before the pass: 468 KB. The harness blocks external requests and fails on console errors. The `https://` strings in the file are inlined `sourceUrl` data, never fetched |
+| AC37 performance | **Met** | After the visual pass: 59.8 fps on the board, 59.9 while moving, 59.1 on the title, busiest scene 59.3 (desktop) / 60.5 (mobile); heap 9.5 MB; `loadMs` 164. Before: 60.4 / 60.4 / 60.5, `loadMs` 99 |
 | AC38 no storage | **Met** | Plays with `localStorage` throwing (36) |
 
 ## Test results
