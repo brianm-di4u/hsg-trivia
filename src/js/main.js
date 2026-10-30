@@ -1,7 +1,7 @@
 // Boot, main loop, save/load, input wiring and the window.__game test hooks.
 import { makeRng, deepMerge, todayISO } from './util.js';
 import { BANK } from './data.js';
-import { NODES, ADJ, START, TOWER, TRAILHEAD, TROLLEYS, LANDMARK, VENT_PAIRS, SPUR_ENTRY, BOARD_W, BOARD_H } from './board.js';
+import { NODES, ADJ, START, TOWER, TRAILHEAD, TROLLEYS, LANDMARK, VENT_PAIRS, SPUR_ENTRY, BOARD_W, BOARD_H, GEO_META } from './board.js';
 import * as Game from './game.js';
 import { G } from './game.js';
 import * as Quiz from './quiz.js';
@@ -366,7 +366,8 @@ window.__game = {
       case 'adj': return ADJ[args[0]].slice();
       case 'aiSample': return Game.aiAccuracySample(args[0], args[1]);
       // board geometry for tests: node positions and radii (board units), and a node's position on screen (CSS px)
-      case 'geo': return { w: BOARD_W, h: BOARD_H, nodes: NODES.map((n) => ({ x: n.x, y: n.y, r: R.spaceR(n), type: n.type })) };
+      case 'geo': return { w: BOARD_W, h: BOARD_H, squash: GEO_META ? GEO_META.squash : 0.87, horizon: GEO_META && GEO_META.horizon || 0, tracks: GEO_META ? GEO_META.tracks || [] : [],
+        edges: GEO_META ? GEO_META.edges : [], nodes: NODES.map((n) => ({ x: n.x, y: n.y, r: R.spaceR(n), type: n.type })) };
       case 'screenOf': { const n = NODES[args[0]]; const [x, y] = R.worldToScreen(n.x, n.y); const r = document.querySelector('#board').getBoundingClientRect(); return [r.left + x, r.top + y]; }
       default: return false;
     }

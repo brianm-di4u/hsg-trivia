@@ -1,5 +1,6 @@
-// Visual pass: board art loads (no 404s), the vector fallback works, the projected board geometry is
-// sane, board taps move the token (AC8), and close-ups of the Row and the tower.
+// Visual pass: board art loads (no 404s), the board's fonts load, the fallback works, the board geometry is sane
+// (every space on the map, none overlapping, an even pitch along every run of the route), board taps move the token
+// (AC8), and close-ups of the Row and the tower.
 import { soloGame, phase, waitFor } from './helpers.mjs';
 
 export const tests = [
@@ -9,7 +10,9 @@ export const tests = [
       await soloGame(t, { players: [{ kind: 'human', name: 'Ada' }, { kind: 'human', name: 'Bo' }] });
       const s = await waitFor(t, (x) => x.art.pending === 0, 8000, 'art loaded');
       t.equal(s.art.failed, [], 'no art failed to load');
-      for (const k of ['board-day-lo', 'token-circle', 'token-square', 'land-row', 'stamp-row']) t.expect(s.art.loaded.includes(k), `${k} decoded`);
+      for (const k of ['board-day-lo', 'token-circle', 'token-square', 'land-row', 'stamp-row', 'doodle-horse']) t.expect(s.art.loaded.includes(k), `${k} decoded`);
+      const fonts = await t.page.evaluate(() => ['700 16px Kalam', '16px Rye'].map((f) => document.fonts.check(f)));
+      t.equal(fonts, [true, true], 'the board fonts (Kalam, Rye) are loaded from the inlined stylesheet');
       const tm = await t.page.evaluate(() => { const r = performance.getEntriesByType('resource').find((x) => /board-day-lo/.test(x.name)); return r ? Math.round(r.responseEnd) : null; });
       t.log(`board art received ${tm} ms after navigation (game interactive at ${t.loadMs} ms)`);
       t.expect(tm !== null && tm < 3000, 'board art arrives within 3 s');
@@ -36,16 +39,19 @@ export const tests = [
     async run(t) {
       const g = await t.game('act', 'geo');
       t.equal(g.nodes.length, 70, '70 spaces');
-      const out = g.nodes.filter((n) => n.x < n.r || n.x > g.w - n.r || n.y < n.r || n.y > g.h - n.r);
-      t.equal(out.length, 0, `every space lies inside the board (${out.length} outside)`);
-      // spaces never overlap: centre distance at least the sum of radii (ground ellipses, squash 0.87)
+      const out = g.nodes.filter((n) => n.x < n.r || n.x > g.w - n.r || n.y < g.horizon + n.r || n.y > g.h - n.r);
+      t.equal(out.length, 0, `every space lies on the map, below the painted horizon (${out.length} outside)`);
+      // spaces never overlap: centre distance at least the sum of radii (ground ellipses, squashed by the camera tilt)
       let worst = 1e9, pair = null;
       for (let i = 0; i < g.nodes.length; i++) for (let j = i + 1; j < g.nodes.length; j++) {
         const a = g.nodes[i], b = g.nodes[j]; if (a.type === 'tower' || b.type === 'tower') continue;
-        const d = Math.hypot(a.x - b.x, (a.y - b.y) / 0.87) - a.r - b.r;
+        const d = Math.hypot(a.x - b.x, (a.y - b.y) / g.squash) - a.r - b.r;
         if (d < worst) { worst = d; pair = [i, j]; }
       }
       t.expect(worst >= -1.5, `closest pair of spaces ${pair} overlaps by ${(-worst).toFixed(1)} board units`);
+      // the route runs at an even pitch (tools/map/layout.py): spread / mean gap per run of 3+ gaps
+      const uneven = g.tracks.filter((r) => r.ids.length >= 4 && r.cv > 0.25);
+      t.equal(uneven.map((r) => r.name), [], 'every run of the route is evenly spaced (cv <= 0.25)');
     },
   },
   {

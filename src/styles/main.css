@@ -1,5 +1,6 @@
 /* Valley of Vapors Trivia Trail. Tokens copied from shared/design/tokens.css (values unchanged;
    the linen card colors are the linen-postcard palette). Dark theme = deco-neon defaults. */
+@import "fonts.css";   /* the board's Kalam and Rye faces, inlined as data URIs (tools/build-fonts.mjs) */
 :root {
   --color-bg: #F2EFE8; --color-surface: #E6D7B5; --color-text: #1F2A24; --color-muted: #574A37;
   --color-primary: #8E3622; --color-on-primary: #FFFFFF; --color-accent: #355E41; --color-on-accent: #FFFFFF;

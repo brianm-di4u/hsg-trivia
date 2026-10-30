@@ -25,3 +25,6 @@ art-src/**/renders/
 art-src/geo/raw/
 # Token renders (rebuilt by tools/map/tokens.py); the packed WebP files in assets/ ship
 art-src/tokens/*.png
+# Public-domain reference photos for the landmark paintings (consult only, never shipped; sources in sources.json)
+art-src/photo-refs/**
+!art-src/photo-refs/sources.json

@@ -1,0 +1,218 @@
+{
+ "_about": "The real buildings painted onto the board (tools/map/illustrate/page.js SPRITES). Each checklist lists the features a painting must show to be recognisably that building; sources are research/visual-style-guide.md and research/bathhouse-row-layout.md (HABS AR-28 measurements and 1984 HABS colour photos). Photos are in art-src/photo-refs/<name>/ (consult only; credits in sources.json). view: how the painting is framed for its place on the board (the board camera looks down at about 45 degrees from the west, so fronts that face west face the viewer).",
+ "row_view": "The front facade faces the viewer almost squarely (turned no more than about 10 degrees), seen from above at about 40 degrees so the roofs and any dome or towers show above the front wall; only a sliver of one end wall shows. A thin strip of lawn or sidewalk along the front base line. Proportions gently caricatured: about 15-20 percent taller than life, the signature features slightly emphasised, but every bay, roof and ornament true to the building.",
+ "landmarks": {
+  "superior": {
+   "title": "Superior Bathhouse (1916), the northernmost on Bathhouse Row",
+   "view": "row",
+   "checklist": [
+    "a wide, low two-storey block with a flat roof behind a straight brick parapet (no pitched roof, no dome)",
+    "a one-storey sun porch across the front",
+    "6 to 8 vertical red-brown brick pilasters across the front with small patterned insets",
+    "a frieze of small green tile medallions (paterae) above the pilasters",
+    "cream painted-tile body between the pilasters; a chimney rising behind at one end"
+   ]
+  },
+  "hale": {
+   "title": "Hale Bathhouse (1892, Mission-style facade of 1939-40)",
+   "view": "row",
+   "checklist": [
+    "white stucco walls",
+    "a big red clay-tile hipped roof over the whole building, the widest roof on the Row after the Quapaw, with two small ventilator cowls",
+    "a one-storey front porch with a low red-tile pent roof",
+    "a double-curved Mission bell gable on the porch roof over the front door, low (well below the main eaves), with a small arched opening",
+    "twelve arched windows along the second floor; black wrought-iron grilles either side of the entrance"
+   ]
+  },
+  "maurice": {
+   "title": "Maurice Bathhouse (1912, remodelled 1915)",
+   "view": "row",
+   "checklist": [
+    "white stucco walls inset with small coloured tile panels (ochre and blue) in the second-floor band",
+    "very dark green clay-tile hipped roofs on the two end wings (green, not red: the only green-tile roof on the Row)",
+    "a glazed, metal-framed hipped skylight roof over the centre",
+    "an arched sun-parlour front across the ground floor",
+    "three storeys, about 90 ft wide; Renaissance Revival / Mediterranean"
+   ]
+  },
+  "fordyce": {
+   "title": "Fordyce Bathhouse (1915), now the park visitor center",
+   "view": "row",
+   "checklist": [
+    "three storeys in seven bays: a pale cream ashlar (limestone/terra cotta) ground floor and base",
+    "the upper two storeys in buff-yellow brick with a diamond (lozenge) diaper pattern of darker brick",
+    "ornate cream terra-cotta window surrounds on the upper floors, with small balconies under the second-floor windows and striped awnings",
+    "a wide, dark overhanging hipped roof with deep eaves",
+    "a long green copper-and-glass marquee across the entrance front, with a cresting along its top edge"
+   ]
+  },
+  "quapaw": {
+   "title": "Quapaw Bathhouse (1922), Spanish Colonial Revival",
+   "view": "row",
+   "checklist": [
+    "the widest house on the Row: a long, low white-stucco Spanish Colonial Revival bathhouse (about 185 ft)",
+    "a long open arcade (loggia) of round arches on columns across the front porch, with rocking chairs in its shade",
+    "a central entrance pavilion with a carved cartouche panel (no lettering) and a striped awning over the door",
+    "behind the entrance, a buff/tan tiled dome on a white octagonal drum with a darker ornamental band near its base, topped by a small dark bronze lantern cupola with a finial (the highest point on the Row)",
+    "red clay-tile edging along the roofs and parapets; big scalloped-shell ornaments on the end parapets; tall round-arched windows with fanlights in the end pavilions"
+   ]
+  },
+  "ozark": {
+   "title": "Ozark Bathhouse (1922), Spanish Colonial Revival",
+   "view": "row",
+   "checklist": [
+    "a low white stucco block",
+    "twin towers flanking the entrance, each with three stepped setbacks (each stage narrower than the one below)",
+    "red clay-tile hipped (pyramid) caps on both towers with finials",
+    "a red-tile sloped porch roof across the front",
+    "small cartouches above the pavilion windows; a faint Art Deco feel"
+   ]
+  },
+  "buckstaff": {
+   "title": "Buckstaff Bathhouse (1912), Neoclassical, still operating",
+   "view": "row",
+   "checklist": [
+    "a three-storey cream/tan brick block with white stucco base, cornices and parapet",
+    "engaged columns dividing the front into seven bays, with pavilions at each end",
+    "a white frieze with round medallions (paterae)",
+    "classical urns on the parapet; a taller central attic and rooftop sun porches",
+    "maroon striped window awnings (optional); no readable lettering"
+   ]
+  },
+  "lamar": {
+   "title": "Lamar Bathhouse (1923), the southernmost on the Row",
+   "view": "row",
+   "checklist": [
+    "a plain two-storey stucco block with a flat roof",
+    "a parapet capped with a thin strip of brick and red clay tile",
+    "five broad segmental-arched porch openings across the front",
+    "a small low pediment at the centre of the parapet",
+    "restrained classical-revival trim; no dome or towers"
+   ]
+  },
+  "administration": {
+   "title": "Bathhouse Row Administration Building (1936)",
+   "view": "row",
+   "checklist": [
+    "a two-storey Spanish Colonial Revival stucco block with a red clay-tile hipped roof",
+    "seen from Central Avenue: its narrow, plain west side (about 45-49 ft wide)",
+    "wrought-iron balconies or grilles; a broken arched pediment over one upper window",
+    "a round cast-concrete fountain basin in front"
+   ]
+  },
+  "arlington": {
+   "title": "The Arlington Hotel (1924), at the head of Central Avenue",
+   "view": "3/4 from the south-west, looking down about 40 degrees",
+   "checklist": [
+    "a huge symmetrical Spanish Colonial Revival hotel of buff/tan brick, about 10 storeys",
+    "TWIN TOWERS rising above the main block, each capped with a red-tile pyramidal roof",
+    "red clay-tile roofs; an arched main entrance at the centre",
+    "wings stepping out toward the street; it closes the vista at the Central Avenue / Fountain Street fork"
+   ]
+  },
+  "medical-arts": {
+   "title": "Medical Arts Building (1929-30), Art Deco, 16 storeys",
+   "view": "3/4, full height, looking down about 35 degrees",
+   "checklist": [
+    "a tall, narrow pale limestone-coloured Art Deco tower of sixteen storeys",
+    "two or three setbacks near the top",
+    "strong vertical piers between narrow window bays",
+    "bas-relief carving on the frieze and around the entrance; bronze grillework above the doors"
+   ]
+  },
+  "ohio-club": {
+   "title": "The Ohio Club (1905), 336 Central Avenue",
+   "view": "front, looking down about 35 degrees",
+   "checklist": [
+    "a narrow two- or three-storey historic brick storefront on Central Avenue, true to the photograph",
+    "the facade details (windows, cornice, storefront) as photographed",
+    "no readable lettering on any sign"
+   ]
+  },
+  "southern-club": {
+   "title": "The Southern Club (1893), 250 Central Avenue",
+   "view": "front, looking down about 35 degrees",
+   "checklist": [
+    "a ground-floor storefront faced in dark, glossy structural glass (black Pittsburgh glass) with a metal canopy",
+    "above it, a Romanesque Revival dressed-stone second floor with an arcade of round arches",
+    "proportions and details as photographed; no readable lettering"
+   ]
+  },
+  "malco": {
+   "title": "Malco Theatre, 817 Central Avenue",
+   "view": "front, looking down about 35 degrees",
+   "checklist": [
+    "the theatre's facade and marquee as photographed",
+    "the marquee with blank or abstract panels (no readable lettering)"
+   ]
+  },
+  "army-navy": {
+   "title": "Army and Navy Hospital (1933), on the hill above downtown",
+   "view": "3/4, looking down about 40 degrees",
+   "checklist": [
+    "the large hospital building on its hilltop exactly as photographed: its wings, its central tower and its roof forms",
+    "the true wall colour and red-tile roofs where the photo shows them"
+   ]
+  },
+  "tower": {
+   "title": "Hot Springs Mountain Tower (1983)",
+   "view": "full height from base to antenna, seen from slightly above and to the front, tall and narrow (portrait)",
+   "checklist": [
+    "a slender cream/beige central shaft clad in ribbed metal, with vertical strips of windows running up it",
+    "around the shaft, a rust-brown tubular steel lattice frame of four legs with zigzag X-bracing, the legs splaying outward near the base",
+    "at the top, a wider octagonal enclosed observation cab in beige siding with a continuous band of windows",
+    "above the cab, an open observation deck with a railing and a low octagonal roof with a short antenna",
+    "NOT a stone or castle tower and NOT a water tower; it rises from the trees on the mountain top"
+   ]
+  },
+  "mountainaire": {
+   "title": "Mountainaire Hotel, Park Avenue",
+   "view": "3/4, looking down about 40 degrees",
+   "checklist": [
+    "the hotel exactly as photographed: storeys, wings, materials, roof and signature details",
+    "no readable lettering on signs"
+   ]
+  },
+  "oaklawn": {
+   "title": "Oaklawn Park grandstand and clubhouse",
+   "view": "3/4 from the track side, looking down about 40 degrees",
+   "checklist": [
+    "the grandstand and clubhouse as photographed: the long covered grandstand, its roofline and colour scheme",
+    "no readable lettering or logos"
+   ]
+  },
+  "happy-hollow": {
+   "title": "Happy Hollow (about 1900), the photo-gallery and amusement grounds at the top of Fountain Street",
+   "view": "3/4, looking down about 40 degrees",
+   "checklist": [
+    "the frame buildings, signs-without-lettering and props as shown in the dated photograph",
+    "set in a wooded hollow"
+   ]
+  },
+  "ballpark": {
+   "title": "Whittington Park ballpark (historic spring-training field)",
+   "view": "3/4, looking down about 40 degrees",
+   "checklist": [
+    "the wooden grandstand as shown in the dated photograph",
+    "a baseball diamond in front of it; no lettering"
+   ]
+  },
+  "blakely-dam": {
+   "title": "Blakely Mountain Dam, Lake Ouachita",
+   "view": "3/4 from the downstream side, looking down about 40 degrees",
+   "checklist": [
+    "the dam as photographed: its embankment, spillway and intake/powerhouse structures",
+    "the lake behind it"
+   ]
+  },
+  "anthony-chapel": {
+   "title": "Anthony Chapel, Garvan Woodland Gardens (2006)",
+   "view": "3/4, looking down about 35 degrees",
+   "checklist": [
+    "a tall, narrow wood-and-glass chapel with a steep gable",
+    "repeated vertical pine timber columns and a criss-cross timber lattice framing tall glass walls",
+    "set in woodland"
+   ]
+  }
+ }
+}

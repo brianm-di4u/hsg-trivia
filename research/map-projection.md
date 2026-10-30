@@ -1,7 +1,10 @@
 # The board map: data, projection and honest distortions
 
-The Trail board is a Blender-rendered tabletop diorama of the real valley, built by `tools/map/` from
-public data. This note records what is true on the board, what is distorted, and why.
+The Trail board is a painted 2D map of the real valley in the style of an illustrated adventure map (v3,
+2026-10-29). Its plan is projected from public data by `tools/map/` (Blender is used only to project and shade that
+plan); an image model paints the base map from it, and the route, the spaces and the real landmarks (each painted from
+photographs) are layered on top at their true places (`art-src/PROMPTS.md`). This note records what is true on the
+board, what is distorted, and why.
 
 ## Data (all downloaded 2026-10-28 into `art-src/geo/raw/`, which is git-ignored and refetchable)
 
@@ -18,20 +21,31 @@ public data. This note records what is true on the board, what is distorted, and
 
 ## What is true on the board
 
-- **The camera.** The board is seen from the west, looking east and tilted 30° from vertical: the classic
-  view of the Row's fronts with Hot Springs Mountain behind. North is to the left; the compass on the board shows it.
+- **The camera.** The board is seen from the west, looking east and tilted 45° from vertical (a bird's-eye view,
+  v3, 2026-10-29; it was 30°): the classic view of the Row's fronts with Hot Springs Mountain behind. North is to the
+  left; the painted compass shows it. The top 17% of the board is a painted horizon band of distant Ouachita ridges
+  and sky: it stands for the country beyond the map, not for particular peaks, and no space or landmark sits in it.
 - **Bathhouse Row.**
   - The eight bathhouses run north to south in their confirmed order: Superior, Hale, Maurice, Fordyce, Quapaw,
     Ozark, Buckstaff, Lamar, then the Administration Building.
-  - Each uses its true OSM footprint, scaled uniformly, so frontages and proportions are true.
-  - Roof forms and colours come from the research notes: the Quapaw's tile dome, the Maurice's green tile,
-    the Fordyce's red hipped roof, the Ozark's twin stepped towers.
-  - Heights are exaggerated 1.45× for the diorama look.
+  - Each is a painting of the real building made from public-domain photographs (`art-src/photo-refs/sources.json`)
+    and checked against them for its signature features (`art-src/landmarks.json`): the Quapaw's chevron-tiled dome,
+    the Maurice's green tile, the Fordyce's lozenge brick and hipped end pavilions, the Ozark's twin stepped towers.
+  - **Drawn larger than life:** each bathhouse is painted about 1.2× its true frontage and a little taller than life,
+    then re-spaced along the Row only as far as needed so neighbours never overlap (the largest shift is checked by
+    `tools/map/illustrate.mjs`, at most 9 board units, about 11 m). Their order is checked on every build.
 - **Terrain.** It is real USGS elevation, with vertical relief scaled by the local horizontal scale ×1.7.
   This covers Hot Springs, North and West Mountains and the Whittington valley.
 - **Streets and trails.** Every street is a real TIGER street; the Peak and Short Cut trail spaces sit on the OSM trail lines.
-- **Spaces.** Every named space sits at its real place, within the route's spacing adjustment of at most about 18 board units.
-  Examples: the Ohio Club at 336 Central, the Medical Arts Building, the Malco Theatre, Velda Rose, the Mountainaire, Goat Rock, North Mountain's summit, Happy Hollow, Whittington Park and the Ban Johnson / Fogel Field site.
+- **The route runs on the real streets** (`tools/map/layout.py`, v3): each run between two pinned spaces follows the
+  line it is named after (the Row walk, Central Avenue's west sidewalk, TIGER Whittington Ave, Park Ave and Fountain St,
+  the OSM Peak and Short Cut trails, a lane round Oaklawn's oval) and its spaces are spread at an even pitch along it.
+  Where TIGER doubles back (Whittington Ave splits into two westward branches), the run falls back to a curve through
+  its anchors. Connectors between districts are curves.
+- **Spaces.** Landmarks, junctions, the start, the tower, the Ohio Club and the vignette ends are pinned to their real
+  places. Other named places (the Superior, Hale, Fordyce, Buckstaff, Malco, Southern Club, Medical Arts, North
+  Mountain, Fogel Field, the motor courts) are pulled toward their real spot but may sit up to 0.15 of a pitch off the
+  even spacing; `layout.py` prints how far each one is from its true spot.
 
 ## Honest distortions (stated on the board and in the How-to-play text)
 
@@ -48,7 +62,9 @@ public data. This note records what is true on the board, what is distorted, and
      (9 mi WNW) and Lake Catherine (4.8 mi SE) are each a true-shape patch of real data at their own scale.
    - Each is set into the rim and outlined by a dashed ring, with a plate giving the real distance and "moved closer".
    - Lake Hamilton and Lake Ouachita sit about 30–45° off their true bearings, so the outer loop never crosses itself.
-4. **The Mountain Tower is drawn 2.2× taller** than the other buildings' scale, because it is the game's goal.
+4. **Landmarks drawn larger than life.** The Row's bathhouses about 1.2×, the other painted landmarks about 2–2.5×
+   their true footprint, and the Mountain Tower taller still, because it is the game's goal. Each stands on its true
+   footprint or research anchor; the board's legend says "landmarks drawn larger than life".
 
 ## The route vs. the real roads
 

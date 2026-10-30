@@ -3,37 +3,37 @@
   "file": "token-circle.webp",
   "w": 208,
   "h": 240,
-  "bytes": 4660
+  "bytes": 4768
  },
  "token-square": {
   "file": "token-square.webp",
   "w": 208,
   "h": 240,
-  "bytes": 3224
+  "bytes": 3360
  },
  "token-triangle": {
   "file": "token-triangle.webp",
   "w": 208,
   "h": 240,
-  "bytes": 3564
+  "bytes": 3756
  },
  "token-diamond": {
   "file": "token-diamond.webp",
   "w": 208,
   "h": 240,
-  "bytes": 4626
+  "bytes": 4708
  },
  "token-star": {
   "file": "token-star.webp",
   "w": 208,
   "h": 240,
-  "bytes": 5076
+  "bytes": 4952
  },
  "token-hexagon": {
   "file": "token-hexagon.webp",
   "w": 208,
   "h": 240,
-  "bytes": 4208
+  "bytes": 4356
  },
  "stamp-row": {
   "file": "stamp-row.webp",
@@ -140,109 +140,85 @@
  "board-day": {
   "file": "board-day.webp",
   "w": 3200,
-  "h": 2842,
-  "bytes": 1617348
+  "h": 2723,
+  "bytes": 1316340
  },
  "board-day-lo": {
   "file": "board-day-lo.webp",
   "w": 1600,
-  "h": 1421,
-  "bytes": 611484
+  "h": 1362,
+  "bytes": 474262
  },
  "board-night": {
   "file": "board-night.webp",
   "w": 3200,
-  "h": 2842,
-  "bytes": 606086
+  "h": 2723,
+  "bytes": 643336
  },
  "board-night-lo": {
   "file": "board-night-lo.webp",
   "w": 1600,
-  "h": 1421,
-  "bytes": 237352
+  "h": 1362,
+  "bytes": 235306
  },
  "pawn-circle": {
   "file": "pawn-circle.webp",
   "w": 96,
   "h": 110,
-  "bytes": 2614
+  "bytes": 2708
  },
  "pawn-square": {
   "file": "pawn-square.webp",
   "w": 96,
   "h": 110,
-  "bytes": 1860
+  "bytes": 1948
  },
  "pawn-triangle": {
   "file": "pawn-triangle.webp",
   "w": 96,
   "h": 110,
-  "bytes": 2184
+  "bytes": 2282
  },
  "pawn-diamond": {
   "file": "pawn-diamond.webp",
   "w": 96,
   "h": 110,
-  "bytes": 2686
+  "bytes": 2804
  },
  "pawn-star": {
   "file": "pawn-star.webp",
   "w": 96,
   "h": 110,
-  "bytes": 2884
+  "bytes": 2758
  },
  "pawn-hexagon": {
   "file": "pawn-hexagon.webp",
   "w": 96,
   "h": 110,
-  "bytes": 2354
+  "bytes": 2320
  },
- "standee-arlington": {
-  "file": "standee-arlington.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 32074
+ "doodle-horse": {
+  "file": "doodle-horse.webp",
+  "w": 180,
+  "h": 140,
+  "bytes": 10596
  },
- "standee-tower": {
-  "file": "standee-tower.webp",
-  "w": 256,
-  "h": 384,
-  "bytes": 18410
+ "doodle-sailboat": {
+  "file": "doodle-sailboat.webp",
+  "w": 180,
+  "h": 186,
+  "bytes": 11280
  },
- "standee-oaklawn": {
-  "file": "standee-oaklawn.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 27814
+ "doodle-fishing-boat": {
+  "file": "doodle-fishing-boat.webp",
+  "w": 180,
+  "h": 86,
+  "bytes": 9052
  },
- "standee-ballpark": {
-  "file": "standee-ballpark.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 26504
- },
- "standee-hollow": {
-  "file": "standee-hollow.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 37306
- },
- "standee-motel": {
-  "file": "standee-motel.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 24732
- },
- "standee-dam": {
-  "file": "standee-dam.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 26906
- },
- "standee-bridge": {
-  "file": "standee-bridge.webp",
-  "w": 320,
-  "h": 320,
-  "bytes": 31566
+ "doodle-streetcar": {
+  "file": "doodle-streetcar.webp",
+  "w": 180,
+  "h": 157,
+  "bytes": 11564
  }
 }

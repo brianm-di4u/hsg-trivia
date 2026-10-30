@@ -3,33 +3,33 @@
  "items": [
   {
    "name": "board-day",
-   "src": "blender/renders/board-day-3200.png",
+   "src": "illustrated/board-day.png",
    "w": 3200,
-   "h": 2842,
+   "h": 2723,
    "fit": "cover",
    "quality": 0.82
   },
   {
    "name": "board-day-lo",
-   "src": "blender/renders/board-day-3200.png",
+   "src": "illustrated/board-day.png",
    "w": 1600,
-   "h": 1421,
+   "h": 1362,
    "fit": "cover",
    "quality": 0.8
   },
   {
    "name": "board-night",
-   "src": "blender/renders/board-night-3200.png",
+   "src": "illustrated/board-night.png",
    "w": 3200,
-   "h": 2842,
+   "h": 2723,
    "fit": "cover",
    "quality": 0.82
   },
   {
    "name": "board-night-lo",
-   "src": "blender/renders/board-night-3200.png",
+   "src": "illustrated/board-night.png",
    "w": 1600,
-   "h": 1421,
+   "h": 1362,
    "fit": "cover",
    "quality": 0.8
   },
@@ -290,75 +290,39 @@
    ]
   },
   {
-   "name": "standee-arlington",
-   "src": "standee-arlington.png",
-   "w": 320,
-   "h": 320,
+   "name": "doodle-horse",
+   "src": "sprites/horse.png",
+   "w": 180,
+   "h": 140,
    "fit": "contain",
-   "keyWhite": 22,
+   "keyWhite": 26,
    "trim": true
   },
   {
-   "name": "standee-tower",
-   "src": "standee-tower.png",
-   "w": 256,
-   "h": 384,
+   "name": "doodle-sailboat",
+   "src": "sprites/sailboat.png",
+   "w": 180,
+   "h": 186,
    "fit": "contain",
-   "keyWhite": 22,
+   "keyWhite": 26,
    "trim": true
   },
   {
-   "name": "standee-oaklawn",
-   "src": "standee-oaklawn.png",
-   "w": 320,
-   "h": 320,
+   "name": "doodle-fishing-boat",
+   "src": "sprites/fishing-boat.png",
+   "w": 180,
+   "h": 86,
    "fit": "contain",
-   "keyWhite": 22,
+   "keyWhite": 26,
    "trim": true
   },
   {
-   "name": "standee-ballpark",
-   "src": "standee-ballpark.png",
-   "w": 320,
-   "h": 320,
+   "name": "doodle-streetcar",
+   "src": "sprites/streetcar.png",
+   "w": 180,
+   "h": 157,
    "fit": "contain",
-   "keyWhite": 22,
-   "trim": true
-  },
-  {
-   "name": "standee-hollow",
-   "src": "standee-hollow.png",
-   "w": 320,
-   "h": 320,
-   "fit": "contain",
-   "keyWhite": 22,
-   "trim": true
-  },
-  {
-   "name": "standee-motel",
-   "src": "standee-motel.png",
-   "w": 320,
-   "h": 320,
-   "fit": "contain",
-   "keyWhite": 22,
-   "trim": true
-  },
-  {
-   "name": "standee-dam",
-   "src": "standee-dam.png",
-   "w": 320,
-   "h": 320,
-   "fit": "contain",
-   "keyWhite": 22,
-   "trim": true
-  },
-  {
-   "name": "standee-bridge",
-   "src": "standee-bridge.png",
-   "w": 320,
-   "h": 320,
-   "fit": "contain",
-   "keyWhite": 22,
+   "keyWhite": 26,
    "trim": true
   }
  ]

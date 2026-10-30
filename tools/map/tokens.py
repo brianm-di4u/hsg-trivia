@@ -9,7 +9,7 @@ from geo_common import GAME
 
 SHAPES = ['circle', 'square', 'triangle', 'diamond', 'star', 'hexagon']
 COLORS = ['#D7263D', '#1D5BD6', '#14904A', '#F2A90C', '#8A43C4', '#F4F1EA']
-TILT = math.radians(30)
+from terrain import TILT   # the board camera's tilt, so the pawns stand at the board's angle
 
 def srgb(h):
     h = h.lstrip('#'); c = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]

@@ -1,12 +1,13 @@
 # Board height field shared by preview.py and build_board.py: real terrain through the warp, with the
 # rim vignettes blended in. z is in board units (u), relative to the Row's sidewalk.
-import json, os
+import json, os, math
 import numpy as np
 import warp, vignettes
 from geo_raster import elevation
 from geo_common import GAME
 
 EXAG = 1.7     # vertical exaggeration on top of the local horizontal scale
+TILT = math.radians(45)   # the board camera's tilt from vertical (it looks east); tools/map/tokens.py matches it
 E0 = 178.0     # reference elevation (m) at the Row
 
 def load_layout():
