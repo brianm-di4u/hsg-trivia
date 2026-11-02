@@ -1,6 +1,6 @@
 # Builds the 3D truth under the illustrated Trivia Trail board in Blender, from public map data.
 #   blender -b --factory-startup --python tools/map/build_board.py -- [--res 3200] [--norender] [--save]
-# Inputs: art-src/geo/raw/* (USGS 3DEP DEM, Census TIGER roads, USGS NHD water, OSM downtown footprints)
+# Inputs: raw geodata (USGS 3DEP DEM, Census TIGER roads, USGS NHD water, OSM downtown footprints); see geo_common.RAW
 #         art-src/geo/layout.json (board spaces + route, written by tools/map/layout.py)
 # Everything goes through one orthographic camera that looks east, tilted 30 degrees from vertical. Blender does
 # only what needs 3D (relief light, occlusion, building massing, projection); tools/map/illustrate.mjs paints the

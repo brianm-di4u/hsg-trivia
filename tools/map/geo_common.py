@@ -4,7 +4,14 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GAME = os.path.normpath(os.path.join(HERE, '..', '..'))
-RAW = os.path.join(GAME, 'art-src', 'geo', 'raw')
+# Raw geodata (git-ignored, refetchable). In the Hot Springs Games workspace it is shared: reference/geo/downtown/
+# holds the TIGER, NHD and OSM downloads, reference/geo/elevation/ the 3DEP DEM tiles (also used by hsg-tub-rally).
+# A checkout outside the workspace keeps both in art-src/geo/raw/. HSG_GEO_DIR overrides reference/geo.
+_GEO = os.environ.get('HSG_GEO_DIR') or os.path.normpath(os.path.join(GAME, '..', '..', 'reference', 'geo'))
+if os.path.isdir(_GEO):
+    RAW, DEM_DIR = os.path.join(_GEO, 'downtown'), os.path.join(_GEO, 'elevation')
+else:
+    RAW = DEM_DIR = os.path.join(GAME, 'art-src', 'geo', 'raw')
 
 def read_tiff_f32(path):
     """Uncompressed single-band float32 TIFF (what the USGS 3DEP exportImage call returns)."""

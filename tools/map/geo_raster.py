@@ -1,7 +1,7 @@
 # Raster helpers for the map build (numpy only): DEM sampling, polygon fill, thick lines, PNG out.
 import math, zlib, struct, os
 import numpy as np
-from geo_common import read_tiff_f32, RAW, LAT0, LON0, M_LAT, M_LON
+from geo_common import read_tiff_f32, DEM_DIR, LAT0, LON0, M_LAT, M_LON
 
 DEMS = [  # (file, lon0, lat0, lon1, lat1), finest first
     ('dem-downtown.tif', -93.080, 34.495, -93.025, 34.535),
@@ -12,7 +12,7 @@ _cache = {}
 def _dem(i):
     if i not in _cache:
         f, a, b, c, d = DEMS[i]
-        _cache[i] = read_tiff_f32(os.path.join(RAW, f))
+        _cache[i] = read_tiff_f32(os.path.join(DEM_DIR, f))
     return _cache[i]
 
 def _bilinear(img, px, py):

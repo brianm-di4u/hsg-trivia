@@ -1,5 +1,5 @@
 // The board's style bible: a painted ink-and-watercolour adventure map on warm parchment (the three reference
-// images in reference-samples/). One palette, one sepia ink, one light. The landmark painting prompts
+// images in the workspace's reference/benchmarks/board-games/maps/). One palette, one sepia ink, one light. The landmark painting prompts
 // (art-src/PROMPTS.md) quote these, so the painted buildings sit in the same world as the painted map.
 export const INK = '#3a2a1a';
 // The afternoon sun from the west-south-west, as in the Blender relief pass. The camera looks east, so on screen

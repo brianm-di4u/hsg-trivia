@@ -18,7 +18,7 @@ The board is built in layers by `tools/map/illustrate.mjs` (Canvas2D in the harn
    (USGS relief, OSM land cover and buildings, NHD water, TIGER roads), with the route, its spaces and an empty lawn plot
    for every landmark. It is the composition, never shipped.
 2. **Base painting** (`art-src/board2d/base.png`): the image model repaints the guide in the style of the three
-   reference maps in `reference-samples/` (attached as style images). Prompt, in short: *repaint image 1 as a finished
+   reference maps in the workspace's `reference/benchmarks/board-games/maps/` (attached as style images). Prompt, in short: *repaint image 1 as a finished
    hand-painted illustrated board-game map in exactly the style of the references: ink-and-watercolour on warm aged
    parchment, every tree individually inked, dense forests on the hills, blue lakes with white wave strokes, layered
    distant blue-green ridges and a pale sky; follow image 1's composition exactly; the cream band becomes a cream dirt
@@ -35,7 +35,7 @@ The board is built in layers by `tools/map/illustrate.mjs` (Canvas2D in the harn
 Each landmark was painted with its reference photos attached as input images, from a feature checklist written from
 the sourced research (`art-src/landmarks.json`; `research/visual-style-guide.md`, `research/bathhouse-row-layout.md`),
 then checked against the photos and regenerated (up to three times) where a feature was missing or wrong. Photo
-credits and licences are in `art-src/photo-refs/sources.json`; the photos are consulted only, never shipped.
+credits and licences are in `art-src/photo-refs/sources.json`; the photos (the workspace's `reference/photos/`) are consulted only, never shipped.
 
 | Landmark | Photo sources | Notes |
 |---|---|---|
@@ -55,7 +55,7 @@ credits and licences are in `art-src/photo-refs/sources.json`; the photos are co
 ### Figures that move on the board (`doodle-*`)
 
 The racehorse (round Oaklawn's oval), a sailboat and a bass-fishing boat (on the lakes) and a c. 1900 Hot Springs
-streetcar (on Central Avenue; from the Detroit Publishing photos in `photo-refs/streetcar/`, colours interpreted
+streetcar (on Central Avenue; from the Detroit Publishing photos in `reference/photos/streetcar/`, colours interpreted
 from monochrome). Each was painted on white with the board map and the horse as style references.
 
 ## Card and passport art (v2, 2026-10-28)

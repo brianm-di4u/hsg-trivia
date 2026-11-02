@@ -1,5 +1,5 @@
 // The 2D board compositor; tools/map/illustrate.mjs calls window.paint(options) and saves the PNG.
-// The board is a flat, hand-painted layer stack in the style of the reference maps (reference-samples/):
+// The board is a flat, hand-painted layer stack in the style of the reference maps (the workspace's reference/benchmarks/board-games/maps/):
 //   guide  a colour-coded plan of the real valley (hills, woods, lakes, roads, the route, landmark plots), the
 //          composition an image model paints the base map from (art-src/board2d/base.png);
 //   board  that painted base, then our own layers on top: the route path and its stone seats, the real landmarks
@@ -47,7 +47,7 @@ function trace(g, p, close = false) { g.beginPath(); p.forEach(([x, y], i) => (i
 function path2d(p, close = true) { const P = new Path2D(); p.forEach(([x, y], i) => (i ? P.lineTo(x, y) : P.moveTo(x, y))); if (close) P.closePath(); return P; }
 
 // ---------------------------------------------------------------- the landmarks: what stands where, and how big
-// Each real building is painted from photographs (art-src/landmarks.json, art-src/photo-refs/) and stands on its
+// Each real building is painted from photographs (art-src/landmarks.json, the workspace's reference/photos/) and stands on its
 // true footprint (lm, from OSM) or research anchor (site). Sizes are larger than life, as on the reference maps:
 // k x the footprint's width on the board, or a fixed width wU in board units. aspect is the height/width used to
 // reserve room in the guide before a painting exists.
