@@ -10,43 +10,29 @@ import * as UI from './ui.js';
 import { ui } from './ui.js';
 import { sfx, setAudio, unlockAudio, audioStats } from './audio.js';
 import { ART } from './assets.js';
+import { createSaveStore } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
 const DEFAULT_SETTINGS = { sound: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' };
 
 // ---------- save ----------
-G.save = {
-  data: { v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null },
-  ok: true,
-  load() {
-    try { const raw = window.localStorage.getItem(SAVE_KEY); if (raw) deepMerge(this.data, JSON.parse(raw)); } catch (e) { this.ok = false; }
-  },
-  write() {
-    try { window.localStorage.setItem(SAVE_KEY, JSON.stringify(this.data)); } catch (e) { this.ok = false; }
-  },
-};
+G.save = createSaveStore({ onConflict() {
+  ui.saveConflict = true;
+  UI.announce('The saved trip changed in another tab. This trip will not overwrite it.');
+  UI.update();
+} });
 G.today = () => (window.__TEST_DATE__ || todayISO());
 
 function saveTrail() {
   const t = G.state.trail; if (!t) return;
-  G.save.data.trail = t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null }));
-  G.save.data.asked = G.state.asked.slice(-300);
-  G.save.data.rng = G.rng.state;
-  G.save.write();
+  return applyCommittedSettings(G.save.commitTrail({
+    trail: t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null })),
+    asked: G.state.asked.slice(-300), rng: G.rng.state,
+  }));
 }
 function saveQuiz(q) {
-  const right = q.results.filter((r) => r.correct).length;
-  if (q.kind === 'quick') G.save.data.best.quick = Math.max(G.save.data.best.quick || 0, q.score);
-  if (q.kind === 'era') { G.save.data.best.era = G.save.data.best.era || {}; G.save.data.best.era[q.era] = Math.max(G.save.data.best.era[q.era] || 0, q.score); }
-  if (q.kind === 'daily') {
-    const d = G.save.data.daily;
-    if (!d.results[q.date]) {
-      const prev = new Date(q.date + 'T12:00:00'); prev.setDate(prev.getDate() - 1);
-      d.streak = d.last === todayISO(prev) ? (d.streak || 0) + 1 : 1;
-      d.last = q.date; d.results[q.date] = { score: q.score, right, marks: q.results.map((r) => (r.correct ? 1 : 0)).join('') };
-    }
-  }
-  G.save.write();
+  return applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
+    right: q.results.filter((r) => r.correct).length, marks: q.results.map((r) => r.correct ? '1' : '0').join('') }));
 }
 
 // ---------- settings ----------
@@ -60,7 +46,22 @@ function applySettings() {
   R.view.reduced = s.motion === 'reduced' || (s.motion === 'auto' && mq('(prefers-reduced-motion: reduce)'));
   document.body.classList.toggle('reduced', R.view.reduced);
   document.documentElement.style.fontSize = (16 * s.textScale) + 'px';
-  G.save.data.settings = { ...s }; G.save.write();
+
+}
+
+function syncSavedSettings() {
+  Object.assign(G.state.settings, DEFAULT_SETTINGS, G.save.data.settings);
+  applySettings();
+}
+function applyCommittedSettings(result) {
+  if (result.ok) syncSavedSettings();
+  return result;
+}
+function changeSettings(changes) {
+  Object.assign(G.state.settings, changes);
+  const result = applyCommittedSettings(G.save.updateSettings(changes));
+  if (!result.ok) applySettings();
+  return result;
 }
 
 // ---------- scenes ----------
@@ -100,6 +101,9 @@ function newState() {
 
 // ---------- actions (shared by clicks, keys and __game.act) ----------
 function startTrail(opts = {}) {
+  const reserved = G.save.reserveTrail();
+  if (!reserved.ok && reserved.reason === 'trail-conflict') return;
+  ui.saveConflict = false;
   R.resetTokens();
   Game.newTrail(opts);
   scene('game');
@@ -110,9 +114,11 @@ const ACTIONS = {
   goto: (a) => goto(a),
   back: () => scene(G.state.trail && prevScene === 'game' ? 'game' : prevScene === 'game' ? 'title' : prevScene || 'title'),
   'continue-trail': () => {
-    const sv = G.save.data.trail; if (!sv) return;
-    G.state.trail = JSON.parse(JSON.stringify(sv)); G.state.mode = 'trail'; G.state.asked = (G.save.data.asked || []).slice();
-    if (G.save.data.rng) G.rng.state = G.save.data.rng;
+    const saved = G.save.adoptTrail(); if (!saved) { UI.update(); return; }
+    ui.saveConflict = false;
+    G.state.trail = saved.trail; G.state.mode = 'trail'; G.state.asked = (saved.asked || []).slice();
+    if (saved.rng !== undefined) G.rng.state = saved.rng;
+    syncSavedSettings();
     R.resetTokens(); scene('game'); Game.beginTurn();
   },
   'start-trail': () => {
@@ -150,9 +156,11 @@ const ACTIONS = {
   'quiz-next': () => Quiz.next(),
   set: (a) => {
     const [k, v] = a.split('='); const s = G.state.settings;
-    s[k] = v === 'true' ? true : v === 'false' ? false : isNaN(+v) ? v : +v;
-    applySettings(); sfx('click'); UI.update();
+    const value = v === 'true' ? true : v === 'false' ? false : isNaN(+v) ? v : +v;
+    changeSettings({ [k]: value }); sfx('click'); UI.update();
   },
+  'save-conflict-dismiss': () => { ui.saveConflict = false; UI.update(); },
+  'save-conflict-title': () => { ui.saveConflict = false; scene('title'); },
   'copy-share': () => { const ta = document.querySelector('#share'); if (!ta) return; ta.select(); try { navigator.clipboard.writeText(ta.value).catch(() => {}); } catch (e) { /* select fallback */ } UI.announce('Result copied.'); },
 };
 function act(name, arg) { const f = ACTIONS[name]; if (f) f(arg); }
@@ -167,7 +175,7 @@ function wireInput() {
   document.addEventListener('input', (e) => {
     const el = e.target;
     if (el.dataset.seat !== undefined) { ui.setup.seats[+el.dataset.seat].name = el.value; }
-    if (el.dataset.setting === 'volume') { G.state.settings.volume = el.value / 100; applySettings(); }
+    if (el.dataset.setting === 'volume') { changeSettings({ volume: el.value / 100 }); }
   });
   document.addEventListener('change', (e) => {
     const el = e.target;
@@ -177,7 +185,7 @@ function wireInput() {
   document.querySelector('#btn-home').addEventListener('click', () => { if (G.state.scene === 'game') { ui.menuOpen = true; UI.update(); } else scene('title'); });
   document.querySelector('#btn-help').addEventListener('click', () => goto('help'));
   document.querySelector('#btn-settings').addEventListener('click', () => goto('settings'));
-  document.querySelector('#btn-sound').addEventListener('click', () => { G.state.settings.sound = !G.state.settings.sound; applySettings(); UI.update(); sfx('click'); });
+  document.querySelector('#btn-sound').addEventListener('click', () => { changeSettings({ sound: !G.state.settings.sound }); UI.update(); sfx('click'); });
   document.querySelector('#btn-zoom').addEventListener('click', () => act('zoom'));
 
   // Board pointer: tap a highlighted space; drag to pan when zoomed.
@@ -191,7 +199,7 @@ function wireInput() {
   });
   cv.addEventListener('pointerup', (e) => {
     if (!down) return; const moved = down.moved; down = null;
-    if (moved || G.state.scene !== 'game') return;
+    if (moved || G.state.scene !== 'game' || ui.saveConflict) return;
     const t = G.state.trail; if (!t || Game.cur().kind !== 'human') return;
     const r = cv.getBoundingClientRect(); const hit = R.hitDest(e.clientX - r.left, e.clientY - r.top, t);
     if (hit === null) return;
@@ -211,6 +219,11 @@ function onKey(e) {
   if ((k === 'Enter' || k === ' ') && ae && ae.tagName === 'BUTTON') return;
   const st = G.state; const sc = st.scene; const lower = k.toLowerCase();
   const done = () => e.preventDefault();
+  if (ui.saveConflict) {
+    if (k === 'Tab') return trapFocus(e);
+    if (k === 'Escape') act('save-conflict-dismiss');
+    return done();
+  }
   if (lower === 'm') { document.querySelector('#btn-sound').click(); return done(); }
   if (k === '?') { goto('help'); return done(); }
   if (k === 'Tab') return trapFocus(e);
@@ -287,7 +300,7 @@ function loop(ts) {
   // question timer (humans only in the Trail Game)
   const q = st.question;
   const human = st.mode !== 'trail' || (st.trail && Game.cur().kind === 'human');
-  const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
+  const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && !ui.saveConflict && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
   if (open) {
     q.timeLeft -= tdt;
     const sec = Math.ceil(q.timeLeft);
@@ -322,7 +335,7 @@ window.__game = {
   getState: publicState,
   setState(s) {
     const st = G.state;
-    if (s.settings) { Object.assign(st.settings, s.settings); applySettings(); }
+    if (s.settings) changeSettings(s.settings);
     if (s.trail && st.trail) {
       const { players, ...rest } = s.trail;
       Object.assign(st.trail, rest);

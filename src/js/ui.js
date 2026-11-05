@@ -12,7 +12,7 @@ import * as Assets from './assets.js';
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { modal: null, setup: null, menuOpen: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
+export const ui = { modal: null, setup: null, menuOpen: false, saveConflict: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
@@ -100,7 +100,7 @@ export function update() {
   if (sc === 'win') write($('#scene-win'), winHTML(), 'win');
   if (sc === 'quiz') write($('#scene-quiz'), quizHTML(), 'quiz');
   if (sc === 'game') write($('#panel'), panelHTML(), 'panel');
-  const m = sc === 'game' ? modalHTML() : '';
+  const m = ui.saveConflict ? saveConflictHTML() : sc === 'game' ? modalHTML() : '';
   const modal = $('#modal');
   const was = !modal.hidden;
   if (m) {
@@ -366,6 +366,10 @@ function passportHTML() {
 function trolleyHTML() {
   const list = Game.trolleyOptions().map((id, i) => { const n = NODES[id]; return btn('trolley', `${ico('trolley', '', 'currentColor', 22)}<span>${esc(n.name)}</span><small>${esc(n.district ? DISTRICT[n.district].name : 'The Y')}</small>`, { arg: String(id), cls: 'listb', hint: String(i + 1), auto: i === 0 }); }).join('');
   return `<div class="mcard"><div class="mhead">${ico('trolley', '#1F2F5C', '#FFFFFF', 44)}<h2 id="mtitle">Ride the trolley</h2></div><p>Pay 2 tickets to ride to another stop. Your turn ends there.</p><div class="list">${list}</div><div class="mfoot">${btn('close-modal', 'Cancel', { cls: 'ghost', hint: 'Esc' })}</div></div>`;
+}
+
+function saveConflictHTML() {
+  return '<div class="mcard center"><h2 id="mtitle">Saved trip changed</h2><p>Another tab changed the saved trip. This trip will not overwrite it. Return to the title to continue the latest save or deliberately start a new trip.</p><div class="menu">' + btn('save-conflict-title', 'Back to title', { cls: 'primary', auto: true }) + btn('save-conflict-dismiss', 'Keep this trip open without saving') + '</div></div>';
 }
 
 function menuHTML() {
