@@ -33,9 +33,10 @@ function noted(result) {
 
 // The last turn-start snapshot handed to the save store, kept so a failed write can be retried when the page is hidden.
 let turnSnap = null;
-function saveTrail({ afterAnswer = false } = {}) {
+function saveTrail({ afterAnswer = false, inQuestion = false } = {}) {
   const t = G.state.trail; if (!t) return;
-  const snap = t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null }));
+  // inQuestion: a human's open question is stored as it stands (question, choice order, time left), so Continue returns to it.
+  const snap = t.phase === 'over' ? null : JSON.parse(JSON.stringify(inQuestion ? { ...t, question: G.state.question } : { ...t, phase: 'roll', roll: null, dests: [], pending: null }));
   if (snap && afterAnswer) {
     // Saved right after an answer scores: store the state endTurn will reach (the next player's turn), so that reloading
     // neither re-asks the question nor undoes the result. A missed Summit question sends the token to the trailhead.
@@ -45,6 +46,12 @@ function saveTrail({ afterAnswer = false } = {}) {
   }
   turnSnap = { trail: snap, asked: G.state.asked.slice(-300), rng: G.rng.state };
   return noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
+}
+// Leaving the page: record the time left on an open question, and retry a write that failed.
+function saveOnLeave() {
+  const q = G.state.question, t = G.state.trail;
+  if (G.state.scene === 'game' && t && t.phase === 'question' && q && q.chosen === null && Game.cur().kind === 'human') saveTrail({ inQuestion: true });
+  else retryUnsavedTrail();
 }
 function retryUnsavedTrail() {
   if (turnSnap && turnSnap.trail && (G.save.pending.trail || G.save.pending.reservation)) noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
@@ -138,10 +145,13 @@ const ACTIONS = {
   'continue-trail': () => {
     const saved = G.save.adoptTrail(); if (!saved) { UI.update(); return; }
     ui.saveConflict = false;
+    const open = saved.trail.phase === 'question' ? saved.trail.question : null; delete saved.trail.question;
     G.state.trail = saved.trail; G.state.mode = 'trail'; G.state.asked = (saved.asked || []).slice();
     G.rng = makeRng((Date.now() ^ performance.now()) >>> 0); // new dice and questions, not a replay of the saved ones
     syncSavedSettings();
-    R.resetTokens(); scene('game'); Game.beginTurn();
+    R.resetTokens();
+    if (open) { G.state.question = open; scene('game'); } // back to the question that was on screen, with its time left
+    else { scene('game'); Game.beginTurn(); }
   },
   'start-trail': () => {
     const su = ui.setup;
@@ -243,8 +253,8 @@ function wireInput() {
   });
 
   document.addEventListener('keydown', onKey);
-  window.addEventListener('pagehide', retryUnsavedTrail);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') retryUnsavedTrail(); });
+  window.addEventListener('pagehide', saveOnLeave);
+  document.addEventListener('visibilitychange', () => { syncPause(); if (document.visibilityState === 'hidden') saveOnLeave(); });
 }
 
 function onKey(e) {
@@ -334,11 +344,16 @@ function trapFocus(e) {
 }
 
 // ---------- loop ----------
+// The AI and the auto-advancing phases hold while the tab is hidden or the pause menu is open, and pick up again after.
+function syncPause() {
+  Game.setPaused(document.visibilityState === 'hidden' || (G.state.scene === 'game' && ui.menuOpen));
+}
 let lastT = 0; let tickSec = -1; let fpsFrames = 0;
 function loop(ts) {
   // Animation steps are capped at 50 ms so a stall never teleports tokens; the answer timer runs on wall-clock
   // time (capped at 0.5 s for a backgrounded tab), so a 10 s timer is 10 s even on a slow device.
   const raw = lastT ? (ts - lastT) / 1000 : 0.016; const dt = Math.min(0.05, raw); const tdt = Math.min(0.5, raw); lastT = ts; fpsFrames++;
+  syncPause();
   const st = G.state;
   // question timer (humans only in the Trail Game)
   const q = st.question;

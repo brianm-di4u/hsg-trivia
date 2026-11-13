@@ -11,6 +11,7 @@ export const G = {
   rng: makeRng(1),
   hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {} },
   timers: [],
+  paused: false, // set while the tab is hidden or the pause menu is open: no AI or auto-advance timer is armed
 };
 
 export const AI_NAMES = { easy: 'Doc Vapor', medium: 'Miss Promenade', hard: 'The Professor' };
@@ -37,7 +38,7 @@ const eligible = (p) => p.stamps.length >= T().target;
 export const isAI = (p = cur()) => p.kind === 'ai';
 
 function clearTimers() { for (const id of G.timers) clearTimeout(id); G.timers = []; }
-function later(ms, fn) { const id = setTimeout(() => { G.timers = G.timers.filter((x) => x !== id); fn(); }, ms); G.timers.push(id); }
+function later(ms, fn) { if (G.paused) return; const id = setTimeout(() => { G.timers = G.timers.filter((x) => x !== id); fn(); }, ms); G.timers.push(id); }
 const aiDelay = (base) => (G.state.settings.aiSpeed === 'fast' ? Math.min(220, base) : base);
 // Phases that end the turn by themselves after a short pause, with that pause in ms.
 const AUTO_END = { landed: () => (isAI() ? aiDelay(500) : 450), stuck: () => 1200, skipped: () => (isAI() ? aiDelay(900) : 1200) };
@@ -156,6 +157,7 @@ function ask(category, purpose, extra = {}) {
   const tm = p.kind === 'human' ? G.state.settings.timer : 0;
   G.state.question.timeMax = tm; G.state.question.timeLeft = tm;
   t.phase = 'question';
+  if (p.kind === 'human') G.hooks.save({ inQuestion: true }); // a reload brings back this very question
   G.hooks.update(); aiMaybe();
 }
 
@@ -405,9 +407,15 @@ export function aiMaybe() {
 }
 
 export function stopAI() { clearTimers(); }
+// One owner for paused: while paused nothing is armed (see later); leaving it re-arms what the current phase needs.
+export function setPaused(on) {
+  if (G.paused === on) return;
+  G.paused = on;
+  if (on) clearTimers(); else resume();
+}
 // Back on the board after Help or Settings: stopAI cleared every pending timer, so re-arm the one this phase needs.
 export function resume() {
-  const t = T(); if (!t || G.state.mode !== 'trail') return;
+  const t = T(); if (!t || G.state.mode !== 'trail' || G.state.scene !== 'game') return;
   if (AUTO_END[t.phase]) armAutoEnd(t);
   aiMaybe();
 }
