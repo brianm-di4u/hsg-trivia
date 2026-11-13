@@ -37,3 +37,38 @@ export const tests = [
     },
   },
 ];
+
+// ---- S5-14 / S1-17: audio context handling ----
+const hide = (page, hidden) => page.evaluate((h) => {
+  Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (h ? 'hidden' : 'visible') });
+  Object.defineProperty(document, 'hidden', { configurable: true, get: () => h });
+  document.dispatchEvent(new Event('visibilitychange'));
+}, hidden);
+const audioState = async (t) => (await t.state()).audio.state;
+
+tests.push(
+  {
+    name: 'S5-14 the first cue on the first gesture plays once the context resumes',
+    viewports: ['desktop'],
+    // A context that stays suspended for 200 ms after resume() is called, as a slow device does.
+    initScript: () => {
+      const Real = window.AudioContext;
+      window.AudioContext = class extends Real {
+        constructor() {
+          super(); let st = 'suspended';
+          Object.defineProperty(this, 'state', { get: () => st });
+          this.resume = () => new Promise((r) => setTimeout(() => { st = 'running'; r(); }, 200));
+        }
+      };
+    },
+    async run(t) {
+      await soloGame(t);
+      const before = (await t.state()).audio.played;
+      await t.page.keyboard.press('Space'); // first gesture: unlocks audio and rolls (gauge cue) in the same event
+      await t.page.waitForTimeout(600);
+      const s = await t.state();
+      t.expect(s.trail.phase === 'choose', 'the roll happened');
+      t.equal(s.audio.played, before + 1, 'the roll cue played after resume, not dropped');
+    },
+  },
+);

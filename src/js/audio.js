@@ -3,7 +3,7 @@
 
 let ac = null, master = null, noiseBuf = null;
 const opts = { on: true, volume: 0.7 };
-export const audioStats = { played: 0, ctx: false };
+export const audioStats = { played: 0, ctx: false, get state() { return ac ? ac.state : 'none'; } };
 
 function ensure() {
   if (ac) return ac;
@@ -25,8 +25,17 @@ export function setAudio({ on, volume }) {
   if (master) master.gain.value = opts.volume * 0.5;
 }
 
-// Call from a user gesture (browsers keep audio suspended until then).
-export function unlockAudio() { const c = ensure(); if (c && c.state === 'suspended') c.resume().catch(() => {}); }
+// Call from a user gesture (browsers keep audio suspended until then). resume() settles later than the gesture's own
+// cue, so sfx() holds one cue (the latest) while a resume is pending and plays it when the context is running.
+let resuming = null, pending = null;
+export function unlockAudio() {
+  const c = ensure(); if (!c) return Promise.resolve();
+  if (c.state === 'running') return Promise.resolve();
+  if (!resuming) {
+    resuming = c.resume().catch(() => {}).then(() => { resuming = null; const name = pending; pending = null; if (name) sfx(name); });
+  }
+  return resuming;
+}
 
 function tone({ type = 'sine', f = 440, f2 = null, t = 0, a = 0.005, d = 0.15, v = 0.3, q = null }) {
   const now = ac.currentTime + t;
@@ -67,7 +76,8 @@ const PRESETS = {
 
 export function sfx(name) {
   if (!opts.on || !PRESETS[name]) return;
-  const c = ensure(); if (!c || c.state !== 'running') return;
+  const c = ensure(); if (!c) return;
+  if (c.state !== 'running') { if (resuming) pending = name; return; }
   try { PRESETS[name](); audioStats.played++; } catch (e) { /* audio must never break the game */ }
 }
 export const SOUND_NAMES = Object.keys(PRESETS);
