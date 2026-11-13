@@ -205,3 +205,52 @@ tests.push(
     },
   },
 );
+
+// ---- S6-04: a reload cannot undo an answer or replay the same dice ----
+const rollSequence = async (t, n) => {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    await t.game('act', 'roll');
+    out.push((await t.state()).trail.roll);
+    await t.game('setState', { trail: { phase: 'roll' } });
+  }
+  return out;
+};
+const continueTrip = async (t) => {
+  await t.reload();
+  await t.game('act', 'ui', 'continue-trail');
+  return waitFor(t, (s) => s.scene === 'game' && s.trail, 3000, 'continued trip');
+};
+
+tests.push(
+  {
+    name: 'S6-04 a wrong answer is kept when the page is reloaded before the turn ends',
+    async run(t) {
+      await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await t.game('act', 'answer', 'wrong');
+      const fb = await phase(t, 'feedback');
+      const after = fb.trail.players[0];
+      const s = await continueTrip(t);
+      t.equal(s.trail.round, 2, 'the answered turn is over, not offered again');
+      t.equal(s.trail.phase, 'roll', 'next turn waits for a roll');
+      t.equal(s.question, null, 'the answered question does not come back');
+      t.equal(s.trail.players[0].node, after.node, 'token stays where the answer was given');
+      t.equal(s.trail.players[0].tickets, after.tickets, 'tickets after the answer are kept');
+      t.equal(s.trail.players[0].answered, 1, 'the answer still counts');
+    },
+  },
+  {
+    name: 'S6-04 Continue deals new dice rather than replaying the saved ones',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t);
+      await continueTrip(t);
+      const a = await rollSequence(t, 8);
+      await continueTrip(t);
+      const b = await rollSequence(t, 8);
+      t.expect(a.join('') !== b.join(''), `two Continues give different rolls (${a.join('')} vs ${b.join('')})`);
+    },
+  },
+);

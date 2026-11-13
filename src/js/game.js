@@ -234,6 +234,7 @@ export function answer(choice) {
   q.outcome = out;
   log(`${p.name} ${q.correct ? 'answered correctly' : i === -1 ? 'ran out of time' : 'missed'} (${q.category}). ${out.join(' · ')}`);
   t.phase = 'feedback';
+  if (!(q.purpose === 'summit' && q.correct)) G.hooks.save({ afterAnswer: true }); // a reload cannot undo this answer
   G.hooks.update(); aiMaybe();
   return true;
 }

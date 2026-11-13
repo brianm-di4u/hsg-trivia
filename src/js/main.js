@@ -33,12 +33,17 @@ function noted(result) {
 
 // The last turn-start snapshot handed to the save store, kept so a failed write can be retried when the page is hidden.
 let turnSnap = null;
-function saveTrail() {
+function saveTrail({ afterAnswer = false } = {}) {
   const t = G.state.trail; if (!t) return;
-  turnSnap = {
-    trail: t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null })),
-    asked: G.state.asked.slice(-300), rng: G.rng.state,
-  };
+  const snap = t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null }));
+  if (snap && afterAnswer) {
+    // Saved right after an answer scores: store the state endTurn will reach (the next player's turn), so that reloading
+    // neither re-asks the question nor undoes the result. A missed Summit question sends the token to the trailhead.
+    if (G.state.question && G.state.question.purpose === 'summit') snap.players[snap.turn].node = TRAILHEAD;
+    snap.turn = (snap.turn + 1) % snap.players.length;
+    if (snap.turn === 0) snap.round++;
+  }
+  turnSnap = { trail: snap, asked: G.state.asked.slice(-300), rng: G.rng.state };
   return noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
 }
 function retryUnsavedTrail() {
@@ -131,7 +136,7 @@ const ACTIONS = {
     const saved = G.save.adoptTrail(); if (!saved) { UI.update(); return; }
     ui.saveConflict = false;
     G.state.trail = saved.trail; G.state.mode = 'trail'; G.state.asked = (saved.asked || []).slice();
-    if (saved.rng !== undefined) G.rng.state = saved.rng;
+    G.rng = makeRng((Date.now() ^ performance.now()) >>> 0); // new dice and questions, not a replay of the saved ones
     syncSavedSettings();
     R.resetTokens(); scene('game'); Game.beginTurn();
   },
