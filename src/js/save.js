@@ -21,7 +21,7 @@ export const validTrail = (t) => object(t) && int(t.target, 1, 8) && int(t.round
 export const validOpenQuestion = (q) => object(q) && typeof q.id === 'string' && typeof q.category === 'string' && typeof q.text === 'string' && ['easy', 'medium', 'hard'].includes(q.difficulty)
   && Array.isArray(q.choices) && q.choices.length === 4 && q.choices.every((c) => typeof c === 'string') && int(q.correctIndex, 0, 3)
   && Array.isArray(q.removed) && q.chosen === null && num(q.timeLeft) && num(q.timeMax);
-const SETTINGS = new Set(['sound', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed']);
+const SETTINGS = new Set(['sound', 'effects', 'music', 'ambience', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed']);
 let fallbackGeneration = 0;
 const generation = () => globalThis.crypto?.randomUUID?.() || ('trip-' + Date.now().toString(36) + '-' + (++fallbackGeneration) + '-' + Math.random().toString(36).slice(2));
 const previousDay = (day) => { const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 1); return d.toISOString().slice(0, 10); };

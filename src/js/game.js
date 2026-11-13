@@ -132,7 +132,7 @@ function resolve() {
     case 'cat': return ask(n.cat, 'district');
     case 'landmark': return ask(n.cat, 'landmark');
     case 'vent': t.pending = { kind: 'vent', to: ventPartner(p.node) }; t.phase = 'vent'; sfx('steam'); break;
-    case 'wager': t.pending = { kind: 'wager' }; t.phase = 'wager'; break;
+    case 'wager': t.pending = { kind: 'wager' }; t.phase = 'wager'; sfx('bugle'); break;
     case 'warp': t.pending = { kind: 'order', events: pickOrdering(G.rng), picks: [] }; t.phase = 'order'; sfx('warp'); break;
     case 'postcard': {
       const ev = pickPostcard(G.rng); p.tickets += 1; sfx('page');
@@ -196,7 +196,9 @@ export function answer(choice) {
   else if (choice === 'timeout') i = -1;
   if (i !== -1 && (i < 0 || i > 3 || q.removed.includes(i))) return false;
   q.chosen = i; q.correct = i === q.correctIndex;
-  sfx(q.correct ? 'correct' : 'wrong');
+  // a run of right answers climbs: the cue is told how many in a row this one makes
+  const run = (G.state.mode === 'trail' ? cur().streak : (G.state.quiz && G.state.quiz.streak) || 0) + 1;
+  sfx(q.correct ? 'correct' : 'wrong', { streak: run });
   if (G.state.mode !== 'trail') return true; // quiz modes settle in quiz.js
   const t = T(); const p = cur();
   p.answered++; if (q.correct) { p.correct++; p.streak++; } else p.streak = 0;
@@ -292,7 +294,7 @@ function finishOrder(picks) {
   const t = T(); const p = cur(); const evs = t.pending.events;
   const ok = picks.every((ix, k) => k === 0 || evs[picks[k - 1]].y < evs[ix].y);
   t.pending.ok = ok; t.phase = 'orderResult';
-  sfx(ok ? 'correct' : 'wrong');
+  sfx(ok ? 'correct' : 'wrong', { streak: 1 });
   log(ok ? `${p.name} put history in order — time warp!` : `${p.name} scrambled the timeline.`);
   G.hooks.update(); aiMaybe();
 }
@@ -318,7 +320,7 @@ export function canTrolley(p = cur()) { return T().phase === 'roll' && TROLLEYS.
 export function trolley(nodeId) {
   const t = T(); const p = cur(); if (!canTrolley(p)) return false;
   const opts = trolleyOptions(p); const to = opts.includes(nodeId) ? nodeId : opts[0];
-  p.tickets -= 2; sfx('bell');
+  p.tickets -= 2; sfx('trolley');
   log(`${p.name} rides the trolley to ${NODES[to].name} (2 tickets).`);
   t.phase = 'moving'; G.hooks.update();
   G.hooks.moveToken(p, [p.node, to], () => { p.node = to; endTurn(); }, 'jump');

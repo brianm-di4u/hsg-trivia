@@ -8,12 +8,12 @@ import * as Quiz from './quiz.js';
 import * as R from './render.js';
 import * as UI from './ui.js';
 import { ui } from './ui.js';
-import { sfx, setAudio, unlockAudio, audioStats } from './audio.js';
+import { sfx, setAudio, unlockAudio, audioStats, setSoundscape, setAudioPaused, audioList, audioRender, audioInfo } from './audio.js';
 import { ART } from './assets.js';
 import { createSaveStore, validTrail, validOpenQuestion } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
-const DEFAULT_SETTINGS = { sound: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' };
+const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' };
 
 // ---------- save ----------
 G.save = createSaveStore({ onConflict() {
@@ -66,7 +66,7 @@ const mq = (q) => (window.matchMedia ? window.matchMedia(q).matches : false);
 let appliedTheme = null;
 function applySettings() {
   const s = G.state.settings;
-  setAudio({ on: s.sound, volume: s.volume });
+  setAudio({ on: s.sound, volume: s.volume, effects: s.effects, music: s.music, ambience: s.ambience });
   const dark = s.theme === 'dark' || (s.theme === 'auto' && mq('(prefers-color-scheme: dark)'));
   document.body.dataset.theme = dark ? 'dark' : 'light';
   // setTheme throws the board cache away, so only call it when the resolved theme really changes (not on volume or mute).
@@ -113,8 +113,14 @@ G.hooks.announce = (m) => UI.announce(m);
 G.hooks.save = saveTrail;
 G.hooks.saveQuiz = saveQuiz;
 G.hooks.scene = (n) => scene(n);
+// Each hop of a walk steps up the pentatonic scale and sounds from where the token is on screen.
 G.hooks.moveToken = (p, path, done, mode = 'walk') => {
-  R.moveAlong(p, path, () => { done(); }, { mode, onHop: () => sfx(mode === 'jump' ? 'steam' : 'hop') });
+  let step = 0;
+  R.moveAlong(p, path, () => { done(); }, { mode, onHop: () => {
+    if (mode === 'jump') return sfx('steam');
+    const tp = R.tokenPos(p); const sx = R.worldToScreen(tp.x, tp.y)[0];
+    sfx('hop', { i: step++, pan: Math.max(-0.6, Math.min(0.6, (sx / (R.view.w || 1) * 2 - 1) * 0.6)) });
+  } });
 };
 G.hooks.effect = (kind, p) => {
   const tp = R.tokenPos(p);
@@ -361,6 +367,26 @@ function trapFocus(e) {
 // The AI and the auto-advancing phases hold while the tab is hidden or the pause menu is open, and pick up again after.
 function syncPause() {
   Game.setPaused(document.visibilityState === 'hidden' || (G.state.scene === 'game' && ui.menuOpen));
+  setAudioPaused(G.state.scene === 'game' && ui.menuOpen);
+}
+
+// Which music and which place the sound should be in: the title's rag in menus, the board's swing in play, the ticking piece
+// under a question, the climbing piece on the spur and at the Summit question; the valley's ambience, and the district of the
+// active token on the board. Cheap enough for every frame: it only speaks to the audio when the answer changes.
+let soundKey = '';
+function syncSoundscape() {
+  const st = G.state, t = st.trail; let music = 'title', ambience = 'valley', wind = 0, tension = 0;
+  if (st.scene === 'quiz') { music = 'question'; const q = st.question; tension = q && q.chosen === null && q.timeMax > 0 && q.timeLeft <= 5 ? 1 : 0; }
+  else if (st.scene === 'game' && t) {
+    const p = Game.cur(), n = NODES[p.node], q = st.question, asking = (t.phase === 'question' || t.phase === 'feedback') && q;
+    const climbing = n.district === 'mountain' || (asking && q.purpose === 'summit');
+    music = climbing ? 'summit' : asking ? 'question' : 'board';
+    ambience = n.district && n.district !== 'mountain' ? n.district : n.district === 'mountain' ? 'mountain' : 'valley';
+    if (ambience === 'mountain') { const spur = NODES.filter((x) => x.spur); wind = Math.max(0, spur.indexOf(n)) / (spur.length - 1); }
+    tension = asking && t.phase === 'question' && q.chosen === null && q.timeMax > 0 && q.timeLeft <= 5 ? 1 : 0;
+  }
+  const key = [music, ambience, wind.toFixed(2), tension].join('|');
+  if (key !== soundKey) { soundKey = key; setSoundscape({ music, ambience, wind, tension }); }
 }
 let lastT = 0; let tickSec = -1; let warnKey = ''; let fpsFrames = 0;
 // One bad frame must not end the loop for good: the next frame is always scheduled, and the player gets a way out.
@@ -371,7 +397,7 @@ function frameStep(ts) {
   // Animation steps are capped at 50 ms so a stall never teleports tokens; the answer timer runs on wall-clock
   // time (capped at 0.5 s for a backgrounded tab), so a 10 s timer is 10 s even on a slow device.
   const raw = lastT ? (ts - lastT) / 1000 : 0.016; const dt = Math.min(0.05, raw); const tdt = Math.min(0.5, raw); lastT = ts; fpsFrames++;
-  syncPause();
+  syncPause(); syncSoundscape();
   const st = G.state;
   // question timer (humans only in the Trail Game)
   const q = st.question;
@@ -409,6 +435,9 @@ function publicState() {
 window.__game = {
   seed(n) { G.state.rngSeed = n; G.rng = makeRng(n); return n; },
   getState: publicState,
+  audioList,
+  audioRender,
+  audioState: audioInfo,
   setState(s) {
     const st = G.state;
     if (s.settings) changeSettings(s.settings);

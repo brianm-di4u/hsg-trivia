@@ -1,9 +1,34 @@
 // WebAudio synth with named presets (ideas from ZzFX and jsfxr, SAMPLES.md #2–3; our own code).
 // Every sound is oscillators and filtered noise with a short envelope; no audio files.
+// Three layers share one master bus and a limiter: cues (sfx), music and ambience. Music and ambience are scored in
+// music.js and played by the engine in audiokit.js; they follow the master Sound switch as well as their own.
+import { makeAudioKit, measureAudio } from './audiokit.js';
+import { SCORES, SCENES } from './music.js';
 
-let ac = null, master = null, noiseBuf = null;
-const opts = { on: true, volume: 0.7 };
-export const audioStats = { played: 0, ctx: false, get state() { return ac ? ac.state : 'none'; } };
+// Levels, in one place. MASTER_K turns the Volume slider (0..1) into gain; SFX_LEVEL, MUSIC_LEVEL and AMB_LEVEL set how
+// the three layers sit against each other (cues loudest, music under them, ambience under the music).
+const MASTER_K = 0.5, SFX_LEVEL = 2.2, MUSIC_LEVEL = 1.2, AMB_LEVEL = 1.2, DEFAULT_VOLUME = 0.7;
+const PENTA = [0, 2, 4, 7, 9]; // major pentatonic: a hop walks up it and a run of right answers climbs
+
+let ac = null, master = null, sfxIn = null, noiseBuf = null, kit = null, cueBase = 0, trim = 1;
+const opts = { on: true, volume: DEFAULT_VOLUME, effects: true, music: true, ambience: true };
+export const audioStats = { played: 0, log: [], ctx: false, get state() { return ac ? ac.state : 'none'; } };
+
+const makeNoise = (c) => {
+  const b = c.createBuffer(1, c.sampleRate * 1, c.sampleRate);
+  const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  return b;
+};
+// master gain, a limiter, the destination; cues enter at sfxIn, which also feeds two quiet echo taps for a little room.
+function chain(c, dest, volume) {
+  const m = c.createGain(); m.gain.value = volume * MASTER_K;
+  const lim = c.createDynamicsCompressor();
+  lim.threshold.value = -3; lim.knee.value = 2; lim.ratio.value = 20; lim.attack.value = 0.003; lim.release.value = 0.12;
+  m.connect(lim); lim.connect(dest);
+  const s = c.createGain(); s.gain.value = SFX_LEVEL; s.connect(m);
+  for (const ms of [90, 140]) { const d = c.createDelay(0.5); d.delayTime.value = ms / 1000; const g = c.createGain(); g.gain.value = 0.16; s.connect(d); d.connect(g); g.connect(m); }
+  return { master: m, sfxIn: s };
+}
 
 function ensure() {
   if (ac) return ac;
@@ -11,19 +36,43 @@ function ensure() {
   if (!AC) return null;
   try {
     ac = new AC();
-    master = ac.createGain(); master.gain.value = opts.volume * 0.5; master.connect(ac.destination);
-    noiseBuf = ac.createBuffer(1, ac.sampleRate * 1, ac.sampleRate);
-    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    ({ master, sfxIn } = chain(ac, ac.destination, opts.volume));
+    noiseBuf = makeNoise(ac);
+    kit = makeAudioKit(ac, master, { seed: (Date.now() & 0xffffff) | 1, music: MUSIC_LEVEL, ambience: AMB_LEVEL });
+    kit.start();
     ac.onstatechange = () => { if (!held && ac.state !== 'running' && ac.state !== 'closed' && document.visibilityState !== 'hidden') unlockAudio(); };
     audioStats.ctx = true;
-  } catch (e) { ac = null; }
+    applyLayers();
+  } catch (e) { ac = null; kit = null; }
   return ac;
 }
 
-export function setAudio({ on, volume }) {
+// ---- music and ambience: what the game asks for, and what the settings allow ----
+let want = { music: null, ambience: null, wind: 0, tension: 0 };
+function applyLayers() {
+  if (!kit) return;
+  const m = opts.on && opts.music, a = opts.on && opts.ambience;
+  kit.music.level(m ? MUSIC_LEVEL : 0); kit.amb.level(a ? AMB_LEVEL : 0);
+  if (m && want.music && SCORES[want.music]) kit.music.play(SCORES[want.music], { fade: 1.8 }); else kit.music.stop(0.6);
+  if (a && want.ambience && SCENES[want.ambience]) kit.amb.play(SCENES[want.ambience], { fade: 3 }); else kit.amb.stop(1);
+  kit.music.intensity(want.tension); kit.amb.set('wind', want.wind);
+}
+// The game says which piece and which place it is in; nothing sounds until the first gesture has made the context.
+export function setSoundscape(next) {
+  const changed = ['music', 'ambience'].some((k) => next[k] !== undefined && next[k] !== want[k]);
+  want = { ...want, ...next };
+  if (changed) applyLayers();
+  else if (kit) { kit.music.intensity(want.tension); kit.amb.set('wind', want.wind); }
+}
+
+export function setAudio({ on, volume, effects, music, ambience }) {
   if (on !== undefined) opts.on = on;
   if (volume !== undefined) opts.volume = volume;
-  if (master) master.gain.value = opts.volume * 0.5;
+  if (effects !== undefined) opts.effects = effects !== false;
+  if (music !== undefined) opts.music = music !== false;
+  if (ambience !== undefined) opts.ambience = ambience !== false;
+  if (master) master.gain.value = opts.volume * MASTER_K;
+  applyLayers();
 }
 
 // Call from a user gesture (browsers keep audio suspended until then). resume() settles later than the gesture's own
@@ -33,63 +82,127 @@ export function unlockAudio() {
   const c = ensure(); if (!c) return Promise.resolve();
   if (c.state === 'running' || held) return Promise.resolve();
   if (!resuming) {
-    resuming = c.resume().catch(() => {}).then(() => { resuming = null; const name = pending; pending = null; if (name) sfx(name); });
+    resuming = c.resume().catch(() => {}).then(() => { resuming = null; const name = pending; pending = null; if (name) sfx(name); applyLayers(); });
   }
   return resuming;
 }
 
 // A hidden tab must be silent (AI timers keep running there) and a context the system interrupted (iOS call, lock
-// screen) must come back: suspend on hidden or pagehide, resume on return and on the next gesture.
-let held = false;
-function hold() { held = true; pending = null; if (ac && ac.state === 'running') ac.suspend().catch(() => {}); }
-function release() { held = false; if (ac && ac.state !== 'running') unlockAudio(); }
+// screen) must come back: suspend on hidden or pagehide, resume on return and on the next gesture. The pause card
+// does not suspend the context (its buttons still click) but fades the music and ambience out and schedules nothing.
+let held = false, paused = false;
+function syncHold() { if (!kit) return; if (held || paused) kit.hold(); else kit.release(); }
+function hold() { held = true; pending = null; syncHold(); if (ac && ac.state === 'running') ac.suspend().catch(() => {}); }
+function release() { held = false; syncHold(); if (ac && ac.state !== 'running') unlockAudio(); }
+export function setAudioPaused(on) { if (paused === on) return; paused = on; syncHold(); }
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => (document.visibilityState === 'hidden' ? hold() : release()));
   window.addEventListener('pagehide', hold);
   window.addEventListener('pageshow', release);
 }
 
-function tone({ type = 'sine', f = 440, f2 = null, t = 0, a = 0.005, d = 0.15, v = 0.3, q = null }) {
-  const now = ac.currentTime + t;
-  const o = ac.createOscillator(); const g = ac.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, now);
-  if (f2) o.frequency.exponentialRampToValueAtTime(f2, now + a + d);
+// ---- cues ----
+const rand = (a, b) => a + Math.random() * (b - a);
+const dB = (x) => 10 ** (x / 20);
+const panned = (pan, to) => { if (!pan || !ac.createStereoPanner) return to; const p = ac.createStereoPanner(); p.pan.value = Math.max(-0.7, Math.min(0.7, pan)); p.connect(to); return p; };
+
+// Every cue is varied a little each time it plays (10 to 30 cents of detune, up to 1.5 dB of gain, a random start in the
+// noise buffer) so two repeats are never sample-identical. j: scales that variation (0 turns it off). pair: detune the body into two voices
+// of that many cents. pan: -0.7..0.7, left to right.
+function tone({ type = 'sine', f = 440, f2 = null, t = 0, a = 0.005, d = 0.15, v = 0.3, q = null, pan = 0, pair = 0, j = 1 }) {
+  const now = ac.currentTime + cueBase + t;
+  const k = 2 ** (rand(-20, 20) * j / 1200); f *= k; if (f2) f2 *= k; v *= trim * dB(rand(-1.5, 0) * j);
+  const g = ac.createGain();
   g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(v, now + a); g.gain.exponentialRampToValueAtTime(0.0001, now + a + d);
-  let node = o;
-  if (q) { const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = q; o.connect(fl); node = fl; }
-  node.connect(g); g.connect(master); o.start(now); o.stop(now + a + d + 0.05);
+  let node = g;
+  if (q) { const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = q; fl.connect(g); node = fl; }
+  g.connect(panned(pan, sfxIn));
+  for (const c of pair ? [pair, -pair] : [0]) {
+    const o = ac.createOscillator(); o.type = type; o.detune.value = c; o.frequency.setValueAtTime(f, now);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, now + a + d);
+    o.connect(node); o.start(now); o.stop(now + a + d + 0.05);
+  }
 }
 
-function noise({ t = 0, d = 0.3, v = 0.25, type = 'bandpass', f = 1200, f2 = null, qv = 1 }) {
-  const now = ac.currentTime + t;
+function noise({ t = 0, d = 0.3, v = 0.25, type = 'bandpass', f = 1200, f2 = null, qv = 1, pan = 0 }) {
+  const now = ac.currentTime + cueBase + t; v *= trim * dB(rand(-1.5, 0));
   const s = ac.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
   const fl = ac.createBiquadFilter(); fl.type = type; fl.frequency.setValueAtTime(f, now); fl.Q.value = qv;
   if (f2) fl.frequency.exponentialRampToValueAtTime(f2, now + d);
   const g = ac.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(v, now + d * 0.2); g.gain.exponentialRampToValueAtTime(0.0001, now + d);
-  s.connect(fl); fl.connect(g); g.connect(master); s.start(now); s.stop(now + d + 0.05);
+  s.connect(fl); fl.connect(g); g.connect(panned(pan, sfxIn)); s.start(now, rand(0, 0.9)); s.stop(now + d + 0.05);
 }
 
+// o: { i: step along a walk, pan: screen position -1..1, streak: right answers in a row }
 const PRESETS = {
-  click: () => tone({ type: 'square', f: 900, d: 0.03, v: 0.08, q: 2500 }),
-  gauge: () => { for (let i = 0; i < 7; i++) tone({ type: 'triangle', f: 500 + i * 60, t: i * 0.08, d: 0.04, v: 0.12 }); },
-  hop: () => { tone({ type: 'triangle', f: 320, f2: 220, d: 0.08, v: 0.18 }); noise({ d: 0.05, v: 0.05, f: 2000 }); },
-  correct: () => { [523.25, 659.25, 783.99].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.09, d: 0.32, v: 0.22 })); tone({ type: 'sine', f: 1046.5, t: 0.27, d: 0.5, v: 0.12 }); },
-  wrong: () => { tone({ type: 'sine', f: 311, t: 0, d: 0.22, v: 0.2, q: 900 }); tone({ type: 'sine', f: 233, t: 0.16, d: 0.35, v: 0.2, q: 700 }); },
-  stamp: () => { tone({ type: 'sine', f: 140, f2: 60, d: 0.18, v: 0.5 }); noise({ d: 0.12, v: 0.25, type: 'lowpass', f: 900 }); noise({ t: 0.08, d: 0.25, v: 0.08, f: 3500, qv: 0.6 }); },
-  steam: () => { noise({ d: 0.9, v: 0.22, f: 600, f2: 4000, qv: 0.7 }); },
-  coin: () => { tone({ type: 'square', f: 988, d: 0.06, v: 0.08, q: 4000 }); tone({ type: 'square', f: 1319, t: 0.06, d: 0.22, v: 0.08, q: 4000 }); },
-  bell: () => { [1, 2.76, 5.4].forEach((m, i) => tone({ type: 'sine', f: 660 * m, d: 0.9 - i * 0.25, v: 0.16 / (i + 1) })); tone({ type: 'sine', f: 660, t: 0.25, d: 0.7, v: 0.12 }); },
-  warp: () => { tone({ type: 'sawtooth', f: 200, f2: 1200, d: 0.5, v: 0.1, q: 1800 }); tone({ type: 'sine', f: 1200, f2: 300, t: 0.45, d: 0.4, v: 0.12 }); },
-  gavel: () => { noise({ d: 0.08, v: 0.4, type: 'lowpass', f: 700 }); tone({ type: 'sine', f: 180, f2: 90, d: 0.12, v: 0.4 }); },
-  tick: () => tone({ type: 'sine', f: 1500, d: 0.03, v: 0.06 }),
-  win: () => { [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.12, d: 0.45, v: 0.2 })); [523.25, 659.25, 783.99].forEach((f) => tone({ type: 'sine', f, t: 0.7, d: 1.2, v: 0.12 })); },
-  page: () => noise({ d: 0.18, v: 0.08, f: 3000, f2: 1500, qv: 0.5 }),
+  click: () => { tone({ type: 'sine', f: 760, f2: 560, d: 0.03, v: 0.12 }); noise({ d: 0.025, v: 0.1, f: 2200, qv: 1.5 }); },
+  gauge: () => { const w = rand(-0.3, 0.3); for (let i = 0; i < 7; i++) tone({ type: 'triangle', f: 500 + i * 60, t: i * 0.08, d: 0.04, v: 0.12, pan: w * (i / 6), j: 0.4 }); },
+  hop: (o) => {
+    const i = o.i | 0, f = 261.63 * 2 ** ((PENTA[i % 5] + 12 * (Math.floor(i / 5) % 2)) / 12), pan = o.pan || 0;
+    tone({ type: 'triangle', f, f2: f * 0.7, d: 0.09, v: 0.34, pan, pair: 6 }); tone({ type: 'sine', f: f * 2, f2: f * 1.4, d: 0.05, v: 0.06, pan });
+    noise({ d: 0.05, v: 0.13, f: 2000, pan });
+  },
+  correct: (o) => {
+    const k = 2 ** (Math.min(7, Math.max(0, (o.streak || 1) - 1)) / 12), pan = rand(-0.2, 0.2);
+    [523.25, 659.25, 783.99].forEach((f, i) => { tone({ type: 'triangle', f: f * k, t: i * 0.09, d: 0.32, v: 0.3, pan, pair: 6 }); tone({ type: 'sine', f: f * k * 2, t: i * 0.09, d: 0.5, v: 0.05, pan }); });
+    tone({ type: 'sine', f: 1046.5 * k, t: 0.27, d: 0.5, v: 0.16, pan });
+    for (const m of [1, 2, 3]) tone({ type: 'sine', f: 523.25 * k * m, d: 0.6, v: 0.16 / m, pan, j: 0.4 });
+    noise({ d: 0.03, v: 0.12, type: 'highpass', f: 5000, pan });
+  },
+  wrong: () => {
+    const pan = rand(-0.2, 0.2);
+    tone({ type: 'sine', f: 311, t: 0, d: 0.22, v: 0.4, q: 900, pan, pair: 8 }); tone({ type: 'sine', f: 233, t: 0.16, d: 0.35, v: 0.4, q: 700, pan, pair: 8 });
+    noise({ d: 0.1, v: 0.1, type: 'lowpass', f: 500, pan });
+  },
+  stamp: () => { tone({ type: 'sine', f: 140, f2: 60, d: 0.18, v: 0.6 }); noise({ d: 0.12, v: 0.3, type: 'lowpass', f: 900 }); noise({ t: 0.08, d: 0.25, v: 0.1, f: 3500, qv: 0.6 }); },
+  steam: () => { noise({ d: 0.9, v: 0.26, f: 600, f2: 4000, qv: 0.7, pan: rand(-0.3, 0.3) }); },
+  coin: () => { const pan = rand(-0.2, 0.2); tone({ type: 'square', f: 988, d: 0.06, v: 0.12, q: 4000, pan }); tone({ type: 'square', f: 1319, t: 0.06, d: 0.22, v: 0.12, q: 4000, pan }); },
+  bell: () => { [1, 2.76, 5.4].forEach((m, i) => tone({ type: 'sine', f: 660 * m, d: 0.9 - i * 0.25, v: 0.3 / (i + 1) })); tone({ type: 'sine', f: 660, t: 0.25, d: 0.7, v: 0.2 }); },
+  trolley: () => { const pan = rand(-0.4, 0.4); for (const at of [0, 0.22]) [1, 2.4, 4.1].forEach((m, i) => tone({ type: 'sine', f: 880 * m, t: at, d: 0.7 - i * 0.2, v: 0.28 / (i + 1), pan })); },
+  // Post Time: three short notes and a long one.
+  bugle: () => { [[392, 0, 0.12], [523.25, 0.16, 0.12], [659.25, 0.32, 0.12], [783.99, 0.48, 0.55]].forEach(([f, t, d]) => { tone({ type: 'sawtooth', f, t, d, a: 0.02, v: 0.16, q: 2200, pair: 5 }); tone({ type: 'square', f: f * 0.5, t, d, a: 0.02, v: 0.06, q: 900 }); }); },
+  warp: () => { tone({ type: 'sawtooth', f: 200, f2: 1200, d: 0.5, v: 0.14, q: 1800 }); tone({ type: 'sine', f: 1200, f2: 300, t: 0.45, d: 0.4, v: 0.2 }); },
+  gavel: () => { noise({ d: 0.08, v: 0.5, type: 'lowpass', f: 700 }); tone({ type: 'sine', f: 180, f2: 90, d: 0.12, v: 0.6 }); },
+  tick: () => { tone({ type: 'sine', f: 1500, d: 0.03, v: 0.1 }); noise({ d: 0.015, v: 0.08, type: 'highpass', f: 4000 }); },
+  win: () => { const pan = rand(-0.15, 0.15); [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.12, d: 0.45, v: 0.3, pan, pair: 6 })); [523.25, 659.25, 783.99].forEach((f) => tone({ type: 'sine', f, t: 0.7, d: 1.2, v: 0.16, pan })); },
+  page: () => noise({ d: 0.18, v: 0.14, f: 3000, f2: 1500, qv: 0.5, pan: rand(-0.3, 0.3) }),
 };
+// How loud each cue sits at the default volume: the preset's own shape is kept, this trims the whole cue so that the ones
+// the player must notice peak near 0.3 (measured by audioRender). click and tick are quiet interface sounds.
+const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, page: 6.6, gauge: 4 };
+const play = (name, o) => { trim = TRIM[name] || 1; try { PRESETS[name](o); } finally { trim = 1; } };
+// The big cues the music steps back for.
+const DUCKS = { correct: 6, wrong: 6, win: 8, stamp: 5 };
 
-export function sfx(name) {
-  if (!opts.on || !PRESETS[name]) return;
+export function sfx(name, o = {}) {
+  if (!opts.on || !opts.effects || !PRESETS[name]) return;
   const c = ensure(); if (!c) return;
   if (c.state !== 'running') { if (resuming) pending = name; return; }
-  try { PRESETS[name](); audioStats.played++; } catch (e) { /* audio must never break the game */ }
+  try { play(name, o); audioStats.played++; audioStats.log.push({ name, ...o }); if (audioStats.log.length > 40) audioStats.log.shift(); if (DUCKS[name] && kit) kit.music.duck(DUCKS[name], name === 'win' ? 1600 : 700); } catch (e) { /* audio must never break the game */ }
 }
 export const SOUND_NAMES = Object.keys(PRESETS);
+
+// ---- test hooks: what pieces exist, and a render of one on its own ----
+export const audioList = () => ({ music: Object.keys(SCORES), ambience: Object.keys(SCENES) });
+export const audioInfo = () => ({
+  held: held || paused, music: kit && kit.music.score ? Object.keys(SCORES).find((k) => SCORES[k] === kit.music.score) : null,
+  ambience: kit && kit.amb.scene ? Object.keys(SCENES).find((k) => SCENES[k] === kit.amb.scene) : null,
+  levels: { on: opts.on, effects: opts.effects, music: opts.on && opts.music ? MUSIC_LEVEL : 0, ambience: opts.on && opts.ambience ? AMB_LEVEL : 0 },
+  bars: kit && kit.music.info() ? kit.music.info().bars : 0, want: { ...want },
+});
+// Renders a piece ('board', ...), a scene ('row', ...), a cue ('cue:correct'), or all three at once ('mix') on an
+// offline context at the shipped level (default volume), and measures it. Never touches the live audio or settings.
+export function audioRender(name, seconds = 30, wantWav = false) {
+  const build = (oc, dest) => {
+    const { master: m, sfxIn: s } = chain(oc, dest, DEFAULT_VOLUME);
+    const k = makeAudioKit(oc, m, { seed: 11, music: MUSIC_LEVEL, ambience: AMB_LEVEL });
+    // A cue is built by the same preset code as in play: point it at the offline context for the call, then put the live one back.
+    const cue = (n, at, o = {}) => { const live = { ac, sfxIn, noiseBuf }; ac = oc; sfxIn = s; noiseBuf = makeNoise(oc); cueBase = at; try { play(n, o); } finally { ({ ac, sfxIn, noiseBuf } = live); cueBase = 0; } };
+    if (SCORES[name]) { k.music.play(SCORES[name], { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); return () => k.music.info(); }
+    if (SCENES[name]) { k.amb.play(SCENES[name], { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); return () => ({ scene: name }); }
+    if (name === 'mix') { k.music.play(SCORES.board, { fade: 0.02, at: 0 }); k.amb.play(SCENES.row, { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); cue('win', 5); return () => k.music.info(); }
+    if (name.startsWith('cue:') && PRESETS[name.slice(4)]) { cue(name.slice(4), 0, { streak: 1, i: 2, pan: 0 }); return () => ({ cue: name.slice(4) }); }
+    throw new Error('unknown audio piece: ' + name);
+  };
+  return measureAudio(build, seconds, { wav: wantWav });
+}

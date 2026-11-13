@@ -330,7 +330,7 @@ tests.push(
     async run(t) {
       await t.game('scene', 'settings');
       const names = await t.page.locator('#scene-settings [role=radiogroup]').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
-      t.equal(JSON.stringify(names), JSON.stringify(['Sound', 'Answer timer', 'Motion', 'Text size', 'Theme', 'Hot-seat pass screen', 'AI speed']), 'group names');
+      t.equal(JSON.stringify(names), JSON.stringify(['Sound', 'Sound effects', 'Music', 'Ambience', 'Answer timer', 'Motion', 'Text size', 'Theme', 'Hot-seat pass screen', 'AI speed']), 'group names');
     },
   },
 );
