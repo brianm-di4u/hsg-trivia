@@ -56,12 +56,14 @@ function saveQuiz(q) {
 
 // ---------- settings ----------
 const mq = (q) => (window.matchMedia ? window.matchMedia(q).matches : false);
+let appliedTheme = null;
 function applySettings() {
   const s = G.state.settings;
   setAudio({ on: s.sound, volume: s.volume });
   const dark = s.theme === 'dark' || (s.theme === 'auto' && mq('(prefers-color-scheme: dark)'));
   document.body.dataset.theme = dark ? 'dark' : 'light';
-  R.setTheme(dark ? 'dark' : 'light'); R.requestArt();
+  // setTheme throws the board cache away, so only call it when the resolved theme really changes (not on volume or mute).
+  if (appliedTheme !== (dark ? 'dark' : 'light')) { appliedTheme = dark ? 'dark' : 'light'; R.setTheme(appliedTheme); R.requestArt(); }
   R.view.reduced = s.motion === 'reduced' || (s.motion === 'auto' && mq('(prefers-reduced-motion: reduce)'));
   document.body.classList.toggle('reduced', R.view.reduced);
   document.documentElement.style.fontSize = (16 * s.textScale) + 'px';
@@ -208,12 +210,13 @@ function wireInput() {
   document.addEventListener('input', (e) => {
     const el = e.target;
     if (el.dataset.seat !== undefined) { ui.setup.seats[+el.dataset.seat].name = el.value; }
-    if (el.dataset.setting === 'volume') { changeSettings({ volume: el.value / 100 }); }
+    // While dragging, only the sound follows; the setting is saved once, on 'change'.
+    if (el.dataset.setting === 'volume') { G.state.settings.volume = el.value / 100; setAudio({ on: G.state.settings.sound, volume: G.state.settings.volume }); }
   });
   document.addEventListener('change', (e) => {
     const el = e.target;
     if (el.dataset.seatkind !== undefined) { const [k, l] = el.value.split(':'); const s = ui.setup.seats[+el.dataset.seatkind]; s.kind = k; s.level = l || 'medium'; UI.update(); }
-    if (el.dataset.setting === 'volume') sfx('coin');
+    if (el.dataset.setting === 'volume') { changeSettings({ volume: el.value / 100 }); sfx('coin'); }
   });
   document.querySelector('#btn-home').addEventListener('click', () => { if (G.state.scene === 'game') { ui.menuOpen = true; UI.update(); } else if (G.state.scene === 'quiz') act('quiz-quit'); else scene('title'); });
   document.querySelector('#btn-help').addEventListener('click', () => goto('help'));
