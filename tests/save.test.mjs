@@ -5,9 +5,9 @@ import { deepMerge } from '../src/js/util.js';
 const copy = (v) => JSON.parse(JSON.stringify(v));
 const original = () => ({ v: 1, settings: { sound: true, volume: 0.7 }, best: { quick: 40, era: { old: 30 } }, daily: { last: null, streak: 0, results: {} }, trail: { turn: 0, marker: 'saved-old' }, asked: ['old'], rng: 0, extension: { preserved: true } });
 function fixture(value = original()) {
-  let raw = value === null ? null : JSON.stringify(value), failures = 0, blocked = false, serial = 0;
-  const storage = { getItem() { if (blocked) throw Error('blocked'); return raw; }, setItem(k, v) { if (blocked || failures-- > 0) throw Error('failed write'); raw = v; } };
-  return { read: () => raw === null ? null : JSON.parse(raw), replace: (v) => { raw = v === null ? null : JSON.stringify(v); }, fail: () => { failures = 1; }, block: (v) => { blocked = v; }, tab(onConflict) { const s = createSaveStore({ storage: () => storage, newGeneration: () => 'fixture-generation-' + (++serial), onConflict }); s.load(); return s; } };
+  let raw = value === null ? null : JSON.stringify(value), bad = null, failures = 0, blocked = false, serial = 0;
+  const storage = { getItem() { if (blocked) throw Error('blocked'); return raw; }, setItem(k, v) { if (blocked || failures-- > 0) throw Error('failed write'); if (k.endsWith('.bad')) bad = v; else raw = v; } };
+  return { bad: () => bad, read: () => raw === null ? null : JSON.parse(raw), replace: (v) => { raw = v === null ? null : JSON.stringify(v); }, fail: () => { failures = 1; }, block: (v) => { blocked = v; }, tab(onConflict) { const s = createSaveStore({ storage: () => storage, newGeneration: () => 'fixture-generation-' + (++serial), onConflict }); s.load(); return s; } };
 }
 const trip = (marker) => ({ trail: { marker, turn: 1 }, asked: [marker], rng: marker.length });
 const row = (name, run) => ({ name, node: true, run });
@@ -115,8 +115,9 @@ export const tests = [
     const f = fixture(), a = f.tab(), changed = original(); changed.rng = 123; changed.asked = ['foreign']; f.replace(changed); const before = f.read();
     assert.equal(a.commitTrail(trip('A')).reason, 'trail-conflict'); assert.deepEqual(f.read(), before);
   }),
-  row('unsupported save versions fail closed without replacing raw data', () => {
-    const f = fixture({ v: 2, future: { data: 1 } }), a = f.tab(), before = f.read(); assert.equal(a.updateSettings({ sound: false }).ok, false); assert.deepEqual(f.read(), before);
+  row('unsupported save versions are kept under the .bad key and replaced by a valid save (S6-01)', () => {
+    const f = fixture({ v: 2, future: { data: 1 } }), a = f.tab(), before = f.read(); assert.equal(a.updateSettings({ sound: false }).ok, true); assert.equal(f.read().v, 1); assert.equal(f.read().settings.sound, false);
+    assert.deepEqual(JSON.parse(f.bad()), before);
   }),
 
   row('recovery: next setting write consumes all failed explicit preference deltas', () => {

@@ -18,8 +18,14 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
   const read = () => {
     const raw = storage().getItem(KEY);
     if (raw === null) return defaults(); // External clear never falls back to an old cached object.
-    const data = JSON.parse(raw);
-    if (!object(data) || data.v !== 1 || ['settings', 'best', 'daily'].some((k) => own(data, k) && !object(data[k]))) throw new Error('Unsupported save data');
+    let data = null;
+    try { data = JSON.parse(raw); } catch { /* truncated or not JSON: handled below */ }
+    if (!object(data) || data.v !== 1 || ['settings', 'best', 'daily'].some((k) => own(data, k) && !object(data[k]))) {
+      // Unreadable (cut off, wrong shape, other version): keep the raw text for recovery and start from defaults, so
+      // the next write replaces the key instead of every write being refused for good.
+      try { storage().setItem(KEY + '.bad', raw); } catch { /* quarantine is best effort */ }
+      return defaults();
+    }
     const out = { ...defaults(), ...data };
     out.settings = { ...out.settings };
     out.best = { ...out.best, era: { ...(out.best.era || {}) } };

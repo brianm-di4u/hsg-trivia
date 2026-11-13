@@ -1,4 +1,6 @@
 // Council wave 1, batch A1: stability, saves and lifecycle (part 1).
+import assert from 'node:assert/strict';
+import { createSaveStore } from '../src/js/save.js';
 import { soloGame, landOn, phase, waitFor, H1 } from './helpers.mjs';
 
 // Open and close Help straight away, as a player glancing at the rules would.
@@ -88,3 +90,39 @@ tests.push(
     },
   },
 );
+
+// ---- S6-01: corrupt, truncated or newer-version save blobs ----
+const memory = (raw) => { const m = new Map(raw === undefined ? [] : [['hs-trivia-v1', raw]]); return { m, storage: () => ({ getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)); } }) }; };
+const BAD = {
+  truncated: '{"v":1,"settings":{"sound":fal',
+  nullValue: 'null',
+  arrayValue: '[]',
+  futureVersion: JSON.stringify({ v: 2, future: { data: 1 } }),
+  notJson: 'garbage',
+};
+for (const [name, raw] of Object.entries(BAD)) {
+  tests.push({
+    name: `S6-01 a ${name} save is quarantined and saving works again`,
+    node: true,
+    run() {
+      const { m, storage } = memory(raw);
+      const store = createSaveStore({ storage });
+      assert.equal(store.load().ok, true, 'load succeeds with defaults');
+      assert.equal(store.ok, true);
+      assert.equal(store.updateSettings({ sound: false }).ok, true, 'a settings write goes through');
+      assert.equal(JSON.parse(m.get('hs-trivia-v1')).settings.sound, false, 'the key now holds a valid save');
+      assert.equal(m.get('hs-trivia-v1.bad'), raw, 'the unreadable blob was kept under the .bad key');
+      assert.equal(store.reserveTrail().ok, true, 'a new trip can be reserved');
+    },
+  });
+}
+tests.push({
+  name: 'S6-01 a healthy save is not copied to the .bad key',
+  node: true,
+  run() {
+    const { m, storage } = memory(JSON.stringify({ v: 1, settings: { sound: true } }));
+    const store = createSaveStore({ storage });
+    store.load(); store.updateSettings({ volume: 0.2 });
+    assert.equal(m.has('hs-trivia-v1.bad'), false);
+  },
+});
