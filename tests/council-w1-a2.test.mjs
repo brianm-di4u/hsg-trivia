@@ -335,3 +335,26 @@ tests.push(
   },
 );
 
+// ---- P-N04: the card banner must not depend on the correct answer ----
+const BANNER_IDS = ['hs-0492', 'hs-0499', 'hs-0404', 'hs-0469', 'hs-0008', 'hs-0203', 'hs-0204', 'hs-0157', 'hs-0281'];
+tests.push({
+  name: 'P-N04 the question banner does not change with which choice is correct',
+  viewports: ['desktop'],
+  async run(t) {
+    const bank = JSON.parse((await import('node:fs')).readFileSync(new URL('../data/questions.json', import.meta.url), 'utf8')).questions;
+    await soloGame(t);
+    const s0 = await t.state();
+    await landOn(t, s0.board.types.indexOf('cat'));
+    await phase(t, 'question');
+    for (const id of BANNER_IDS) {
+      const q = bank.find((x) => x.id === id);
+      const choices = [q.answer, ...q.wrong.slice(0, 3)];
+      const caps = [];
+      for (const correctIndex of [0, 1, 2, 3]) {
+        await t.game('setState', { question: { id, category: q.category, difficulty: q.difficulty, era: q.era, text: q.question, choices, correctIndex, chosen: null, removed: [] } });
+        caps.push(await t.page.locator('#modal .qcap').innerText().catch(() => ''));
+      }
+      t.expect(caps.every((c) => c === caps[0]), `${id}: banner caption is the same whichever choice is correct (${caps.join(' | ')})`);
+    }
+  },
+});

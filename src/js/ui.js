@@ -37,7 +37,7 @@ const SUBJECT_ART = [
   [/happy hollow|mcleod/i, 'hollow', 'Happy Hollow'], [/park avenue|motor court|motel|velda rose/i, 'park', 'Park Avenue'], [/bridge street|parade/i, 'bridge', 'Bridge Street'],
 ];
 function cardArt(q) {
-  const text = q.text + ' ' + (q.choices[q.correctIndex] || '');
+  const text = q.text; // never the answer: the picture is shown before the player has chosen
   for (const [re, key, name] of SUBJECT_ART) if (re.test(text) && artSrc('land-' + key)) return { src: artSrc('land-' + key), name };
   const d = DIST_OF[q.category]; return d && artSrc('land-' + d.key) ? { src: artSrc('land-' + d.key), name: d.name } : null;
 }
