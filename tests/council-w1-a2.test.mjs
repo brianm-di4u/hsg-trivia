@@ -1,6 +1,6 @@
 // Council wave 1, batch A2: stability (part 2), screens, layout and words.
 import assert from 'node:assert/strict';
-import { createSaveStore } from '../src/js/save.js';
+import { createSaveStore, validOpenQuestion } from '../src/js/save.js';
 import { NODES } from '../src/js/board.js';
 import { soloGame, landOn, phase, waitFor, H1 } from './helpers.mjs';
 
@@ -164,6 +164,127 @@ tests.push(
       await t.page.keyboard.press('r');
       s = await t.state();
       t.equal(before - s.trail.players[0].tickets, 1, 'one re-roll, one ticket');
+    },
+  },
+);
+
+// ---- S6-03: a structurally invalid saved trip is set aside, and a thrown error does not leave a dead page ----
+const player = (o = {}) => ({ id: 0, name: 'Ada', kind: 'human', level: 'medium', shape: 'circle', color: '#D7263D', node: 0, stamps: [], tickets: 3, skill: 0.35, skip: false, correct: 0, answered: 0, catStats: {}, streak: 0, ...o });
+const trail = (o = {}) => ({ target: 6, round: 1, turn: 0, phase: 'roll', roll: null, rerolled: false, dests: [], sel: 0, players: [player()], pending: null, log: [], winner: null, lastTurnAt: 1, ...o });
+const blob = (tr) => JSON.stringify({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: tr, asked: [], rng: 5 });
+const BAD_TRAILS = {
+  trailNoPlayers: trail({ players: [] }),
+  trailTooManyPlayers: trail({ players: Array.from({ length: 7 }, (_, i) => player({ id: i })) }),
+  trailNodeOutOfRange: trail({ players: [player({ node: 999 })] }),
+  trailNodeString: trail({ players: [player({ node: '12' })] }),
+  trailNegativeNode: trail({ players: [player({ node: -1 })] }),
+  trailTurnOutOfRange: trail({ turn: 3 }),
+  trailUnknownPhase: trail({ phase: 'dancing' }),
+  trailTicketsNotNumber: trail({ players: [player({ tickets: 'lots' })] }),
+  trailString: 'oops',
+  trailNumber: 7,
+  trailArray: [],
+};
+const mem = (raw) => { const m = new Map([['hs-trivia-v1', raw]]); return { m, storage: () => ({ getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)); } }) }; };
+for (const [name, tr] of Object.entries(BAD_TRAILS)) {
+  tests.push({
+    name: `S6-03 ${name} is set aside, not adopted`,
+    node: true,
+    run() {
+      const raw = blob(tr);
+      const { m, storage } = mem(raw);
+      const store = createSaveStore({ storage });
+      assert.equal(store.load().ok, true);
+      assert.equal(store.trailDiscarded, true, 'the trip is not offered, and the player can be told');
+      assert.equal(m.get('hs-trivia-v1.bad'), raw, 'the unusable trip was kept under the .bad key');
+      assert.equal(store.updateSettings({ sound: false }).ok, true, 'saving still works');
+      assert.equal(store.reserveTrail().ok, true, 'a new trip can be started');
+      assert.equal(store.commitTrail({ trail: trail(), asked: [], rng: 1 }).ok, true, 'and its first save goes through');
+      assert.equal(store.trailDiscarded, false, 'the notice goes away once a new trip is saved');
+      assert.equal(store.adoptTrail().trail.players.length, 1, 'the new trip replaced the unusable one');
+    },
+  });
+}
+tests.push(
+  {
+    name: 'S6-03 a valid trip is adopted unchanged',
+    node: true,
+    run() {
+      const tr = trail({ players: [player({ node: NODES.length - 1 }), player({ id: 1, kind: 'ai', level: 'hard' })], turn: 1 });
+      const { m, storage } = mem(blob(tr));
+      const store = createSaveStore({ storage });
+      store.load();
+      assert.equal(store.trailDiscarded, false);
+      assert.deepEqual(store.adoptTrail().trail, tr);
+      assert.equal(m.has('hs-trivia-v1.bad'), false);
+    },
+  },
+  {
+    name: 'S6-03 only a whole, unanswered stored question is brought back',
+    node: true,
+    run() {
+      const q = { id: 'hs-0001', category: 'History', text: 'Q?', difficulty: 'easy', choices: ['a', 'b', 'c', 'd'], correctIndex: 2, removed: [], chosen: null, timeLeft: 12, timeMax: 30 };
+      assert.equal(validOpenQuestion(q), true, 'a whole question is accepted');
+      for (const bad of [{ id: 'x' }, { ...q, choices: ['a'] }, { ...q, correctIndex: 9 }, { ...q, chosen: 1 }, { ...q, timeLeft: 'soon' }, null]) assert.equal(validOpenQuestion(bad), false, JSON.stringify(bad));
+    },
+  },
+);
+// The harness serializes initScript with toString, so a per-case script has to carry its data in its own source.
+const seedOnce = (tr) => {
+  const f = () => {};
+  f.toString = () => `() => { if (!sessionStorage.getItem('seeded')) { sessionStorage.setItem('seeded', '1'); localStorage.setItem('hs-trivia-v1', JSON.stringify({ v: 1, trail: ${JSON.stringify(tr)} })); } }`;
+  return f;
+};
+for (const [name, tr] of Object.entries({ trailNoPlayers: BAD_TRAILS.trailNoPlayers, trailNodeOutOfRange: BAD_TRAILS.trailNodeOutOfRange, trailTurnOutOfRange: BAD_TRAILS.trailTurnOutOfRange, trailString: BAD_TRAILS.trailString })) {
+  tests.push({
+    name: `S6-03 page with a ${name} save loads, says so, and keeps rendering`,
+    viewports: ['desktop'],
+    initScript: seedOnce(tr),
+    async run(t) {
+      await t.page.waitForTimeout(300);
+      t.equal(await t.page.locator('[data-act="continue-trail"]').count(), 0, 'no Continue button for an unusable trip');
+      t.equal(await t.page.locator('#scene-title .save-warn').count(), 1, 'the title says a saved trip was set aside');
+      const a = await t.game('fpsFrames'); await t.page.waitForTimeout(300); const b = await t.game('fpsFrames');
+      t.expect(b > a, 'the render loop is still running');
+      await t.game('newGame', { mode: 'trail', players: [{ kind: 'human' }], target: 4 });
+      const s = await t.state();
+      t.equal(s.scene, 'game', 'a new trip starts');
+    },
+  });
+}
+tests.push(
+  {
+    name: 'S6-03 a thrown error in the frame loop shows a way out, and Save and quit recovers the trip',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t);
+      const frames0 = await t.game('fpsFrames');
+      await t.page.evaluate(() => { try { window.__game.setState({ trail: { turn: 99 } }); } catch (e) { /* the redraw fails, as the loop will */ } });
+      await t.page.waitForTimeout(400);
+      const dlg = t.page.locator('#modal [data-act="crash-reload"]');
+      t.equal(await dlg.count(), 1, 'a Reload button is offered');
+      t.expect((await t.page.locator('#modal').innerText()).includes('Something went wrong'), 'the dialog says so');
+      const a = await t.game('fpsFrames'); await t.page.waitForTimeout(300); const b = await t.game('fpsFrames');
+      t.expect(a > frames0 && b > a, 'the loop keeps running after the error');
+      await t.page.locator('#modal [data-act="crash-quit"]').click();
+      await t.page.waitForTimeout(300);
+      let s = await t.state();
+      t.equal(s.scene, 'title', 'back on the title');
+      t.equal(await t.page.locator('#modal [data-act="crash-reload"]').count(), 0, 'the dialog is gone and stays gone');
+      await t.game('act', 'ui', 'continue-trail');
+      s = await waitFor(t, (x) => x.scene === 'game' && x.trail, 3000, 'trip to continue');
+      t.equal(s.trail.turn, 0, 'the saved trip comes back');
+    },
+  },
+  {
+    name: 'S6-03 an uncaught error opens the same dialog',
+    viewports: ['desktop'],
+    allowConsoleErrors: true,
+    async run(t) {
+      await t.page.evaluate(() => { setTimeout(() => { throw new Error('boom'); }, 0); });
+      await t.page.waitForTimeout(300);
+      t.equal(await t.page.locator('#modal [data-act="crash-reload"]').count(), 1, 'Reload is offered');
+      t.equal(await t.page.locator('#modal [data-act="crash-quit"]').count(), 1, 'Save and quit is offered');
     },
   },
 );

@@ -1,6 +1,6 @@
 // Boot, main loop, save/load, input wiring and the window.__game test hooks.
 import { makeRng, deepMerge, todayISO } from './util.js';
-import { BANK } from './data.js';
+import { BANK, CAT, getQ } from './data.js';
 import { NODES, ADJ, START, TOWER, TRAILHEAD, TROLLEYS, LANDMARK, VENT_PAIRS, SPUR_ENTRY, BOARD_W, BOARD_H, GEO_META } from './board.js';
 import * as Game from './game.js';
 import { G } from './game.js';
@@ -10,7 +10,7 @@ import * as UI from './ui.js';
 import { ui } from './ui.js';
 import { sfx, setAudio, unlockAudio, audioStats } from './audio.js';
 import { ART } from './assets.js';
-import { createSaveStore } from './save.js';
+import { createSaveStore, validTrail, validOpenQuestion } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
 const DEFAULT_SETTINGS = { sound: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' };
@@ -143,9 +143,13 @@ const ACTIONS = {
   goto: (a) => goto(a),
   back: () => scene(G.state.trail && prevScene === 'game' ? 'game' : prevScene === 'game' ? 'title' : prevScene || 'title'),
   'continue-trail': () => {
-    const saved = G.save.adoptTrail(); if (!saved) { UI.update(); return; }
+    const saved = G.save.adoptTrail();
+    if (saved && !validTrail(saved.trail)) { G.save.trailDiscarded = true; UI.update(); return; } // never adopt a trip the game cannot draw
+    if (!saved) { UI.update(); return; }
     ui.saveConflict = false;
-    const open = saved.trail.phase === 'question' ? saved.trail.question : null; delete saved.trail.question;
+    const sq = saved.trail.phase === 'question' && validOpenQuestion(saved.trail.question) ? saved.trail.question : null; delete saved.trail.question;
+    const bq = sq && getQ(sq.id); // only a question that is still in the bank, with its true answer, is brought back
+    const open = bq && CAT[sq.category] && sq.choices[sq.correctIndex] === bq.answer ? sq : null;
     G.state.trail = saved.trail; G.state.mode = 'trail'; G.state.asked = (saved.asked || []).slice();
     G.rng = makeRng((Date.now() ^ performance.now()) >>> 0); // new dice and questions, not a replay of the saved ones
     syncSavedSettings();
@@ -156,7 +160,7 @@ const ACTIONS = {
   'start-trail': () => {
     const su = ui.setup;
     const opts = { players: su.seats.map((s) => ({ name: s.name, kind: s.kind, level: s.level })), target: su.target };
-    const saved = G.save.data.trail;
+    const saved = G.save.trailDiscarded ? null : G.save.data.trail;
     if (saved && saved.phase !== 'over') askConfirm({ kind: 'new-trail', round: saved.round, opts }); else startTrail(opts);
   },
   restart: () => {
@@ -171,6 +175,13 @@ const ACTIONS = {
     UI.update();
   },
   'confirm-no': () => { ui.confirm = null; UI.update(); },
+  'crash-reload': () => window.location.reload(),
+  'crash-quit': () => {
+    // The live state may be what broke, so store the last good turn-start snapshot rather than the current state.
+    try { if (turnSnap && turnSnap.trail) G.save.commitTrail(turnSnap); } catch (e) { /* best effort */ }
+    G.state.trail = null; G.state.question = null; G.state.mode = null; // drop the broken live state so the title can draw
+    ui.crash = false; scene('title');
+  },
   'seat-add': () => { if (ui.setup.seats.length < 6) ui.setup.seats.push({ name: '', kind: 'ai', level: 'medium' }); UI.update(); },
   'seat-remove': (a) => { ui.setup.seats.splice(+a, 1); UI.update(); },
   target: (a) => { ui.setup.target = +a; sfx('click'); UI.update(); },
@@ -253,6 +264,8 @@ function wireInput() {
   });
 
   document.addEventListener('keydown', onKey);
+  window.addEventListener('error', () => UI.showCrash());
+  window.addEventListener('unhandledrejection', () => UI.showCrash());
   window.addEventListener('pagehide', saveOnLeave);
   document.addEventListener('visibilitychange', () => { syncPause(); if (document.visibilityState === 'hidden') saveOnLeave(); });
 }
@@ -272,6 +285,7 @@ function onKey(e) {
     if (k === 'Escape') act('save-conflict-dismiss');
     return done();
   }
+  if (ui.crash) { if (k === 'Tab') return trapFocus(e); return done(); }
   if (ui.confirm) {
     if (k === 'Tab') return trapFocus(e);
     if (k === 'Escape') act('confirm-no');
@@ -349,7 +363,11 @@ function syncPause() {
   Game.setPaused(document.visibilityState === 'hidden' || (G.state.scene === 'game' && ui.menuOpen));
 }
 let lastT = 0; let tickSec = -1; let fpsFrames = 0;
+// One bad frame must not end the loop for good: the next frame is always scheduled, and the player gets a way out.
 function loop(ts) {
+  try { frameStep(ts); } catch (e) { UI.showCrash(); } finally { requestAnimationFrame(loop); }
+}
+function frameStep(ts) {
   // Animation steps are capped at 50 ms so a stall never teleports tokens; the answer timer runs on wall-clock
   // time (capped at 0.5 s for a backgrounded tab), so a 10 s timer is 10 s even on a slow device.
   const raw = lastT ? (ts - lastT) / 1000 : 0.016; const dt = Math.min(0.05, raw); const tdt = Math.min(0.5, raw); lastT = ts; fpsFrames++;
@@ -358,7 +376,7 @@ function loop(ts) {
   // question timer (humans only in the Trail Game)
   const q = st.question;
   const human = st.mode !== 'trail' || (st.trail && Game.cur().kind === 'human');
-  const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && !ui.confirm && !ui.saveConflict && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
+  const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && !ui.confirm && !ui.saveConflict && !ui.crash && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
   if (open) {
     q.timeLeft -= tdt;
     const sec = Math.ceil(q.timeLeft);
@@ -367,7 +385,6 @@ function loop(ts) {
     UI.updateTimerBar();
   }
   R.frame(dt, st);
-  requestAnimationFrame(loop);
 }
 
 // ---------- test hooks ----------

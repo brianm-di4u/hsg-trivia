@@ -12,7 +12,7 @@ import * as Assets from './assets.js';
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
+export const ui = { modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
@@ -23,6 +23,7 @@ const btn = (act, label, { arg = '', cls = '', key = '', hint = '', dis = false,
   `<button class="btn ${cls}" data-act="${act}" data-arg="${esc(arg)}" data-key="${esc(key || act + ':' + arg)}"${dis ? ' disabled' : ''}${auto ? ' data-autofocus' : ''}>${label}${hint ? `<span class="kbd" aria-hidden="true">${hint}</span>` : ''}</button>`;
 const TICKET = '<svg class="ticket" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 2h20v4a2 2 0 0 0 0 4v4H2v-4a2 2 0 0 0 0-4z" fill="currentColor"/><path d="M15 3v10" stroke="var(--color-surface)" stroke-width="1.4" stroke-dasharray="1.6 1.4"/></svg>';
 const saveWarn = () => (G.save.ok ? '' : '<p class="save-warn" role="status">Progress is not being saved in this browser.</p>');
+const savedTripNote = () => (G.save.trailDiscarded ? '<p class="save-warn" role="status">A saved trip could not be read, so it was set aside.</p>' : '');
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
@@ -101,7 +102,7 @@ export function update() {
   if (sc === 'win') write($('#scene-win'), winHTML(), 'win');
   if (sc === 'quiz') write($('#scene-quiz'), quizHTML(), 'quiz');
   if (sc === 'game') write($('#panel'), panelHTML(), 'panel');
-  const m = ui.saveConflict ? saveConflictHTML() : ui.confirm ? confirmHTML() : sc === 'game' ? modalHTML() : '';
+  const m = ui.crash ? crashHTML() : ui.saveConflict ? saveConflictHTML() : ui.confirm ? confirmHTML() : sc === 'game' ? modalHTML() : '';
   const modal = $('#modal');
   const was = !modal.hidden;
   if (m) {
@@ -129,7 +130,7 @@ function updateTopbar() {
 
 // ---------- title ----------
 function titleHTML() {
-  const sv = G.save.data; const has = G.save.data.trail && G.save.data.trail.phase !== 'over';
+  const sv = G.save.data; const has = G.save.data.trail && !G.save.trailDiscarded && G.save.data.trail.phase !== 'over';
   const daily = sv.daily && sv.daily.results && sv.daily.results[G.today()];
   const hero = artSrc('land-row');
   return `<div class="page-card title-card">
@@ -146,7 +147,7 @@ function titleHTML() {
     </div>
     <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}</div>
     <p class="foot">${BANK.length} sourced questions · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${(sv.daily && sv.daily.streak) || 0}</p>
-    ${saveWarn()}
+    ${saveWarn()}${savedTripNote()}
   </div>`;
 }
 
@@ -369,6 +370,19 @@ function passportHTML() {
 function trolleyHTML() {
   const list = Game.trolleyOptions().map((id, i) => { const n = NODES[id]; return btn('trolley', `${ico('trolley', '', 'currentColor', 22)}<span>${esc(n.name)}</span><small>${esc(n.district ? DISTRICT[n.district].name : 'The Y')}</small>`, { arg: String(id), cls: 'listb', hint: String(i + 1), auto: i === 0 }); }).join('');
   return `<div class="mcard"><div class="mhead">${ico('trolley', '#1F2F5C', '#FFFFFF', 44)}<h2 id="mtitle">Ride the trolley</h2></div><p>Pay 2 tickets to ride to another stop. Your turn ends there.</p><div class="list">${list}</div><div class="mfoot">${btn('close-modal', 'Cancel', { cls: 'ghost', hint: 'Esc' })}</div></div>`;
+}
+
+// Drawn straight into the dialog layer: update() may be the very thing that is failing.
+export function showCrash() {
+  if (ui.crash) return;
+  ui.crash = true;
+  const modal = $('#modal');
+  modal.innerHTML = `<div class="sheet enter" role="dialog" aria-modal="true" aria-labelledby="mtitle">${crashHTML()}</div>`;
+  modal.hidden = false; document.body.classList.add('modal-open');
+  focusFirst(modal);
+}
+function crashHTML() {
+  return '<div class="mcard center"><h2 id="mtitle">Something went wrong</h2><p>The game hit an unexpected error. You can reload the page, or save your trip and go back to the title.</p><div class="menu">' + btn('crash-reload', 'Reload', { cls: 'primary', auto: true }) + btn('crash-quit', 'Save &amp; quit to title') + '</div></div>';
 }
 
 function saveConflictHTML() {

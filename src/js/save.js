@@ -1,4 +1,5 @@
 // Intent-scoped v1 persistence. A preference never writes a cached progress snapshot.
+import { NODES } from './board.js';
 const KEY = 'hs-trivia-v1';
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -7,6 +8,19 @@ const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily
 const ordered = (v) => Array.isArray(v) ? v.map(ordered) : object(v) ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, ordered(v[k])])) : v;
 const signature = (v) => JSON.stringify(ordered(v));
 const group = (data) => Object.fromEntries(['trail', 'asked', 'rng', 'trailGeneration'].filter((k) => own(data, k)).map((k) => [k, clone(data[k])]));
+// A saved trip is only adopted if the game can draw and play it: anything else is set aside rather than crash the page.
+const PHASES = new Set(['pass', 'roll', 'choose', 'moving', 'landed', 'stuck', 'skipped', 'question', 'feedback', 'vent', 'wager', 'order', 'orderResult', 'warp', 'postcard', 'jury', 'summit', 'over']);
+const int = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
+const num = (v) => typeof v === 'number' && Number.isFinite(v);
+const validPlayer = (p) => object(p) && int(p.node, 0, NODES.length - 1) && (p.kind === 'human' || p.kind === 'ai') && typeof p.name === 'string'
+  && typeof p.shape === 'string' && typeof p.color === 'string' && Array.isArray(p.stamps) && p.stamps.every((s) => typeof s === 'string')
+  && num(p.tickets) && num(p.skill) && num(p.correct) && num(p.answered) && num(p.streak) && object(p.catStats) && (p.kind !== 'ai' || ['easy', 'medium', 'hard'].includes(p.level));
+export const validTrail = (t) => object(t) && int(t.target, 1, 8) && int(t.round, 1, 1e6) && Array.isArray(t.players) && t.players.length >= 1 && t.players.length <= 6
+  && t.players.every(validPlayer) && int(t.turn, 0, t.players.length - 1) && PHASES.has(t.phase) && Array.isArray(t.log) && Array.isArray(t.dests)
+  && (t.pending === null || object(t.pending));
+export const validOpenQuestion = (q) => object(q) && typeof q.id === 'string' && typeof q.category === 'string' && typeof q.text === 'string' && ['easy', 'medium', 'hard'].includes(q.difficulty)
+  && Array.isArray(q.choices) && q.choices.length === 4 && q.choices.every((c) => typeof c === 'string') && int(q.correctIndex, 0, 3)
+  && Array.isArray(q.removed) && q.chosen === null && num(q.timeLeft) && num(q.timeMax);
 const SETTINGS = new Set(['sound', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed']);
 let fallbackGeneration = 0;
 const generation = () => globalThis.crypto?.randomUUID?.() || ('trip-' + Date.now().toString(36) + '-' + (++fallbackGeneration) + '-' + Math.random().toString(36).slice(2));
@@ -14,7 +28,7 @@ const previousDay = (day) => { const d = new Date(day + 'T12:00:00Z'); d.setUTCD
 
 export function createSaveStore({ storage = () => window.localStorage, newGeneration = generation, onConflict = () => {} } = {}) {
   let trailBase = null, conflictNotified = false;
-  const store = { data: defaults(), ok: true, pending: { reservation: null, trail: null, settings: {}, quiz: [] } };
+  const store = { data: defaults(), ok: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [] } };
   const read = () => {
     const raw = storage().getItem(KEY);
     if (raw === null) return defaults(); // External clear never falls back to an old cached object.
@@ -48,6 +62,9 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     if (!current) return unavailable();
     store.data = clone(current); trailBase = group(current); conflictNotified = false;
     store.pending = { reservation: null, trail: null, settings: {}, quiz: [] };
+    // A trip the game could not play is not offered. Its raw text is kept under the .bad key and the live key is replaced by the next trip's first save.
+    store.trailDiscarded = !!current.trail && !validTrail(current.trail);
+    if (store.trailDiscarded) { try { storage().setItem(KEY + '.bad', storage().getItem(KEY)); } catch { /* quarantine is best effort */ } }
     return { ok: true };
   };
   store.updateSettings = (changes) => {
@@ -94,7 +111,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     const next = { ...current, trail: clone(trail), asked: clone(asked), rng };
     if (terminalToken) next.trailGeneration = terminalToken;
     if (!write(next)) return unavailable();
-    trailBase = group(next); store.pending.trail = null;
+    trailBase = group(next); store.pending.trail = null; store.trailDiscarded = false;
     return { ok: true };
   };
   store.adoptTrail = () => {
