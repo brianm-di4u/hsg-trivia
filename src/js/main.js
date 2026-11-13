@@ -23,16 +23,24 @@ G.save = createSaveStore({ onConflict() {
 } });
 G.today = () => (window.__TEST_DATE__ || todayISO());
 
+// Say so once when saving stops working (and again if it works, then fails again). The notice itself is drawn by ui.js.
+let saveWarned = false;
+function noted(result) {
+  if (G.save.ok) saveWarned = false;
+  else if (!saveWarned) { saveWarned = true; UI.announce('Progress is not being saved in this browser.'); }
+  return result;
+}
+
 function saveTrail() {
   const t = G.state.trail; if (!t) return;
-  return applyCommittedSettings(G.save.commitTrail({
+  return noted(applyCommittedSettings(G.save.commitTrail({
     trail: t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null })),
     asked: G.state.asked.slice(-300), rng: G.rng.state,
-  }));
+  })));
 }
 function saveQuiz(q) {
-  return applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
-    right: q.results.filter((r) => r.correct).length, marks: q.results.map((r) => r.correct ? '1' : '0').join('') }));
+  return noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
+    right: q.results.filter((r) => r.correct).length, marks: q.results.map((r) => r.correct ? '1' : '0').join('') })));
 }
 
 // ---------- settings ----------
@@ -59,7 +67,7 @@ function applyCommittedSettings(result) {
 }
 function changeSettings(changes) {
   Object.assign(G.state.settings, changes);
-  const result = applyCommittedSettings(G.save.updateSettings(changes));
+  const result = noted(applyCommittedSettings(G.save.updateSettings(changes)));
   if (!result.ok) applySettings();
   return result;
 }
@@ -390,7 +398,7 @@ window.__game = {
 
 // ---------- boot ----------
 function boot() {
-  G.save.load();
+  noted(G.save.load());
   G.state = newState();
   G.rng = makeRng((Date.now() ^ 0x5eed) >>> 0);
   R.initView(document.querySelector('#board'));

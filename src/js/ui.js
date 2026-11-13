@@ -22,6 +22,7 @@ const tokenIco = (p, size = 22) => (Assets.has('pawn-' + p.shape)
 const btn = (act, label, { arg = '', cls = '', key = '', hint = '', dis = false, auto = false } = {}) =>
   `<button class="btn ${cls}" data-act="${act}" data-arg="${esc(arg)}" data-key="${esc(key || act + ':' + arg)}"${dis ? ' disabled' : ''}${auto ? ' data-autofocus' : ''}>${label}${hint ? `<span class="kbd" aria-hidden="true">${hint}</span>` : ''}</button>`;
 const TICKET = '<svg class="ticket" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 2h20v4a2 2 0 0 0 0 4v4H2v-4a2 2 0 0 0 0-4z" fill="currentColor"/><path d="M15 3v10" stroke="var(--color-surface)" stroke-width="1.4" stroke-dasharray="1.6 1.4"/></svg>';
+const saveWarn = () => (G.save.ok ? '' : '<p class="save-warn" role="status">Progress is not being saved in this browser.</p>');
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
@@ -145,6 +146,7 @@ function titleHTML() {
     </div>
     <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}</div>
     <p class="foot">${BANK.length} sourced questions · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${(sv.daily && sv.daily.streak) || 0}</p>
+    ${saveWarn()}
   </div>`;
 }
 
@@ -236,6 +238,7 @@ function panelHTML() {
     <div class="action">${action}</div>
     ${herecard}
     <ol class="players" aria-label="Travelers">${players}</ol>
+    ${saveWarn()}
     <div class="tools">${btn('passport', 'Passport', { cls: 'ghost small', hint: 'P' })}${btn('menu', 'Menu', { cls: 'ghost small', hint: 'Esc' })}</div>
     <ul class="log" aria-label="Recent events">${t.log.slice(0, 4).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
 }

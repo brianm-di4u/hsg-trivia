@@ -126,3 +126,54 @@ tests.push({
     assert.equal(m.has('hs-trivia-v1.bad'), false);
   },
 });
+
+// ---- S6-02: tell the player when progress is not being saved ----
+const WARN = 'Progress is not being saved in this browser';
+const blockReads = () => { const g = Storage.prototype.getItem; Storage.prototype.getItem = function (k) { if (k === 'hs-trivia-v1') throw new Error('blocked'); return g.call(this, k); }; };
+const blockWrites = () => { const s = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (k === 'hs-trivia-v1' && window.__blockSave) throw new Error('blocked'); return s.call(this, k, v); }; };
+
+tests.push(
+  {
+    name: 'S6-02 blocked storage shows a not-saved notice on the title and announces it',
+    initScript: blockReads,
+    async run(t) {
+      await t.page.waitForTimeout(300);
+      const chip = t.page.locator('#scene-title .save-warn');
+      t.equal(await chip.count(), 1, 'notice in the title');
+      t.expect((await chip.innerText()).includes(WARN), 'notice wording');
+      t.expect((await t.page.locator('#live').innerText()).includes(WARN), 'announced to screen readers');
+      await t.checkLayout();
+      await t.shot('s6-02-title-unsaved');
+    },
+  },
+  {
+    name: 'S6-02 a failed write mid-game shows the notice in the panel',
+    initScript: blockWrites,
+    async run(t) {
+      await soloGame(t);
+      await t.page.evaluate(() => { window.__blockSave = true; }); // storage works at first, then fails
+      t.equal(await t.page.locator('.save-warn').count(), 0, 'no notice while saving works');
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('postcard'));
+      await t.game('act', 'continue'); // ends the turn, which writes the save
+      await phase(t, 'roll');
+      await t.page.waitForTimeout(100);
+      const chip = t.page.locator('#panel .save-warn');
+      t.equal(await chip.count(), 1, 'notice in the panel');
+      t.expect((await t.page.locator('#live').innerText()).includes(WARN), 'announced');
+      await t.checkLayout();
+      await t.shot('s6-02-panel-unsaved');
+    },
+  },
+  {
+    name: 'S6-02 working storage shows no notice',
+    async run(t) {
+      await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('postcard'));
+      await t.game('act', 'continue');
+      await phase(t, 'roll');
+      t.equal(await t.page.locator('.save-warn').count(), 0, 'no notice');
+    },
+  },
+);
