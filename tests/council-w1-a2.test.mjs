@@ -106,3 +106,65 @@ export const tests = [
   },
 ];
 
+// ---- S6-10: coverage the suite lacked (resize while playing, keyboard turn paths) ----
+tests.push(
+  {
+    name: 'S6-10 resizing the window mid-question keeps the board and the question usable',
+    async run(t) {
+      await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      const sizes = t.viewport === 'desktop' ? [{ width: 820, height: 560 }, { width: 1280, height: 800 }] : [{ width: 844, height: 390 }, { width: 390, height: 844 }];
+      for (const sz of sizes) {
+        await t.page.setViewportSize(sz);
+        await t.page.waitForTimeout(400);
+        const box = await t.page.evaluate(() => { const c = document.querySelector('#board').getBoundingClientRect(); return { w: c.width, h: c.height, iw: innerWidth, ih: innerHeight }; });
+        t.expect(box.w > 0 && box.h > 0 && box.w <= box.iw + 1 && box.h <= box.ih + 1, `board fits ${sz.width}x${sz.height} (${Math.round(box.w)}x${Math.round(box.h)})`);
+        t.equal(await t.page.locator('#modal .ans').count(), 4, `four answers shown at ${sz.width}x${sz.height}`);
+        const a = await t.game('fpsFrames'); await t.page.waitForTimeout(200); const b = await t.game('fpsFrames');
+        t.expect(b > a, 'the render loop keeps running after the resize');
+      }
+      await t.game('act', 'answer', 'correct');
+      const s = await phase(t, 'feedback');
+      t.equal(s.trail.players[0].answered, 1, 'the question can still be answered');
+    },
+  },
+  {
+    name: 'S6-10 Enter after ArrowRight moves the token to the second destination',
+    async run(t) {
+      await soloGame(t);
+      let s = null;
+      for (let n = 1; n <= 6; n++) {
+        await t.game('act', 'roll', n);
+        s = await phase(t, 'choose');
+        if (s.trail.dests.length >= 2) break;
+        await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false } });
+      }
+      t.expect(s.trail.dests.length >= 2, 'found a roll with two destinations');
+      const target = s.trail.dests[1];
+      await t.page.keyboard.press('ArrowRight');
+      s = await t.state();
+      t.equal(s.trail.sel, 1, 'the second destination is selected');
+      await t.page.keyboard.press('Enter');
+      await t.game('act', 'finishAnim');
+      s = await waitFor(t, (x) => x.trail.phase !== 'moving' && x.trail.phase !== 'choose', 4000, 'move to finish');
+      t.equal(s.trail.players[0].node, target, 'the token went to the second destination');
+    },
+  },
+  {
+    name: 'S6-10 pressing R twice spends at most one ticket',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t);
+      await t.game('act', 'roll', 3);
+      let s = await phase(t, 'choose');
+      const before = s.trail.players[0].tickets;
+      await t.page.keyboard.press('r');
+      await t.page.keyboard.press('r');
+      s = await t.state();
+      t.equal(before - s.trail.players[0].tickets, 1, 'one re-roll, one ticket');
+    },
+  },
+);
+
