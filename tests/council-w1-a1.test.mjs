@@ -71,4 +71,20 @@ tests.push(
       t.equal(s.audio.played, before + 1, 'the roll cue played after resume, not dropped');
     },
   },
+  {
+    name: 'S1-17 audio is suspended while the tab is hidden and resumes on return',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t);
+      await t.page.keyboard.press('p'); await t.page.keyboard.press('Escape'); // real gestures start the context
+      await waitFor(t, (s) => s.audio.state === 'running', 3000, 'audio running');
+      await hide(t.page, true);
+      await waitFor(t, (s) => s.audio.state === 'suspended', 2000, 'audio suspended while hidden');
+      const played = (await t.state()).audio.played;
+      await t.game('act', 'roll', 3);
+      t.equal((await t.state()).audio.played, played, 'no cue plays in a hidden tab');
+      await hide(t.page, false);
+      await waitFor(t, (s) => s.audio.state === 'running', 2000, 'audio running again after return');
+    },
+  },
 );

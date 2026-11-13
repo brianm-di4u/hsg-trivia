@@ -14,6 +14,7 @@ function ensure() {
     master = ac.createGain(); master.gain.value = opts.volume * 0.5; master.connect(ac.destination);
     noiseBuf = ac.createBuffer(1, ac.sampleRate * 1, ac.sampleRate);
     const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    ac.onstatechange = () => { if (!held && ac.state !== 'running' && ac.state !== 'closed' && document.visibilityState !== 'hidden') unlockAudio(); };
     audioStats.ctx = true;
   } catch (e) { ac = null; }
   return ac;
@@ -30,11 +31,22 @@ export function setAudio({ on, volume }) {
 let resuming = null, pending = null;
 export function unlockAudio() {
   const c = ensure(); if (!c) return Promise.resolve();
-  if (c.state === 'running') return Promise.resolve();
+  if (c.state === 'running' || held) return Promise.resolve();
   if (!resuming) {
     resuming = c.resume().catch(() => {}).then(() => { resuming = null; const name = pending; pending = null; if (name) sfx(name); });
   }
   return resuming;
+}
+
+// A hidden tab must be silent (AI timers keep running there) and a context the system interrupted (iOS call, lock
+// screen) must come back: suspend on hidden or pagehide, resume on return and on the next gesture.
+let held = false;
+function hold() { held = true; pending = null; if (ac && ac.state === 'running') ac.suspend().catch(() => {}); }
+function release() { held = false; if (ac && ac.state !== 'running') unlockAudio(); }
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => (document.visibilityState === 'hidden' ? hold() : release()));
+  window.addEventListener('pagehide', hold);
+  window.addEventListener('pageshow', release);
 }
 
 function tone({ type = 'sine', f = 440, f2 = null, t = 0, a = 0.005, d = 0.15, v = 0.3, q = null }) {
