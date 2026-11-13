@@ -60,6 +60,7 @@ export function newTrail({ players, target = 6 }) {
   G.state.question = null;
   G.state.mode = 'trail';
   log(`A new trip begins. Collect ${target} stamps, then climb to the Mountain Tower.`);
+  G.hooks.save();
   beginTurn();
 }
 

@@ -31,12 +31,18 @@ function noted(result) {
   return result;
 }
 
+// The last turn-start snapshot handed to the save store, kept so a failed write can be retried when the page is hidden.
+let turnSnap = null;
 function saveTrail() {
   const t = G.state.trail; if (!t) return;
-  return noted(applyCommittedSettings(G.save.commitTrail({
+  turnSnap = {
     trail: t.phase === 'over' ? null : JSON.parse(JSON.stringify({ ...t, phase: 'roll', roll: null, dests: [], pending: null })),
     asked: G.state.asked.slice(-300), rng: G.rng.state,
-  })));
+  };
+  return noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
+}
+function retryUnsavedTrail() {
+  if (turnSnap && turnSnap.trail && (G.save.pending.trail || G.save.pending.reservation)) noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
 }
 function saveQuiz(q) {
   return noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
@@ -215,6 +221,8 @@ function wireInput() {
   });
 
   document.addEventListener('keydown', onKey);
+  window.addEventListener('pagehide', retryUnsavedTrail);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') retryUnsavedTrail(); });
 }
 
 function onKey(e) {

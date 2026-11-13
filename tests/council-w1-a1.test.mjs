@@ -177,3 +177,31 @@ tests.push(
     },
   },
 );
+
+// ---- S6-09: a new trip is saved at once, and a failed save is retried when the page is hidden ----
+const savedTrail = (t) => t.page.evaluate(() => { const v = localStorage.getItem('hs-trivia-v1'); return v ? JSON.parse(v).trail : null; });
+
+tests.push(
+  {
+    name: 'S6-09 a new trip is written before its first turn ends',
+    async run(t) {
+      await soloGame(t, { players: [H1, { kind: 'ai', level: 'easy' }] });
+      const tr = await savedTrail(t);
+      t.expect(tr && tr.players && tr.players.length === 2, 'trip is in storage straight after Start');
+      t.equal(tr && tr.round, 1, 'round 1 saved');
+    },
+  },
+  {
+    name: 'S6-09 a failed save is retried when the page is hidden',
+    initScript: blockWrites,
+    async run(t) {
+      await t.page.evaluate(() => { window.__blockSave = true; });
+      await soloGame(t);
+      t.equal(await savedTrail(t), null, 'nothing stored while storage refuses writes');
+      await t.page.evaluate(() => { window.__blockSave = false; window.dispatchEvent(new Event('pagehide')); });
+      const tr = await savedTrail(t);
+      t.expect(tr && tr.players && tr.players.length === 1, 'turn-start snapshot stored on pagehide');
+      t.equal(tr && tr.phase, 'roll', 'stored as a turn start');
+    },
+  },
+);
