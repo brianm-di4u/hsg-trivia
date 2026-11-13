@@ -12,7 +12,7 @@ import * as Assets from './assets.js';
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { modal: null, setup: null, menuOpen: false, saveConflict: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
+export const ui = { modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
@@ -85,7 +85,7 @@ export function showScene(name) {
   G.state.scene = name;
   document.body.className = document.body.className.replace(/\bscene-\S+/g, '').trim() + ' scene-' + name;
   for (const s of SCENES) { const el = $('#scene-' + s); if (el) el.hidden = s !== name; }
-  ui.modal = null; ui.menuOpen = false;
+  ui.modal = null; ui.menuOpen = false; ui.confirm = null;
   ui.focusNext = 'scene';
   update();
 }
@@ -101,7 +101,7 @@ export function update() {
   if (sc === 'win') write($('#scene-win'), winHTML(), 'win');
   if (sc === 'quiz') write($('#scene-quiz'), quizHTML(), 'quiz');
   if (sc === 'game') write($('#panel'), panelHTML(), 'panel');
-  const m = ui.saveConflict ? saveConflictHTML() : sc === 'game' ? modalHTML() : '';
+  const m = ui.saveConflict ? saveConflictHTML() : ui.confirm ? confirmHTML() : sc === 'game' ? modalHTML() : '';
   const modal = $('#modal');
   const was = !modal.hidden;
   if (m) {
@@ -109,7 +109,7 @@ export function update() {
     if (!sheet) { modal.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mtitle"></div>'; sheet = modal.firstElementChild; last.modal = ''; }
     if (!was) { modal.hidden = false; sheet.classList.remove('enter'); void sheet.offsetWidth; sheet.classList.add('enter'); ui.modalAt = performance.now(); }
     if (write(sheet, m, 'modal') && !modal.contains(document.activeElement)) focusFirst(modal);
-  } else if (was) { modal.hidden = true; last.modal = ''; modal.innerHTML = ''; if (sc === 'game') focusFirst($('#panel')); }
+  } else if (was) { modal.hidden = true; last.modal = ''; modal.innerHTML = ''; focusFirst(sc === 'game' ? $('#panel') : $('#scene-' + sc)); }
   document.body.classList.toggle('modal-open', !!m);
   if (ui.focusNext === 'scene') { ui.focusNext = null; const root = sc === 'game' ? (m ? modal : $('#panel')) : $('#scene-' + sc); focusFirst(root); }
   updateTopbar();
@@ -375,6 +375,17 @@ function saveConflictHTML() {
   return '<div class="mcard center"><h2 id="mtitle">Saved trip changed</h2><p>Another tab changed the saved trip. This trip will not overwrite it. Return to the title to continue the latest save or deliberately start a new trip.</p><div class="menu">' + btn('save-conflict-title', 'Back to title', { cls: 'primary', auto: true }) + btn('save-conflict-dismiss', 'Keep this trip open without saving') + '</div></div>';
 }
 
+// Asked before anything that throws progress away. Cancel is the focused default.
+const CONFIRM = {
+  restart: (c) => ['Restart this trip?', `Your trip so far (round ${c.round}) will be lost.`, 'Restart and lose this trip'],
+  'new-trail': (c) => ['Replace your saved trip?', `Starting a new trip replaces your saved trip (round ${c.round}).`, 'Start a new trip'],
+  'quit-quiz': () => ['Quit this quiz?', 'Your answers so far will be lost.', 'Quit the quiz'],
+};
+function confirmHTML() {
+  const [title, body, yes] = CONFIRM[ui.confirm.kind](ui.confirm);
+  return `<div class="mcard center"><h2 id="mtitle">${esc(title)}</h2><p>${esc(body)}</p><div class="menu">${btn('confirm-no', 'Cancel', { cls: 'primary', hint: 'Esc', auto: true })}${btn('confirm-yes', yes)}</div></div>`;
+}
+
 function menuHTML() {
   return `<div class="mcard center"><h2 id="mtitle">Paused</h2><div class="menu">${btn('close-modal', 'Resume', { cls: 'primary', auto: true })}${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('restart', 'Restart this trip')}${btn('goto', 'Save &amp; quit to title', { arg: 'title' })}</div></div>`;
 }
@@ -388,7 +399,7 @@ function quizHTML() {
     <div class="quiz-top"><span class="qt-title">${title}</span><span class="qt-prog" aria-label="Question ${qz.idx + 1} of ${qz.total}">${qz.idx + 1} / ${qz.total}</span><span class="qt-score">${qz.score} pts${qz.streak > 1 ? ` · streak ${qz.streak}` : ''}</span></div>
     <div class="dots" aria-hidden="true">${Array.from({ length: qz.total }, (_, i) => `<span class="${i < qz.results.length ? (qz.results[i].correct ? 'y' : 'n') : i === qz.idx ? 'cur' : ''}"></span>`).join('')}</div>
     ${questionCardHTML(q)}
-    ${q.chosen !== null ? `<div class="mfoot">${btn('quiz-next', qz.idx + 1 >= qz.total ? 'See results' : 'Next question', { cls: 'primary', hint: 'Enter', auto: true })}</div>` : `<div class="mfoot">${btn('goto', 'Quit', { arg: 'title', cls: 'ghost small' })}</div>`}
+    ${q.chosen !== null ? `<div class="mfoot">${btn('quiz-next', qz.idx + 1 >= qz.total ? 'See results' : 'Next question', { cls: 'primary', hint: 'Enter', auto: true })}</div>` : `<div class="mfoot">${btn('quiz-quit', 'Quit', { cls: 'ghost small' })}</div>`}
   </div>`;
 }
 

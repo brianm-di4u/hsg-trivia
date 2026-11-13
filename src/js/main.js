@@ -127,6 +127,7 @@ function startTrail(opts = {}) {
   Game.newTrail(opts);
   scene('game');
 }
+function askConfirm(c) { ui.confirm = c; UI.update(); }
 function startQuiz(kind, opts) { Quiz.newQuiz(kind, opts); scene('quiz'); }
 
 const ACTIONS = {
@@ -142,9 +143,22 @@ const ACTIONS = {
   },
   'start-trail': () => {
     const su = ui.setup;
-    startTrail({ players: su.seats.map((s) => ({ name: s.name, kind: s.kind, level: s.level })), target: su.target });
+    const opts = { players: su.seats.map((s) => ({ name: s.name, kind: s.kind, level: s.level })), target: su.target };
+    const saved = G.save.data.trail;
+    if (saved && saved.phase !== 'over') askConfirm({ kind: 'new-trail', round: saved.round, opts }); else startTrail(opts);
   },
-  restart: () => { const t = G.state.trail; if (!t) return; startTrail({ players: t.players.map((p) => ({ name: p.name, kind: p.kind, level: p.level })), target: t.target }); },
+  restart: () => {
+    const t = G.state.trail; if (!t) return;
+    const opts = { players: t.players.map((p) => ({ name: p.name, kind: p.kind, level: p.level })), target: t.target };
+    if (t.phase === 'over') startTrail(opts); else askConfirm({ kind: 'restart', round: t.round, opts });
+  },
+  'quiz-quit': () => { const qz = G.state.quiz; if (qz && qz.idx > 0) askConfirm({ kind: 'quit-quiz' }); else scene('title'); },
+  'confirm-yes': () => {
+    const c = ui.confirm; ui.confirm = null;
+    if (c && c.kind === 'quit-quiz') scene('title'); else if (c) startTrail(c.opts);
+    UI.update();
+  },
+  'confirm-no': () => { ui.confirm = null; UI.update(); },
   'seat-add': () => { if (ui.setup.seats.length < 6) ui.setup.seats.push({ name: '', kind: 'ai', level: 'medium' }); UI.update(); },
   'seat-remove': (a) => { ui.setup.seats.splice(+a, 1); UI.update(); },
   target: (a) => { ui.setup.target = +a; sfx('click'); UI.update(); },
@@ -201,7 +215,7 @@ function wireInput() {
     if (el.dataset.seatkind !== undefined) { const [k, l] = el.value.split(':'); const s = ui.setup.seats[+el.dataset.seatkind]; s.kind = k; s.level = l || 'medium'; UI.update(); }
     if (el.dataset.setting === 'volume') sfx('coin');
   });
-  document.querySelector('#btn-home').addEventListener('click', () => { if (G.state.scene === 'game') { ui.menuOpen = true; UI.update(); } else scene('title'); });
+  document.querySelector('#btn-home').addEventListener('click', () => { if (G.state.scene === 'game') { ui.menuOpen = true; UI.update(); } else if (G.state.scene === 'quiz') act('quiz-quit'); else scene('title'); });
   document.querySelector('#btn-help').addEventListener('click', () => goto('help'));
   document.querySelector('#btn-settings').addEventListener('click', () => goto('settings'));
   document.querySelector('#btn-sound').addEventListener('click', () => { changeSettings({ sound: !G.state.settings.sound }); UI.update(); sfx('click'); });
@@ -245,6 +259,11 @@ function onKey(e) {
     if (k === 'Escape') act('save-conflict-dismiss');
     return done();
   }
+  if (ui.confirm) {
+    if (k === 'Tab') return trapFocus(e);
+    if (k === 'Escape') act('confirm-no');
+    return done();
+  }
   if (lower === 'm') { document.querySelector('#btn-sound').click(); return done(); }
   if (k === '?') { goto('help'); return done(); }
   if (k === 'Tab') return trapFocus(e);
@@ -252,7 +271,7 @@ function onKey(e) {
     const q = st.question; if (!q) return;
     if (q.chosen === null) { const i = answerKey(lower); if (i >= 0 && !q.removed.includes(i)) { act('answer', i); return done(); } }
     else if (k === 'Enter' || k === ' ') { act('quiz-next'); return done(); }
-    if (k === 'Escape') { scene('title'); return done(); }
+    if (k === 'Escape') { act('quiz-quit'); return done(); }
     return;
   }
   if (sc !== 'game') {
@@ -321,7 +340,7 @@ function loop(ts) {
   // question timer (humans only in the Trail Game)
   const q = st.question;
   const human = st.mode !== 'trail' || (st.trail && Game.cur().kind === 'human');
-  const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && !ui.saveConflict && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
+  const open = q && q.chosen === null && q.timeMax > 0 && human && !ui.modal && !ui.menuOpen && !ui.confirm && !ui.saveConflict && (st.scene === 'quiz' || (st.scene === 'game' && st.trail.phase === 'question'));
   if (open) {
     q.timeLeft -= tdt;
     const sec = Math.ceil(q.timeLeft);

@@ -254,3 +254,83 @@ tests.push(
     },
   },
 );
+
+// ---- S2-02: restart, new trip over a saved trip, and quiz Quit ask first ----
+const dialogText = (t) => t.page.locator('#modal').innerText();
+const confirmOpen = async (t) => (await t.page.locator('#modal [data-act="confirm-yes"]').count()) === 1;
+
+tests.push(
+  {
+    name: 'S2-02 Restart from the pause menu asks first and keeps the trip on Cancel',
+    async run(t) {
+      await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('postcard'));
+      await t.game('act', 'continue');
+      await phase(t, 'roll');
+      await t.page.keyboard.press('Escape');
+      await t.page.click('[data-act="restart"]');
+      t.expect(await confirmOpen(t), 'a confirmation is shown');
+      t.expect(/lose/i.test(await dialogText(t)) && /round 2/i.test(await dialogText(t)), 'it says what will be lost');
+      t.equal(await t.page.evaluate(() => document.activeElement && document.activeElement.dataset.act), 'confirm-no', 'Cancel has the focus');
+      t.equal((await t.state()).trail.round, 2, 'trip untouched while asking');
+      await t.checkLayout();
+      await t.shot('s2-02-restart-confirm');
+      await t.page.keyboard.press('Escape');
+      t.equal((await t.state()).trail.round, 2, 'Esc cancels');
+      t.expect(!(await confirmOpen(t)) && (await t.state()).ui.menu, 'back at the pause menu');
+      await t.page.click('[data-act="restart"]');
+      await t.page.click('[data-act="confirm-no"]');
+      t.equal((await t.state()).trail.round, 2, 'Cancel keeps the trip');
+      await t.page.click('[data-act="restart"]');
+      await t.page.click('[data-act="confirm-yes"]');
+      const s = await phase(t, 'roll');
+      t.equal(s.trail.round, 1, 'confirming starts a fresh trip');
+      t.equal(s.scene, 'game', 'on the board');
+    },
+  },
+  {
+    name: 'S2-02 Start over a saved trip asks first; with no saved trip it does not',
+    async run(t) {
+      await t.game('scene', 'setup');
+      await t.page.click('[data-act="start-trail"]');
+      t.equal((await t.state()).scene, 'game', 'no saved trip: starts straight away');
+      await t.game('scene', 'setup');
+      await t.page.click('[data-act="start-trail"]');
+      t.expect(await confirmOpen(t), 'saved trip: a confirmation is shown');
+      t.expect(/replace/i.test(await dialogText(t)), 'it says the saved trip is replaced');
+      t.equal((await t.state()).scene, 'setup', 'still on the setup screen');
+      await t.checkLayout();
+      await t.page.click('[data-act="confirm-no"]');
+      t.expect(!(await confirmOpen(t)), 'Cancel closes the dialog');
+      t.equal((await t.state()).scene, 'setup', 'Cancel stays on setup');
+      await t.page.click('[data-act="start-trail"]');
+      await t.page.click('[data-act="confirm-yes"]');
+      t.equal((await t.state()).scene, 'game', 'confirming starts the new trip');
+    },
+  },
+  {
+    name: 'S2-02 quiz Quit asks first once a question has been answered',
+    async run(t) {
+      await t.game('newGame', { mode: 'quick' });
+      await t.page.click('[data-act="quiz-quit"]');
+      t.equal((await t.state()).scene, 'title', 'no answers yet: quits straight away');
+      await t.game('newGame', { mode: 'quick' });
+      await t.game('act', 'answer', 0);
+      await t.game('act', 'continue');
+      const s = await waitFor(t, (x) => x.scene === 'quiz' && x.quiz && x.quiz.idx === 1 && x.question && x.question.chosen === null, 3000, 'second question');
+      t.equal(s.quiz.idx, 1, 'on question 2');
+      await t.page.click('[data-act="quiz-quit"]');
+      t.expect(await confirmOpen(t), 'a confirmation is shown');
+      t.equal((await t.state()).scene, 'quiz', 'still in the quiz');
+      await t.checkLayout();
+      await t.shot('s2-02-quiz-confirm');
+      await t.page.click('[data-act="confirm-no"]');
+      t.equal((await t.state()).scene, 'quiz', 'Cancel keeps the run');
+      await t.page.keyboard.press('Escape');
+      t.expect(await confirmOpen(t), 'Esc asks too');
+      await t.page.click('[data-act="confirm-yes"]');
+      t.equal((await t.state()).scene, 'title', 'confirming quits to the title');
+    },
+  },
+);
