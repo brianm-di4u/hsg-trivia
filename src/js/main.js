@@ -362,7 +362,7 @@ function trapFocus(e) {
 function syncPause() {
   Game.setPaused(document.visibilityState === 'hidden' || (G.state.scene === 'game' && ui.menuOpen));
 }
-let lastT = 0; let tickSec = -1; let fpsFrames = 0;
+let lastT = 0; let tickSec = -1; let warnKey = ''; let fpsFrames = 0;
 // One bad frame must not end the loop for good: the next frame is always scheduled, and the player gets a way out.
 function loop(ts) {
   try { frameStep(ts); } catch (e) { UI.showCrash(); } finally { requestAnimationFrame(loop); }
@@ -381,6 +381,7 @@ function frameStep(ts) {
     q.timeLeft -= tdt;
     const sec = Math.ceil(q.timeLeft);
     if (sec !== tickSec && sec <= 5 && sec > 0) { tickSec = sec; sfx('tick'); }
+    if ((sec === 10 || sec === 5) && sec < q.timeMax && warnKey !== q.id + ':' + sec) { warnKey = q.id + ':' + sec; UI.announce(`${sec} seconds left.`); }
     if (q.timeLeft <= 0) { q.timeLeft = 0; UI.announce('Time is up.'); Game.answer('timeout'); if (st.mode !== 'trail') Quiz.settle(); }
     UI.updateTimerBar();
   }

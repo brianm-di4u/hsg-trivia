@@ -289,3 +289,49 @@ tests.push(
   },
 );
 
+// ---- S2-04: screen-reader path ----
+tests.push(
+  {
+    name: 'S2-04 the question dialog is described by the question text',
+    async run(t) {
+      await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      const s = await phase(t, 'question');
+      const r = await t.page.evaluate(() => { const d = document.querySelector('#modal .sheet'); const id = d.getAttribute('aria-describedby'); const el = id && document.getElementById(id); return { id, text: el ? el.textContent : null, labelled: d.getAttribute('aria-labelledby') }; });
+      t.equal(r.text, s.question.text, 'aria-describedby points at the question text');
+      t.equal(r.labelled, 'mtitle', 'the dialog is still named by its category');
+      await t.game('act', 'answer', 'correct');
+      await phase(t, 'feedback');
+      await t.game('act', 'continue');
+      await phase(t, 'roll');
+      t.equal(await t.page.evaluate(() => document.querySelector('#modal .sheet') ? document.querySelector('#modal .sheet').getAttribute('aria-describedby') : null), null, 'no stale description on other dialogs');
+    },
+  },
+  {
+    name: 'S2-04 the answer timer announces the time left and warns at 10 and 5 seconds',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { timer: 30 } });
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      const label = () => t.page.locator('#modal .timer').getAttribute('aria-label');
+      t.expect(/^Time left: \d+ seconds$/.test(await label()), 'the timer has a spoken value');
+      await t.game('setState', { question: { timeLeft: 10.6 } });
+      await t.page.waitForTimeout(900);
+      t.expect((await t.page.locator('#live').innerText()).includes('10 seconds left'), 'announced at 10 seconds');
+      t.expect(/^Time left: (9|10) seconds$/.test(await label()), 'the value follows the clock (' + await label() + ')');
+    },
+  },
+  {
+    name: 'S2-04 each Settings option group has a human name',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.game('scene', 'settings');
+      const names = await t.page.locator('#scene-settings [role=radiogroup]').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
+      t.equal(JSON.stringify(names), JSON.stringify(['Sound', 'Answer timer', 'Motion', 'Text size', 'Theme', 'Hot-seat pass screen', 'AI speed']), 'group names');
+    },
+  },
+);
+

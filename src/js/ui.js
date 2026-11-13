@@ -110,6 +110,8 @@ export function update() {
     if (!sheet) { modal.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mtitle"></div>'; sheet = modal.firstElementChild; last.modal = ''; }
     if (!was) { modal.hidden = false; sheet.classList.remove('enter'); void sheet.offsetWidth; sheet.classList.add('enter'); ui.modalAt = performance.now(); }
     if (write(sheet, m, 'modal') && !modal.contains(document.activeElement)) focusFirst(modal);
+    // A question dialog is named by its category; the question itself is its description, so it is read on entering.
+    if (sheet.querySelector('#qtext')) sheet.setAttribute('aria-describedby', 'qtext'); else sheet.removeAttribute('aria-describedby');
   } else if (was) { modal.hidden = true; last.modal = ''; modal.innerHTML = ''; focusFirst(sc === 'game' ? $('#panel') : $('#scene-' + sc)); }
   document.body.classList.toggle('modal-open', !!m);
   if (ui.focusNext === 'scene') { ui.focusNext = null; const root = sc === 'game' ? (m ? modal : $('#panel')) : $('#scene-' + sc); focusFirst(root); }
@@ -276,8 +278,8 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
     ${banner ? `<div class="qbanner"><img class="qart" src="${banner}" alt="" aria-hidden="true"><span class="qcap">Illustration · ${esc(art.name)}</span></div>` : ''}
     <div class="qhead">${ico(c.icon, c.color, c.ink, 40)}<div class="qh"><div class="qcat" id="mtitle">${esc(q.category)}</div><div class="qmeta">${DIFF_LABEL[q.difficulty]} · ${esc(eraName(q.era))}</div></div>${badge}</div>
     ${purposeLine ? `<p class="purpose">${purposeLine}</p>` : ''}
-    ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left"><div class="bar" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div>` : ''}
-    <h2 class="qtext">${esc(q.text)}</h2>
+    ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left: ${Math.ceil(q.timeLeft)} seconds"><div class="bar" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div>` : ''}
+    <h2 class="qtext" id="qtext">${esc(q.text)}</h2>
     <div class="answers">${answers}</div>
     ${!answered && allowLifeline ? `<div class="qtools">${btn('lifeline', '50/50 · 2 tickets', { cls: 'ghost small', hint: 'F', dis: tickets < 2 || q.removed.length > 0 })}</div>` : ''}
     ${fb}
@@ -473,7 +475,8 @@ function helpHTML() {
 
 function settingsHTML() {
   const s = G.state.settings;
-  const seg = (key, opts) => `<div class="seg" role="radiogroup" aria-label="${key}">${opts.map(([v, l]) => `<button class="seg-b${String(s[key]) === String(v) ? ' on' : ''}" role="radio" aria-checked="${String(s[key]) === String(v)}" data-act="set" data-arg="${key}=${v}" data-key="set-${key}-${v}">${l}</button>`).join('')}</div>`;
+  const SEG_LABEL = { sound: 'Sound', timer: 'Answer timer', motion: 'Motion', textScale: 'Text size', theme: 'Theme', passScreen: 'Hot-seat pass screen', aiSpeed: 'AI speed' };
+  const seg = (key, opts) => `<div class="seg" role="radiogroup" aria-label="${SEG_LABEL[key] || key}">${opts.map(([v, l]) => `<button class="seg-b${String(s[key]) === String(v) ? ' on' : ''}" role="radio" aria-checked="${String(s[key]) === String(v)}" data-act="set" data-arg="${key}=${v}" data-key="set-${key}-${v}">${l}</button>`).join('')}</div>`;
   return `<div class="page-card settings-card"><h2>Settings</h2>
     <h3>Sound</h3>${seg('sound', [[true, 'On'], [false, 'Off']])}
     <label class="slider">Volume <input type="range" min="0" max="100" value="${Math.round(s.volume * 100)}" data-key="volume" data-setting="volume" aria-label="Volume"></label>
@@ -488,5 +491,8 @@ function settingsHTML() {
 
 export function updateTimerBar() {
   const q = G.state.question; const bar = document.querySelector('.qcard .timer .bar');
-  if (bar && q && q.timeMax) { bar.style.width = (100 * Math.max(0, q.timeLeft) / q.timeMax).toFixed(1) + '%'; bar.classList.toggle('low', q.timeLeft < 5); }
+  if (bar && q && q.timeMax) {
+    const label = `Time left: ${Math.ceil(Math.max(0, q.timeLeft))} seconds`, timer = bar.parentElement;
+    if (timer.getAttribute('aria-label') !== label) timer.setAttribute('aria-label', label);
+    bar.style.width = (100 * Math.max(0, q.timeLeft) / q.timeMax).toFixed(1) + '%'; bar.classList.toggle('low', q.timeLeft < 5); }
 }
