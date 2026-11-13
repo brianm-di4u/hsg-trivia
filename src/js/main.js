@@ -74,7 +74,7 @@ function scene(name) {
   if (name === 'setup' && !ui.setup) ui.setup = null;
   UI.showScene(name);
   R.resize(); R.snapCamera(); R.requestArt();
-  if (name === 'game') Game.aiMaybe();
+  if (name === 'game') Game.resume();
 }
 let prevScene = 'title';
 function goto(name) { if (['help', 'settings'].includes(name)) prevScene = G.state.scene === 'help' || G.state.scene === 'settings' ? prevScene : G.state.scene; scene(name); }

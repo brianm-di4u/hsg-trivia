@@ -39,6 +39,9 @@ export const isAI = (p = cur()) => p.kind === 'ai';
 function clearTimers() { for (const id of G.timers) clearTimeout(id); G.timers = []; }
 function later(ms, fn) { const id = setTimeout(() => { G.timers = G.timers.filter((x) => x !== id); fn(); }, ms); G.timers.push(id); }
 const aiDelay = (base) => (G.state.settings.aiSpeed === 'fast' ? Math.min(220, base) : base);
+// Phases that end the turn by themselves after a short pause, with that pause in ms.
+const AUTO_END = { landed: () => (isAI() ? aiDelay(500) : 450), stuck: () => 1200, skipped: () => (isAI() ? aiDelay(900) : 1200) };
+function armAutoEnd(t) { const ph = t.phase; later(AUTO_END[ph](), () => { if (T() === t && t.phase === ph) endTurn(); }); }
 
 // ---------- setup ----------
 export function newTrail({ players, target = 6 }) {
@@ -68,7 +71,7 @@ export function beginTurn() {
   if (p.skip) {
     p.skip = false; log(`${p.name} sits out this turn (Grand Jury).`); t.phase = 'skipped';
     G.hooks.update();
-    later(isAI() ? aiDelay(900) : 1200, () => { if (t.phase === 'skipped') endTurn(); });
+    armAutoEnd(t);
     return;
   }
   t.phase = p.kind === 'human' && humans() >= 2 && G.state.settings.passScreen ? 'pass' : 'roll';
@@ -90,7 +93,7 @@ export function roll(force) {
   log(`${p.name} rolled a ${t.roll}.`);
   if (!t.dests.length) {
     t.phase = 'stuck'; log(`No space is exactly ${t.roll} steps away. ${p.name} waits in the steam.`);
-    G.hooks.update(); later(1200, () => { if (t.phase === 'stuck') endTurn(); });
+    G.hooks.update(); armAutoEnd(t);
     return true;
   }
   t.phase = 'choose';
@@ -137,7 +140,7 @@ function resolve() {
     case 'tower': t.pending = { kind: 'summit', cat: CATS[G.rng.int(CATS.length)].id }; t.phase = 'summit'; sfx('bell'); log(`${p.name} reached the Mountain Tower! Summit question time.`); break;
     default:
       t.phase = 'landed'; G.hooks.update();
-      later(isAI() ? aiDelay(500) : 450, () => { if (t.phase === 'landed') endTurn(); });
+      armAutoEnd(t);
       return;
   }
   G.hooks.update(); aiMaybe();
@@ -400,6 +403,12 @@ export function aiMaybe() {
 }
 
 export function stopAI() { clearTimers(); }
+// Back on the board after Help or Settings: stopAI cleared every pending timer, so re-arm the one this phase needs.
+export function resume() {
+  const t = T(); if (!t || G.state.mode !== 'trail') return;
+  if (AUTO_END[t.phase]) armAutoEnd(t);
+  aiMaybe();
+}
 // Test hook: empirical accuracy of the AI answer rule for a level over n draws per difficulty.
 export function aiAccuracySample(level, n = 400) {
   const p = { level }; const out = {};
