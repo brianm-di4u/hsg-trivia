@@ -9,7 +9,7 @@ import { sfx } from './audio.js';
 export const G = {
   state: null,
   rng: makeRng(1),
-  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {} },
+  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {}, finish() {} },
   timers: [],
   paused: false, // set while the tab is hidden or the pause menu is open: no AI or auto-advance timer is armed
 };
@@ -46,6 +46,14 @@ export const ECON = {
   AI_HINT_SCOPE: { easy: 'any', medium: 'any', hard: 'landmark-hard' }, // which questions each level pays to 50/50: any, or only hard landmark questions (the Summit question always)
   AI_HINT_KEEP: { easy: 4, medium: 4, hard: 0 }, // tickets an AI keeps after buying a 50/50 or Summit hint
 };
+// ---------- AI pace (S1-03): how long each AI beat lasts ----------
+// A wait is scaled by factor, then capped; hop scales the AI token's walk. 'brisk' is the default for a new player.
+export const AI_PACE = {
+  normal: { factor: 1, cap: Infinity, hop: 1 }, // the old default, labelled Relaxed (about 7 s a turn)
+  brisk: { factor: 0.55, cap: Infinity, hop: 0.6 },
+  fast: { factor: 1, cap: 220, hop: 0.35 },
+};
+export const DEFAULT_AI_SPEED = 'brisk';
 export const TARGETS = [{ n: 4, label: 'Day Trip' }, { n: 6, label: 'Weekend' }, { n: 8, label: 'Grand Tour' }];
 
 export const T = () => G.state.trail;
@@ -54,9 +62,28 @@ const log = (msg) => { const t = T(); t.log.unshift(msg); if (t.log.length > 30)
 const eligible = (p) => p.stamps.length >= T().target;
 export const isAI = (p = cur()) => p.kind === 'ai';
 
-function clearTimers() { for (const id of G.timers) clearTimeout(id); G.timers = []; }
-function later(ms, fn) { if (G.paused) return; const id = setTimeout(() => { G.timers = G.timers.filter((x) => x !== id); fn(); }, ms); G.timers.push(id); }
-const aiDelay = (base) => (G.state.settings.aiSpeed === 'fast' ? Math.min(220, base) : base);
+let beats = []; // the timers `later` has armed with what they will run, so skipBeat can run one early
+function clearTimers() { for (const id of G.timers) clearTimeout(id); G.timers = []; beats = []; }
+function later(ms, fn) {
+  if (G.paused) return;
+  const b = { at: Date.now() + ms, fn };
+  b.id = setTimeout(() => { G.timers = G.timers.filter((x) => x !== b.id); beats = beats.filter((x) => x !== b); fn(); }, ms);
+  G.timers.push(b.id); beats.push(b);
+}
+const pace = () => AI_PACE[G.state.settings.aiSpeed] || AI_PACE[DEFAULT_AI_SPEED];
+const aiDelay = (base) => Math.min(pace().cap, Math.round(base * pace().factor));
+export const hopScale = () => pace().hop;
+// Run the next waiting AI or auto-advance beat now (a key or a tap while an AI plays); during a walk, finish the walk.
+export function skipBeat() {
+  const t = G.state && G.state.trail;
+  if (G.paused || !t || G.state.mode !== 'trail' || G.state.scene !== 'game' || !isAI()) return false;
+  if (t.phase === 'moving') { G.hooks.finish(); return true; }
+  const b = beats.slice().sort((x, y) => x.at - y.at)[0];
+  if (!b) return false;
+  clearTimeout(b.id); G.timers = G.timers.filter((x) => x !== b.id); beats = beats.filter((x) => x !== b);
+  b.fn();
+  return true;
+}
 // Phases that end the turn by themselves after a short pause, with that pause in ms.
 const AUTO_END = { landed: () => (isAI() ? aiDelay(500) : 450), stuck: () => 1200, skipped: () => (isAI() ? aiDelay(900) : 1200) };
 function armAutoEnd(t) { const ph = t.phase; later(AUTO_END[ph](), () => { if (T() === t && t.phase === ph) endTurn(); }); }

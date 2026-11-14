@@ -13,7 +13,10 @@ import { ART } from './assets.js';
 import { createSaveStore, validTrail, validOpenQuestion } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
-const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' };
+const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
+// What a setting is when the save does not name it: a new profile gets the Brisk AI speed, an older save keeps Normal. An unknown speed falls back to Brisk.
+const baseSettings = () => ({ ...DEFAULT_SETTINGS, aiSpeed: G.save.fresh ? Game.DEFAULT_AI_SPEED : DEFAULT_SETTINGS.aiSpeed });
+const validSpeed = (s) => ({ ...s, aiSpeed: Game.AI_PACE[s.aiSpeed] ? s.aiSpeed : Game.DEFAULT_AI_SPEED });
 
 // ---------- save ----------
 G.save = createSaveStore({ onConflict() {
@@ -78,7 +81,7 @@ function applySettings() {
 }
 
 function syncSavedSettings() {
-  Object.assign(G.state.settings, DEFAULT_SETTINGS, G.save.data.settings);
+  Object.assign(G.state.settings, validSpeed({ ...baseSettings(), ...G.save.data.settings }));
   applySettings();
 }
 function applyCommittedSettings(result) {
@@ -111,12 +114,13 @@ function goto(name) { if (['help', 'settings'].includes(name)) prevScene = G.sta
 G.hooks.update = () => UI.update();
 G.hooks.announce = (m) => UI.announce(m);
 G.hooks.save = saveTrail;
+G.hooks.finish = () => R.finishAnims();
 G.hooks.saveQuiz = saveQuiz;
 G.hooks.scene = (n) => scene(n);
 // Each hop of a walk steps up the pentatonic scale and sounds from where the token is on screen.
 G.hooks.moveToken = (p, path, done, mode = 'walk') => {
   let step = 0;
-  R.moveAlong(p, path, () => { done(); }, { mode, onHop: () => {
+  R.moveAlong(p, path, () => { done(); }, { mode, speed: p.kind === 'ai' ? Game.hopScale() : 1, onHop: () => {
     if (mode === 'jump') return sfx('steam');
     const tp = R.tokenPos(p); const sx = R.worldToScreen(tp.x, tp.y)[0];
     sfx('hop', { i: step++, pan: Math.max(-0.6, Math.min(0.6, (sx / (R.view.w || 1) * 2 - 1) * 0.6)) });
@@ -130,7 +134,7 @@ G.hooks.effect = (kind, p) => {
 };
 
 function newState() {
-  return { v: 1, scene: 'title', mode: null, settings: { ...DEFAULT_SETTINGS, ...(G.save.data.settings || {}) }, asked: [], trail: null, question: null, quiz: null, rngSeed: 1 };
+  return { v: 1, scene: 'title', mode: null, settings: validSpeed({ ...baseSettings(), ...(G.save.data.settings || {}) }), asked: [], trail: null, question: null, quiz: null, rngSeed: 1 };
 }
 
 // ---------- actions (shared by clicks, keys and __game.act) ----------
@@ -193,6 +197,10 @@ const ACTIONS = {
   target: (a) => { ui.setup.target = +a; sfx('click'); UI.update(); },
   roll: () => { if (Game.cur().kind === 'human') Game.roll(); },
   reroll: () => Game.reroll(),
+  'ai-speed': () => {
+    const order = Object.keys(Game.AI_PACE); const next = order[(order.indexOf(G.state.settings.aiSpeed) + 1) % order.length];
+    changeSettings({ aiSpeed: next }); sfx('click'); UI.announce(`AI speed: ${UI.AI_SPEED_LABEL[next]}.`); UI.update();
+  },
   express: () => { if (Game.cur().kind === 'human') Game.express(); },
   choose: (a) => { if (Game.cur().kind === 'human') Game.choose(+a); },
   answer: (a) => {
@@ -232,7 +240,9 @@ function act(name, arg) { const f = ACTIONS[name]; if (f) f(arg); }
 function wireInput() {
   document.addEventListener('click', (e) => {
     unlockAudio();
-    const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+    const b = e.target.closest('[data-act]');
+    if (!b) { if (e.target.closest('#panel, #modal') && !ui.modal && !ui.menuOpen && !ui.confirm) Game.skipBeat(); return; } // a tap on an AI's card or the panel skips its beat
+    if (b.disabled) return;
     e.preventDefault(); act(b.dataset.act, b.dataset.arg);
   });
   document.addEventListener('input', (e) => {
@@ -264,7 +274,8 @@ function wireInput() {
   cv.addEventListener('pointerup', (e) => {
     if (!down) return; const moved = down.moved; down = null;
     if (moved || G.state.scene !== 'game' || ui.saveConflict) return;
-    const t = G.state.trail; if (!t || Game.cur().kind !== 'human') return;
+    const t = G.state.trail; if (t && Game.cur().kind === 'ai' && !ui.modal && !ui.menuOpen && !ui.confirm) return void Game.skipBeat(); // a tap on the board skips an AI beat
+    if (!t || Game.cur().kind !== 'human') return;
     const r = cv.getBoundingClientRect(); const hit = R.hitDest(e.clientX - r.left, e.clientY - r.top, t);
     if (hit === null) return;
     if (t.phase === 'choose') Game.choose(hit); else if (t.phase === 'warp') Game.warp(hit);
@@ -321,6 +332,7 @@ function onKey(e) {
   if (lower === 'z') { act('zoom'); return done(); }
   const t = st.trail; const p = Game.cur(); if (!t || p.kind !== 'human') {
     if ((k === 'Enter' || k === ' ') && ['feedback', 'postcard', 'orderResult'].includes(t && t.phase)) { act('proceed'); return done(); }
+    if (t && !/^(Shift|Control|Alt|Meta|CapsLock|Tab|Escape)$/.test(k) && Game.skipBeat()) return done(); // any other key skips the AI's next beat
     return;
   }
   switch (t.phase) {

@@ -25,6 +25,7 @@ const TICKET = '<svg class="ticket" viewBox="0 0 24 16" aria-hidden="true"><path
 const saveWarn = () => (G.save.ok ? '' : '<p class="save-warn" role="status">Progress is not being saved in this browser.</p>');
 const savedTripNote = () => (G.save.trailDiscarded ? '<p class="save-warn" role="status">A saved trip could not be read, so it was set aside.</p>' : '');
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+export const AI_SPEED_LABEL = { normal: 'Relaxed', brisk: 'Brisk', fast: 'Fast' };
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
 // Painted art (assets/), used only when the manifest lists it; every use has a non-art fallback.
@@ -245,11 +246,11 @@ function panelHTML() {
   const hname = hd ? hd.name : here.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown';
   const herecard = hsrc ? `<figure class="here"><img src="${hsrc}" alt="" aria-hidden="true"><figcaption><strong>${esc(here.name)}</strong><span>${esc(hname)}${hd ? ' · ' + esc(hd.blurb) : ''}</span></figcaption></figure>` : '';
   return `<div class="turn" style="--pc:${p.color}">${tokenIco(p, 44)}<div><div class="tname">${esc(p.name)}’s turn</div><div class="tsub">Round ${t.round} · ${p.stamps.length}/${t.target} stamps · ${plural(p.tickets, 'ticket')}${el ? ' · <strong class="ok">Trail open!</strong>' : ''}</div></div></div>
-    <div class="action">${action}</div>
+    <div class="action">${action}${ai && t.phase !== 'over' ? '<p class="hint skip-hint">Tap or press a key to skip ahead.</p>' : ''}</div>
     ${herecard}
     <ol class="players" aria-label="Travelers">${players}</ol>
     ${saveWarn()}
-    <div class="tools">${btn('passport', 'Passport', { cls: 'ghost small', hint: 'P' })}${btn('menu', 'Menu', { cls: 'ghost small', hint: 'Esc' })}</div>
+    <div class="tools">${btn('passport', 'Passport', { cls: 'ghost small', hint: 'P' })}${btn('menu', 'Menu', { cls: 'ghost small', hint: 'Esc' })}${t.players.some((q) => q.kind === 'ai') ? btn('ai-speed', `AI speed: ${AI_SPEED_LABEL[G.state.settings.aiSpeed] || 'Brisk'}`, { cls: 'ghost small' }) : ''}</div>
     <ul class="log" aria-label="Recent events">${t.log.slice(0, 4).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
 }
 
@@ -300,7 +301,7 @@ function modalHTML() {
   if (ui.modal === 'passport') return passportHTML();
   if (ui.modal === 'trolley') return trolleyHTML();
   const p = Game.cur(); const ai = p.kind === 'ai'; const q = G.state.question; const pd = t.pending;
-  const cont = (label = 'Continue') => ai ? `<p class="hint ai-note">${esc(p.name)} will continue…</p>` + btn('proceed', label + ' now', { cls: 'ghost small', hint: 'Enter' }) : btn('proceed', label, { cls: 'primary', hint: 'Enter', auto: true });
+  const cont = (label = 'Continue') => ai ? `<p class="hint ai-note">${esc(p.name)} will continue… Tap or press a key to skip.</p>` + btn('proceed', label + ' now', { cls: 'ghost small', hint: 'Enter' }) : btn('proceed', label, { cls: 'primary', hint: 'Enter', auto: true });
   switch (t.phase) {
     case 'pass': return `<div class="mcard center"><h2 id="mtitle">Pass the device</h2>${tokenIco(p, 56)}<p class="big">to <strong>${esc(p.name)}</strong></p><p class="hint">Others, look away from the next question!</p>${btn('pass', `I’m ${esc(p.name)} — let’s go`, { cls: 'primary', hint: 'Enter', auto: true })}</div>`;
     case 'question': case 'feedback': {
@@ -472,7 +473,8 @@ function helpHTML() {
     <li>Answer the question for the space. District spaces pay tickets (Easy 1, Medium 2, Hard 3).</li>
     <li>Spend tickets on a 50/50 (2), a re-roll (1, then 2, 3 and 4 as you use them in a trip) or the trolley (2). Win more at Post Time.</li>
     <li>Two big buys: the <strong>Express ticket</strong> (6) jumps you to the nearest landmark you have no stamp for and asks its question; the <strong>Summit hint</strong> (4) is a 50/50 on the Summit question.</li>
-    <li>After every answer you’ll see what’s true and where it comes from.</li></ol>
+    <li>After every answer you’ll see what’s true and where it comes from.</li>
+    <li>When a computer traveler plays, tap the board or press any key to skip ahead. The <strong>AI speed</strong> button beside Passport and Menu (or Settings) picks Relaxed, Brisk or Fast.</li></ol>
     <h3>Districts and categories</h3><ul class="legend">${legend}</ul>
     <h3>Special spaces</h3><ul class="legend">${sp.map(([, i, t]) => `<li>${ico(i, '', 'currentColor', 26)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Keyboard</h3><p class="keys"><kbd>Space</kbd> roll · <kbd>←</kbd><kbd>→</kbd> or <kbd>1</kbd>–<kbd>9</kbd> pick a space · <kbd>Enter</kbd> confirm / continue · <kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>F</kbd> 50/50 or Summit hint · <kbd>R</kbd> re-roll · <kbd>T</kbd> trolley · <kbd>E</kbd> Express · <kbd>P</kbd> passport · <kbd>Z</kbd> zoom · <kbd>M</kbd> mute · <kbd>Esc</kbd> menu</p>
@@ -497,7 +499,7 @@ function settingsHTML() {
     <h3>Text size</h3>${seg('textScale', [[1, '100%'], [1.15, '115%'], [1.3, '130%']])}
     <h3>Theme</h3>${seg('theme', [['auto', 'System'], ['light', 'Day'], ['dark', 'Night']])}
     <h3>Hot-seat pass screen</h3>${seg('passScreen', [[true, 'On'], [false, 'Off']])}
-    <h3>AI speed</h3>${seg('aiSpeed', [['normal', 'Normal'], ['fast', 'Fast']])}
+    <h3>AI speed</h3>${seg('aiSpeed', [['normal', 'Relaxed'], ['brisk', 'Brisk'], ['fast', 'Fast']])}
     <div class="row">${btn('back', 'Done', { cls: 'primary' })}</div></div>`;
 }
 

@@ -22,13 +22,15 @@ export const validOpenQuestion = (q) => object(q) && typeof q.id === 'string' &&
   && Array.isArray(q.choices) && q.choices.length === 4 && q.choices.every((c) => typeof c === 'string') && int(q.correctIndex, 0, 3)
   && Array.isArray(q.removed) && q.chosen === null && num(q.timeLeft) && num(q.timeMax);
 const SETTINGS = new Set(['sound', 'effects', 'music', 'ambience', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed']);
+// A brand-new profile gets the Brisk AI speed written with its first save. A save from before this setting existed has no aiSpeed: that player played at Normal and keeps it.
+export const FRESH_PROFILE_SETTINGS = { aiSpeed: 'brisk' };
 let fallbackGeneration = 0;
 const generation = () => globalThis.crypto?.randomUUID?.() || ('trip-' + Date.now().toString(36) + '-' + (++fallbackGeneration) + '-' + Math.random().toString(36).slice(2));
 const previousDay = (day) => { const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 1); return d.toISOString().slice(0, 10); };
 
 export function createSaveStore({ storage = () => window.localStorage, newGeneration = generation, onConflict = () => {} } = {}) {
   let trailBase = null, conflictNotified = false;
-  const store = { data: defaults(), ok: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [] } };
+  const store = { data: defaults(), ok: true, fresh: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [] } };
   const read = () => {
     const raw = storage().getItem(KEY);
     if (raw === null) return defaults(); // External clear never falls back to an old cached object.
@@ -53,11 +55,13 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     return { ok: false, reason: 'trail-conflict' };
   };
   const write = (next) => {
-    try { storage().setItem(KEY, JSON.stringify(next)); store.data = clone(next); store.ok = true; return true; }
+    if (store.fresh) next = { ...next, settings: { ...FRESH_PROFILE_SETTINGS, ...next.settings } };
+    try { storage().setItem(KEY, JSON.stringify(next)); store.data = clone(next); store.ok = true; store.fresh = false; return true; }
     catch { store.ok = false; return false; }
   };
   const readOrNull = () => { try { return read(); } catch { store.ok = false; return null; } };
   store.load = () => {
+    try { store.fresh = storage().getItem(KEY) === null; } catch { store.fresh = true; }
     const current = readOrNull();
     if (!current) return unavailable();
     store.data = clone(current); trailBase = group(current); conflictNotified = false;

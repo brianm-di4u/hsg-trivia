@@ -1,11 +1,34 @@
 // Council wave 2, batch B: ticket economy (S3-02) and AI turn pace (S1-03).
 import { spawnSync } from 'node:child_process';
-import { soloGame, landOn, waitFor, phase } from './helpers.mjs';
+import { H1, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
 const ALL = ['Sports', 'Entertainment', 'Nature & Lakes', 'People', 'History', 'Places & Landmarks', 'Food & Culture', 'Legends & Oddities'];
 const text = (t, sel) => t.page.locator(sel).first().innerText();
 const me = async (t) => (await t.state()).trail.players[0];
 const ticketsOf = async (t) => (await me(t)).tickets;
+
+// The harness serializes initScript with toString, so a per-case script carries its data in its own source.
+const withSave = (obj) => {
+  const f = () => {};
+  f.toString = () => `() => { if (!sessionStorage.getItem('seeded')) { sessionStorage.setItem('seeded', '1'); localStorage.setItem('hs-trivia-v1', JSON.stringify(${JSON.stringify(obj)})); } }`;
+  return f;
+};
+const stored = (t) => t.page.evaluate(() => JSON.parse(localStorage.getItem('hs-trivia-v1') || 'null'));
+const speed = async (t) => (await t.state()).settings.aiSpeed;
+// A game that opens with an AI turn at the given speed, then the human; resolves when the human's roll comes back.
+async function aiTurn(t, aiSpeed, { skip = false } = {}) {
+  await t.seed(7);
+  await t.game('setState', { settings: { passScreen: false, aiSpeed, timer: 0 } });
+  const t0 = Date.now();
+  await t.game('newGame', { mode: 'trail', players: [{ kind: 'ai', level: 'medium' }, H1], target: 6, seed: 7 });
+  let presses = 0;
+  while (Date.now() - t0 < 20000) {
+    const s = await t.state();
+    if (s.trail.turn === 1 && s.trail.phase === 'roll') break;
+    if (skip) { await t.page.keyboard.press('x'); presses++; await t.page.waitForTimeout(60); } else await t.page.waitForTimeout(50);
+  }
+  return { ms: Date.now() - t0, presses };
+}
 
 export const tests = [
   // ---------------- S3-02 ----------------
@@ -257,6 +280,156 @@ export const tests = [
       const [mh, em] = run('6,8', 80);
       t.expect(mh.win[1] > 70, `Hard beats Medium (${mh.win[1]} %)`);
       t.expect(em.win[1] > 85, `Medium beats Easy (${em.win[1]} %)`);
+    },
+  },
+  // ---------------- S1-03 ----------------
+  {
+    name: 'S1-03 a new player starts at Brisk, and the speed is written with their first save',
+    viewports: ['desktop'],
+    async run(t) {
+      t.equal(await speed(t), 'brisk', 'default AI speed');
+      t.equal(await stored(t), null, 'nothing is stored until the player does something');
+      await t.game('setState', { settings: { volume: 0.5 } });
+      const d = await stored(t);
+      t.equal(d.settings.aiSpeed, 'brisk', 'the first save names Brisk');
+      await t.reload();
+      t.equal(await speed(t), 'brisk', 'still Brisk after a reload');
+    },
+  },
+  ...[['a save from before the setting existed (no aiSpeed)', { v: 1, settings: { volume: 0.4 } }, 'normal'],
+    ['a save with Fast chosen', { v: 1, settings: { aiSpeed: 'fast' } }, 'fast'],
+    ['a save with Relaxed chosen', { v: 1, settings: { aiSpeed: 'normal' } }, 'normal'],
+    ['a hand-edited save with an unknown speed', { v: 1, settings: { aiSpeed: 'turbo' } }, 'brisk']].map(([label, save, want]) => ({
+    name: `S1-03 ${label} plays at ${want}`,
+    viewports: ['desktop'],
+    initScript: withSave(save),
+    async run(t) {
+      t.equal(await speed(t), want, 'AI speed on load');
+      await t.game('setState', { settings: { volume: 0.6 } });
+      await t.reload();
+      t.equal(await speed(t), want, 'unchanged by saving another setting and reloading');
+    },
+  })),
+  {
+    name: 'S1-03 Settings offers Relaxed, Brisk and Fast and the choice is saved',
+    async run(t) {
+      await t.game('scene', 'settings');
+      const labels = await t.page.locator('[aria-label="AI speed"] .seg-b').allInnerTexts();
+      t.equal(labels.join('|'), 'Relaxed|Brisk|Fast', 'three speeds');
+      t.equal(await t.page.locator('[aria-label="AI speed"] .seg-b.on').innerText(), 'Brisk', 'Brisk is selected');
+      await t.page.locator('[data-key="set-aiSpeed-fast"]').click();
+      t.equal((await stored(t)).settings.aiSpeed, 'fast', 'saved');
+      await t.shot('S1-03-settings-ai-speed');
+      await t.reload();
+      t.equal(await speed(t), 'fast', 'kept after a reload');
+    },
+  },
+  {
+    name: 'S1-03 the panel has an AI speed button that cycles the speed; it is not there without an AI',
+    async run(t) {
+      await soloGame(t);
+      t.equal(await t.page.locator('[data-act="ai-speed"]').count(), 0, 'no button in a game without AI seats');
+      await t.game('setState', { settings: { aiSpeed: 'brisk' } });
+      await t.game('newGame', { mode: 'trail', players: [H1, { kind: 'ai', level: 'easy' }], target: 6 });
+      await phase(t, 'roll');
+      const b = t.page.locator('[data-act="ai-speed"]');
+      t.expect((await b.innerText()).includes('Brisk'), 'shows the current speed');
+      const box = await b.boundingBox();
+      t.expect(box.height >= 30 && box.width >= 44, `target size ${box.width}x${box.height}`);
+      await t.shot('S1-03-panel-ai-speed');
+      await b.click(); t.equal(await speed(t), 'fast', 'Brisk to Fast');
+      await b.click(); t.equal(await speed(t), 'normal', 'Fast to Relaxed');
+      t.expect((await b.innerText()).includes('Relaxed'), 'label follows');
+      await b.click(); t.equal(await speed(t), 'brisk', 'Relaxed to Brisk');
+      t.equal((await stored(t)).settings.aiSpeed, 'brisk', 'saved');
+      await t.checkLayout();
+    },
+  },
+  {
+    name: 'S1-03 a key press skips the AI beat that is waiting; a human turn is not skipped',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.seed(7);
+      await t.game('setState', { settings: { passScreen: false, aiSpeed: 'normal', timer: 0 } });
+      await t.game('newGame', { mode: 'trail', players: [{ kind: 'ai', level: 'medium' }, H1], target: 6, seed: 7 });
+      let s = await t.state();
+      t.equal(s.trail.phase, 'roll', 'the AI is about to roll (800 ms away at Relaxed)');
+      const t0 = Date.now();
+      await t.page.keyboard.press('x');
+      s = await waitFor(t, (x) => x.trail.phase !== 'roll', 600, 'the roll after one key');
+      t.expect(Date.now() - t0 < 600, `rolled at once (${Date.now() - t0} ms)`);
+      await t.game('act', 'stopAI');
+      await t.game('setState', { trail: { phase: 'roll', turn: 1 } });
+      await t.page.keyboard.press('x');
+      await t.page.waitForTimeout(150);
+      s = await t.state();
+      t.equal(s.trail.phase, 'roll', 'the key did nothing on the human turn');
+    },
+  },
+  {
+    name: 'S1-03 a tap on the board skips the AI beat that is waiting',
+    async run(t) {
+      await t.seed(7);
+      await t.game('setState', { settings: { passScreen: false, aiSpeed: 'normal', timer: 0 } });
+      await t.game('newGame', { mode: 'trail', players: [{ kind: 'ai', level: 'medium' }, H1], target: 6, seed: 7 });
+      await t.game('act', 'stopAI');
+      await t.shot('S1-03-ai-turn-hint', { wait: false });
+      await t.game('scene', 'game');
+      const r = await t.page.locator('#board').boundingBox();
+      const t0 = Date.now();
+      if (t.viewport === 'mobile') await t.tap([r.x + r.width / 2, r.y + r.height / 2]); else await t.page.mouse.click(r.x + r.width / 2, r.y + r.height / 2);
+      await waitFor(t, (x) => x.trail.phase !== 'roll', 600, 'the roll after a tap');
+      t.expect(Date.now() - t0 < 600, 'rolled at once');
+    },
+  },
+  {
+    name: 'S1-03 skipping through a whole AI turn takes a couple of seconds',
+    viewports: ['desktop'],
+    async run(t) {
+      const r = await aiTurn(t, 'normal', { skip: true });
+      t.log(`one AI turn at Relaxed, skipped with a key: ${r.ms} ms in ${r.presses} presses`);
+      t.expect(r.ms < 5000, `whole AI turn skipped in ${r.ms} ms`);
+      const s = await t.state();
+      t.equal(s.trail.turn, 1, 'back to the human');
+    },
+  },
+  {
+    name: 'S1-03 an AI turn at Brisk is shorter than at Relaxed, and Fast shorter again (walk included)',
+    viewports: ['desktop'],
+    async run(t) {
+      const slow = await aiTurn(t, 'normal');
+      const mid = await aiTurn(t, 'brisk');
+      const fast = await aiTurn(t, 'fast');
+      t.log(`first AI turn, same seed: Relaxed ${slow.ms} ms, Brisk ${mid.ms} ms, Fast ${fast.ms} ms`);
+      t.expect(mid.ms < slow.ms * 0.8, `Brisk ${mid.ms} is under 80% of Relaxed ${slow.ms}`);
+      t.expect(fast.ms < mid.ms, `Fast ${fast.ms} is shorter than Brisk ${mid.ms}`);
+    },
+  },
+  {
+    name: 'S1-03 pace in the rules engine: seconds per AI turn at each speed',
+    node: true,
+    async run(t) {
+      const out = {};
+      for (const sp of ['normal', 'brisk', 'fast']) {
+        const r = spawnSync(process.execPath, ['tools/econ-sim.mjs', '12', '1'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, PACE: sp } });
+        if (r.status !== 0) { t.fail('pace run failed: ' + r.stderr.slice(0, 300)); return; }
+        out[sp] = JSON.parse(r.stdout.trim().split('\n')[0]).secondsPerTurn;
+      }
+      t.log(`seconds per AI turn: Relaxed ${out.normal}, Brisk ${out.brisk}, Fast ${out.fast}`);
+      t.expect(out.normal > 5.5 && out.normal < 8, `Relaxed is the old pace, about 7 s (${out.normal})`);
+      t.expect(out.brisk < out.normal * 0.65, `Brisk is well under Relaxed (${out.brisk})`);
+      t.expect(out.brisk > 2.5, `Brisk is not a blur (${out.brisk})`);
+      t.expect(out.fast < out.brisk, `Fast is quicker still (${out.fast})`);
+    },
+  },
+  {
+    name: 'S1-03 an existing save keeps its AI speed through a reload mid-trip',
+    viewports: ['desktop'],
+    initScript: withSave({ v: 1, settings: { aiSpeed: 'normal' } }),
+    async run(t) {
+      await t.game('newGame', { mode: 'trail', players: [H1, { kind: 'ai', level: 'easy' }], target: 6 });
+      await t.reload();
+      t.equal(await speed(t), 'normal', 'Relaxed after the reload');
     },
   },
 ];

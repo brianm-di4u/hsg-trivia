@@ -290,7 +290,7 @@ export function finishAnims() {
 export const isAnimating = () => view.anims.length > 0;
 
 // Hop along the baked route (following each edge's curve), or one arcing jump.
-export function moveAlong(p, path, done, { mode = 'walk', onHop } = {}) {
+export function moveAlong(p, path, done, { mode = 'walk', onHop, speed = 1 } = {}) { // speed scales each hop's time (an AI at Brisk or Fast hops quicker)
   const tp = tokenPos(p);
   if (view.reduced) { const n = NODES[path[path.length - 1]]; tp.x = n.x; tp.y = n.y; tp.lift = 0; done(); return; }
   const steps = mode === 'jump' ? [path[path.length - 1]] : path.slice(1);
@@ -300,7 +300,7 @@ export function moveAlong(p, path, done, { mode = 'walk', onHop } = {}) {
     const to = steps[i]; const from = { x: tp.x, y: tp.y };
     const pts = mode === 'jump' ? [[from.x, from.y], [NODES[to].x, NODES[to].y]] : edgePts(prev, to);
     const seg = []; let L = 0; for (let k = 1; k < pts.length; k++) { const d = Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]); seg.push(d); L += d; }
-    const dur = mode === 'jump' ? 700 : Math.max(170, Math.min(320, L * 4.2));
+    const dur = (mode === 'jump' ? 700 : Math.max(170, Math.min(320, L * 4.2))) * speed;
     const height = mode === 'jump' ? 64 : 8 + Math.min(10, L * 0.12);
     const dir = Math.sign(NODES[to].x - from.x) || 1;
     animate(dur, (k) => {

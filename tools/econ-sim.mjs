@@ -2,6 +2,7 @@
 // timers and reports, per row, win share, rounds, unspent tickets at the end and how often each ticket sink was used.
 // Seat 0 of the HUMAN rows is a "human profile": it plays with the Hard AI's heuristics but its own answer accuracy.
 // Usage: node tools/econ-sim.mjs [games per row = 300] [row numbers, comma separated = all]
+// PACE=normal|brisk|fast node tools/econ-sim.mjs 30 1   reports seconds per AI turn (waits from the rules engine, walks estimated at 245 ms a step).
 // ECON='{"EXPRESS_COST":8}' node tools/econ-sim.mjs 200 1   overrides constants in game.js ECON for one run.
 import fs from 'node:fs';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -20,12 +21,14 @@ const { G, AI_ACC } = Game;
 if (process.env.ECON && Game.ECON) { const o = JSON.parse(process.env.ECON); for (const k of Object.keys(o)) Game.ECON[k] = (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) ? { ...Game.ECON[k], ...o[k] } : o[k]; }
 const ORIG = JSON.parse(JSON.stringify(AI_ACC));
 const N = +(process.argv[2] || 300);
+let hopMs = 0, rolls = 0, SPEED = 'fast';
+const HOP_MS = 245; // the average walk step in render.js (170 to 320 ms), scaled by the AI speed's hop factor
 function runGame(seats, target, seed, ev) {
   q = []; now = 0;
   G.rng = makeRng(seed);
-  G.state = { settings: { aiSpeed: 'fast', timer: 0, passScreen: false }, asked: [], scene: 'game', mode: 'trail', question: null };
-  G.hooks.announce = (m) => { if (/re-roll/.test(m)) ev.reroll++; else if (/Express/.test(m)) ev.express++; else if (/hint/.test(m)) ev.hint++; else if (/50\/50/.test(m)) ev.fifty++; else if (/trolley to/.test(m)) ev.trolley++; else if (/wagers/.test(m)) ev.wager++; };
-  G.hooks.moveToken = (p, pth, cb) => { cb(); };
+  G.state = { settings: { aiSpeed: SPEED, timer: 0, passScreen: false }, asked: [], scene: 'game', mode: 'trail', question: null };
+  G.hooks.announce = (m) => { if (/ rolled a /.test(m)) rolls++; if (/re-roll/.test(m)) ev.reroll++; else if (/Express/.test(m)) ev.express++; else if (/hint/.test(m)) ev.hint++; else if (/50\/50/.test(m)) ev.fifty++; else if (/trolley to/.test(m)) ev.trolley++; else if (/wagers/.test(m)) ev.wager++; };
+  G.hooks.moveToken = (p, pth, cb, mode) => { hopMs += (mode === 'jump' ? 700 : (pth.length - 1) * HOP_MS) * Game.hopScale(); cb(); };
   G.hooks.scene = () => {}; G.hooks.effect = () => {}; G.hooks.save = () => {}; G.hooks.update = () => {};
   Game.newTrail({ players: seats.map((l) => ({ kind: 'ai', level: l })), target });
   let guard = 0;
@@ -35,20 +38,22 @@ function runGame(seats, target, seed, ev) {
     if (G.state.trail.round > 400) break;
   }
   const t = G.state.trail;
-  return { over: t.phase === 'over', winner: t.winner, rounds: t.round, players: t.players };
+  return { over: t.phase === 'over', winner: t.winner, rounds: t.round, players: t.players, now };
 }
 const med = (a) => { const s = a.slice().sort((x, y) => x - y); return s[Math.floor((s.length - 1) / 2)]; };
 function batch(label, seats, target, n = N, profile = null) {
   for (const l of ['easy', 'medium', 'hard']) Object.assign(AI_ACC[l], ORIG[l]);
   if (profile) Object.assign(AI_ACC.hard, profile);
   const ev = { reroll: 0, express: 0, hint: 0, fifty: 0, trolley: 0, wager: 0 };
+  let totalNow = 0; hopMs = 0; rolls = 0;
   const wins = seats.map(() => 0); const rounds = []; const tix = seats.map(() => []); let done = 0;
   for (let i = 0; i < n; i++) {
     const r = runGame(seats, target, 1000 + i, ev);
-    if (!r.over) continue; done++; wins[r.winner]++; rounds.push(r.rounds);
+    totalNow += r.now; if (!r.over) continue; done++; wins[r.winner]++; rounds.push(r.rounds);
     r.players.forEach((p, k) => tix[k].push(p.tickets));
   }
   rounds.sort((a, b) => a - b);
+  if (process.env.PACE) { const out = { label, speed: SPEED, games: done, turns: rolls, waitMsPerTurn: Math.round(totalNow / rolls), hopMsPerTurn: Math.round(hopMs / rolls), secondsPerTurn: +((totalNow + hopMs) / rolls / 1000).toFixed(2) }; console.log(JSON.stringify(out)); return out; }
   const mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
   const out = { label, games: done, win: wins.map((w) => +(100 * w / done).toFixed(1)), roundsMedian: rounds[Math.floor(rounds.length / 2)],
     endTicketsMedian: tix.map(med), endTicketsMean: tix.map((a) => +mean(a).toFixed(1)), per_game: Object.fromEntries(Object.entries(ev).map(([k, v]) => [k, +(v / done).toFixed(1)])) };
@@ -68,5 +73,6 @@ const ROWS = [
   () => batch('AI easy vs medium', ['easy', 'medium'], 6),
   ...Object.entries(HUMANS).map(([k, acc]) => () => batch('HUMAN ' + k + ' vs Medium AI', ['hard', 'medium'], 6, N, acc)),
 ];
+if (process.env.PACE) { SPEED = process.env.PACE; }
 const pick = (process.argv[3] || ROWS.map((_, i) => i).join(',')).split(',').map(Number);
 for (const i of pick) ROWS[i]();
