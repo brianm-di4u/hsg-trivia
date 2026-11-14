@@ -5,17 +5,21 @@ import { CATS, CAT, pickQuestion, makeQuestion, updateSkill, pickOrdering, pickP
 import { NODES, START, TOWER, TRAILHEAD, TROLLEYS, LANDMARK, DISTRICTS, DISTRICT, reachable, ventPartner, hops } from './board.js';
 import { TOKEN_SHAPES, TOKEN_COLORS } from './art.js';
 import { sfx } from './audio.js';
+import { AI_LINES } from './voices.js';
 
 export const G = {
   state: null,
   rng: makeRng(1),
-  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {}, finish() {}, record() { return null; } },
+  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {}, finish() {}, record() { return null; }, say() {} },
+  say: null, // the last thing a named opponent said: { pid, text, event }, for the question card
+  voiceN: {}, // how many lines each character has spoken per event, so a character walks through their lines
   lastRecord: null, // what the Trail record made of the trip that just ended (earned achievements, personal bests), for the win card
   timers: [],
   paused: false, // set while the tab is hidden or the pause menu is open: no AI or auto-advance timer is armed
 };
 
 export const AI_NAMES = { easy: 'Doc Vapor', medium: 'Miss Promenade', hard: 'The Professor' };
+export { AI_LINES }; // what each of the six names says, by event: see voices.js
 const AI_EXTRA = ['Ticket Taker', 'Trail Boss', 'Lady Tufa'];
 const AI_POOL = [AI_NAMES.easy, AI_NAMES.medium, AI_NAMES.hard, ...AI_EXTRA]; // six names for up to six AI seats
 
@@ -59,7 +63,30 @@ export const TARGETS = [{ n: 4, label: 'Day Trip' }, { n: 6, label: 'Weekend' },
 
 export const T = () => G.state.trail;
 export const cur = () => T().players[T().turn];
-const log = (msg) => { const t = T(); t.log.unshift(msg); if (t.log.length > 30) t.log.length = 30; G.hooks.announce(msg); };
+// extra: a second log line (a character's quip), read out together with msg so the live region does not drop either.
+const log = (msg, extra) => { const t = T(); t.log.unshift(msg); if (extra) t.log.unshift(extra); if (t.log.length > 30) t.log.length = 30; G.hooks.announce(extra ? msg + ' ' + extra : msg); };
+
+// ---------- opponent voices (S4-01) ----------
+const VOICE_GAP = 2; // a hard-question or miss quip is spoken at most once every this many rounds per character, so they do not talk over every turn
+// A named opponent speaks: returns the log line (or null) and puts a speech bubble over the pawn. Never uses the dice, so a seeded game is unchanged.
+function speak(p, event) {
+  const set = p.kind === 'ai' && AI_LINES[p.name]; const lines = set && set[event]; if (!lines) return null;
+  if ((event === 'hard' || event === 'miss') && p.spoke !== undefined && T().round - p.spoke < VOICE_GAP) return null;
+  const k = p.name + ':' + event; const n = G.voiceN[k] | 0; G.voiceN[k] = n + 1;
+  const text = lines[n % lines.length]; p.spoke = T().round;
+  G.say = { pid: p.id, text, event }; G.hooks.say(p, text);
+  return `${p.name}: “${text}”`;
+}
+// When the trip ends every computer traveler has a last word, for the win card.
+function closing(t) {
+  const out = [];
+  for (const p of t.players) {
+    const set = p.kind === 'ai' && AI_LINES[p.name]; if (!set) continue;
+    const event = p.id === t.winner ? 'win' : 'lose'; const k = p.name + ':' + event; const n = G.voiceN[k] | 0; G.voiceN[k] = n + 1;
+    out.push({ id: p.id, name: p.name, event, text: set[event][n % set[event].length] });
+  }
+  return out;
+}
 const eligible = (p) => p.stamps.length >= T().target;
 export const isAI = (p = cur()) => p.kind === 'ai';
 // The Trail record only counts what a human seat does (a computer traveler earns nothing for the player).
@@ -105,7 +132,7 @@ export function newTrail({ players, target = 6 }) {
     }),
     pending: null, log: [], winner: null, lastTurnAt: Date.now(),
   };
-  G.state.question = null; G.lastRecord = null;
+  G.state.question = null; G.lastRecord = null; G.say = null; G.voiceN = {};
   G.state.mode = 'trail';
   log(`A new trip begins. Collect ${target} stamps, then climb to the Mountain Tower.`);
   G.hooks.save();
@@ -290,7 +317,8 @@ export function answer(choice) {
   }
   if (q.correct && out.length === 0) out.push('Well done');
   q.outcome = out;
-  log(`${p.name} ${q.correct ? 'answered correctly' : i === -1 ? 'ran out of time' : 'missed'} (${q.category}). ${out.join(' · ')}`);
+  const ev = p.kind !== 'ai' ? null : out.some((o) => o.startsWith('Stamp earned')) ? 'stamp' : q.purpose === 'summit' ? (q.correct ? null : 'summitMiss') : q.correct ? (q.difficulty === 'hard' ? 'hard' : null) : 'miss';
+  log(`${p.name} ${q.correct ? 'answered correctly' : i === -1 ? 'ran out of time' : 'missed'} (${q.category}). ${out.join(' · ')}`, ev && speak(p, ev));
   t.phase = 'feedback';
   if (!(q.purpose === 'summit' && q.correct)) G.hooks.save({ afterAnswer: true }); // a reload cannot undo this answer
   G.hooks.update(); aiMaybe();
@@ -302,7 +330,7 @@ export function proceed() {
   const t = T(); const p = cur(); const q = G.state.question;
   if (t.phase === 'feedback') {
     if (q && q.purpose === 'summit') {
-      if (q.correct) { t.phase = 'over'; G.state.question = null; G.lastRecord = finishRecord(t); G.hooks.effect('win', p); sfx('win'); G.hooks.save(); G.hooks.scene('win'); G.hooks.update(); return; }
+      if (q.correct) { t.phase = 'over'; G.state.question = null; t.final = closing(t); G.lastRecord = finishRecord(t); G.hooks.effect('win', p); sfx('win'); G.hooks.save(); G.hooks.scene('win'); G.hooks.update(); return; }
       G.state.question = null; t.phase = 'moving'; G.hooks.update();
       G.hooks.moveToken(p, [p.node, TRAILHEAD], () => { p.node = TRAILHEAD; endTurn(); }, 'jump');
       return;

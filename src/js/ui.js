@@ -321,7 +321,8 @@ function modalHTML() {
         summit: () => '<strong>Summit question</strong> · answer correctly to win the game!',
       }[q.purpose] || (() => ''))();
       const card = questionCardHTML(q, { purposeLine: purpose, allowLifeline: !ai, tickets: p.tickets, canAnswer: !ai });
-      return `${coachHTML('modal')}${ai && q.chosen === null ? `<p class="ai-banner">${esc(p.name)} is answering…</p>` : ''}${card}${q.chosen !== null ? `<div class="mfoot">${cont(q.purpose === 'summit' && q.correct ? 'Celebrate' : 'Continue')}</div>` : ''}`;
+      const said = ai && q.chosen !== null && G.say && G.say.pid === p.id ? `<p class="ai-banner ai-quote">${esc(p.name)}: “${esc(G.say.text)}”</p>` : '';
+      return `${coachHTML('modal')}${ai && q.chosen === null ? `<p class="ai-banner">${esc(p.name)} is answering…</p>` : said}${card}${q.chosen !== null ? `<div class="mfoot">${cont(q.purpose === 'summit' && q.correct ? 'Celebrate' : 'Continue')}</div>` : ''}`;
     }
     case 'vent': {
       const to = NODES[pd.to];
@@ -465,8 +466,15 @@ function winHTML() {
     <ol class="podium">${podium}</ol>
     <table class="standings"><thead><tr><th>Traveler</th><th>Stamps</th><th>Tickets</th><th>Right</th></tr></thead><tbody>
     ${order.map((p) => `<tr><td>${tokenIco(p, 18)} ${esc(p.name)}</td><td>${p.stamps.length}</td><td>${p.tickets}</td><td>${p.correct}/${p.answered}</td></tr>`).join('')}</tbody></table>
+    ${castHTML(t)}
     ${winRecordHTML()}
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${btn('restart', 'Play again', { cls: 'primary', auto: true })}</div></div>`;
+}
+
+// The computer travelers' last words, in their own voices, under the podium.
+function castHTML(t) {
+  const f = (t.final || []).filter((x) => x.text); if (!f.length) return '';
+  return `<ul class="cast" aria-label="What the other travelers say">${f.map((x) => `<li class="${x.event}"><strong>${esc(x.name)}</strong> <span>“${esc(x.text)}”</span></li>`).join('')}</ul>`;
 }
 
 // What this trip did for the Trail record: new personal bests, new achievements, and the running totals.

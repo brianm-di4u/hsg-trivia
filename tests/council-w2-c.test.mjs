@@ -415,3 +415,171 @@ tests.push(
     },
   },
 );
+
+// ---------------- S4-01 ----------------
+const NAMES = ['Doc Vapor', 'Miss Promenade', 'The Professor', 'Ticket Taker', 'Trail Boss', 'Lady Tufa'];
+const EVENTS = ['stamp', 'hard', 'miss', 'summitMiss', 'win', 'lose'];
+const logTop = async (t, n = 3) => (await t.state()).trail.log.slice(0, n);
+// Two computer travelers, the game held on the pause card so their own timers stay quiet; the test plays their turns by hand.
+async function cast(t, players, { seed = 7 } = {}) {
+  await t.seed(seed);
+  await t.game('setState', { settings: { passScreen: false, aiSpeed: 'normal', timer: 0, seenCoach: true } });
+  await t.game('newGame', { mode: 'trail', players, target: 6, seed });
+  await t.game('act', 'ui', 'menu');
+  await waitFor(t, (s) => s.ui.menu, 2000, 'paused');
+}
+// The active traveler (a computer one: its own timers are quiet while paused) is put on `from`, rolls a 1 and steps to `to`.
+async function step(t, from, to, extra = {}) {
+  let s = await t.state(); const me = s.trail.turn;
+  await t.game('setState', { trail: { phase: 'roll', rerolled: false, roll: null, dests: [], players: s.trail.players.map((p, i) => (i === me ? { node: from, ...extra } : {})) } });
+  await t.game('act', 'roll', 1);
+  s = await phase(t, 'choose'); t.expect(s.trail.dests.includes(to), 'node ' + to + ' is one step from ' + from);
+  await t.game('act', 'choose', to); await t.game('act', 'finishAnim');
+  return waitFor(t, (x) => x.trail.phase !== 'moving', 4000, 'move end');
+}
+async function toQuestion(t) {
+  const lm = (await t.state()).board.landmarks['Sports'];
+  await step(t, await neighborOf(t, lm), lm);
+  return phase(t, 'question');
+}
+const aiAnswer = async (t, how) => { await toQuestion(t); await t.game('act', 'answer', how); return phase(t, 'feedback'); };
+
+tests.push(
+  {
+    name: 'S4-01 all six names have lines for every event, three or four each, proofread and in their own voices',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.game('setState', { settings: { seenCoach: true, passScreen: false } });
+      await t.game('newGame', { mode: 'trail', players: [{ kind: 'ai', level: 'easy' }, { kind: 'ai', level: 'medium' }, { kind: 'ai', level: 'hard' }, { kind: 'ai', level: 'easy' }, { kind: 'ai', level: 'medium' }, { kind: 'ai', level: 'hard' }], target: 4 });
+      await t.game('act', 'stopAI');
+      const seated = (await t.state()).trail.players.map((p) => p.name);
+      t.equal(JSON.stringify(seated.slice().sort()), JSON.stringify(NAMES.slice().sort()), 'six AI seats take the six names');
+      const lines = await t.game('voices');
+      t.equal(JSON.stringify(Object.keys(lines).sort()), JSON.stringify(NAMES.slice().sort()), 'a set for each name');
+      const seen = new Set();
+      for (const n of NAMES) {
+        t.equal(JSON.stringify(Object.keys(lines[n]).sort()), JSON.stringify(EVENTS.slice().sort()), n + ' has every event');
+        for (const e of EVENTS) {
+          const l = lines[n][e];
+          t.expect(l.length >= 3 && l.length <= 4, `${n} ${e}: ${l.length} lines`);
+          t.expect(new Set(l).size === l.length, `${n} ${e}: no repeated line`);
+          for (const x of l) {
+            t.expect(x.length <= 52 && x.length >= 8, `${n} ${e}: "${x}" is ${x.length} characters`);
+            t.expect(/^[A-Z“]/.test(x) && /[.!?]$/.test(x), `${n} ${e}: "${x}" starts with a capital and ends with a stop`);
+            t.expect(!/\s{2}|\s[.,!?]|[.,!?][A-Za-z]/.test(x) && !/\d/.test(x), `${n} ${e}: "${x}" is clean and carries no figures`);
+            t.expect(!seen.has(x), `"${x}" is only used once`); seen.add(x);
+          }
+        }
+      }
+      const jargon = Object.values(lines).flatMap((o) => Object.values(o).flat()).filter((x) => /\b(teh|recieve|definately|seperate|wich|occured)\b/i.test(x));
+      t.equal(jargon.length, 0, 'no common misspellings');
+    },
+  },
+  {
+    name: 'S4-01 a named opponent speaks after a miss: log line, speech bubble over the pawn and a line on the question card',
+    async run(t) {
+      await cast(t, [{ kind: 'ai', level: 'medium' }, H1]);
+      const who = (await t.state()).trail.players[0].name; t.equal(who, 'Miss Promenade', 'the Medium AI is Miss Promenade');
+      await toQuestion(t);
+      await t.game('act', 'ui', 'close-modal');
+      await t.game('act', 'answer', 'wrong');
+      const s = await phase(t, 'feedback');
+      const top = s.trail.log[0];
+      t.expect(/^Miss Promenade: “.+”$/.test(top), 'the log line is her quip: ' + top);
+      const lines = await t.game('voices');
+      t.expect(lines['Miss Promenade'].miss.some((l) => top === `Miss Promenade: “${l}”`), 'a line from her miss set');
+      t.equal(s.say.event, 'miss', 'the say record names the event'); t.equal(s.ui.bubble, s.say.text, 'the bubble over the pawn holds the same words');
+      const modal = await text(t, '#modal');
+      t.expect(modal.includes(`Miss Promenade: “${s.say.text}”`), 'the question card shows it too');
+      const live = await text(t, '#live');
+      t.expect(live.includes('Miss Promenade missed') && live.includes('“'), 'one announcement carries the result and the quip: ' + live);
+      await t.shot('S4-01-quip-card', { wait: false });
+      await t.game('act', 'continue');
+      await t.game('act', 'stopAI');
+      await t.page.waitForTimeout(250);
+      await t.shot('S4-01-bubble', { wait: false });
+      await t.page.waitForTimeout(4000);
+      t.equal((await t.state()).ui.bubble, null, 'the bubble is gone after a few seconds');
+    },
+  },
+  {
+    name: 'S4-01 a stamp always gets a line; a miss only every other round, so they do not talk over every turn',
+    viewports: ['desktop'],
+    async run(t) {
+      await cast(t, [{ kind: 'ai', level: 'medium' }, { kind: 'ai', level: 'hard' }]);
+      const heard = [];
+      const quip = async () => { const l = (await logTop(t, 1))[0]; return /^(Miss Promenade|The Professor): “/.test(l) ? l : null; };
+      let s = await aiAnswer(t, 'wrong'); heard.push(await quip());          // round 1, Miss Promenade
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await aiAnswer(t, 'wrong'); heard.push(await quip());                  // round 1, The Professor
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await aiAnswer(t, 'wrong'); heard.push(await quip());                  // round 2, Miss Promenade: too soon
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await aiAnswer(t, 'wrong'); heard.push(await quip());                  // round 2, The Professor: too soon
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await aiAnswer(t, 'wrong'); heard.push(await quip());                  // round 3, Miss Promenade: two rounds on
+      t.expect(heard[0] !== null && heard[1] !== null, 'each speaks on a first miss: ' + JSON.stringify(heard.slice(0, 2)));
+      t.expect(heard[2] === null && heard[3] === null, 'and not on the very next round');
+      t.expect(heard[4] !== null, 'but again two rounds on');
+      t.expect(heard[0].split(': ')[1] !== heard[4].split(': ')[1], 'and with a different line, not the same one again');
+      // a stamp is always said
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      s = await aiAnswer(t, 'correct'); const l = (await logTop(t, 1))[0];
+      t.expect(/: “.+”$/.test(l) && s.say.event === 'stamp', 'a stamp is always spoken: ' + l);
+    },
+  },
+  {
+    name: 'S4-01 falling at the Tower, winning it and losing it all have lines; the win card names the cast',
+    async run(t) {
+      await cast(t, [{ kind: 'ai', level: 'hard' }, H1]);
+      const s0 = await t.state(); const tower = s0.board.tower;
+      await step(t, tower - 1, tower, { stamps: ALL.slice(0, 6) });
+      await t.game('act', 'continue'); await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      let s = await phase(t, 'feedback');
+      t.equal(s.say && s.say.event, 'summitMiss', 'a miss at the Tower is its own event'); t.expect(/^The Professor: “.+”$/.test(s.trail.log[0]), 'quip logged: ' + s.trail.log[0]);
+      t.equal(s.ui.bubble, s.say.text, 'and shown over the pawn');
+      await t.game('act', 'continue');
+      await waitFor(t, (x) => x.trail.turn === 1, 4000, 'next turn');
+      // now The Professor wins
+      await t.game('act', 'stopAI');
+      await t.game('setState', { trail: { turn: 0 } });
+      await step(t, tower - 1, tower, { stamps: ALL.slice(0, 6) });
+      await t.game('act', 'continue'); await phase(t, 'question');
+      await t.game('act', 'answer', 'correct'); await phase(t, 'feedback');
+      await t.game('act', 'continue');
+      s = await waitFor(t, (x) => x.scene === 'win', 3000, 'win scene');
+      t.equal(s.trail.winner, 0, 'The Professor wins');
+      t.expect(Array.isArray(s.trail.final) && s.trail.final.length === 1 && s.trail.final[0].event === 'win' && s.trail.final[0].name === 'The Professor', 'the closing words are the winner\'s: ' + JSON.stringify(s.trail.final));
+      const win = await text(t, '#scene-win .cast');
+      t.expect(win.includes('The Professor') && win.includes(`“${s.trail.final[0].text}”`), 'the win card names him and quotes him: ' + win);
+      await t.shot('S4-01-win-cast');
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
+  {
+    name: 'S4-01 when a human wins, each computer traveler has a losing word on the win card',
+    async run(t) {
+      const s = await winTrip(t, { players: [H1, { kind: 'ai', level: 'easy' }, { kind: 'ai', level: 'medium' }] });
+      const f = s.trail.final; t.equal(f.length, 2, 'two computer travelers');
+      t.expect(f.every((x) => x.event === 'lose'), 'both lose');
+      const lines = await t.game('voices');
+      for (const x of f) t.expect(lines[x.name].lose.includes(x.text), `${x.name}'s line is from their set`);
+      const card = await text(t, '#scene-win .cast');
+      t.expect(card.includes('Doc Vapor') && card.includes('Miss Promenade'), 'the card lists both: ' + card.replace(/\s+/g, ' '));
+      await t.shot('S4-01-win-cast-lose');
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
+  {
+    name: 'S4-01 humans and AI seats with a name the player typed stay quiet',
+    viewports: ['desktop'],
+    async run(t) {
+      await cast(t, [{ kind: 'ai', level: 'medium', name: 'Zed' }, H1]);
+      await aiAnswer(t, 'wrong');
+      t.expect(!/: “/.test((await logTop(t, 1))[0]), 'a custom-named AI has no lines: ' + (await logTop(t, 1))[0]);
+      t.equal((await t.state()).ui.bubble, null, 'and no bubble');
+      await t.game('act', 'continue');
+    },
+  },
+);

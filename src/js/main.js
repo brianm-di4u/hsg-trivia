@@ -119,6 +119,7 @@ G.hooks.update = () => UI.update();
 G.hooks.announce = (m) => UI.announce(m);
 G.hooks.save = saveTrail;
 G.hooks.finish = () => R.finishAnims();
+G.hooks.say = (p, text) => R.say(p, text);
 G.hooks.saveQuiz = saveQuiz;
 // The Trail record: a human's play (see record.js for the intents). Achievements earned show a toast; the result goes back to the rules engine.
 G.hooks.record = (intent) => {
@@ -457,12 +458,13 @@ function publicState() {
     trail: t ? { target: t.target, round: t.round, turn: t.turn, phase: t.phase, roll: t.roll, rerolled: t.rerolled, sel: t.sel,
       dests: t.dests.map((d) => d.node), destPaths: t.dests.map((d) => d.path),
       players: t.players.map(({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color }) => ({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color })),
-      pending: t.pending, winner: t.winner, log: t.log.slice(0, 6) } : null,
+      pending: t.pending, winner: t.winner, final: t.final || null, log: t.log.slice(0, 6) } : null,
     question: st.question, quiz: st.quiz,
     board: { nodes: NODES.length, start: START, tower: TOWER, trailhead: TRAILHEAD, spurEntry: SPUR_ENTRY, trolleys: TROLLEYS, landmarks: LANDMARK, vents: VENT_PAIRS,
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
-    ui: { modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    say: G.say,
+    ui: { bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));
@@ -473,6 +475,7 @@ window.__game = {
   getState: publicState,
   audioList,
   coachTexts: (input) => UI.coachTexts(input),
+  voices: () => Game.AI_LINES,
   audioRender,
   audioState: audioInfo,
   setState(s) {

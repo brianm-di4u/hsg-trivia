@@ -277,7 +277,7 @@ export function panBy(dx, dy) {
 
 // ---------- tokens and animation ----------
 export function tokenPos(p) { if (!view.tok[p.id]) { const n = NODES[p.node]; view.tok[p.id] = { x: n.x, y: n.y, lift: 0, sq: 0 }; } return view.tok[p.id]; }
-export function resetTokens() { view.tok = {}; view.anims = []; view.particles = []; }
+export function resetTokens() { view.tok = {}; view.anims = []; view.particles = []; view.bubble = null; }
 
 export function animate(dur, update, done) {
   if (view.reduced || dur <= 0) { update(1); done && done(); return; }
@@ -359,7 +359,7 @@ export function frame(dt, st) {
   // With only ambient motion (steam, backdrop drift, the active token's bob) a 30 fps redraw is enough;
   // tweens, particles, camera moves and destination pulses draw every frame.
   const t = st && st.trail; const pulsing = t && st.mode === 'trail' && !view.backdrop && ['choose', 'warp'].includes(t.phase);
-  const busy = view.anims.length || view.particles.length || !camSettled() || pulsing || view.dirty;
+  const busy = view.anims.length || view.particles.length || !camSettled() || pulsing || view.dirty || view.bubble;
   view.odd = !view.odd;
   if (busy || view.odd) { view.dirty = false; draw(st, dt + (busy ? 0 : view.lastSkip || 0)); view.lastSkip = 0; } else view.lastSkip = dt;
 }
@@ -398,6 +398,36 @@ function draw(st, dt) {
     drawTokens(ctx, trail, T);
   }
   drawParticles(ctx, dt);
+  if (view.bubble && trail) drawBubble(ctx, dpr, trail, T);
+}
+
+// A speech bubble over a pawn (S4-01): one at a time, a few seconds, then gone. It is words, so reduced motion keeps it but skips the fade.
+const BUBBLE_S = 3.6;
+export function say(p, text) { view.bubble = { id: p.id, text, at: view.time }; view.dirty = true; }
+function drawBubble(ctx, dpr, trail, T) {
+  const b = view.bubble; const age = view.time - b.at;
+  const p = trail.players.find((x) => x.id === b.id);
+  if (age > BUBBLE_S || !p) { view.bubble = null; return; }
+  const tp = tokenPos(p); const [sx, sy] = worldToScreen(tp.x, tp.y - (tp.lift || 0));
+  const s = baseScale() * view.cam.z;
+  ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.textAlign = 'left';
+  ctx.font = '600 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  const maxW = Math.min(210, view.w - 28); const words = b.text.split(' '); const lines = []; let cur = '';
+  for (const w of words) { const next = cur ? cur + ' ' + w : w; if (cur && ctx.measureText(next).width > maxW - 16) { lines.push(cur); cur = w; } else cur = next; }
+  lines.push(cur);
+  const lw = Math.max(...lines.map((l) => ctx.measureText(l).width)); const w = Math.ceil(lw) + 16, h = lines.length * 16 + 12;
+  const lift = Math.max(30, TOK.r * s * 2.6);
+  const x = Math.max(8, Math.min(view.w - 8 - w, sx - w / 2)); const y = Math.max(8, sy - lift - h);
+  ctx.globalAlpha = view.reduced ? 1 : Math.max(0, Math.min(1, age / 0.15, (BUBBLE_S - age) / 0.4));
+  const dark = view.theme === 'dark';
+  ctx.fillStyle = dark ? '#2a2433' : '#FBF6EA'; ctx.strokeStyle = p.color === '#F4F1EA' ? '#8C877C' : p.color; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, 9); ctx.fill(); ctx.stroke();
+  const tx = Math.max(x + 12, Math.min(x + w - 12, sx));
+  ctx.beginPath(); ctx.moveTo(tx - 6, y + h - 1); ctx.lineTo(tx, y + h + 7); ctx.lineTo(tx + 6, y + h - 1); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(tx - 6, y + h); ctx.lineTo(tx, y + h + 7); ctx.lineTo(tx + 6, y + h); ctx.stroke();
+  ctx.fillStyle = dark ? '#E8DFCC' : '#1F2F5C'; ctx.textBaseline = 'top';
+  lines.forEach((l, i) => ctx.fillText(l, x + 8, y + 7 + i * 16));
+  ctx.restore();
 }
 
 let TABLE = null;
