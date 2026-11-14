@@ -13,10 +13,11 @@ import { ART } from './assets.js';
 import { createSaveStore, validTrail, validOpenQuestion } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
-const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal' }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
+const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal', seenCoach: true }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
 // What a setting is when the save does not name it: a new profile gets the Brisk AI speed, an older save keeps Normal. An unknown speed falls back to Brisk.
-const baseSettings = () => ({ ...DEFAULT_SETTINGS, aiSpeed: G.save.fresh ? Game.DEFAULT_AI_SPEED : DEFAULT_SETTINGS.aiSpeed });
-const validSpeed = (s) => ({ ...s, aiSpeed: Game.AI_PACE[s.aiSpeed] ? s.aiSpeed : Game.DEFAULT_AI_SPEED });
+// seenCoach: only a brand-new profile is a newcomer who gets the first-run tips; a save that has no such key is an older player's.
+const baseSettings = () => ({ ...DEFAULT_SETTINGS, aiSpeed: G.save.fresh ? Game.DEFAULT_AI_SPEED : DEFAULT_SETTINGS.aiSpeed, seenCoach: !G.save.fresh });
+const validSpeed = (s) => ({ ...s, aiSpeed: Game.AI_PACE[s.aiSpeed] ? s.aiSpeed : Game.DEFAULT_AI_SPEED, seenCoach: typeof s.seenCoach === 'boolean' ? s.seenCoach : true });
 
 // ---------- save ----------
 G.save = createSaveStore({ onConflict() {
@@ -60,8 +61,11 @@ function retryUnsavedTrail() {
   if (turnSnap && turnSnap.trail && (G.save.pending.trail || G.save.pending.reservation)) noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
 }
 function saveQuiz(q) {
-  return noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
-    right: q.results.filter((r) => r.correct).length, marks: q.results.map((r) => r.correct ? '1' : '0').join('') })));
+  const right = q.results.filter((r) => r.correct).length;
+  const result = noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
+    right, marks: q.results.map((r) => r.correct ? '1' : '0').join('') })));
+  if (result.ok) G.hooks.record({ kind: 'quiz', mode: q.kind, right, total: q.results.length, dailyStreak: (G.save.data.daily && G.save.data.daily.streak) || 0 });
+  return result;
 }
 
 // ---------- settings ----------
@@ -116,6 +120,14 @@ G.hooks.announce = (m) => UI.announce(m);
 G.hooks.save = saveTrail;
 G.hooks.finish = () => R.finishAnims();
 G.hooks.saveQuiz = saveQuiz;
+// The Trail record: a human's play (see record.js for the intents). Achievements earned show a toast; the result goes back to the rules engine.
+G.hooks.record = (intent) => {
+  const r = noted(applyCommittedSettings(G.save.commitProgress({ ...intent, today: G.today() })));
+  if (!r.ok) return null;
+  UI.toastAchievements(r.earned);
+  if (G.state.scene === 'record' || G.state.scene === 'title') UI.update();
+  return r;
+};
 G.hooks.scene = (n) => scene(n);
 // Each hop of a walk steps up the pentatonic scale and sounds from where the token is on screen.
 G.hooks.moveToken = (p, path, done, mode = 'walk') => {
@@ -221,6 +233,13 @@ const ACTIONS = {
   'close-modal': () => { ui.modal = null; ui.menuOpen = false; UI.update(); },
   menu: () => { ui.menuOpen = true; UI.update(); },
   zoom: () => { R.setCameraMode(R.view.mode === 'follow' ? 'fit' : 'follow'); UI.update(); },
+  wear: (a) => {
+    const [kind, id] = a.split(':'); const r = G.save.commitProgress({ kind: 'profile', title: kind === 'title' ? id || null : G.save.data.profile.title, cover: kind === 'cover' ? id || null : G.save.data.profile.cover });
+    noted(r); sfx('click'); UI.update();
+  },
+  'coach-next': () => UI.coachAction('next'),
+  'coach-skip': () => { changeSettings({ seenCoach: true }); UI.coachAction('skip'); UI.announce('Tips off. Turn them back on in Settings.'); },
+  'coach-replay': () => { changeSettings({ seenCoach: false }); UI.coachAction('replay'); sfx('click'); UI.update(); },
   quick: () => startQuiz('quick'),
   'era-start': (a) => startQuiz('era', { era: a || 'gilded-spa' }),
   daily: () => startQuiz('daily', { date: G.today() }),
@@ -238,6 +257,7 @@ function act(name, arg) { const f = ACTIONS[name]; if (f) f(arg); }
 
 // ---------- input ----------
 function wireInput() {
+  document.addEventListener('pointerdown', (e) => { ui.input = e.pointerType === 'touch' ? 'touch' : 'mouse'; }, true);
   document.addEventListener('click', (e) => {
     unlockAudio();
     const b = e.target.closest('[data-act]');
@@ -291,6 +311,7 @@ function wireInput() {
 function onKey(e) {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   unlockAudio();
+  if (/^(Arrow|Enter$|[a-zA-Z0-9 ]$)/.test(e.key)) ui.input = 'keys';
   const k = e.key; const ae = document.activeElement;
   const typing = ae && (ae.tagName === 'INPUT' || ae.tagName === 'SELECT' || ae.tagName === 'TEXTAREA');
   if (typing && k !== 'Escape') return;
@@ -411,7 +432,7 @@ function frameStep(ts) {
   // Animation steps are capped at 50 ms so a stall never teleports tokens; the answer timer runs on wall-clock
   // time (capped at 0.5 s for a backgrounded tab), so a 10 s timer is 10 s even on a slow device.
   const raw = lastT ? (ts - lastT) / 1000 : 0.016; const dt = Math.min(0.05, raw); const tdt = Math.min(0.5, raw); lastT = ts; fpsFrames++;
-  syncPause(); syncSoundscape();
+  syncPause(); syncSoundscape(); UI.coachTick();
   const st = G.state;
   // question timer (humans only in the Trail Game)
   const q = st.question;
@@ -440,6 +461,7 @@ function publicState() {
     question: st.question, quiz: st.quiz,
     board: { nodes: NODES.length, start: START, tower: TOWER, trailhead: TRAILHEAD, spurEntry: SPUR_ENTRY, trolleys: TROLLEYS, landmarks: LANDMARK, vents: VENT_PAIRS,
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
+    coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     ui: { modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
@@ -513,6 +535,7 @@ function boot() {
   noted(G.save.load());
   G.state = newState();
   G.rng = makeRng((Date.now() ^ 0x5eed) >>> 0);
+  ui.finishCoach = () => changeSettings({ seenCoach: true });
   R.initView(document.querySelector('#board'));
   G.view = R.view;
   applySettings();

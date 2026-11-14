@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { createSaveStore } from '../src/js/save.js';
 import { deepMerge } from '../src/js/util.js';
+import { freshRecord } from '../src/js/record.js';
 const copy = (v) => JSON.parse(JSON.stringify(v));
 const original = () => ({ v: 1, settings: { sound: true, volume: 0.7 }, best: { quick: 40, era: { old: 30 } }, daily: { last: null, streak: 0, results: {} }, trail: { turn: 0, marker: 'saved-old' }, asked: ['old'], rng: 0, extension: { preserved: true } });
 function fixture(value = original()) {
@@ -29,7 +30,7 @@ export const tests = [
   }),
   row('New reservation changes only generation and preserves the old trip before first completed turn', () => {
     const f = fixture(), a = f.tab(), before = f.read(); assert.equal(a.reserveTrail().ok, true);
-    const after = f.read(); assert.equal(typeof after.trailGeneration, 'string'); delete after.trailGeneration; assert.deepEqual(after, before);
+    const after = f.read(); assert.equal(typeof after.trailGeneration, 'string'); delete after.trailGeneration; assert.deepEqual(after, { ...before, ...freshRecord() }); // a save from before the Trail record gains its empty record on the first write, and nothing else changes
   }),
   row('distinct New intents invalidate old null-to-null branches', () => {
     const f = fixture(null), a = f.tab(), b = f.tab(); a.reserveTrail(); const first = f.read().trailGeneration; b.reserveTrail();

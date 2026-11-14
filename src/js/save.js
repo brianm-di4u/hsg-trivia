@@ -1,10 +1,11 @@
 // Intent-scoped v1 persistence. A preference never writes a cached progress snapshot.
 import { NODES } from './board.js';
+import { freshRecord, cleanRecord, applyIntent } from './record.js';
 const KEY = 'hs-trivia-v1';
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const own = (v, k) => Object.prototype.hasOwnProperty.call(v, k);
-const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null });
+const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, ...freshRecord() });
 const ordered = (v) => Array.isArray(v) ? v.map(ordered) : object(v) ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, ordered(v[k])])) : v;
 const signature = (v) => JSON.stringify(ordered(v));
 const group = (data) => Object.fromEntries(['trail', 'asked', 'rng', 'trailGeneration'].filter((k) => own(data, k)).map((k) => [k, clone(data[k])]));
@@ -21,16 +22,16 @@ export const validTrail = (t) => object(t) && int(t.target, 1, 8) && int(t.round
 export const validOpenQuestion = (q) => object(q) && typeof q.id === 'string' && typeof q.category === 'string' && typeof q.text === 'string' && ['easy', 'medium', 'hard'].includes(q.difficulty)
   && Array.isArray(q.choices) && q.choices.length === 4 && q.choices.every((c) => typeof c === 'string') && int(q.correctIndex, 0, 3)
   && Array.isArray(q.removed) && q.chosen === null && num(q.timeLeft) && num(q.timeMax);
-const SETTINGS = new Set(['sound', 'effects', 'music', 'ambience', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed']);
+const SETTINGS = new Set(['sound', 'effects', 'music', 'ambience', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed', 'seenCoach']);
 // A brand-new profile gets the Brisk AI speed written with its first save. A save from before this setting existed has no aiSpeed: that player played at Normal and keeps it.
-export const FRESH_PROFILE_SETTINGS = { aiSpeed: 'brisk' };
+export const FRESH_PROFILE_SETTINGS = { aiSpeed: 'brisk', seenCoach: false }; // seenCoach false: a brand-new player gets the first-run tips; a save without the key is not a newcomer
 let fallbackGeneration = 0;
 const generation = () => globalThis.crypto?.randomUUID?.() || ('trip-' + Date.now().toString(36) + '-' + (++fallbackGeneration) + '-' + Math.random().toString(36).slice(2));
 const previousDay = (day) => { const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 1); return d.toISOString().slice(0, 10); };
 
 export function createSaveStore({ storage = () => window.localStorage, newGeneration = generation, onConflict = () => {} } = {}) {
   let trailBase = null, conflictNotified = false;
-  const store = { data: defaults(), ok: true, fresh: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [] } };
+  const store = { data: defaults(), ok: true, fresh: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [], progress: [] } };
   const read = () => {
     const raw = storage().getItem(KEY);
     if (raw === null) return defaults(); // External clear never falls back to an old cached object.
@@ -46,6 +47,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     out.settings = { ...out.settings };
     out.best = { ...out.best, era: { ...(out.best.era || {}) } };
     out.daily = { ...out.daily, results: { ...(out.daily.results || {}) } };
+    Object.assign(out, cleanRecord(data)); // stats, ach, profile: defaults for a save that predates them, repair for a damaged one
     return out;
   };
   const unavailable = () => { store.ok = false; return { ok: false, reason: 'storage-unavailable' }; };
@@ -65,7 +67,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     const current = readOrNull();
     if (!current) return unavailable();
     store.data = clone(current); trailBase = group(current); conflictNotified = false;
-    store.pending = { reservation: null, trail: null, settings: {}, quiz: [] };
+    store.pending = { reservation: null, trail: null, settings: {}, quiz: [], progress: [] };
     // A trip the game could not play is not offered. Its raw text is kept under the .bad key and the live key is replaced by the next trip's first save.
     store.trailDiscarded = !!current.trail && !validTrail(current.trail);
     if (store.trailDiscarded) { try { storage().setItem(KEY + '.bad', storage().getItem(KEY)); } catch { /* quarantine is best effort */ } }
@@ -146,6 +148,17 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     if (!write(next)) return unavailable();
     store.pending.quiz = [];
     return { ok: true };
+  };
+  // The Trail record (S3-01): lifetime counters, achievements, worn title and cover. Each call hands in one intent (see record.js);
+  // an intent whose write fails waits and is applied with the next one. Returns what was newly earned, for the toast and the win card.
+  store.commitProgress = (intent) => {
+    store.pending.progress.push(clone(intent));
+    const current = readOrNull(); if (!current) return unavailable();
+    const next = clone(current); const earned = [], best = [];
+    for (const it of store.pending.progress) { const r = applyIntent(next, it); earned.push(...r.earned); best.push(...r.best); }
+    if (!write(next)) return unavailable();
+    store.pending.progress = [];
+    return { ok: true, earned, best };
   };
   return store;
 }

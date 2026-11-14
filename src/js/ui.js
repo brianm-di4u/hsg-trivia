@@ -9,10 +9,11 @@ import { G, ECON } from './game.js';
 import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
 import * as Assets from './assets.js';
+import { ACHIEVEMENTS, ACH, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, TARGET_NAMES, coverOf, coverUnlocked, titleName } from './record.js';
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
+export const ui = { input: (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) ? 'touch' : 'mouse', coachStep: 0, coachAt: 0, coachSaid: '', finishCoach() {}, modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
@@ -82,7 +83,7 @@ function write(el, html, key) {
 export function announce(msg) { const l = $('#live'); if (l) { l.textContent = ''; setTimeout(() => { l.textContent = msg; }, 30); } }
 
 // ---------- scenes ----------
-const SCENES = ['title', 'setup', 'game', 'quiz', 'era', 'results', 'help', 'settings', 'win'];
+const SCENES = ['title', 'setup', 'game', 'quiz', 'era', 'results', 'help', 'settings', 'win', 'record'];
 export function showScene(name) {
   G.state.scene = name;
   document.body.className = document.body.className.replace(/\bscene-\S+/g, '').trim() + ' scene-' + name;
@@ -101,6 +102,7 @@ export function update() {
   if (sc === 'settings') write($('#scene-settings'), settingsHTML(), 'settings');
   if (sc === 'results') write($('#scene-results'), resultsHTML(), 'results');
   if (sc === 'win') write($('#scene-win'), winHTML(), 'win');
+  if (sc === 'record') write($('#scene-record'), recordHTML(), 'record');
   if (sc === 'quiz') write($('#scene-quiz'), quizHTML(), 'quiz');
   if (sc === 'game') write($('#panel'), panelHTML(), 'panel');
   const m = ui.crash ? crashHTML() : ui.saveConflict ? saveConflictHTML() : ui.confirm ? confirmHTML() : sc === 'game' ? modalHTML() : '';
@@ -148,8 +150,8 @@ function titleHTML() {
       ${btn('goto', 'Era Express <small>pick a period of history</small>', { arg: 'era' })}
       ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts` : `7 questions for ${G.today()}`}</small>`)}
     </div>
-    <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}</div>
-    <p class="foot">${BANK.length} sourced questions · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${(sv.daily && sv.daily.streak) || 0}</p>
+    <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('goto', 'Trail Record', { arg: 'record' })}</div>
+    <p class="foot">${BANK.length} sourced questions · Trail wins: ${sv.stats.wins} · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${(sv.daily && sv.daily.streak) || 0}</p>
     ${saveWarn()}${savedTripNote()}
   </div>`;
 }
@@ -174,6 +176,7 @@ function setupHTML() {
     <h3>Travelers <small>(${su.seats.length} of 6)</small></h3>
     <ol class="seats">${rows}</ol>
     ${su.seats.length < 6 ? btn('seat-add', '+ Add a traveler', { cls: 'ghost' }) : ''}
+    <p class="goal-line"><strong>Goal:</strong> win district stamps at the gold-ring landmarks (the dots under each traveler’s name fill in), then climb to the Mountain Tower and answer the Summit question.</p>
     <h3>Stamps to collect</h3>
     <div class="seg" role="radiogroup" aria-label="Stamps to collect">${Game.TARGETS.map((x) => `<button class="seg-b${su.target === x.n ? ' on' : ''}" role="radio" aria-checked="${su.target === x.n}" data-act="target" data-arg="${x.n}" data-key="target${x.n}">${x.label}<small>${x.n} stamps</small></button>`).join('')}</div>
     <p class="hint">Answer timer: <strong>${G.state.settings.timer ? G.state.settings.timer + ' s' : 'Off'}</strong> · change it in Settings. Hot-seat: pass the device when the screen says so.</p>
@@ -246,6 +249,7 @@ function panelHTML() {
   const hname = hd ? hd.name : here.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown';
   const herecard = hsrc ? `<figure class="here"><img src="${hsrc}" alt="" aria-hidden="true"><figcaption><strong>${esc(here.name)}</strong><span>${esc(hname)}${hd ? ' · ' + esc(hd.blurb) : ''}</span></figcaption></figure>` : '';
   return `<div class="turn" style="--pc:${p.color}">${tokenIco(p, 44)}<div><div class="tname">${esc(p.name)}’s turn</div><div class="tsub">Round ${t.round} · ${p.stamps.length}/${t.target} stamps · ${plural(p.tickets, 'ticket')}${el ? ' · <strong class="ok">Trail open!</strong>' : ''}</div></div></div>
+    <p class="objective">${esc(objective(t))}</p>${coachHTML('panel')}
     <div class="action">${action}${ai && t.phase !== 'over' ? '<p class="hint skip-hint">Tap or press a key to skip ahead.</p>' : ''}</div>
     ${herecard}
     <ol class="players" aria-label="Travelers">${players}</ol>
@@ -317,7 +321,7 @@ function modalHTML() {
         summit: () => '<strong>Summit question</strong> · answer correctly to win the game!',
       }[q.purpose] || (() => ''))();
       const card = questionCardHTML(q, { purposeLine: purpose, allowLifeline: !ai, tickets: p.tickets, canAnswer: !ai });
-      return `${ai && q.chosen === null ? `<p class="ai-banner">${esc(p.name)} is answering…</p>` : ''}${card}${q.chosen !== null ? `<div class="mfoot">${cont(q.purpose === 'summit' && q.correct ? 'Celebrate' : 'Continue')}</div>` : ''}`;
+      return `${coachHTML('modal')}${ai && q.chosen === null ? `<p class="ai-banner">${esc(p.name)} is answering…</p>` : ''}${card}${q.chosen !== null ? `<div class="mfoot">${cont(q.purpose === 'summit' && q.correct ? 'Celebrate' : 'Continue')}</div>` : ''}`;
     }
     case 'vent': {
       const to = NODES[pd.to];
@@ -368,10 +372,11 @@ function modalHTML() {
 
 function passportHTML() {
   const t = Game.T(); const p = Game.cur();
+  const rec = G.save.data; const cv = p.kind === 'human' ? coverOf(rec) : COVERS[0]; const worn = p.kind === 'human' ? titleName(rec.profile.title) : null;
   const stamps = DISTRICTS.map((d) => { const have = p.stamps.includes(d.cat); const cs = p.catStats[d.cat] || [0, 0];
     return `<li class="stamp${have ? ' have' : ''}">${stampImg(d, have)}
       <div><strong>${esc(d.name)}</strong><small>${esc(d.cat)} · ${have ? 'stamped' : 'not yet'}</small><small>${esc(d.blurb)}</small><small>${cs[1] ? `${cs[0]}/${cs[1]} right` : 'no questions yet'}</small></div></li>`; }).join('');
-  return `<div class="mcard passport"><div class="pp-cover"><span class="pp-seal" aria-hidden="true">♨</span><h2 id="mtitle">${esc(p.name)}’s passport</h2><span class="pp-sub">Valley of Vapors · Hot Springs</span></div>
+  return `<div class="mcard passport"><div class="pp-cover" style="--cv-from:${cv.from};--cv-to:${cv.to};--cv-ink:${cv.ink}"><span class="pp-seal" aria-hidden="true">♨</span><h2 id="mtitle">${esc(p.name)}’s passport</h2><span class="pp-sub">${worn ? esc(worn) + ' · ' : ''}Valley of Vapors · Hot Springs</span></div>
     <p>${p.stamps.length} of ${t.target} stamps needed · ${plural(p.tickets, 'ticket')} · ${p.answered ? Math.round((100 * p.correct) / p.answered) : 0}% right</p>
     <ul class="stamps">${stamps}</ul>
     <p class="hint">Stamps come from answering correctly on a district’s gold-ringed landmark. ${Game.eligible(p) ? 'Your trail to the Mountain Tower is open — head to the Grand Promenade trailhead behind Bathhouse Row.' : ''}</p>
@@ -412,7 +417,7 @@ function confirmHTML() {
 }
 
 function menuHTML() {
-  return `<div class="mcard center"><h2 id="mtitle">Paused</h2><div class="menu">${btn('close-modal', 'Resume', { cls: 'primary', auto: true })}${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('restart', 'Restart this trip')}${btn('goto', 'Save &amp; quit to title', { arg: 'title' })}</div></div>`;
+  return `<div class="mcard center"><h2 id="mtitle">Paused</h2>${Game.T() ? `<p class="goal-line">${esc(objective(Game.T()))}</p>` : ''}<div class="menu">${btn('close-modal', 'Resume', { cls: 'primary', auto: true })}${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('restart', 'Restart this trip')}${btn('goto', 'Save &amp; quit to title', { arg: 'title' })}</div></div>`;
 }
 
 // ---------- quiz scene ----------
@@ -460,7 +465,121 @@ function winHTML() {
     <ol class="podium">${podium}</ol>
     <table class="standings"><thead><tr><th>Traveler</th><th>Stamps</th><th>Tickets</th><th>Right</th></tr></thead><tbody>
     ${order.map((p) => `<tr><td>${tokenIco(p, 18)} ${esc(p.name)}</td><td>${p.stamps.length}</td><td>${p.tickets}</td><td>${p.correct}/${p.answered}</td></tr>`).join('')}</tbody></table>
+    ${winRecordHTML()}
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${btn('restart', 'Play again', { cls: 'primary', auto: true })}</div></div>`;
+}
+
+// What this trip did for the Trail record: new personal bests, new achievements, and the running totals.
+function winRecordHTML() {
+  const lr = G.lastRecord; const st = G.save.data.stats;
+  if (!lr) return '';
+  const lines = [];
+  for (const b of lr.best || []) {
+    if (b.kind === 'fastest') lines.push(b.prev ? `New personal best: fastest ${TARGET_NAMES[b.target]} win, ${plural(b.rounds, 'round')} (was ${b.prev}).` : `First ${TARGET_NAMES[b.target]} win on record: ${plural(b.rounds, 'round')}.`);
+    if (b.kind === 'star') lines.push(`New Summit star: ${TARGET_NAMES[b.target]} against ${LEVEL_NAMES[b.level]} travelers.`);
+  }
+  for (const id of lr.earned || []) lines.push(`Achievement: ${ACH[id].name}. ${ACH[id].text}`);
+  return `<div class="win-record"><h3>Trail record</h3>${lines.length ? `<ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>` : ''}
+    <p>${plural(st.games, 'game')} played · ${plural(st.wins, 'win')}${st.games ? ` · ${Math.round((100 * st.wins) / st.games)}% win rate` : ''}</p>${btn('goto', 'Open the Trail record', { arg: 'record', cls: 'ghost small' })}</div>`;
+}
+
+// ---------- Trail record screen ----------
+const pct = (a, b) => (b ? Math.round((100 * a) / b) + '%' : '—');
+function recordHTML() {
+  const d = G.save.data; const st = d.stats; const dr = d.daily || {};
+  const earned = ACHIEVEMENTS.filter((a) => d.ach[a.id]);
+  const tiles = [['Games', st.games], ['Wins', st.wins], ['Win rate', pct(st.wins, st.games)], ['Longest streak', st.bestStreak], ['Stamps earned', st.stamps], ['Summits reached', st.summits]]
+    .map(([k, v]) => `<li><strong>${v}</strong><span>${k}</span></li>`).join('');
+  const levels = LEVELS.map((l) => `<tr><th scope="row">${LEVEL_NAMES[l]}</th><td>${st.byLevel[l][0]}</td><td>${st.byLevel[l][1] - st.byLevel[l][0]}</td><td>${pct(st.byLevel[l][0], st.byLevel[l][1])}</td></tr>`).join('');
+  const fastest = TARGET_SIZES.map((n) => `<li><span>${TARGET_NAMES[n]} <small>${n} stamps</small></span><strong>${st.fastest[n] ? plural(st.fastest[n], 'round') : '—'}</strong></li>`).join('');
+  const star = (n, l) => (st.stars[n + ':' + l] ? `<span class="star on" role="img" aria-label="${TARGET_NAMES[n]} against ${LEVEL_NAMES[l]}: earned">★</span>` : `<span class="star" role="img" aria-label="${TARGET_NAMES[n]} against ${LEVEL_NAMES[l]}: not yet">☆</span>`);
+  const stars = TARGET_SIZES.map((n) => `<tr><th scope="row">${TARGET_NAMES[n]}</th>${LEVELS.map((l) => `<td>${star(n, l)}</td>`).join('')}</tr>`).join('');
+  const cats = CATS.map((c) => { const a = st.cat[c.id] || [0, 0]; return `<li><span class="cat-n">${ico(c.icon, c.color, c.ink, 22)} ${esc(c.id)}</span><span class="cat-bar" aria-hidden="true"><i style="width:${a[1] ? Math.round((100 * a[0]) / a[1]) : 0}%;background:${c.color}"></i></span><span class="cat-v">${a[1] ? `${pct(a[0], a[1])} <small>${a[0]}/${a[1]}</small>` : '<small>no answers yet</small>'}</span></li>`; }).join('');
+  const eraBest = Object.values(d.best.era || {}).filter((v) => v > 0).length;
+  const ach = ACHIEVEMENTS.map((a) => `<li class="${d.ach[a.id] ? 'got' : 'lock'}"><span class="ach-mark" aria-hidden="true">${d.ach[a.id] ? '✔' : '·'}</span><span><strong>${esc(a.name)}</strong><small>${esc(a.text)}${d.ach[a.id] ? ' · earned ' + esc(d.ach[a.id]) : ' · not yet'}</small></span></li>`).join('');
+  const wear = (kind, id, label, ok, cond, on) => (ok
+    ? `<button class="btn ghost small${on ? ' worn' : ''}" aria-pressed="${on}" data-act="wear" data-arg="${kind}:${id}" data-key="wear-${kind}-${id || 'none'}">${esc(label)}</button>`
+    : `<span class="locked-item"><strong>${esc(label)}</strong><small>Locked: ${esc(cond)}</small></span>`);
+  const titles = wear('title', '', 'No title', true, '', !d.profile.title) + TITLES.map((x) => wear('title', x.id, x.name, !!d.ach[x.need], ACH[x.need].text, d.profile.title === x.id)).join('');
+  const covers = COVERS.map((c) => `<span class="cover-opt"><i class="cover-sw" style="background:linear-gradient(180deg,${c.from},${c.to})" aria-hidden="true"></i>${wear('cover', c.id, c.name, coverUnlocked(d, c), c.need ? ACH[c.need].text : '', coverOf(d).id === c.id)}</span>`).join('');
+  return `<div class="page-card record-card"><p class="eyebrow">${d.profile.title ? esc(titleName(d.profile.title)) : 'Valley of Vapors'}</p><h2>Trail record</h2>
+    <p class="hint">Kept in this browser. Only Trail Games with a human traveler count.</p>
+    <ul class="rec-tiles">${tiles}</ul>
+    <h3>Against the computer</h3><table class="rec-table"><thead><tr><th scope="col">Level</th><th scope="col">Won</th><th scope="col">Lost</th><th scope="col">Win rate</th></tr></thead><tbody>${levels}</tbody></table>
+    <h3>Fastest wins</h3><ul class="rec-list">${fastest}</ul>
+    <h3>Summit stars</h3><table class="rec-table stars"><thead><tr><th scope="col">Trip</th>${LEVELS.map((l) => `<th scope="col">vs ${LEVEL_NAMES[l]}</th>`).join('')}</tr></thead><tbody>${stars}</tbody></table>
+    <h3>Accuracy by category</h3><ul class="rec-cats">${cats}</ul>
+    <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${dr.streak || 0}</strong></li><li><span>Daily Challenges played</span><strong>${Object.keys(dr.results || {}).length}</strong></li></ul>
+    <h3>Achievements <small>${earned.length} of ${ACHIEVEMENTS.length}</small></h3><ul class="ach-list">${ach}</ul>
+    <h3>Titles</h3><div class="wear-row" role="group" aria-label="Title">${titles}</div>
+    <h3>Passport covers</h3><div class="wear-row" role="group" aria-label="Passport cover">${covers}</div>
+    <div class="row">${btn('goto', 'Back', { arg: 'title', cls: 'primary', auto: true })}</div></div>`;
+}
+
+// ---------- achievement toasts ----------
+// A short banner that never takes focus or blocks a tap; several at once show one after another.
+let toastQueue = [], toastBusy = false;
+export function toastAchievements(ids) {
+  const list = ids.map((i) => ACH[i]).filter(Boolean); if (!list.length) return;
+  toastQueue.push(...list);
+  sfx('achieve');
+  announce(`Achievement earned: ${list.map((a) => a.name).join(', ')}.`);
+  nextToast();
+}
+function nextToast() {
+  const el = $('#toast'); if (!el || toastBusy || !toastQueue.length) return;
+  const a = toastQueue.shift(); toastBusy = true;
+  el.innerHTML = `<div class="toast-i"><span class="toast-k">Achievement</span><strong>${esc(a.name)}</strong><span>${esc(a.text)}</span></div>`;
+  el.classList.add('on');
+  setTimeout(() => { el.classList.remove('on'); setTimeout(() => { toastBusy = false; nextToast(); }, 350); }, 4200);
+}
+
+// ---------- first-run tips (S2-01) ----------
+// A newcomer's first Trail Game turn gets four short tips, one at a time, each where it matters: the goal at the roll, how to move at the
+// choice, how to answer at the first question, what tickets are for at the next roll. A tip ends when the player does the thing it names,
+// by "Got it", or after COACH_WAIT_MS; "Skip tips" ends them all. seenCoach (a saved setting) is false only for a brand-new profile.
+const COACH_WAIT_MS = 20000;
+const tapWord = () => (ui.input === 'touch' ? 'Tap' : 'Click');
+const COACH = [
+  { id: 'goal', at: 'panel', due: (ph) => ph === 'roll', text: (t) => `Goal: win ${t.target} stamps at gold-ring landmarks, then climb the Tower.` },
+  { id: 'move', at: 'panel', due: (ph) => ph === 'choose', text: () => (ui.input === 'keys' ? 'Press a number, or use arrows and Enter, to move there.' : `${tapWord()} a lit space on the map, or a numbered button.`) },
+  { id: 'answer', at: 'modal', due: (ph) => ph === 'question', text: () => (ui.input === 'keys' ? 'Press A to D to answer. Landmark answers also pay stamps.' : `${tapWord()} an answer. Landmark answers also pay stamps.`) },
+  { id: 'tickets', at: 'panel', due: (ph) => ph === 'roll', text: () => 'Tickets buy re-rolls, 50/50 hints and trolley rides.' },
+];
+export const coachTexts = (target = 6) => COACH.map((c) => c.text({ target }));
+export const objective = (t) => `Collect ${t.target} stamps, then climb to the Mountain Tower.`;
+// Moves the tips along with the game and returns the one to show now (or null). A tip that was shown is over once its moment has passed;
+// one that never came is passed over if the next one's moment is here.
+function coachNow() {
+  const t = G.state.trail;
+  if (G.state.settings.seenCoach !== false || G.state.mode !== 'trail' || G.state.scene !== 'game' || !t || t.phase === 'over' || Game.cur().kind !== 'human') return null;
+  const ph = t.phase; let i = ui.coachStep | 0;
+  for (let guard = 0; guard < 5 && i < COACH.length; guard++) {
+    if (COACH[i].due(ph)) {
+      if (!ui.coachAt) ui.coachAt = Date.now();
+      if (Date.now() - ui.coachAt <= COACH_WAIT_MS) break;
+    } else if (!ui.coachAt && !(i + 1 < COACH.length && COACH[i + 1].due(ph))) break;
+    i++; ui.coachAt = 0;
+  }
+  ui.coachStep = i;
+  if (i >= COACH.length) { ui.coachDone = true; return null; }
+  return COACH[i].due(ph) ? COACH[i] : null;
+}
+function coachHTML(where) {
+  const c = coachNow(); if (!c || c.at !== where) return '';
+  return `<div class="coach" role="note" data-tip="${c.id}"><p>${esc(c.text(G.state.trail))}</p><div class="coach-btns">${btn('coach-next', 'Got it', { cls: 'ghost small', key: 'coach-next' })}${btn('coach-skip', 'Skip tips', { cls: 'ghost small', key: 'coach-skip' })}</div></div>`;
+}
+// Called every frame by main.js: says a new tip once to screen readers, redraws when a tip comes or goes, and reports the end of the tips.
+export function coachTick() {
+  const c = coachNow();
+  if (ui.coachDone) { ui.coachDone = false; ui.coachStep = 0; ui.coachAt = 0; ui.coachSaid = ''; ui.finishCoach(); return; }
+  const id = c ? c.id : '';
+  if (id !== ui.coachSaid) { ui.coachSaid = id; if (c) announce(c.text(G.state.trail)); update(); }
+}
+export function coachAction(kind) {
+  if (kind === 'next') { ui.coachStep = (ui.coachStep | 0) + 1; ui.coachAt = 0; }
+  else { ui.coachStep = 0; ui.coachAt = 0; ui.coachSaid = ''; }
+  update();
 }
 
 // ---------- help & settings ----------
@@ -500,6 +619,7 @@ function settingsHTML() {
     <h3>Theme</h3>${seg('theme', [['auto', 'System'], ['light', 'Day'], ['dark', 'Night']])}
     <h3>Hot-seat pass screen</h3>${seg('passScreen', [[true, 'On'], [false, 'Off']])}
     <h3>AI speed</h3>${seg('aiSpeed', [['normal', 'Relaxed'], ['brisk', 'Brisk'], ['fast', 'Fast']])}
+    <h3>First-run tips</h3><p class="hint">${s.seenCoach === false ? 'Tips will show on your next Trail Game turn.' : 'Short hints for your first Trail Game turn.'}</p>${btn('coach-replay', 'Show tips again', { cls: 'ghost small' })}
     <div class="row">${btn('back', 'Done', { cls: 'primary' })}</div></div>`;
 }
 

@@ -9,7 +9,8 @@ import { sfx } from './audio.js';
 export const G = {
   state: null,
   rng: makeRng(1),
-  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {}, finish() {} },
+  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {}, finish() {}, record() { return null; } },
+  lastRecord: null, // what the Trail record made of the trip that just ended (earned achievements, personal bests), for the win card
   timers: [],
   paused: false, // set while the tab is hidden or the pause menu is open: no AI or auto-advance timer is armed
 };
@@ -61,6 +62,8 @@ export const cur = () => T().players[T().turn];
 const log = (msg) => { const t = T(); t.log.unshift(msg); if (t.log.length > 30) t.log.length = 30; G.hooks.announce(msg); };
 const eligible = (p) => p.stamps.length >= T().target;
 export const isAI = (p = cur()) => p.kind === 'ai';
+// The Trail record only counts what a human seat does (a computer traveler earns nothing for the player).
+const record = (p, intent) => (p.kind === 'human' ? G.hooks.record({ kind: 'event', ...intent }) : null);
 
 let beats = []; // the timers `later` has armed with what they will run, so skipBeat can run one early
 function clearTimers() { for (const id of G.timers) clearTimeout(id); G.timers = []; beats = []; }
@@ -102,7 +105,7 @@ export function newTrail({ players, target = 6 }) {
     }),
     pending: null, log: [], winner: null, lastTurnAt: Date.now(),
   };
-  G.state.question = null;
+  G.state.question = null; G.lastRecord = null;
   G.state.mode = 'trail';
   log(`A new trip begins. Collect ${target} stamps, then climb to the Mountain Tower.`);
   G.hooks.save();
@@ -185,7 +188,7 @@ function resolve() {
       t.pending = { kind: 'postcard', ev }; t.phase = 'postcard'; log(`${p.name} found a postcard: ${ev.y} — ${ev.e}. +1 ticket.`); break;
     }
     case 'jury': t.pending = { kind: 'jury' }; t.phase = 'jury'; sfx('gavel'); break;
-    case 'tower': t.pending = { kind: 'summit', cat: CATS[G.rng.int(CATS.length)].id }; t.phase = 'summit'; sfx('bell'); log(`${p.name} reached the Mountain Tower! Summit question time.`); break;
+    case 'tower': t.pending = { kind: 'summit', cat: CATS[G.rng.int(CATS.length)].id }; t.phase = 'summit'; sfx('bell'); log(`${p.name} reached the Mountain Tower! Summit question time.`); record(p, { ev: 'summit' }); break;
     default:
       t.phase = 'landed'; G.hooks.update();
       armAutoEnd(t);
@@ -252,7 +255,7 @@ export function answer(choice) {
   sfx(q.correct ? 'correct' : 'wrong', { streak: run });
   if (G.state.mode !== 'trail') return true; // quiz modes settle in quiz.js
   const t = T(); const p = cur();
-  p.answered++; if (q.correct) { p.correct++; p.streak++; } else p.streak = 0;
+  p.answered++; if (q.correct) { p.correct++; p.streak++; p.bestStreak = Math.max(p.bestStreak | 0, p.streak); if (p.streak === 5 || p.streak === 10) record(p, { ev: 'streak', n: p.streak }); } else p.streak = 0;
   const cs = p.catStats[q.category] || (p.catStats[q.category] = [0, 0]); cs[1]++; if (q.correct) cs[0]++;
   p.skill = updateSkill(p.skill, q.difficulty, q.correct);
   const out = [];
@@ -265,14 +268,14 @@ export function answer(choice) {
       const cat = q.landmarkCat || NODES[p.node].cat;
       if (q.correct) {
         p.tickets += ECON.LANDMARK_PAY;
-        if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); G.hooks.effect('stamp', p); }
+        if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); G.hooks.effect('stamp', p); record(p, { ev: 'stamp', count: p.stamps.length }); }
         out.push(`+${ECON.LANDMARK_PAY} tickets`);
       }
       break;
     }
     case 'wager': {
       const w = q.wager || 0;
-      if (q.correct) { const win = q.difficulty === 'hard' ? w * 2 : w; p.tickets += win; out.push(w ? `Won ${win} ticket${win === 1 ? '' : 's'}` : 'No wager, no loss'); }
+      if (q.correct) { const win = q.difficulty === 'hard' ? w * 2 : w; p.tickets += win; out.push(w ? `Won ${win} ticket${win === 1 ? '' : 's'}` : 'No wager, no loss'); if (w) record(p, { ev: 'wager', won: win }); }
       else { p.tickets -= w; out.push(w ? `Lost ${w} ticket${w === 1 ? '' : 's'}` : 'No wager, no loss'); }
       break;
     }
@@ -299,7 +302,7 @@ export function proceed() {
   const t = T(); const p = cur(); const q = G.state.question;
   if (t.phase === 'feedback') {
     if (q && q.purpose === 'summit') {
-      if (q.correct) { t.phase = 'over'; G.state.question = null; G.hooks.effect('win', p); sfx('win'); G.hooks.save(); G.hooks.scene('win'); G.hooks.update(); return; }
+      if (q.correct) { t.phase = 'over'; G.state.question = null; G.lastRecord = finishRecord(t); G.hooks.effect('win', p); sfx('win'); G.hooks.save(); G.hooks.scene('win'); G.hooks.update(); return; }
       G.state.question = null; t.phase = 'moving'; G.hooks.update();
       G.hooks.moveToken(p, [p.node, TRAILHEAD], () => { p.node = TRAILHEAD; endTurn(); }, 'jump');
       return;
@@ -346,6 +349,7 @@ function finishOrder(picks) {
   const ok = picks.every((ix, k) => k === 0 || evs[picks[k - 1]].y < evs[ix].y);
   t.pending.ok = ok; t.phase = 'orderResult';
   sfx(ok ? 'correct' : 'wrong', { streak: 1 });
+  if (ok) record(p, { ev: 'warp' });
   log(ok ? `${p.name} put history in order — time warp!` : `${p.name} scrambled the timeline.`);
   G.hooks.update(); aiMaybe();
 }
@@ -388,11 +392,22 @@ export function canExpress(p = cur()) { return T().phase === 'roll' && !eligible
 export function express() {
   const t = T(); const p = cur(); if (!canExpress(p)) return false;
   const to = expressTarget(p);
-  p.tickets -= ECON.EXPRESS_COST; sfx('coin'); sfx('trolley');
+  p.tickets -= ECON.EXPRESS_COST; sfx('coin'); sfx('trolley'); record(p, { ev: 'express' });
   log(`${p.name} buys an Express ticket (${ECON.EXPRESS_COST} tickets) to ${NODES[to].name}.`);
   t.phase = 'moving'; G.hooks.update();
   G.hooks.moveToken(p, [p.node, to], () => { p.node = to; ask(NODES[to].cat, 'expressLandmark', { landmarkCat: NODES[to].cat }); }, 'jump');
   return true;
+}
+
+// ---------- the Trail record: a finished trip is written once, when the Summit question is won ----------
+// A trip counts when a human seat is in it; a win is a human seat winning. Each computer level at the table is a game against that level.
+function finishRecord(t) {
+  const humans = t.players.filter((x) => x.kind === 'human');
+  if (!humans.length) return null;
+  const cats = {};
+  for (const h of humans) for (const [c, a] of Object.entries(h.catStats || {})) { const r = cats[c] || (cats[c] = [0, 0]); r[0] += a[0]; r[1] += a[1]; }
+  return G.hooks.record({ kind: 'trail', won: t.players[t.winner].kind === 'human', target: t.target, rounds: t.round,
+    levels: [...new Set(t.players.filter((x) => x.kind === 'ai').map((x) => x.level))], cats, streak: Math.max(...humans.map((h) => Math.max(h.bestStreak | 0, h.streak | 0))) });
 }
 
 // ---------- turn end ----------

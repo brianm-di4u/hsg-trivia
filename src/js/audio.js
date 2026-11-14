@@ -166,6 +166,8 @@ const PRESETS = {
   tick: () => { tone({ type: 'sine', f: 1500, d: 0.03, v: 0.1 }); noise({ d: 0.015, v: 0.08, type: 'highpass', f: 4000 }); },
   win: () => { const pan = rand(-0.15, 0.15); [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.12, d: 0.45, v: 0.3, pan, pair: 6 })); [523.25, 659.25, 783.99].forEach((f) => tone({ type: 'sine', f, t: 0.7, d: 1.2, v: 0.16, pan })); },
   page: () => noise({ d: 0.18, v: 0.14, f: 3000, f2: 1500, qv: 0.5, pan: rand(-0.3, 0.3) }),
+  // An achievement: a small two-note bell (a fifth apart) with a soft shimmer, short enough to sit on top of play.
+  achieve: () => { const pan = rand(-0.15, 0.15); [[783.99, 0], [1174.66, 0.13]].forEach(([f, t]) => { tone({ type: 'sine', f, t, d: 0.7, v: 0.3, pan }); tone({ type: 'triangle', f: f * 2.01, t, d: 0.35, v: 0.07, pan, pair: 6 }); }); noise({ t: 0.13, d: 0.3, v: 0.05, type: 'highpass', f: 6000, pan }); },
 };
 // How loud each cue sits at the default volume: the preset's own shape is kept, this trims the whole cue so that the ones
 // the player must notice peak near 0.3 (measured by audioRender). click and tick are quiet interface sounds.
