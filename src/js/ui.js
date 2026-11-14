@@ -5,7 +5,7 @@ import { CATS, CAT, ERA, ERA_MODES, eraCount, BANK } from './data.js';
 import { NODES, DISTRICTS, DISTRICT, TRAILHEAD, TOWER } from './board.js';
 import { drawIcon, drawStamp, tokenPath, THEMES, TOKEN_NAMES } from './art.js';
 import * as Game from './game.js';
-import { G } from './game.js';
+import { G, ECON } from './game.js';
 import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
 import * as Assets from './assets.js';
@@ -196,6 +196,12 @@ function stampPips(p) {
   return `<span class="pips" aria-label="${p.stamps.length} stamps">${DISTRICTS.map((d) => { const have = p.stamps.includes(d.cat); const c = CAT[d.cat]; return have ? ico(c.icon, c.color, c.ink, 16, 'pip') : '<span class="pip empty"></span>'; }).join('')}</span>`;
 }
 
+// The Express ticket, shown from the roll until the stamp target is met: where it goes and what it costs, before anything is spent.
+function expressOffer(p) {
+  const to = !Game.eligible(p) && Game.expressTarget(p); if (to === null || to === false) return '';
+  return btn('express', `Express to ${esc(NODES[to].name)} · ${plural(ECON.EXPRESS_COST, 'ticket')}`, { cls: 'ghost', hint: 'E', dis: p.tickets < ECON.EXPRESS_COST });
+}
+
 function panelHTML() {
   const t = Game.T(); if (!t) return '';
   const p = Game.cur(); const ai = p.kind === 'ai';
@@ -205,7 +211,8 @@ function panelHTML() {
     case 'roll':
       action = ai ? `<p class="status">${who} is getting ready…</p>` :
         `${btn('roll', 'Roll the steam gauge', { cls: 'primary big', hint: 'Space', auto: true })}
-         ${Game.canTrolley(p) ? btn('trolley-open', 'Ride the trolley · 2 tickets', { cls: 'ghost', hint: 'T' }) : ''}`;
+         ${Game.canTrolley(p) ? btn('trolley-open', `Ride the trolley · ${plural(ECON.TROLLEY_COST, 'ticket')}`, { cls: 'ghost', hint: 'T' }) : ''}
+         ${expressOffer(p)}`;
       break;
     case 'choose': {
       const list = t.dests.map((d, i) => {
@@ -218,7 +225,7 @@ function panelHTML() {
       }).join('');
       action = `<p class="status rolled">${gaugeHTML(t)}<span>${who} rolled <span class="die" aria-label="${t.roll}">${t.roll}</span> ${ai ? 'and is choosing…' : '— pick where to stop:'}</span></p>
         <ol class="dests" aria-label="Destinations">${list}</ol>
-        ${!ai && !t.rerolled ? btn('reroll', 'Re-roll · 1 ticket', { cls: 'ghost small', hint: 'R', dis: p.tickets < 1 }) : ''}`;
+        ${!ai && !t.rerolled ? btn('reroll', `Re-roll · ${plural(Game.rerollCost(p), 'ticket')}`, { cls: 'ghost small', hint: 'R', dis: p.tickets < Game.rerollCost(p) }) : ''}`;
       break;
     }
     case 'moving': action = `<p class="status">${who} is on the move…</p>`; break;
@@ -281,7 +288,7 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
     ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left: ${Math.ceil(q.timeLeft)} seconds"><div class="bar" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div>` : ''}
     <h2 class="qtext" id="qtext">${esc(q.text)}</h2>
     <div class="answers">${answers}</div>
-    ${!answered && allowLifeline ? `<div class="qtools">${btn('lifeline', '50/50 · 2 tickets', { cls: 'ghost small', hint: 'F', dis: tickets < 2 || q.removed.length > 0 })}</div>` : ''}
+    ${!answered && allowLifeline ? `<div class="qtools">${btn('lifeline', `${q.purpose === 'summit' ? 'Summit hint' : '50/50'} · ${plural(Game.lifelineCost(q), 'ticket')}`, { cls: 'ghost small', hint: 'F', dis: tickets < Game.lifelineCost(q) || q.removed.length > 0 })}</div>` : ''}
     ${fb}
   </div>`;
 }
@@ -300,8 +307,9 @@ function modalHTML() {
       const n = NODES[p.node];
       const stampOf = () => (DISTRICT[n.district] ? DISTRICT[n.district].stamp : '');
       const purpose = ({
-        district: () => `<span class="chip-pay">+${({ easy: 1, medium: 2, hard: 3 })[q.difficulty]} ${({ easy: 1, medium: 2, hard: 3 })[q.difficulty] === 1 ? 'ticket' : 'tickets'}</span> ${esc(n.name)}`,
+        district: () => `<span class="chip-pay">+${plural(ECON.DISTRICT_PAY[q.difficulty], 'ticket')}</span> ${esc(n.name)}`,
         landmark: () => q.hadStamp ? `${esc(n.name)} · you already hold this stamp — answer for 2 tickets` : `<strong>Landmark!</strong> Answer to win the <strong>${esc(stampOf())}</strong> stamp`,
+        expressLandmark: () => `<strong>Express landmark!</strong> Answer to win the <strong>${esc(stampOf())}</strong> stamp`,
         warpLandmark: () => `<strong>Time-warp landmark!</strong> Answer to win the <strong>${esc(stampOf())}</strong> stamp`,
         wager: () => `<strong>Post Time</strong> · wager: ${plural(q.wager || 0, 'ticket')}${q.difficulty === 'hard' ? ' · hard question pays double' : ''}`,
         jury: () => '<strong>Grand Jury</strong> · miss it and you sit out your next turn',
@@ -318,11 +326,11 @@ function modalHTML() {
         <div class="row">${ai ? '<p class="hint">Deciding…</p>' : btn('vent', 'Ride the steam', { arg: '1', cls: 'primary', hint: 'Y', auto: true }) + btn('vent', 'Stay here', { arg: '0', cls: 'ghost', hint: 'N' })}</div></div>`;
     }
     case 'wager': {
-      const max = Math.min(5, p.tickets);
+      const max = Game.wagerCap(p);
       const opts = Array.from({ length: max + 1 }, (_, i) => btn('wager', String(i), { arg: String(i), cls: 'chip' + (i === Math.min(2, max) ? ' primary' : ''), hint: '', auto: i === Math.min(2, max), dis: ai })).join('');
       return `<div class="mcard"><div class="mhead">${ico('wager', '#56B4E9', '#10233A', 44)}<h2 id="mtitle">Post Time at Oaklawn</h2></div>
-        <p>Wager up to 5 of your ${plural(p.tickets, 'ticket')} on the next question (any category). Right: win the wager — <strong>double</strong> on a hard question. Wrong: lose it.</p>
-        <div class="chips" aria-label="Wager">${opts}</div>${ai ? '<p class="hint">Placing a bet…</p>' : '<p class="hint key-hint">Keys 0–5</p>'}</div>`;
+        <p>Wager up to ${max} of your ${plural(p.tickets, 'ticket')} on the next question (any category). Right: win the wager — <strong>double</strong> on a hard question. Wrong: lose it.</p>
+        <div class="chips" aria-label="Wager">${opts}</div>${ai ? '<p class="hint">Placing a bet…</p>' : `<p class="hint key-hint">${max > 9 ? 'Keys 0–9, or tap 10' : `Keys 0–${max}`}</p>`}</div>`;
     }
     case 'order': case 'orderResult': {
       const done = t.phase === 'orderResult';
@@ -457,16 +465,17 @@ function winHTML() {
 // ---------- help & settings ----------
 function helpHTML() {
   const legend = CATS.map((c) => { const d = DISTRICTS.find((x) => x.cat === c.id); return `<li>${ico(c.icon, c.color, c.ink, 30)}<span><strong>${esc(c.id)}</strong><small>${esc(d.name)} · stamp: ${esc(d.stamp)}</small></span></li>`; }).join('');
-  const sp = [['landmark', 'star', 'Landmark (gold ring): answer correctly for the district stamp + 2 tickets'], ['vent', 'vent', 'Steam vent: ride to the paired vent across town'], ['wager', 'wager', 'Post Time (Oaklawn): wager 0–5 tickets on a question'], ['warp', 'warp', 'Time Warp: put three events in order, then warp to a landmark'], ['postcard', 'postcard', 'Postcard: a piece of history and 1 ticket'], ['jury', 'jury', 'Grand Jury: miss a Legends question and lose a turn'], ['trolley', 'trolley', 'Trolley stop: next turn, pay 2 tickets to ride to another stop'], ['trail', 'trailhead', 'Mountain trail: opens once you hold your stamp target. Short Cut spaces cost 2 steps']];
+  const sp = [['landmark', 'star', 'Landmark (gold ring): answer correctly for the district stamp + 2 tickets'], ['vent', 'vent', 'Steam vent: ride to the paired vent across town'], ['wager', 'wager', 'Post Time (Oaklawn): wager 5 tickets, or a quarter of your hoard (up to 10), on a question'], ['warp', 'warp', 'Time Warp: put three events in order, then warp to a landmark'], ['postcard', 'postcard', 'Postcard: a piece of history and 1 ticket'], ['jury', 'jury', 'Grand Jury: miss a Legends question and lose a turn'], ['trolley', 'trolley', 'Trolley stop: next turn, pay 2 tickets to ride to another stop'], ['trail', 'trailhead', 'Mountain trail: opens once you hold your stamp target. Short Cut spaces cost 2 steps']];
   return `<div class="page-card help-card"><h2>How to play</h2>
     <p><strong>Goal:</strong> collect your stamp target (4, 6 or 8 district stamps), climb from the Grand Promenade trailhead to the Mountain Tower, and answer the Summit question.</p>
     <ol class="rules"><li>Roll the steam gauge (1–6) and move exactly that many spaces, either way. Highlighted spaces show where you can stop.</li>
     <li>Answer the question for the space. District spaces pay tickets (Easy 1, Medium 2, Hard 3).</li>
-    <li>Spend tickets on a 50/50 (2), a re-roll (1) or the trolley (2). Win more at Post Time.</li>
+    <li>Spend tickets on a 50/50 (2), a re-roll (1, then 2, 3 and 4 as you use them in a trip) or the trolley (2). Win more at Post Time.</li>
+    <li>Two big buys: the <strong>Express ticket</strong> (6) jumps you to the nearest landmark you have no stamp for and asks its question; the <strong>Summit hint</strong> (4) is a 50/50 on the Summit question.</li>
     <li>After every answer you’ll see what’s true and where it comes from.</li></ol>
     <h3>Districts and categories</h3><ul class="legend">${legend}</ul>
     <h3>Special spaces</h3><ul class="legend">${sp.map(([, i, t]) => `<li>${ico(i, '', 'currentColor', 26)}<span>${t}</span></li>`).join('')}</ul>
-    <h3>Keyboard</h3><p class="keys"><kbd>Space</kbd> roll · <kbd>←</kbd><kbd>→</kbd> or <kbd>1</kbd>–<kbd>9</kbd> pick a space · <kbd>Enter</kbd> confirm / continue · <kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>F</kbd> 50/50 · <kbd>R</kbd> re-roll · <kbd>T</kbd> trolley · <kbd>P</kbd> passport · <kbd>Z</kbd> zoom · <kbd>M</kbd> mute · <kbd>Esc</kbd> menu</p>
+    <h3>Keyboard</h3><p class="keys"><kbd>Space</kbd> roll · <kbd>←</kbd><kbd>→</kbd> or <kbd>1</kbd>–<kbd>9</kbd> pick a space · <kbd>Enter</kbd> confirm / continue · <kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>F</kbd> 50/50 or Summit hint · <kbd>R</kbd> re-roll · <kbd>T</kbd> trolley · <kbd>E</kbd> Express · <kbd>P</kbd> passport · <kbd>Z</kbd> zoom · <kbd>M</kbd> mute · <kbd>Esc</kbd> menu</p>
     <h3>About the facts</h3><p>Questions come from a sourced research corpus and were audited against their sources. “Local claim” marks how a place bills itself. Real Hot Springs places appear as setting only; no business, park or school endorses or is affiliated with this game. Characters are fictional.</p>
     <h3>About the map</h3><p>The board is a model of the real valley, seen from the west: Bathhouse Row’s eight bathhouses stand in their true north-to-south order (Superior, Hale, Maurice, Fordyce, Quapaw, Ozark, Buckstaff, Lamar), with Hot Springs Mountain and its tower behind. Downtown is magnified and Central Avenue is drawn wider so both sidewalks can carry spaces; directions from the Row are true. Oaklawn and the three lakes are moved closer and ringed with a dashed line, and their plates give the real distance. The paintings on question cards are illustrations, not photographs.</p>
     <p class="hint">Terrain: USGS 3DEP. Streets: US Census TIGER. Lakes and creeks: USGS National Hydrography Dataset (all public domain). Building footprints and trails: © OpenStreetMap contributors (ODbL).</p>

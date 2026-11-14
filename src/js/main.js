@@ -193,6 +193,7 @@ const ACTIONS = {
   target: (a) => { ui.setup.target = +a; sfx('click'); UI.update(); },
   roll: () => { if (Game.cur().kind === 'human') Game.roll(); },
   reroll: () => Game.reroll(),
+  express: () => { if (Game.cur().kind === 'human') Game.express(); },
   choose: (a) => { if (Game.cur().kind === 'human') Game.choose(+a); },
   answer: (a) => {
     const q = G.state.question; if (!q || q.chosen !== null) return;
@@ -327,6 +328,7 @@ function onKey(e) {
     case 'roll':
       if (k === ' ' || lower === 'r' || k === 'Enter') { act('roll'); return done(); }
       if (lower === 't') { act('trolley-open'); return done(); }
+      if (lower === 'e') { act('express'); return done(); }
       break;
     case 'choose':
       if (k === 'ArrowRight' || k === 'ArrowDown') { Game.selectDest(1); return done(); }
@@ -345,7 +347,7 @@ function onKey(e) {
       if (k === 'Enter' || k === ' ') { act('proceed'); return done(); }
       break;
     case 'vent': if (lower === 'y') { act('vent', '1'); return done(); } if (lower === 'n') { act('vent', '0'); return done(); } break;
-    case 'wager': if (/^[0-5]$/.test(k) && +k <= Math.min(5, p.tickets)) { act('wager', k); return done(); } break;
+    case 'wager': if (/^[0-9]$/.test(k) && +k <= Game.wagerCap(p)) { act('wager', k); return done(); } break;
     case 'order': if (/^[1-3]$/.test(k)) { act('order-pick', +k - 1); return done(); } break;
     case 'warp': if (/^[1-9]$/.test(k) && +k <= t.pending.options.length) { act('warp', t.pending.options[+k - 1]); return done(); } break;
     default:
@@ -421,7 +423,7 @@ function publicState() {
     scene: st.scene, mode: st.mode, settings: st.settings, asked: st.asked,
     trail: t ? { target: t.target, round: t.round, turn: t.turn, phase: t.phase, roll: t.roll, rerolled: t.rerolled, sel: t.sel,
       dests: t.dests.map((d) => d.node), destPaths: t.dests.map((d) => d.path),
-      players: t.players.map(({ id, name, kind, level, node, stamps, tickets, skill, skip, correct, answered, shape, color }) => ({ id, name, kind, level, node, stamps, tickets, skill, skip, correct, answered, shape, color })),
+      players: t.players.map(({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color }) => ({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color })),
       pending: t.pending, winner: t.winner, log: t.log.slice(0, 6) } : null,
     question: st.question, quiz: st.quiz,
     board: { nodes: NODES.length, start: START, tower: TOWER, trailhead: TRAILHEAD, spurEntry: SPUR_ENTRY, trolleys: TROLLEYS, landmarks: LANDMARK, vents: VENT_PAIRS,
@@ -476,6 +478,7 @@ window.__game = {
       case 'warp': return Game.warp(args[0]);
       case 'trolley': return Game.trolley(args[0]);
       case 'reroll': return Game.reroll();
+      case 'express': return Game.express();
       case 'lifeline': return Game.lifeline();
       case 'pass': Game.pass(); return true;
       case 'finishAnim': R.finishAnims(); return true;

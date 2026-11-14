@@ -28,7 +28,24 @@ export function defaultNames(seats) {
     used.add(n); return n;
   });
 }
-const AI_ACC = { easy: { easy: 0.6, medium: 0.4, hard: 0.25 }, medium: { easy: 0.8, medium: 0.6, hard: 0.4 }, hard: { easy: 0.92, medium: 0.8, hard: 0.65 } };
+export const AI_ACC = { easy: { easy: 0.6, medium: 0.4, hard: 0.25 }, medium: { easy: 0.8, medium: 0.6, hard: 0.4 }, hard: { easy: 0.92, medium: 0.8, hard: 0.65 } };
+// ---------- Ticket economy: every number to retune lives here (S3-02) ----------
+export const ECON = {
+  START_TICKETS: 3,
+  DISTRICT_PAY: { easy: 1, medium: 2, hard: 3 }, // tickets for a right answer on a district space
+  LANDMARK_PAY: 2, // tickets for a right answer on a landmark, on top of the stamp
+  REROLL_COSTS: [1, 2, 3, 4], // was a flat 1. The n-th re-roll of a trip costs REROLL_COSTS[n]; the last price repeats.
+  LIFELINE_COST: 2, // the 50/50 on any question (unchanged)
+  SUMMIT_HINT_COST: 4, // was 2: on the Summit question the same 50/50 is the Summit hint
+  EXPRESS_HARD: false, // true makes the Express landmark question always a hard one
+  EXPRESS_COST: 6, // new: jump to the nearest landmark that has no stamp yet, then answer its question
+  TROLLEY_COST: 2, // unchanged
+  WAGER_BASE_CAP: 5, WAGER_MAX_CAP: 10, WAGER_HOARD_SHARE: 0.25, // was a flat cap of 5: now the larger of 5 and 25% of the hoard, up to 10
+  AI_REROLL_KEEP: 3, // a Hard AI re-rolls only if it keeps this many tickets after paying (was: tickets >= 4 at a price of 1)
+  AI_EXPRESS_CHANCE: { easy: 0, medium: 0, hard: 1 }, // how readily each level buys an Express ticket when it can (only The Professor does)
+  AI_HINT_SCOPE: { easy: 'any', medium: 'any', hard: 'landmark-hard' }, // which questions each level pays to 50/50: any, or only hard landmark questions (the Summit question always)
+  AI_HINT_KEEP: { easy: 4, medium: 4, hard: 0 }, // tickets an AI keeps after buying a 50/50 or Summit hint
+};
 export const TARGETS = [{ n: 4, label: 'Day Trip' }, { n: 6, label: 'Weekend' }, { n: 8, label: 'Grand Tour' }];
 
 export const T = () => G.state.trail;
@@ -54,7 +71,7 @@ export function newTrail({ players, target = 6 }) {
     players: seats.map((s, i) => {
       const name = (s.name || '').trim() || defaults[i];
       return { id: i, name, kind: s.kind === 'ai' ? 'ai' : 'human', level: s.level || 'medium', shape: TOKEN_SHAPES[i], color: TOKEN_COLORS[i],
-        node: START, stamps: [], tickets: 3, skill: 0.35, skip: false, correct: 0, answered: 0, catStats: {}, streak: 0 };
+        node: START, stamps: [], tickets: ECON.START_TICKETS, rerolls: 0, skill: 0.35, skip: false, correct: 0, answered: 0, catStats: {}, streak: 0 };
     }),
     pending: null, log: [], winner: null, lastTurnAt: Date.now(),
   };
@@ -103,11 +120,13 @@ export function roll(force) {
   return true;
 }
 
+// The n-th re-roll of a trip costs REROLL_COSTS[n] (the last price repeats); one re-roll per turn.
+export const rerollCost = (p = cur()) => ECON.REROLL_COSTS[Math.min(p.rerolls | 0, ECON.REROLL_COSTS.length - 1)];
 export function reroll() {
-  const t = T(); const p = cur();
-  if (t.phase !== 'choose' || t.rerolled || p.tickets < 1) return false;
-  p.tickets -= 1; t.rerolled = true; t.phase = 'roll'; sfx('coin');
-  log(`${p.name} spends a ticket to re-roll.`);
+  const t = T(); const p = cur(); const cost = rerollCost(p);
+  if (t.phase !== 'choose' || t.rerolled || p.tickets < cost) return false;
+  p.tickets -= cost; p.rerolls = (p.rerolls | 0) + 1; t.rerolled = true; t.phase = 'roll'; sfx('coin');
+  log(`${p.name} spends ${cost === 1 ? 'a ticket' : cost + ' tickets'} to re-roll.`);
   return roll();
 }
 
@@ -150,7 +169,7 @@ function resolve() {
 
 function ask(category, purpose, extra = {}) {
   const t = T(); const p = cur();
-  const forceDiff = purpose === 'summit' ? 'hard' : undefined;
+  const forceDiff = purpose === 'summit' || (purpose === 'expressLandmark' && ECON.EXPRESS_HARD) ? 'hard' : undefined;
   const q = pickQuestion(G.rng, G.state.asked, { category, skill: p.skill, difficulty: forceDiff });
   G.state.question = makeQuestion(q, G.rng, purpose);
   Object.assign(G.state.question, { hadStamp: p.stamps.includes(category) }, extra);
@@ -167,22 +186,27 @@ export function startPendingQuestion() {
   if (t.phase === 'summit') return ask(pd.cat, 'summit');
 }
 
+// The most a traveler may wager: 5, or a quarter of the hoard when that is more, never above 10 or what they hold.
+export const wagerCap = (p = cur()) => Math.min(p.tickets, Math.max(ECON.WAGER_BASE_CAP, Math.min(ECON.WAGER_MAX_CAP, Math.floor(p.tickets * ECON.WAGER_HOARD_SHARE))));
 export function setWager(n) {
   const t = T(); const p = cur(); if (t.phase !== 'wager') return false;
-  const w = clamp(n | 0, 0, Math.min(5, p.tickets));
+  const w = clamp(n | 0, 0, wagerCap(p));
   t.pending.wager = w; log(`${p.name} wagers ${w} ticket${w === 1 ? '' : 's'} at Post Time.`);
   ask(CATS[G.rng.int(CATS.length)].id, 'wager', { wager: w });
   return true;
 }
 
+// The 50/50 costs 2 tickets; on the Summit question it is the Summit hint, 4 tickets.
+export const lifelineCost = (q = G.state.question) => (q && q.purpose === 'summit' ? ECON.SUMMIT_HINT_COST : ECON.LIFELINE_COST);
 export function lifeline() {
   const q = G.state.question; const p = cur();
-  if (!q || q.chosen !== null || q.removed.length || p.tickets < 2 || G.state.mode !== 'trail') return false;
-  p.tickets -= 2; sfx('coin');
+  if (!q || q.chosen !== null || q.removed.length || p.tickets < lifelineCost(q) || G.state.mode !== 'trail') return false;
+  const cost = lifelineCost(q); const hint = q.purpose === 'summit';
+  p.tickets -= cost; sfx('coin');
   const wrongs = [0, 1, 2, 3].filter((i) => i !== q.correctIndex);
   const keep = wrongs[G.rng.int(3)];
   q.removed = wrongs.filter((i) => i !== keep);
-  log(`${p.name} uses the 50/50 (2 tickets).`);
+  log(`${p.name} uses the ${hint ? 'Summit hint' : '50/50'} (${cost} tickets).`);
   G.hooks.update();
   return true;
 }
@@ -205,17 +229,17 @@ export function answer(choice) {
   const cs = p.catStats[q.category] || (p.catStats[q.category] = [0, 0]); cs[1]++; if (q.correct) cs[0]++;
   p.skill = updateSkill(p.skill, q.difficulty, q.correct);
   const out = [];
-  const pay = { easy: 1, medium: 2, hard: 3 }[q.difficulty];
+  const pay = ECON.DISTRICT_PAY[q.difficulty];
   switch (q.purpose) {
     case 'district':
       if (q.correct) { p.tickets += pay; out.push(`+${pay} ticket${pay > 1 ? 's' : ''}`); }
       break;
-    case 'landmark': case 'warpLandmark': {
+    case 'landmark': case 'warpLandmark': case 'expressLandmark': {
       const cat = q.landmarkCat || NODES[p.node].cat;
       if (q.correct) {
-        p.tickets += 2;
+        p.tickets += ECON.LANDMARK_PAY;
         if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); G.hooks.effect('stamp', p); }
-        out.push('+2 tickets');
+        out.push(`+${ECON.LANDMARK_PAY} tickets`);
       }
       break;
     }
@@ -316,14 +340,31 @@ export function warp(nodeId) {
 }
 
 export function trolleyOptions(p = cur()) { return TROLLEYS.filter((id) => id !== p.node); }
-export function canTrolley(p = cur()) { return T().phase === 'roll' && TROLLEYS.includes(p.node) && p.tickets >= 2; }
+export function canTrolley(p = cur()) { return T().phase === 'roll' && TROLLEYS.includes(p.node) && p.tickets >= ECON.TROLLEY_COST; }
 export function trolley(nodeId) {
   const t = T(); const p = cur(); if (!canTrolley(p)) return false;
   const opts = trolleyOptions(p); const to = opts.includes(nodeId) ? nodeId : opts[0];
-  p.tickets -= 2; sfx('trolley');
-  log(`${p.name} rides the trolley to ${NODES[to].name} (2 tickets).`);
+  p.tickets -= ECON.TROLLEY_COST; sfx('trolley');
+  log(`${p.name} rides the trolley to ${NODES[to].name} (${ECON.TROLLEY_COST} tickets).`);
   t.phase = 'moving'; G.hooks.update();
   G.hooks.moveToken(p, [p.node, to], () => { p.node = to; endTurn(); }, 'jump');
+  return true;
+}
+
+// Express ticket: from the roll, pay to jump to the nearest landmark with no stamp yet and answer its question.
+export function expressTarget(p = cur()) {
+  const left = DISTRICTS.filter((d) => !p.stamps.includes(d.cat)).map((d) => LANDMARK[d.cat]).filter((id) => id !== p.node);
+  if (!left.length) return null;
+  return left.reduce((best, id) => (hops(p.node, id) < hops(p.node, best) ? id : best), left[0]);
+}
+export function canExpress(p = cur()) { return T().phase === 'roll' && !eligible(p) && p.tickets >= ECON.EXPRESS_COST && expressTarget(p) !== null; }
+export function express() {
+  const t = T(); const p = cur(); if (!canExpress(p)) return false;
+  const to = expressTarget(p);
+  p.tickets -= ECON.EXPRESS_COST; sfx('coin'); sfx('trolley');
+  log(`${p.name} buys an Express ticket (${ECON.EXPRESS_COST} tickets) to ${NODES[to].name}.`);
+  t.phase = 'moving'; G.hooks.update();
+  G.hooks.moveToken(p, [p.node, to], () => { p.node = to; ask(NODES[to].cat, 'expressLandmark', { landmarkCat: NODES[to].cat }); }, 'jump');
   return true;
 }
 
@@ -377,16 +418,23 @@ export function aiMaybe() {
   const go = (ms, fn) => later(aiDelay(ms), () => { if (T() === t && t.phase === ph && cur() === p) fn(); });
   switch (ph) {
     case 'roll':
+      if (canExpress(p) && p.tickets >= ECON.EXPRESS_COST && G.rng.next() < ECON.AI_EXPRESS_CHANCE[p.level]) return go(800, () => express());
       if (canTrolley(p) && !eligible(p) && p.tickets >= 5 && G.rng.next() < 0.3) return go(800, () => trolley(trolleyOptions(p)[G.rng.int(trolleyOptions(p).length)]));
       return go(800, () => roll());
     case 'choose':
-      if (!t.rerolled && p.level === 'hard' && p.tickets >= 4 && scoreDest(p, t.dests[0].node) < 15) return go(700, () => reroll());
+      if (!t.rerolled && p.level === 'hard' && p.tickets >= rerollCost(p) + ECON.AI_REROLL_KEEP && scoreDest(p, t.dests[0].node) < 15) return go(700, () => reroll());
       return go(900, () => { t.sel = aiChooseIndex(p); G.hooks.update(); later(aiDelay(350), () => { if (t.phase === 'choose') choose(); }); });
     case 'question': {
       const q = G.state.question;
-      const ok = aiAnswerCorrect(p, q.difficulty, q.purpose === 'summit' ? 0.9 : 1);
       const pickWrong = () => { const w = [0, 1, 2, 3].filter((k) => k !== q.correctIndex && !q.removed.includes(k)); return w[G.rng.int(w.length)]; };
-      return go(1400, () => answer(ok ? q.correctIndex : pickWrong()));
+      // With two wrong answers struck out an AI that did not know still has a coin-flip: acc + (1 - acc) / 2.
+      const reply = () => { const acc = AI_ACC[p.level][q.difficulty] * (q.purpose === 'summit' ? 0.9 : 1); const a = q.removed.length ? acc + (1 - acc) / 2 : acc; answer(G.rng.next() < a ? q.correctIndex : pickWrong()); };
+      // An AI buys the 50/50 (the Summit hint on the Summit question) where its level's scope says so, if it can pay and still keep its reserve.
+      const lm = ['landmark', 'warpLandmark', 'expressLandmark'].includes(q.purpose); const hard = q.difficulty === 'hard';
+      const wantsHint = !q.removed.length && p.tickets >= lifelineCost(q) + ECON.AI_HINT_KEEP[p.level]
+        && (q.purpose === 'summit' || ECON.AI_HINT_SCOPE[p.level] === 'any' || (lm && hard));
+      if (wantsHint) return go(700, () => { lifeline(); later(aiDelay(800), () => { if (G.state.question === q && q.chosen === null) reply(); }); });
+      return go(1400, reply);
     }
     case 'feedback': return go(2600, () => proceed());
     case 'vent': return go(900, () => vent(scoreDest(p, t.pending.to) >= scoreDest(p, p.node)));
