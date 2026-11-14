@@ -8697,7 +8697,1852 @@
    "source": "NPS: History & Culture",
    "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/index.htm",
    "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0513",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "About how many acres did the 1832 Act of Congress set aside as the Hot Springs Reservation?",
+   "answer": "About 2,529 acres",
+   "wrong": [
+    "About 1,280 acres",
+    "About 3,840 acres",
+    "About 5,120 acres"
+   ],
+   "explanation": "The act reserved the hot springs and their environs, a tract measured at 2,529.1 acres.",
+   "source": "Encyclopedia of Arkansas: Hot Springs National Park",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-national-park-2/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0514",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "In 1849, the Hot Springs Reservation came under the authority of which new federal department?",
+   "answer": "Department of the Interior",
+   "wrong": [
+    "War Department",
+    "Treasury Department",
+    "Post Office Department"
+   ],
+   "explanation": "When the Interior Department was created in 1849, the reservation was moved under its authority, though it still lacked real oversight.",
+   "source": "NPS: Uncovering Ral City",
+   "sourceUrl": "https://www.nps.gov/articles/000/uncovering-ral-city.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0515",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "In what year did the Arkansas Territorial Legislature first ask that the springs be set aside as a federal reservation?",
+   "answer": "1820",
+   "wrong": [
+    "1812",
+    "1826",
+    "1829"
+   ],
+   "explanation": "The territory asked in 1820, but Congress did not act until Jackson signed the reservation act in 1832.",
+   "source": "NPS: History & Culture",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/index.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0516",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "After statehood in 1836, which Arkansas representative asked that the Reservation's title be given to the state?",
+   "answer": "Ambrose Sevier",
+   "wrong": [
+    "Archibald Yell",
+    "Albert Pike",
+    "Augustus Garland"
+   ],
+   "explanation": "Sevier's request that Hot Springs Reservation go to the new state was denied, so the land stayed federal.",
+   "source": "NPS: Uncovering Ral City",
+   "sourceUrl": "https://www.nps.gov/articles/000/uncovering-ral-city.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0517",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "In what year was the City of Hot Springs incorporated?",
+   "answer": "1851",
+   "wrong": [
+    "1841",
+    "1857",
+    "1866"
+   ],
+   "explanation": "The city was incorporated in 1851, with a main central avenue, hotels and bathhouses already in place.",
+   "source": "NPS: Uncovering Ral City",
+   "sourceUrl": "https://www.nps.gov/articles/000/uncovering-ral-city.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0518",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "About how much per acre did the land that became Garland County cost the U.S. in the Louisiana Purchase?",
+   "answer": "About three cents",
+   "wrong": [
+    "About ten cents",
+    "About 30 cents",
+    "About one dollar"
+   ],
+   "explanation": "The Louisiana Purchase worked out to roughly three cents an acre, and that bought the future Garland County.",
+   "source": "Encyclopedia of Arkansas: Garland County",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/garland-county-770/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0519",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "At the springs in 1804, what did the Dunbar-Hunter party find that suggested seasonal use of the site?",
+   "answer": "Deserted cabins",
+   "wrong": [
+    "Abandoned bathing pools",
+    "Carved stone basins",
+    "Rows of cleared campsites"
+   ],
+   "explanation": "The explorers found empty cabins at the springs, which they took as a sign that people used the site only part of the year.",
+   "source": "Encyclopedia of Arkansas: Hot Springs National Park",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-national-park-2/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0520",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "What was the only engagement of note near Hot Springs during the Civil War, in 1864?",
+   "answer": "Skirmish at Farr's Mill",
+   "wrong": [
+    "Battle of Pea Ridge",
+    "Battle of Prairie D'Ane",
+    "Battle of Marks' Mills"
+   ],
+   "explanation": "The Encyclopedia of Arkansas says the 1864 skirmish at Farr's Mill was the one engagement of note in the area.",
+   "source": "Encyclopedia of Arkansas: Garland County",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/garland-county-770/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0521",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Which Confederate general served as the third superintendent of the Hot Springs Reservation, 1885 to 1889?",
+   "answer": "Charles W. Field",
+   "wrong": [
+    "Thomas C. Hindman",
+    "Albert Pike",
+    "Sterling Price"
+   ],
+   "explanation": "Field, a Confederate general, followed Kelley and Hamblen. The park says the first three superintendents were all Civil War veterans.",
+   "source": "NPS: Civil War Connections at Hot Springs",
+   "sourceUrl": "https://www.nps.gov/articles/000/civil-war-connections-at-hot-springs-national-park.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0522",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "Gov. Henry Rector's 1862 wagon train of state archives reached Hot Springs by way of which Arkansas River town?",
+   "answer": "Dardanelle",
+   "wrong": [
+    "Arkadelphia",
+    "Batesville",
+    "Washington"
+   ],
+   "explanation": "The NPS says Rector hauled seven to nine tons of state records, funds and supplies out of Little Rock, via Dardanelle, to the bathhouse he owned.",
+   "source": "NPS: Civil War Connections at Hot Springs",
+   "sourceUrl": "https://www.nps.gov/articles/000/civil-war-connections-at-hot-springs-national-park.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0523",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "How many men died in the March 16, 1899, shootout between Hot Springs police and the Garland County Sheriff's Office?",
+   "answer": "Five",
+   "wrong": [
+    "Two",
+    "Three",
+    "Eight"
+   ],
+   "explanation": "The shootout, rooted in a fight over profits from illegal gambling, killed five men.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Shootout",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-shootout-7467/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0524",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "In what year did the City of Hot Springs begin taxing gambling and liquor at clubs like the Ohio Club?",
+   "answer": "1958",
+   "wrong": [
+    "1949",
+    "1953",
+    "1961"
+   ],
+   "explanation": "The city began taxing the clubs in 1958. After a ruling against the tax, the gamblers and bootleggers reportedly paid it anyway.",
+   "source": "Encyclopedia of Arkansas: Ohio Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/ohio-club-9408/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0525",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "In what year did bathing in Hot Springs peak, with over one million baths taken?",
+   "answer": "1946",
+   "wrong": [
+    "1936",
+    "1941",
+    "1952"
+   ],
+   "explanation": "Bathing peaked in 1946, then began a steady decline as the bathhouses lost business.",
+   "source": "Encyclopedia of Arkansas: Bathhouse Row",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/bathhouse-row-437/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0526",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "What did the National Park Service create in 1982 by diverting some of the thermal water?",
+   "answer": "A thermal water cascade",
+   "wrong": [
+    "A public soaking pool",
+    "A thermal drinking fountain",
+    "A heated outdoor amphitheater"
+   ],
+   "explanation": "In 1982 the park diverted some of the thermal water to create a cascade.",
+   "source": "Encyclopedia of Arkansas: Hot Springs National Park",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-national-park-2/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0527",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Which bathhouse beside the administration building was razed in 1937 to make way for the Grand Promenade entrance?",
+   "answer": "The Imperial",
+   "wrong": [
+    "The Rammelsberg",
+    "The Independent",
+    "The Horseshoe"
+   ],
+   "explanation": "The Imperial was torn down in 1937 to make way for the Grand Promenade entrance.",
+   "source": "NPS: History & Culture",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/index.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0528",
+   "category": "History",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Which Jewish fraternal organization created the association that built Hot Springs' Leo N. Levi Memorial Hospital?",
+   "answer": "B'nai B'rith",
+   "wrong": [
+    "The Elks",
+    "The Odd Fellows",
+    "The Knights of Columbus"
+   ],
+   "explanation": "B'nai B'rith formed the Levi Memorial Hospital Association in 1911. The hospital opened Nov. 1, 1914, to serve poor Jewish health seekers.",
+   "source": "NPS: Levi Memorial Hospital",
+   "sourceUrl": "https://www.nps.gov/articles/000/levi-hospital.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0529",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "How wide was the marble staircase William Jacobs added to the Southern Club in the 1940s?",
+   "answer": "10.5 feet",
+   "wrong": [
+    "6 feet",
+    "8 feet",
+    "14 feet"
+   ],
+   "explanation": "Jacobs renovated the first floor in the 1940s and added a staircase ten and a half feet wide.",
+   "source": "Encyclopedia of Arkansas: Southern Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/southern-club-1208/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0530",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "In what year did the Majestic Hotel open its Lanai Tower?",
+   "answer": "1963",
+   "wrong": [
+    "1958",
+    "1960",
+    "1966"
+   ],
+   "explanation": "The Lanai Tower was a 1963 addition to the Majestic, which closed for good in 2006.",
+   "source": "Encyclopedia of Arkansas: Majestic Hotel",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/majestic-hotel-8351/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0531",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "In what year was the eight-story annex added to Hot Springs' Majestic Hotel?",
+   "answer": "1926",
+   "wrong": [
+    "1919",
+    "1921",
+    "1929"
+   ],
+   "explanation": "The red-brick annex was added in 1926 to the west of the older yellow-brick hotel.",
+   "source": "Encyclopedia of Arkansas: Majestic Hotel",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/majestic-hotel-8351/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0532",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "How many of the second Arlington Hotel's 300 guest rooms had private bathrooms?",
+   "answer": "50",
+   "wrong": [
+    "10",
+    "25",
+    "100"
+   ],
+   "explanation": "The 1893 Arlington had 300 rooms, but only 50 had their own baths. It burned in 1923.",
+   "source": "NPS: Arlington Lawn",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/arlington-lawn.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0533",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "At what elevation above sea level is the open-air observation deck of the Hot Springs Mountain Tower?",
+   "answer": "1,256 feet",
+   "wrong": [
+    "956 feet",
+    "1,056 feet",
+    "1,556 feet"
+   ],
+   "explanation": "The tower is 216 feet tall, and its upper deck sits at 1,256 feet above sea level.",
+   "source": "NPS: Hot Springs Mountain Tower",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/hot-springs-mountain-tower.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0534",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did the Maurice Bathhouse close, the second on Bathhouse Row to do so?",
+   "answer": "1974",
+   "wrong": [
+    "1968",
+    "1970",
+    "1972"
+   ],
+   "explanation": "The Maurice closed in November 1974, after the Fordyce (1962) and before the Ozark (1977).",
+   "source": "NPS: Maurice Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/maurice-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0535",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did the Ozark Bathhouse close?",
+   "answer": "1977",
+   "wrong": [
+    "1971",
+    "1973",
+    "1980"
+   ],
+   "explanation": "The Ozark, a Spanish Colonial Revival bathhouse for middle-class bathers, stopped operating in 1977.",
+   "source": "NPS: Ozark Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/ozark-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0536",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did the Quapaw Bathhouse close, leaving it vacant until a later reuse?",
+   "answer": "1984",
+   "wrong": [
+    "1979",
+    "1981",
+    "1987"
+   ],
+   "explanation": "The Quapaw shut in 1984 and was the first Bathhouse Row building leased for adaptive reuse.",
+   "source": "NPS: Quapaw Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/quapaw-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0537",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "About how many therapeutic baths did the Maurice Bathhouse give during its six decades of operation?",
+   "answer": "Over 2.5 million",
+   "wrong": [
+    "About 500,000",
+    "About 1 million",
+    "About 5 million"
+   ],
+   "explanation": "The Maurice served bathers from 1912 until it closed in 1974, giving more than 2.5 million therapeutic baths.",
+   "source": "NPS: Maurice Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/maurice-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0538",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Which brick Victorian bathhouse did the 1912 Buckstaff replace?",
+   "answer": "The Rammelsberg",
+   "wrong": [
+    "The Independent",
+    "The Horseshoe",
+    "The Magnesia"
+   ],
+   "explanation": "The Buckstaff replaced the Rammelsberg Bathhouse, which in turn had replaced an earlier bathhouse lost in the 1878 fire.",
+   "source": "NPS: Buckstaff Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/buckstaff-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0539",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Which Bathhouse Row bathhouse was the smallest on the Row and also charged the lowest rates?",
+   "answer": "The Superior",
+   "wrong": [
+    "The Hale",
+    "The Ozark",
+    "The Lamar"
+   ],
+   "explanation": "The Superior covered about 11,000 square feet and offered only basic hydrotherapy, mercury and massage services at low prices.",
+   "source": "NPS: Superior Bathhouse",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/superior-bathhouse.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0540",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "According to Visit Hot Springs, the Fordyce Bathhouse's third floor opened in 1915 as Arkansas's first what?",
+   "answer": "A gymnasium",
+   "wrong": [
+    "A heated indoor pool",
+    "A bowling alley",
+    "A public library"
+   ],
+   "explanation": "Visit Hot Springs says the Fordyce's third-floor gymnasium, opened March 1, 1915, was the first gymnasium in the state.",
+   "source": "Visit Hot Springs: History",
+   "sourceUrl": "https://www.hotsprings.org/explore/history/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0541",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Lake Lillian, now called Ricks Pond, was named for whose wife?",
+   "answer": "John Fordyce's",
+   "wrong": [
+    "Samuel Fordyce's",
+    "Earl Ricks's",
+    "Hiram Whittington's"
+   ],
+   "explanation": "John Fordyce dammed a creek below the family's hilltop cabin to make a pond for his wife Lillian. Today locals call it Ricks Pond.",
+   "source": "NPS: Stonebridge Area",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/stonebridge-area.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0542",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Samuel Fordyce's hilltop cabin, built from 1904 to 1909, was in what rustic style?",
+   "answer": "Adirondack",
+   "wrong": [
+    "Tudor Revival",
+    "Spanish Mission",
+    "Prairie School"
+   ],
+   "explanation": "The 4,338-square-foot home used logs and stone in the rustic Adirondack style and was finished by 1909.",
+   "source": "NPS: Stonebridge Area",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/stonebridge-area.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0543",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Whittington Park's artificial lakes were filled in during 1905 under which reservation superintendent?",
+   "answer": "Martin A. Eisele",
+   "wrong": [
+    "Harry H. Myers",
+    "William P. Parks",
+    "Benjamin Kelley"
+   ],
+   "explanation": "Dr. Eisele, superintendent from 1900 to 1907, oversaw filling in the lakes of the park built in the late 1890s.",
+   "source": "NPS: Whittington Park",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/whittington-park.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0544",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "Which organization named Central Avenue one of its \"Ten Great Streets\" for 2014?",
+   "answer": "American Planning Association",
+   "wrong": [
+    "National Trust for Historic Preservation",
+    "American Institute of Architects",
+    "Urban Land Institute"
+   ],
+   "explanation": "The Hot Springs Central Avenue Historic District joined Broadway in New York and Pennsylvania Avenue in Washington on the APA list.",
+   "source": "Encyclopedia of Arkansas: Central Avenue Historic District",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-central-avenue-historic-district-7954/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0545",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year was the Renaissance-inspired Garland County Courthouse listed on the National Register of Historic Places?",
+   "answer": "1979",
+   "wrong": [
+    "1974",
+    "1977",
+    "1985"
+   ],
+   "explanation": "The Renaissance-style county courthouse in Hot Springs joined the National Register of Historic Places in 1979.",
+   "source": "Encyclopedia of Arkansas: Garland County",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/garland-county-770/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0546",
+   "category": "Places & Landmarks",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "To triple its beds almost overnight, the federal government bought which hotel across the street from the Army and Navy Hospital?",
+   "answer": "The Eastman Hotel",
+   "wrong": [
+    "The Majestic Hotel",
+    "The Park Hotel",
+    "The Pythian Hotel"
+   ],
+   "explanation": "The government bought the Eastman Hotel for the hospital, linked the two buildings with a ramp, and tripled its patient beds almost overnight.",
+   "source": "Encyclopedia of Arkansas: Army-Navy Hospital",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/arkansas-career-training-institute-2236/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0547",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did NASA scientists come to Hot Springs to search the thermal springs for tiny \"nanobes\"?",
+   "answer": "1997",
+   "wrong": [
+    "1989",
+    "1993",
+    "2001"
+   ],
+   "explanation": "After a Mars meteorite was said to hold nanobacteria, NASA scientists sampled Hot Springs in 1997 and found over 700 nanobes.",
+   "source": "National Park Service: Thermophiles (Hot Springs NP)",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/thermophiles.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0548",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "A 2013 study found 45 algae species in the thermal springs. How many were cyanobacteria?",
+   "answer": "29",
+   "wrong": [
+    "21",
+    "33",
+    "38"
+   ],
+   "explanation": "Of the 45 species, 29 were cyanobacteria (blue-green algae) and 16 were diatoms.",
+   "source": "National Park Service: Thermophiles (Hot Springs NP)",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/thermophiles.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0549",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "Tiny crustaceans called ostracods were noticed in the thermal springs as early as which year?",
+   "answer": "1804",
+   "wrong": [
+    "1790",
+    "1819",
+    "1836"
+   ],
+   "explanation": "The park says ostracods have been noticed in the thermal springs since at least 1804, when Dunbar and Hunter explored them for President Jefferson.",
+   "source": "National Park Service: Thermophiles (Hot Springs NP)",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/thermophiles.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0550",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "ancient",
+   "question": "The Park Service says the story of the thermal springs begins with rocks formed about how long ago?",
+   "answer": "About 400 million years",
+   "wrong": [
+    "About 4 million years",
+    "About 40 million years",
+    "About 4 billion years"
+   ],
+   "explanation": "The park traces the springs to rocks laid down more than 400 million years ago.",
+   "source": "National Park Service: Natural Features & Ecosystems (Hot Springs NP)",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/nature/naturalfeaturesandecosystems.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0551",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "On what date was Blakely Mountain Dam, which created Lake Ouachita, officially dedicated?",
+   "answer": "July 4, 1956",
+   "wrong": [
+    "July 4, 1952",
+    "Nov. 11, 1955",
+    "June 14, 1957"
+   ],
+   "explanation": "The dam was dedicated on Independence Day 1956, with Sen. John McClellan present; its power plant had first produced electricity in 1955.",
+   "source": "Encyclopedia of Arkansas: Blakely Mountain Dam",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/blakely-mountain-dam-5815/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0552",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "In what year did Congress first appropriate construction money for Blakely Mountain Dam?",
+   "answer": "1946",
+   "wrong": [
+    "1939",
+    "1942",
+    "1949"
+   ],
+   "explanation": "The dam was planned in 1938 but Congress first funded construction in 1946, with $1 million.",
+   "source": "Encyclopedia of Arkansas: Blakely Mountain Dam",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/blakely-mountain-dam-5815/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0553",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "About how much did Carpenter Dam, which forms Lake Hamilton, cost to build?",
+   "answer": "$6.5 million",
+   "wrong": [
+    "$2.4 million",
+    "$11 million",
+    "$18 million"
+   ],
+   "explanation": "The concrete dam cost $6.5 million and was finished in December 1931.",
+   "source": "Encyclopedia of Arkansas: Carpenter Dam",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/carpenter-dam-4731/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0554",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Which engineering firm began building Carpenter Dam in February 1929?",
+   "answer": "Ford, Bacon and Davis",
+   "wrong": [
+    "Stone & Webster",
+    "Morrison-Knudsen",
+    "Bechtel-Kaiser"
+   ],
+   "explanation": "Ford, Bacon, and Davis started work in February 1929 for Arkansas Power and Light.",
+   "source": "Encyclopedia of Arkansas: Carpenter Dam",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/carpenter-dam-4731/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0555",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "How many acres of Garvan Woodland Gardens form a bird sanctuary with over seventy documented species?",
+   "answer": "45 acres",
+   "wrong": [
+    "20 acres",
+    "80 acres",
+    "120 acres"
+   ],
+   "explanation": "A 45-acre wooded area of the 210-acre garden serves as a bird sanctuary.",
+   "source": "Encyclopedia of Arkansas: Garvan Woodland Gardens",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/garvan-woodland-gardens-4197/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0556",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "What did Garvan Woodland Gardens' Anthony Chapel Complex, opened in 2006, cost?",
+   "answer": "$5.8 million",
+   "wrong": [
+    "$2.3 million",
+    "$9.4 million",
+    "$12 million"
+   ],
+   "explanation": "The 2006 complex, with a chapel, bride's hall, groom's quarters and carillon, cost $5.8 million.",
+   "source": "Encyclopedia of Arkansas: Garvan Woodland Gardens",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/garvan-woodland-gardens-4197/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0557",
+   "category": "Nature & Lakes",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "Which architect, with Maurice Jennings, designed the first structure at Garvan Woodland Gardens, the Verna C. Garvan Pavilion?",
+   "answer": "E. Fay Jones",
+   "wrong": [
+    "Edward Durell Stone",
+    "Frank Lloyd Wright",
+    "Eero Saarinen"
+   ],
+   "explanation": "The garden's first building, the Verna C. Garvan Pavilion, was designed by Arkansas architect E. Fay Jones and Maurice Jennings.",
+   "source": "Encyclopedia of Arkansas: Garvan Woodland Gardens",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/garvan-woodland-gardens-4197/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0558",
+   "category": "Sports",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "By 1961, Oaklawn's racing season had grown from thirty days to how many?",
+   "answer": "43 days",
+   "wrong": [
+    "36 days",
+    "50 days",
+    "56 days"
+   ],
+   "explanation": "The season expanded from thirty to forty-three days in 1961, and reached sixty-two days by 1984.",
+   "source": "Encyclopedia of Arkansas: Oaklawn Racing Casino Resort",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/oaklawn-park-racetrack-3636/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0559",
+   "category": "Sports",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did Oaklawn hold its first Sunday racing, the year simulcast betting was legalized?",
+   "answer": "1989",
+   "wrong": [
+    "1984",
+    "1986",
+    "1992"
+   ],
+   "explanation": "Simulcast betting was legalized in 1989, and the first Sunday racing at Oaklawn took place that year.",
+   "source": "Encyclopedia of Arkansas: Oaklawn Racing Casino Resort",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/oaklawn-park-racetrack-3636/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0560",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "What was the first air National Guard unit, organized in 1915 by Hot Springs-born Raynal Bolling?",
+   "answer": "First Aero Company",
+   "wrong": [
+    "First Flying Battalion",
+    "Aero Club Guard",
+    "Hudson Air Corps"
+   ],
+   "explanation": "Bolling, born in Hot Springs in 1877, organized the First Aero Company, the first air National Guard unit ever formed.",
+   "source": "Encyclopedia of Arkansas: Raynal Cawthorne Bolling",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/raynal-cawthorne-bolling-7850/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0561",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "What rank did Hot Springs-born aviator Raynal Bolling hold when he was killed in 1918 during World War I?",
+   "answer": "Colonel",
+   "wrong": [
+    "Major",
+    "Captain",
+    "Brigadier general"
+   ],
+   "explanation": "Bolling died on a scouting trip in March 1918 as a colonel. The Encyclopedia of Arkansas calls him the highest-ranking U.S. air officer killed in the war.",
+   "source": "Encyclopedia of Arkansas: Raynal Cawthorne Bolling",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/raynal-cawthorne-bolling-7850/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0562",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "The Encyclopedia of Arkansas lists soprano Mary Lewis as Hot Springs-born. In which city did she make her opera debut in 1923?",
+   "answer": "Vienna",
+   "wrong": [
+    "Paris",
+    "Milan",
+    "Berlin"
+   ],
+   "explanation": "Lewis debuted as Marguerite in Faust at the Vienna Opera House on Oct. 19, 1923.",
+   "source": "Encyclopedia of Arkansas: Mary Sybil Kidd Lewis",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mary-sybil-kidd-lewis-2580/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0563",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Which Broadway producer signed soprano Mary Lewis, listed by the Encyclopedia of Arkansas as Hot Springs-born, for his Follies of 1921?",
+   "answer": "Florenz Ziegfeld",
+   "wrong": [
+    "George White",
+    "Earl Carroll",
+    "Lee Shubert"
+   ],
+   "explanation": "Lewis signed with Ziegfeld for his 1921 Follies before moving on to opera.",
+   "source": "Encyclopedia of Arkansas: Mary Sybil Kidd Lewis",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mary-sybil-kidd-lewis-2580/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0564",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "The Encyclopedia of Arkansas says Patsy Montana was born near Hot Springs. Which 1935 song of hers was the first million-seller by a woman in country music?",
+   "answer": "I Want to Be a Cowboy's Sweetheart",
+   "wrong": [
+    "Cowgirl's Prairie Lullaby",
+    "I'm a Prairie Rose Dreaming",
+    "Ride Me Back to Arkansas"
+   ],
+   "explanation": "Montana wrote and recorded the song in 1935; it was the first record by a female country artist to sell a million copies.",
+   "source": "Encyclopedia of Arkansas: Patsy Montana",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/patsy-montana-1718/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0565",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In 1973, Hot Springs-born writer Shirley Abbott became editor-in-chief of which magazine?",
+   "answer": "Horizon",
+   "wrong": [
+    "Harper's",
+    "Mademoiselle",
+    "Saturday Review"
+   ],
+   "explanation": "Abbott started at Horizon in 1959 as a fact checker and became its editor-in-chief in 1973.",
+   "source": "Encyclopedia of Arkansas: Shirley Jean Abbott Tomkievicz",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/shirley-jean-abbott-tomkievicz-1023/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0566",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "At which French university was Hot Springs-born Shirley Abbott a Fulbright Scholar in 1957-58?",
+   "answer": "University of Grenoble",
+   "wrong": [
+    "The Sorbonne",
+    "University of Lyon",
+    "University of Toulouse"
+   ],
+   "explanation": "Abbott, born in Hot Springs in 1934, studied in Grenoble on a Fulbright in 1957-1958.",
+   "source": "Encyclopedia of Arkansas: Shirley Jean Abbott Tomkievicz",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/shirley-jean-abbott-tomkievicz-1023/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0567",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "According to the Encyclopedia of Arkansas, which Hot Springs congregation appointed the state's first full-time female rabbi in 1989?",
+   "answer": "Congregation House of Israel",
+   "wrong": [
+    "Temple Beth El",
+    "Temple B'nai Israel",
+    "Congregation Agudath Achim"
+   ],
+   "explanation": "Angela Graboys-Rudner was appointed rabbi of Congregation House of Israel in 1989, a first for Arkansas.",
+   "source": "Encyclopedia of Arkansas: Hot Springs (Garland County)",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-887/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0568",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Before advising on Ouachita River dams, what had Flave Carpenter, namesake of Carpenter Dam, been?",
+   "answer": "A riverboat captain",
+   "wrong": [
+    "A railroad engineer",
+    "A timber surveyor",
+    "A county judge"
+   ],
+   "explanation": "Entergy says Flavius Carpenter was a former riverboat captain who guided Harvey Couch along the river on horseback to pick dam sites.",
+   "source": "Entergy: Remmel, Catherine, Carpenter and Hamilton",
+   "sourceUrl": "https://www.entergy.com/operations/hydro/history",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0569",
+   "category": "People",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Which 1942 film, with Alan Ladd as a hired killer, brought the Hot Springs native instant fame?",
+   "answer": "This Gun for Hire",
+   "wrong": [
+    "Dark Passage",
+    "Double Indemnity",
+    "The Big Sleep"
+   ],
+   "explanation": "Ladd, born in Hot Springs in 1913, became famous in 1942 as a hired killer in This Gun for Hire.",
+   "source": "Encyclopedia of Arkansas: Alan Ladd",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/alan-ladd-2767/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0570",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "In what year was the Mountain Valley Water Company formally organized in Hot Springs?",
+   "answer": "1883",
+   "wrong": [
+    "1881",
+    "1886",
+    "1890"
+   ],
+   "explanation": "The company that bottles Mountain Valley water was formally organized in 1883, twelve years after the first sales in 1871.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0571",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "According to the Encyclopedia of Arkansas, Mountain Valley became the first bottled water sold coast to coast on reaching which state in 1928?",
+   "answer": "California",
+   "wrong": [
+    "Oregon",
+    "Washington",
+    "Texas"
+   ],
+   "explanation": "The Encyclopedia of Arkansas says shipments to California in 1928 made it the first bottled water available from coast to coast.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0572",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Which singer and radio star was a guest when the Mountain Valley Spring hotel burned in 1934?",
+   "answer": "Kate Smith",
+   "wrong": [
+    "Ethel Waters",
+    "Ruth Etting",
+    "Jessica Dragonette"
+   ],
+   "explanation": "The Mountain Valley hotel burned in 1934 while the radio singer Kate Smith was a guest.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0573",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "Which president drank Mountain Valley water on his doctor's advice after a 1955 heart attack?",
+   "answer": "Dwight Eisenhower",
+   "wrong": [
+    "Harry Truman",
+    "Herbert Hoover",
+    "John F. Kennedy"
+   ],
+   "explanation": "After his 1955 heart attack, Eisenhower took up Mountain Valley Spring Water because his physician recommended it.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0574",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "According to the Encyclopedia of Arkansas, which president was first to have Mountain Valley Spring Water served in the White House?",
+   "answer": "Calvin Coolidge",
+   "wrong": [
+    "Woodrow Wilson",
+    "Warren Harding",
+    "William Taft"
+   ],
+   "explanation": "The Encyclopedia of Arkansas names Coolidge. The company itself says only that he is believed to be the first.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0575",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "Which beverage company bought Mountain Valley Spring Water for $78.5 million in October 2018?",
+   "answer": "Cott Corporation",
+   "wrong": [
+    "Nestlé Waters",
+    "Keurig Dr Pepper",
+    "Sammons Enterprises"
+   ],
+   "explanation": "Cott Corp., an international beverage distributor, bought the Hot Springs company in October 2018 for $78.5 million.",
+   "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0576",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "In what year did McClard's Bar-B-Q first accept credit cards?",
+   "answer": "2014",
+   "wrong": [
+    "2009",
+    "2011",
+    "2017"
+   ],
+   "explanation": "The Hot Springs barbecue restaurant, open since 1928, took credit cards for the first time only in early 2014.",
+   "source": "Encyclopedia of Arkansas: McClard's Bar-B-Q",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mcclards-bar-b-q-4230/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0577",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "McClard's catered which presidential celebration on August 19, 2006?",
+   "answer": "President Clinton's 60th birthday",
+   "wrong": [
+    "A Clinton Foundation fundraiser",
+    "A Clinton Library anniversary",
+    "Chelsea Clinton's graduation party"
+   ],
+   "explanation": "On Aug. 19, 2006, McClard's catered Bill Clinton's sixtieth birthday, one of several Clinton events it served.",
+   "source": "Encyclopedia of Arkansas: McClard's Bar-B-Q",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mcclards-bar-b-q-4230/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0578",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "In what year was McClard's inducted into the Arkansas Food Hall of Fame?",
+   "answer": "2018",
+   "wrong": [
+    "2016",
+    "2020",
+    "2022"
+   ],
+   "explanation": "The Encyclopedia of Arkansas says the Albert Pike restaurant joined the Arkansas Food Hall of Fame in 2018.",
+   "source": "Encyclopedia of Arkansas: McClard's Bar-B-Q",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/mcclards-bar-b-q-4230/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0579",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "In what year was the Ohio Club inducted into the Arkansas Food Hall of Fame?",
+   "answer": "2025",
+   "wrong": [
+    "2017",
+    "2021",
+    "2023"
+   ],
+   "explanation": "Hot Springs' Ohio Club, a bar since 1905, was inducted into the Arkansas Food Hall of Fame in 2025.",
+   "source": "Encyclopedia of Arkansas: Ohio Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/ohio-club-9408/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0580",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "According to a company brochure, what did \"Chewaukla,\" name of a Hot Springs-area bottled water, mean?",
+   "answer": "Sleepy water",
+   "wrong": [
+    "Healing water",
+    "Spirit spring",
+    "Cool stream"
+   ],
+   "explanation": "A company brochure told a legend that Chewaukla meant \"sleepy water.\" The Quapaw, Choctaw and Osage do not recognize the legend or the word.",
+   "source": "Encyclopedia of Arkansas: Chewaukla Mineral Springs Co.",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/chewaukla-mineral-springs-co-18830",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0581",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Which bandleader's orchestra dedicated \"Sweet Chewaukla, The Land of Sleepy Water\" (1929) to a Hot Springs-area spring?",
+   "answer": "Guy Lombardo",
+   "wrong": [
+    "Paul Whiteman",
+    "Rudy Vallee",
+    "Duke Ellington"
+   ],
+   "explanation": "Guy Lombardo and His Royal Canadians dedicated the 1929 song to the spring water company, which also advertised in a Chicago newspaper.",
+   "source": "Encyclopedia of Arkansas: Chewaukla Mineral Springs Co.",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/chewaukla-mineral-springs-co-18830",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0582",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "In the traditional Hot Springs bath routine, at what temperature are the sitz tubs filled?",
+   "answer": "108 degrees",
+   "wrong": [
+    "98 degrees",
+    "103 degrees",
+    "114 degrees"
+   ],
+   "explanation": "In the classic routine the sitz tub is filled to 108 degrees for ten minutes. The full tub is 98 to 100 degrees.",
+   "source": "National Park Service: Traditional Baths",
+   "sourceUrl": "https://www.nps.gov/hosp/planyourvisit/traditional-baths.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0583",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "In the traditional Hot Springs bath routine, how long is a session in a head-out vapor cabinet?",
+   "answer": "Five minutes",
+   "wrong": [
+    "Three minutes",
+    "Eight minutes",
+    "Fifteen minutes"
+   ],
+   "explanation": "The park says head-out vapor cabinets run five minutes, while full cabinets that enclose the head run two.",
+   "source": "National Park Service: Traditional Baths",
+   "sourceUrl": "https://www.nps.gov/hosp/planyourvisit/traditional-baths.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0584",
+   "category": "Food & Culture",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did the Superior Bathhouse close, before sitting vacant for nearly 30 years?",
+   "answer": "1983",
+   "wrong": [
+    "1978",
+    "1980",
+    "1987"
+   ],
+   "explanation": "The 1916 bathhouse stopped operating in 1983 and stood empty until it became a brewery in 2013.",
+   "source": "Superior Bathhouse Brewery: History",
+   "sourceUrl": "https://www.superiorbathhouse.com/history",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0585",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Who, as manager of the Opera House, commissioned the Princess Theatre in 1910, now the Malco?",
+   "answer": "Frank Head",
+   "wrong": [
+    "Samuel Fordyce",
+    "Dan Stuart",
+    "Norman McLeod"
+   ],
+   "explanation": "Opera House manager Frank Head had the Princess built in 1910 for silent films and vaudeville; it later became the Malco.",
+   "source": "Encyclopedia of Arkansas: Malco Theatre",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/malco-theatre-7955/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0586",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "In what year did a Christmas fire destroy all but the foundation and Broadway entrance of the Princess Theatre?",
+   "answer": "1935",
+   "wrong": [
+    "1929",
+    "1931",
+    "1938"
+   ],
+   "explanation": "A fire at Christmas 1935 gutted the Princess Theatre, leaving only the foundation and the Broadway entrance.",
+   "source": "Encyclopedia of Arkansas: Malco Theatre",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/malco-theatre-7955/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0587",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "On January 21 of what year was the Art Deco Malco Theatre added to the National Register of Historic Places?",
+   "answer": "2010",
+   "wrong": [
+    "1985",
+    "1992",
+    "2004"
+   ],
+   "explanation": "The Malco was listed on the National Register of Historic Places on Jan. 21, 2010.",
+   "source": "Encyclopedia of Arkansas: Malco Theatre",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/malco-theatre-7955/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0588",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "The state says the Malco's Broadway entrance may be one of how many surviving formerly segregated theater entrances in the U.S.?",
+   "answer": "Only two",
+   "wrong": [
+    "Five",
+    "Twelve",
+    "Forty"
+   ],
+   "explanation": "The Arkansas Historic Preservation Program has said the old Broadway entrance, used by Black patrons until 1964, may be one of only two left.",
+   "source": "Encyclopedia of Arkansas: Malco Theatre",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/malco-theatre-7955/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0589",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "What was the building at 1008 Central Avenue, later the Central Theater, built as before its 1937 conversion?",
+   "answer": "A garage",
+   "wrong": [
+    "A department store",
+    "A bathhouse",
+    "A bank"
+   ],
+   "explanation": "The Art Deco building was put up in the 1930s as a garage and became a theater in 1937.",
+   "source": "Encyclopedia of Arkansas: Central Theater",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/central-theater-18239/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0590",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "Which actor attending the first Hot Springs documentary festival said the town could be the \"documentary capital of the world\"?",
+   "answer": "James Whitmore",
+   "wrong": [
+    "Charlton Heston",
+    "Ed Asner",
+    "Martin Sheen"
+   ],
+   "explanation": "James Whitmore attended the festival's debut, which showed ten Academy Award-nominated documentaries, and made the prediction.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Documentary Film Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-documentary-film-institute-3816/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0591",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "Which actor was featured at a fundraising gala at the 1993 Hot Springs Documentary Film Festival?",
+   "answer": "James Earl Jones",
+   "wrong": [
+    "Sidney Poitier",
+    "Morgan Freeman",
+    "Danny Glover"
+   ],
+   "explanation": "In 1993 the festival grew to 44 documentaries, and James Earl Jones was featured at a fundraising gala.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Documentary Film Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-documentary-film-institute-3816/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0592",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "Which Academy president attended the festival's 1997 stop on the Library of Congress Film Preservation Tour?",
+   "answer": "Arthur Hiller",
+   "wrong": [
+    "Gregory Peck",
+    "Karl Malden",
+    "Walter Mirisch"
+   ],
+   "explanation": "The 1997 festival hosted a Library of Congress Film Preservation Tour stop, and Academy president Arthur Hiller came.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Documentary Film Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-documentary-film-institute-3816/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0593",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "About how many people attended the Hot Springs Documentary Film Festival in 1994?",
+   "answer": "More than 5,000",
+   "wrong": [
+    "About 1,200",
+    "About 2,500",
+    "More than 12,000"
+   ],
+   "explanation": "By its third year, the festival drew over 5,000 people, with fourteen filmmakers present.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Documentary Film Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-documentary-film-institute-3816/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0594",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "Which composer of the \"Creole Romantics\" of 19th-century New Orleans has the Hot Springs Music Festival championed?",
+   "answer": "Louis Moreau Gottschalk",
+   "wrong": [
+    "Scott Joplin",
+    "John Philip Sousa",
+    "Stephen Foster"
+   ],
+   "explanation": "The festival revived the \"Creole Romantics\" of New Orleans, including Gottschalk, the Lambert family and the Dédés.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Music Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-music-festival-4702/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0595",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "On which record label are Hot Springs Music Festival recordings distributed worldwide?",
+   "answer": "Naxos Records",
+   "wrong": [
+    "Deutsche Grammophon",
+    "Sony Classical",
+    "Decca Records"
+   ],
+   "explanation": "The festival's recordings have been broadcast repeatedly on NPR and are distributed worldwide by Naxos.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Music Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-music-festival-4702/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0596",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "Hot Springs Music Festival co-founder Richard Rosenberg had been music director of which ballet company?",
+   "answer": "Pennsylvania Ballet",
+   "wrong": [
+    "New York City Ballet",
+    "Boston Ballet",
+    "Houston Ballet"
+   ],
+   "explanation": "Before founding the festival, Rosenberg was music director of the Pennsylvania Ballet.",
+   "source": "Encyclopedia of Arkansas: Hot Springs Music Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-music-festival-4702/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0597",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "The Valley of the Vapors festival settled in a warehouse once the laundromat of which former hotel?",
+   "answer": "Velda Rose hotel",
+   "wrong": [
+    "Eastman Hotel",
+    "Majestic Hotel",
+    "Park Hotel"
+   ],
+   "explanation": "After starting in 2005, the indie festival ended up in a former laundry warehouse of the old Velda Rose hotel.",
+   "source": "Encyclopedia of Arkansas: Valley of the Vapors Independent Music Festival",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/valley-of-the-vapors-independent-music-festival-14575/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0598",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "How long was the mural painted across the front of Oaklawn in the early 1990s?",
+   "answer": "240 feet",
+   "wrong": [
+    "120 feet",
+    "180 feet",
+    "300 feet"
+   ],
+   "explanation": "A mural 240 feet long and fourteen feet high was painted on the front of Oaklawn in the early 1990s.",
+   "source": "Encyclopedia of Arkansas: Oaklawn Racing Casino Resort",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/oaklawn-park-racetrack-3636/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0599",
+   "category": "Entertainment",
+   "difficulty": "hard",
+   "era": "revival",
+   "question": "In what year did Arkansas approve \"instant racing,\" first tested at Oaklawn?",
+   "answer": "1999",
+   "wrong": [
+    "1994",
+    "1996",
+    "2002"
+   ],
+   "explanation": "Instant racing, a form of wagering on past races, was approved in 1999 and tried first at Oaklawn.",
+   "source": "Encyclopedia of Arkansas: Oaklawn Racing Casino Resort",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/oaklawn-park-racetrack-3636/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0600",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "When gambling was banned, the Ohio Club on Central Avenue officially became what front business, complete with a fake wall?",
+   "answer": "The Ohio Cigar Store",
+   "wrong": [
+    "The Ohio Pharmacy",
+    "The Ohio Billiard Parlor",
+    "The Ohio Soda Fountain"
+   ],
+   "explanation": "After Arkansas outlawed gambling in 1913, the Ohio Club posed as a cigar store. A false wall hid the real club behind it.",
+   "source": "Encyclopedia of Arkansas: Ohio Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/ohio-club-9408/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0601",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "What had to be taken apart and rebuilt so the Ohio Club could install its huge 1880s-era mahogany backbar?",
+   "answer": "The entire front of the club",
+   "wrong": [
+    "The roof of the club",
+    "A side wall and chimney",
+    "The main staircase"
+   ],
+   "explanation": "The antique bar was so big that the club front was removed and rebuilt around it.",
+   "source": "Encyclopedia of Arkansas: Ohio Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/ohio-club-9408/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0602",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "In 1884, which Hot Springs Reservation superintendent found himself facing an Army captain's shotgun over spring water?",
+   "answer": "Samuel Hamblen",
+   "wrong": [
+    "Benjamin Kelley",
+    "Charles Field",
+    "Martin Eisele"
+   ],
+   "explanation": "Captain Jacobs, building the Army and Navy hospital, diverted spring water and met Hamblen's objection with a shotgun. Officials in Washington ordered him to stop the diversion.",
+   "source": "NPS: The Almost Shoot Out of 1884",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/the-almost-shoot-out-of-1884.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0603",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "On the Hot Springs hillside, which nicknamed spring was said to be good for soaking feet?",
+   "answer": "Corn Hole Spring",
+   "wrong": [
+    "Ral Hole Spring",
+    "Mud Hole Spring",
+    "Cedar Hole Spring"
+   ],
+   "explanation": "Poor health seekers used springs with nicknames. The Corn Hole was for feet, the Mud Hole for the poor, and the Ral Hole for poor people with syphilis.",
+   "source": "NPS: Uncovering Ral City",
+   "sourceUrl": "https://www.nps.gov/articles/000/uncovering-ral-city.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0604",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "frontier",
+   "question": "The Encyclopedia of Arkansas says the James-Younger Gang held up a stagecoach near Hot Springs. In which year?",
+   "answer": "1874",
+   "wrong": [
+    "1871",
+    "1877",
+    "1880"
+   ],
+   "explanation": "On Jan. 15, 1874, the gang robbed a stagecoach at Gaines Place, about five miles east of Hot Springs. Blaming Jesse James is a tradition, so this one is marked claim.",
+   "source": "Encyclopedia of Arkansas: Jesse James",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/jesse-james-3564/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0605",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Tiny Town creator Frank Moshinskie taught himself to carve in World War II while stationed on which remote Atlantic island?",
+   "answer": "Ascension Island",
+   "wrong": [
+    "St. Helena",
+    "Bermuda",
+    "The Azores"
+   ],
+   "explanation": "Sent to Ascension Island to help service airplanes, he spent two years there with little to do and began carving.",
+   "source": "Encyclopedia of Arkansas: Tiny Town",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/tiny-town-20742/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0606",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "Tiny Town opened as a Hot Springs tourist attraction in 1963 inside a building that had been what?",
+   "answer": "A barbecue restaurant",
+   "wrong": [
+    "A roller-skating rink",
+    "A filling station",
+    "A dance hall"
+   ],
+   "explanation": "After a tornado damaged the family's Louisiana home, the Moshinskies moved the miniature town to Hot Springs and opened it in a former barbecue restaurant.",
+   "source": "Encyclopedia of Arkansas: Tiny Town",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/tiny-town-20742/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0607",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "Frank Moshinskie's first carving, made in World War II, was a wooden letter opener shaped like whose head?",
+   "answer": "General Douglas MacArthur",
+   "wrong": [
+    "General George Patton",
+    "General Dwight Eisenhower",
+    "Admiral Chester Nimitz"
+   ],
+   "explanation": "His first carved piece was a letter opener topped with MacArthur's head. Decades later his carving skill went into the 22 areas of Tiny Town.",
+   "source": "Encyclopedia of Arkansas: Tiny Town",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/tiny-town-20742/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0608",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Birds from Hot Springs' Ostrich Farm appeared at most editions, 1906 to 1914, of which event held at Oaklawn?",
+   "answer": "The Arkansas State Fair",
+   "wrong": [
+    "The Spring Racing Carnival",
+    "A Fourth of July rodeo",
+    "The Hot Springs Horse Show"
+   ],
+   "explanation": "Famous ostriches Black Diamond and Whirlwind performed at Oaklawn Park during most of the state fairs held there in those years.",
+   "source": "Encyclopedia of Arkansas: Ostrich Farm in Hot Springs",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/ostrich-farm-in-hot-springs-4429/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0609",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "In what year did Thomas Cockburn open the Ostrich Farm on upper Whittington Avenue in Hot Springs?",
+   "answer": "1900",
+   "wrong": [
+    "1895",
+    "1897",
+    "1904"
+   ],
+   "explanation": "Cockburn brought hundreds of ostriches to town and opened the farm in 1900. It stayed in business until 1953.",
+   "source": "Encyclopedia of Arkansas: Ostrich Farm in Hot Springs",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/ostrich-farm-in-hot-springs-4429/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0610",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "According to the Encyclopedia of Arkansas, which Central Avenue gambling club installed Hot Springs' first escalator in the 1950s?",
+   "answer": "The Southern Club",
+   "wrong": [
+    "The Ohio Club",
+    "The Belvedere Club",
+    "The Kentucky Club"
+   ],
+   "explanation": "The Encyclopedia of Arkansas says the Southern Club put in the city's first escalator during the 1950s.",
+   "source": "Encyclopedia of Arkansas: Southern Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/southern-club-1208/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0611",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "modern",
+   "question": "The Zander exercise machines shown at the Fordyce Bathhouse museum came from which famous spa?",
+   "answer": "The Homestead, Virginia",
+   "wrong": [
+    "The Greenbrier",
+    "The Broadmoor",
+    "The Grove Park Inn"
+   ],
+   "explanation": "The machines were first used at The Homestead. Its owners donated them in December 2000, making the Fordyce display the largest known Zander collection in the U.S.",
+   "source": "NPS: Therapy Machines of Dr. Gustav Zander",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/the-therapy-machines-of-dr-gustav-zander.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0612",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "What everyday object did archeologists find in the Hale Hot Cave, left from when the cave closed in 1896?",
+   "answer": "An alarm clock",
+   "wrong": [
+    "A pocket watch",
+    "A razor strop",
+    "A brass spittoon"
+   ],
+   "explanation": "The park's archeology page pictures an alarm clock recovered from the Hale Hot Cave, dating to the cave's closing in 1896.",
+   "source": "NPS: Archeology at Hot Springs",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/archeology.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0613",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Why did the Fordyce Bathhouse marquee have a blue glass top?",
+   "answer": "To show a blue sky in any weather",
+   "wrong": [
+    "To keep sun off visitors' eyes",
+    "To match the Fordyce family colors",
+    "To echo the color of the spring water"
+   ],
+   "explanation": "The chain-hung bronze and glass marquee was designed so visitors always saw a blue sky overhead, rain or shine.",
+   "source": "Encyclopedia of Arkansas: Bathhouse Row",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/bathhouse-row-437/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0614",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "The Arlington says a clerk who did not recognize Al Capone insisted that he do what before dinner?",
+   "answer": "Wear a tie",
+   "wrong": [
+    "Check his coat",
+    "Put out his cigar",
+    "Sign the register"
+   ],
+   "explanation": "The hotel tells of a clerk who demanded a tie from an unrecognized Capone. It is a hotel anecdote, so it is marked claim.",
+   "source": "The Arlington Hotel: History",
+   "sourceUrl": "https://www.arlingtonhotel.com/history/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0615",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "Whose famous team of Clydesdale horses was stabled in the garage of Hot Springs' Majestic Hotel?",
+   "answer": "Budweiser (Anheuser-Busch)",
+   "wrong": [
+    "Coors",
+    "Pabst",
+    "Miller"
+   ],
+   "explanation": "The Encyclopedia of Arkansas says the Budweiser Clydesdales were stabled in the Majestic's garage when the brewery's owner was married there.",
+   "source": "Encyclopedia of Arkansas: Majestic Hotel",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/majestic-hotel-8351/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0616",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "any",
+   "question": "The Majestic Hotel's Dutch Treat restaurant had what eye-catching feature over its front door?",
+   "answer": "A windmill",
+   "wrong": [
+    "A giant clock",
+    "A carillon tower",
+    "A water wheel"
+   ],
+   "explanation": "The restaurant, a landmark of the hotel, was topped by a windmill over the entrance.",
+   "source": "Encyclopedia of Arkansas: Majestic Hotel",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/majestic-hotel-8351/",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0617",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "midcentury",
+   "question": "The Majestic's 1963 Lanai suites were said to boast the first of what modern feature?",
+   "answer": "Sliding-glass doors",
+   "wrong": [
+    "Air conditioning units",
+    "In-room televisions",
+    "Push-button elevators"
+   ],
+   "explanation": "The Encyclopedia of Arkansas says the Lanai Tower, opened in 1963, was said to have the first modern sliding-glass doors, so this is marked claim.",
+   "source": "Encyclopedia of Arkansas: Majestic Hotel",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/majestic-hotel-8351/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0618",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "ancient",
+   "question": "Local legend says the Valley of the Vapors was what, for the area's Native peoples?",
+   "answer": "Neutral ground for all tribes",
+   "wrong": [
+    "A sacred burial ground",
+    "A seat of tribal councils",
+    "A winter hunting camp"
+   ],
+   "explanation": "Visit Hot Springs repeats a legend that all tribes could take the waters there in peace. The Encyclopedia of Arkansas says archaeologists have found no evidence of Native use of the springs.",
+   "source": "Visit Hot Springs: History",
+   "sourceUrl": "https://www.hotsprings.org/explore/history/",
+   "confidence": "claim"
+  },
+  {
+   "id": "hs-0619",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "gilded-spa",
+   "question": "Which famed landscape architect's firm was first hired to design 1890s improvements at Hot Springs, then withdrew?",
+   "answer": "Frederick Law Olmsted's firm",
+   "wrong": [
+    "Calvert Vaux's firm",
+    "Daniel Burnham's firm",
+    "H. H. Richardson's firm"
+   ],
+   "explanation": "The Interior secretary planned to use Olmsted's services, but after misunderstandings the firm withdrew and Captain John R. Stevens finished the work.",
+   "source": "NPS: Bathhouse Row history",
+   "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/bathhouse-row.htm",
+   "confidence": "confirmed"
+  },
+  {
+   "id": "hs-0620",
+   "category": "Legends & Oddities",
+   "difficulty": "hard",
+   "era": "roaring",
+   "question": "At the Southern Club, where did the Encyclopedia of Arkansas say Al Capone always sat?",
+   "answer": "At an elevated table",
+   "wrong": [
+    "By the front door",
+    "In a back-room booth",
+    "Beside the roulette wheel"
+   ],
+   "explanation": "The entry says Capone sat at a raised table with a clear view of the whole room. Such gangster lore is hard to prove, so it is marked claim.",
+   "source": "Encyclopedia of Arkansas: Southern Club",
+   "sourceUrl": "https://encyclopediaofarkansas.net/entries/southern-club-1208/",
+   "confidence": "claim"
   }
  ],
- "audited": "2026-10-28"
+ "audited": "2026-10-28",
+ "supplement": [
+  {
+   "added": "2026-11-13",
+   "count": 108,
+   "from": "hs-0513",
+   "to": "hs-0620",
+   "note": "Researched online, each fact checked on its source page by a second independent pass, then reviewed and approved by the owner."
+  }
+ ]
 }
