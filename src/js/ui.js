@@ -583,7 +583,8 @@ export function coachTick() {
   const c = coachNow();
   if (ui.coachDone) { ui.coachDone = false; ui.coachStep = 0; ui.coachAt = 0; ui.coachSaid = ''; ui.finishCoach(); return; }
   const id = c ? c.id : '';
-  if (id !== ui.coachSaid) { ui.coachSaid = id; if (c) announce(c.text(G.state.trail)); update(); }
+  // (not while saving has failed: that notice is read out and a tip must not replace it)
+  if (id !== ui.coachSaid) { ui.coachSaid = id; if (c && G.save.ok) announce(c.text(G.state.trail)); update(); }
 }
 export function coachAction(kind) {
   if (kind === 'next') { ui.coachStep = (ui.coachStep | 0) + 1; ui.coachAt = 0; }
