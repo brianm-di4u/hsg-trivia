@@ -1,6 +1,6 @@
 // Council wave 2, batch C: Trail record (S3-01), first-run teaching (S2-01), opponent voices (S4-01).
 import assert from 'node:assert/strict';
-import { H1, soloGame, moveTo, landOn, waitFor, phase } from './helpers.mjs';
+import { H1, soloGame, moveTo, landOn, neighborOf, waitFor, phase } from './helpers.mjs';
 import { createSaveStore } from '../src/js/save.js';
 import { ACHIEVEMENTS, ACH, COVERS, TITLES, applyIntent, cleanRecord, freshRecord } from '../src/js/record.js';
 
@@ -254,3 +254,164 @@ export const tests = [
     },
   },
 ];
+
+// ---------------- S2-01 ----------------
+const words = (s) => s.trim().split(/\s+/).length;
+const tip = (t) => t.page.evaluate(() => { const c = document.querySelector('.coach'); return c ? { id: c.dataset.tip, text: c.querySelector('p').innerText, where: c.closest('#modal') ? 'modal' : c.closest('#panel') ? 'panel' : '?', box: c.getBoundingClientRect().toJSON(), skip: !!c.querySelector('[data-act="coach-skip"]'), anim: getComputedStyle(c).animationName } : null; });
+const box = (t, sel) => t.page.evaluate((s) => { const e = document.querySelector(s); return e ? e.getBoundingClientRect().toJSON() : null; }, sel);
+const overlap = (a, b) => a && b && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+const coachGame = async (t, extra = {}) => soloGame(t, { players: [H1], settings: { seenCoach: false, ...extra } });
+const press = async (t, sel) => (t.viewport === 'mobile' ? t.tap(await t.page.locator(sel).first().evaluate((e) => { const r = e.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; })) : t.page.locator(sel).first().click());
+
+tests.push(
+  {
+    name: 'S2-01 every tip is twelve words or fewer, for touch, mouse and keyboard',
+    viewports: ['desktop'],
+    async run(t) {
+      for (const input of ['touch', 'mouse', 'keys']) {
+        const list = await t.game('coachTexts', input);
+        t.equal(list.length, 4, 'four tips');
+        for (const x of list) t.expect(words(x) <= 12 && /[.!]$/.test(x), `${input}: "${x}" is ${words(x)} words`);
+      }
+      const keys = (await t.game('coachTexts', 'keys')).join(' '); const touch = (await t.game('coachTexts', 'touch')).join(' ');
+      t.expect(/Press a number/.test(keys) && /Press A to D/.test(keys) && !/Tap/.test(keys), 'the keyboard words name keys');
+      t.expect(/Tap a lit space/.test(touch) && /Tap an answer/.test(touch) && !/Press/.test(touch), 'the touch words say tap');
+    },
+  },
+  {
+    name: 'S2-01 a newcomer gets the tips in play, one at a time, each where it matters, and each ends when its thing is done',
+    async run(t) {
+      await coachGame(t);
+      const s0 = await t.state();
+      t.equal(s0.settings.seenCoach, false, 'a new profile has not seen the tips');
+      let x = await tip(t);
+      t.expect(x && x.id === 'goal' && x.where === 'panel', 'the goal tip shows at the first roll, in the panel');
+      t.equal(x.text, 'Goal: win 6 stamps at gold-ring landmarks, then climb the Tower.', 'goal first');
+      t.expect(x.skip, 'Skip tips is visible while a tip shows'); t.equal(await t.page.locator('.coach').count(), 1, 'one tip at a time');
+      t.expect((await text(t, '#panel .objective')).includes('Collect 6 stamps, then climb to the Mountain Tower.'), 'the standing objective sits under the turn header');
+      await t.shot('S2-01-tip-goal');
+      const turn = await box(t, '#panel .turn'), rollBtn = await box(t, '[data-act="roll"]');
+      t.expect(!overlap(x.box, turn) && !overlap(x.box, rollBtn), 'the tip covers neither the turn header nor the Roll button');
+      t.expect(rollBtn.bottom <= (await t.page.evaluate(() => innerHeight)), 'the Roll button is still on screen');
+      await t.checkLayout({ allowScrollY: true });
+      // do the thing: roll (from beside a landmark, so the move leads to a landmark question), and the tip for choosing takes over
+      const s = await t.state();
+      await t.game('setState', { trail: { players: [{ node: await neighborOf(t, s.board.landmarks['Sports']) }] } });
+      await t.game('act', 'roll', 1);
+      await phase(t, 'choose');
+      x = await tip(t);
+      t.expect(x && x.id === 'move' && x.where === 'panel', 'the move tip replaces the goal tip');
+      t.expect(t.viewport === 'mobile' ? x.text.startsWith('Tap a lit space') : x.text.startsWith('Click a lit space'), 'worded for the input in use: ' + (x && x.text));
+      await t.shot('S2-01-tip-move');
+      t.expect(!overlap(x.box, await box(t, '.dests')), 'it does not sit on the destination list');
+      await t.game('act', 'choose', s.board.landmarks['Sports']);
+      await t.game('act', 'finishAnim');
+      await phase(t, 'question');
+      x = await tip(t);
+      t.expect(x && x.id === 'answer' && x.where === 'modal', 'the answer tip shows on the question card, not in the panel behind it');
+      t.expect(/^(Tap|Click) an answer\. Landmark answers also pay stamps\.$/.test(x.text), 'answer words: ' + (x && x.text));
+      const firstAns = await box(t, '.ans');
+      t.expect(!overlap(x.box, firstAns) && x.box.bottom <= firstAns.top + 1, 'above the answers, covering none of them');
+      await t.shot('S2-01-tip-answer');
+      await t.checkLayout({ allowScrollY: true });
+      await t.game('act', 'answer', 'correct'); await phase(t, 'feedback');
+      t.equal(await tip(t), null, 'answering ends the answer tip');
+      await t.game('act', 'continue');
+      await phase(t, 'roll');
+      x = await tip(t);
+      t.expect(x && x.id === 'tickets', 'the tickets tip shows at the next roll'); t.equal(x && x.text, 'Tickets buy re-rolls, 50/50 hints and trolley rides.', 'tickets words');
+      await t.shot('S2-01-tip-tickets');
+      await press(t, '[data-act="roll"]');
+      await phase(t, 'choose');
+      t.equal(await tip(t), null, 'rolling ends the last tip');
+      await waitFor(t, (st) => st.settings.seenCoach === true, 3000, 'seenCoach set');
+      t.equal((await stored(t)).settings.seenCoach, true, 'seen is saved with the settings');
+    },
+  },
+  {
+    name: 'S2-01 Skip tips ends them for good, and Show tips again in Settings brings them back',
+    async run(t) {
+      await coachGame(t);
+      t.expect((await tip(t)) !== null, 'a tip shows');
+      await press(t, '[data-act="coach-skip"]');
+      t.equal(await tip(t), null, 'gone');
+      t.equal((await stored(t)).settings.seenCoach, true, 'saved as seen');
+      await t.game('act', 'roll', 3); await phase(t, 'choose'); t.equal(await tip(t), null, 'no later tip either');
+      await t.game('scene', 'settings');
+      t.expect((await text(t, '#scene-settings')).includes('Show tips again'), 'Settings has the control');
+      await t.page.locator('[data-act="coach-replay"]').click();
+      t.equal((await stored(t)).settings.seenCoach, false, 'replay is saved');
+      await t.shot('S2-01-settings-tips');
+      await t.reload();
+      await t.game('setState', { settings: { passScreen: false, aiSpeed: 'fast', timer: 0 } });
+      await t.game('newGame', { mode: 'trail', players: [H1], target: 6, seed: 7 });
+      await phase(t, 'roll');
+      const x = await tip(t); t.expect(x && x.id === 'goal', 'the tips start again from the goal, after a reload too');
+    },
+  },
+  {
+    name: 'S2-01 a player with an existing save does not get the tips unless they ask',
+    initScript: withSave(PRE_WAVE),
+    async run(t) {
+      const s = await t.state();
+      t.equal(s.settings.seenCoach, true, 'an older save counts as seen');
+      await t.game('setState', { settings: { passScreen: false, aiSpeed: 'fast', timer: 0 } });
+      await t.game('newGame', { mode: 'trail', players: [H1], target: 6, seed: 7 });
+      await phase(t, 'roll');
+      t.equal(await tip(t), null, 'no tip');
+      t.expect((await text(t, '#panel .objective')).includes('Collect 6 stamps'), 'the standing objective is still there');
+      const sv = await stored(t);
+      t.expect(sv.settings.seenCoach !== false, 'saving does not turn them into a newcomer');
+      t.equal(sv.settings.aiSpeed, 'fast', 'settings they change are kept');
+    },
+  },
+  {
+    name: 'S2-01 the words follow the input in use: keys on a keyboard, taps on touch',
+    async run(t) {
+      await coachGame(t);
+      if (t.viewport === 'desktop') {
+        await t.page.keyboard.press('Space');
+        await phase(t, 'choose');
+        const x = await tip(t); t.expect(x && x.text === 'Press a number, or use arrows and Enter, to move there.', 'after a key press the tip names keys: ' + (x && x.text));
+        t.equal((await t.state()).coach.input, 'keys', 'input is keys');
+      } else {
+        await press(t, '[data-act="roll"]'); await phase(t, 'choose');
+        const x = await tip(t); t.expect(x && x.text.startsWith('Tap a lit space'), 'on touch the tip says Tap: ' + (x && x.text));
+      }
+    },
+  },
+  {
+    name: 'S2-01 a tip is announced to screen readers, has no motion, and a tip you ignore ends by itself',
+    reducedMotion: true,
+    async run(t) {
+      await coachGame(t);
+      let live = '';
+      for (let i = 0; i < 20 && !live.includes('Goal:'); i++) { await t.page.waitForTimeout(100); live = await text(t, '#live'); }
+      t.expect(live.includes('Goal: win 6 stamps'), 'the live region reads the tip: ' + live);
+      const x = await tip(t); t.equal(x && x.anim, 'none', 'the tip does not animate');
+      t.equal((await t.state()).ui.reduced, true, 'reduced motion is on');
+      await t.page.evaluate(() => { const d = Date.now; Date.now = () => d() + 25000; });
+      await t.page.waitForTimeout(300);
+      t.equal(await tip(t), null, 'an ignored tip ends by waiting');
+      t.equal((await t.state()).coach.step, 1, 'and the next is the move tip');
+    },
+  },
+  {
+    name: 'S2-01 the goal is also permanent: setup card, pause card and Help',
+    async run(t) {
+      await t.game('setState', { settings: { seenCoach: true } });
+      await t.game('scene', 'setup');
+      const setup = await text(t, '#scene-setup');
+      t.expect(setup.includes('Goal: win district stamps at the gold-ring landmarks') && setup.includes('Mountain Tower'), 'setup card states the goal and the stamp dots');
+      await t.shot('S2-01-setup-goal');
+      await t.checkLayout({ allowScrollY: true });
+      await soloGame(t, { players: [H1], settings: { seenCoach: true } });
+      await t.page.locator('[data-act="menu"]').click();
+      t.expect((await text(t, '#modal')).includes('Collect 6 stamps, then climb to the Mountain Tower.'), 'pause card states the goal');
+      await t.shot('S2-01-pause-goal');
+      await t.page.keyboard.press('Escape');
+      await t.game('scene', 'help');
+      t.expect((await text(t, '#scene-help')).toLowerCase().includes('goal: collect your stamp target'), 'Help starts with the goal');
+    },
+  },
+);

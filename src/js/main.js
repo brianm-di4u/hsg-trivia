@@ -472,6 +472,7 @@ window.__game = {
   seed(n) { G.state.rngSeed = n; G.rng = makeRng(n); return n; },
   getState: publicState,
   audioList,
+  coachTexts: (input) => UI.coachTexts(input),
   audioRender,
   audioState: audioInfo,
   setState(s) {

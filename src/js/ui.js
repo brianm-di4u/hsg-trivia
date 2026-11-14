@@ -546,7 +546,8 @@ const COACH = [
   { id: 'answer', at: 'modal', due: (ph) => ph === 'question', text: () => (ui.input === 'keys' ? 'Press A to D to answer. Landmark answers also pay stamps.' : `${tapWord()} an answer. Landmark answers also pay stamps.`) },
   { id: 'tickets', at: 'panel', due: (ph) => ph === 'roll', text: () => 'Tickets buy re-rolls, 50/50 hints and trolley rides.' },
 ];
-export const coachTexts = (target = 6) => COACH.map((c) => c.text({ target }));
+// Test hook: the words of every tip for an input kind ('touch', 'mouse' or 'keys').
+export const coachTexts = (input = ui.input, target = 6) => { const was = ui.input; ui.input = input; try { return COACH.map((c) => c.text({ target })); } finally { ui.input = was; } };
 export const objective = (t) => `Collect ${t.target} stamps, then climb to the Mountain Tower.`;
 // Moves the tips along with the game and returns the one to show now (or null). A tip that was shown is over once its moment has passed;
 // one that never came is passed over if the next one's moment is here.
