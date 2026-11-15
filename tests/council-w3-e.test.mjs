@@ -33,4 +33,33 @@ export const tests = [
       }
     },
   },
+  // ---------------- S5-13 ----------------
+  {
+    name: 'S5-13 turning sound off silences a cue already sounding, and the volume glides',
+    viewports: ['desktop'],
+    async run(t) {
+      await unlock(t);
+      const gains = async () => (await audio(t)).gains;
+      let g = await waitFor2(t, async () => (await gains()).master > 0.3, 'master at the default volume');
+      t.expect(Math.abs(g.master - 0.35) < 0.01 && Math.abs(g.sfx - 2.2) < 0.01, 'default master 0.35 and cue bus 2.2: ' + JSON.stringify(g));
+      // a volume change does not jump: read straight after the change, in the same task
+      const jump = await t.page.evaluate(() => { window.__game.setState({ settings: { volume: 0.2 } }); return window.__game.audioState().gains.master; });
+      t.expect(jump > 0.3, 'the master gain has not jumped to its new value (' + jump + ')');
+      g = await waitFor2(t, async () => Math.abs((await gains()).master - 0.1) < 0.005, 'master glides to 0.1');
+      // Sound off: master and the cue bus go to nothing; the sting that was playing is silenced with them
+      await t.game('setState', { settings: { sound: false } });
+      g = await waitFor2(t, async () => { const x = await gains(); return x.master < 0.001 && x.sfx < 0.001; }, 'master and cue bus silent');
+      await t.game('setState', { settings: { sound: true } });
+      g = await waitFor2(t, async () => { const x = await gains(); return x.master > 0.09 && x.sfx > 2; }, 'back on');
+      // Sound effects off silences the cue bus only: the music's own switch is separate
+      await t.game('setState', { settings: { effects: false } });
+      g = await waitFor2(t, async () => (await gains()).sfx < 0.001, 'cue bus silent with Sound effects off');
+      t.expect(g.master > 0.09, 'the master stays up for the music: ' + JSON.stringify(g));
+    },
+  },
 ];
+async function waitFor2(t, pred, label, ms = 4000) {
+  const end = Date.now() + ms;
+  while (Date.now() < end) { if (await pred()) return (await audio(t)).gains; await t.page.waitForTimeout(60); }
+  t.fail('timed out waiting for ' + label); return (await audio(t)).gains;
+}

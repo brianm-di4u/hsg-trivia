@@ -47,6 +47,7 @@ function ensure() {
   try {
     ac = new AC();
     ({ master, sfxIn } = chain(ac, ac.destination, opts.volume));
+    applyGains(true);
     noiseBuf = makeNoise(ac);
     kit = makeAudioKit(ac, master, { seed: (Date.now() & 0xffffff) | 1, music: MUSIC_LEVEL, ambience: AMB_LEVEL });
     kit.start();
@@ -55,6 +56,16 @@ function ensure() {
     applyLayers();
   } catch (e) { ac = null; kit = null; }
   return ac;
+}
+
+// The master and the cue bus follow the Sound switch, the Sound effects switch and the Volume slider. They glide (about 20 ms) rather than jump,
+// so a slider drag does not zipper and a cue already sounding (a win chord, a steam sweep) goes quiet when sound is turned off.
+const GAIN_GLIDE = 0.02;
+function applyGains(now) {
+  if (!ac || !master) return;
+  const m = opts.on ? opts.volume * MASTER_K : 0, s = opts.on && opts.effects ? SFX_LEVEL : 0;
+  if (now) { master.gain.value = m; sfxIn.gain.value = s; return; }
+  master.gain.setTargetAtTime(m, ac.currentTime, GAIN_GLIDE); sfxIn.gain.setTargetAtTime(s, ac.currentTime, GAIN_GLIDE);
 }
 
 // ---- music and ambience: what the game asks for, and what the settings allow ----
@@ -81,7 +92,7 @@ export function setAudio({ on, volume, effects, music, ambience }) {
   if (effects !== undefined) opts.effects = effects !== false;
   if (music !== undefined) opts.music = music !== false;
   if (ambience !== undefined) opts.ambience = ambience !== false;
-  if (master) master.gain.value = opts.volume * MASTER_K;
+  applyGains();
   applyLayers();
 }
 
@@ -199,6 +210,7 @@ export const audioList = () => ({ music: Object.keys(SCORES), ambience: Object.k
 export const audioInfo = () => ({
   held: held || paused, music: kit && kit.music.score ? Object.keys(SCORES).find((k) => SCORES[k] === kit.music.score) : null,
   ambience: kit && kit.amb.scene ? Object.keys(SCENES).find((k) => SCENES[k] === kit.amb.scene) : null,
+  gains: { master: master ? master.gain.value : null, sfx: sfxIn ? sfxIn.gain.value : null },
   levels: { on: opts.on, effects: opts.effects, music: opts.on && opts.music ? MUSIC_LEVEL : 0, ambience: opts.on && opts.ambience ? AMB_LEVEL : 0 },
   bars: kit && kit.music.info() ? kit.music.info().bars : 0, want: { ...want },
 });
