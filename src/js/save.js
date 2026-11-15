@@ -5,7 +5,10 @@ const KEY = 'hs-trivia-v1';
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const own = (v, k) => Object.prototype.hasOwnProperty.call(v, k);
-const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, ...freshRecord() });
+const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, seen: [], ...freshRecord() });
+// The ids of the questions asked most recently, across trips and quizzes, so a new game does not start by repeating them (S3-06).
+export const SEEN_MAX = 400;
+const cleanSeen = (v) => (Array.isArray(v) ? v.filter((id) => typeof id === 'string' && id.length <= 40).slice(-SEEN_MAX) : []);
 const ordered = (v) => Array.isArray(v) ? v.map(ordered) : object(v) ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, ordered(v[k])])) : v;
 const signature = (v) => JSON.stringify(ordered(v));
 const group = (data) => Object.fromEntries(['trail', 'asked', 'rng', 'trailGeneration'].filter((k) => own(data, k)).map((k) => [k, clone(data[k])]));
@@ -47,6 +50,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     out.settings = { ...out.settings };
     out.best = { ...out.best, era: { ...(out.best.era || {}) } };
     out.daily = { ...out.daily, results: { ...(out.daily.results || {}) } };
+    out.seen = cleanSeen(data.seen);
     Object.assign(out, cleanRecord(data)); // stats, ach, profile: defaults for a save that predates them, repair for a damaged one
     return out;
   };
@@ -147,6 +151,12 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     }
     if (!write(next)) return unavailable();
     store.pending.quiz = [];
+    return { ok: true };
+  };
+  // The questions asked lately (S3-06): its own key, outside the trip's conflict group, so a quiz can record it and no other tab's trip is touched.
+  store.commitSeen = (ids) => {
+    const current = readOrNull(); if (!current) return unavailable();
+    if (!write({ ...current, seen: cleanSeen(ids) })) return unavailable();
     return { ok: true };
   };
   // The Trail record (S3-01): lifetime counters, achievements, worn title and cover. Each call hands in one intent (see record.js);

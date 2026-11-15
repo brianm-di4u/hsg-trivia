@@ -155,4 +155,97 @@ export const tests = [
       t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [role="radio"][aria-checked="true"]').dataset.key), 'target4', 'ArrowLeft twice reaches Day Trip');
     },
   },
+  // ---------------- S3-06 ----------------
+  {
+    name: 'S3-06 the questions asked lately are kept in their own save key, capped, and repaired',
+    node: true,
+    async run() {
+      const m = memStore(null); const s = createSaveStore({ storage: m.storage }); s.load();
+      assert.deepEqual(s.data.seen, [], 'a new profile remembers nothing');
+      assert.ok(s.commitSeen(ids(450)).ok);
+      assert.equal(m.read().seen.length, SEEN_MAX, 'the last 400 are kept');
+      assert.equal(m.read().seen[SEEN_MAX - 1], 'hs-0449', 'and they are the newest');
+      // it is outside the trip's conflict group: another tab's trip is not disturbed, and this tab's trip still commits
+      const other = createSaveStore({ storage: m.storage }); other.load(); other.commitSeen(['hs-0001']);
+      const trail = { target: 4, round: 1, turn: 0, phase: 'roll', players: [], log: [], dests: [], pending: null };
+      assert.equal(s.reserveTrail().ok, true); assert.equal(s.commitTrail({ trail, asked: ['hs-0002'], rng: 1 }).ok, true);
+      assert.equal(other.commitSeen(['hs-0001', 'hs-0003']).ok, true, 'a write of the memory is never refused as a conflict');
+      assert.equal(s.commitTrail({ trail, asked: ['hs-0002'], rng: 1 }).ok, true, 'and it does not make the trip conflict');
+      // damage: not a list, numbers, long strings
+      for (const bad of [7, 'x', { a: 1 }, null]) { const d = memStore({ v: 1, seen: bad }); const ds = createSaveStore({ storage: d.storage }); ds.load(); assert.deepEqual(ds.data.seen, [], 'damaged memory is empty'); }
+      const mixed = memStore({ v: 1, seen: ['hs-0001', 5, null, 'x'.repeat(80), 'hs-0002'] }); const ms = createSaveStore({ storage: mixed.storage }); ms.load();
+      assert.deepEqual(ms.data.seen, ['hs-0001', 'hs-0002'], 'only ids are kept');
+      // an older save with no such key loads, and keeps everything else
+      const old = memStore(VETERAN); const os = createSaveStore({ storage: old.storage }); os.load(); assert.deepEqual(os.data.seen, []); assert.equal(os.data.best.quick, 55);
+    },
+  },
+  {
+    name: 'S3-06 a Quick 10 remembers its questions, and the next visit does not ask them again',
+    async run(t) {
+      await t.seed(11);
+      await t.game('setState', { settings: { timer: 0, seenCoach: true } });
+      await t.game('newGame', { mode: 'quick' });
+      const first = [];
+      for (;;) {
+        const s = await t.state();
+        if (s.scene !== 'quiz') break;
+        first.push(s.question.id);
+        const sv = await stored(t);
+        t.expect(sv.seen.includes(s.question.id), `question ${first.length} was written to the save as soon as it was asked`);
+        await t.game('act', 'answer', 'correct');
+        await t.game('act', 'continue');
+      }
+      t.equal(first.length, 10, 'ten questions');
+      t.equal(JSON.stringify((await stored(t)).seen), JSON.stringify(first), 'the save holds them in order');
+      await t.reload();
+      t.equal(JSON.stringify((await t.state()).asked), JSON.stringify(first), 'a new visit starts from them');
+      await t.seed(11); // the same dice as the first visit: only the memory can keep the draw apart
+      await t.game('setState', { settings: { timer: 0 } });
+      await t.game('newGame', { mode: 'quick' });
+      const second = [];
+      for (;;) {
+        const s = await t.state();
+        if (s.scene !== 'quiz') break;
+        second.push(s.question.id);
+        await t.game('act', 'answer', 'correct');
+        await t.game('act', 'continue');
+      }
+      t.equal(second.length, 10, 'ten more');
+      t.equal(second.filter((id) => first.includes(id)).length, 0, 'none of them was asked on the first visit');
+    },
+  },
+  {
+    name: 'S3-06 a trip adds each question to the memory, after what was asked before',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s0 = await t.state();
+      await t.game('setState', { asked: ids(5, 100) });
+      await landOn(t, s0.board.types.indexOf('cat'));
+      const q = await phase(t, 'question');
+      const sv = await stored(t);
+      t.expect(sv.seen.includes(q.question.id), 'the trip question is remembered');
+      t.equal(sv.seen.slice(0, 5).join(), ids(5, 100).join(), 'after what was asked before it');
+    },
+  },
+  {
+    name: 'S3-06 an old save, a long memory and a damaged one load',
+    viewports: ['desktop'],
+    initScript: withSave({ ...VETERAN, seen: ids(450) }),
+    async run(t) {
+      const s = await t.state();
+      t.equal(s.asked.length, SEEN_MAX, 'the cap holds on load');
+      t.equal(s.asked[SEEN_MAX - 1], 'hs-0449', 'newest last');
+    },
+  },
+  {
+    name: 'S3-06 a save with a damaged memory starts clean',
+    viewports: ['desktop'],
+    initScript: withSave({ ...VETERAN, seen: 'oops' }),
+    async run(t) {
+      const s = await t.state();
+      t.equal(s.asked.length, 0, 'nothing is remembered');
+      await t.game('newGame', { mode: 'quick' });
+      t.equal((await t.state()).scene, 'quiz', 'and a game starts');
+    },
+  },
 ];

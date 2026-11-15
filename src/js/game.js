@@ -10,7 +10,7 @@ import { AI_LINES } from './voices.js';
 export const G = {
   state: null,
   rng: makeRng(1),
-  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, scene() {}, finish() {}, record() { return null; }, say() {} },
+  hooks: { update() {}, announce() {}, moveToken() {}, effect() {}, save() {}, seen() {}, scene() {}, finish() {}, record() { return null; }, say() {} },
   say: null, // the last thing a named opponent said: { pid, text, event }, for the question card
   voiceN: {}, // how many lines each character has spoken per event, so a character walks through their lines
   lastRecord: null, // what the Trail record made of the trip that just ended (earned achievements, personal bests), for the win card
@@ -229,6 +229,7 @@ function ask(category, purpose, extra = {}) {
   const t = T(); const p = cur();
   const forceDiff = purpose === 'summit' || (purpose === 'expressLandmark' && ECON.EXPRESS_HARD) ? 'hard' : undefined;
   const q = pickQuestion(G.rng, G.state.asked, { category, skill: p.skill, difficulty: forceDiff });
+  G.hooks.seen();
   G.state.question = makeQuestion(q, G.rng, purpose);
   Object.assign(G.state.question, { hadStamp: p.stamps.includes(category) }, extra);
   const tm = p.kind === 'human' ? G.state.settings.timer : 0;

@@ -10,7 +10,7 @@ import * as UI from './ui.js';
 import { ui } from './ui.js';
 import { sfx, setAudio, unlockAudio, audioStats, setSoundscape, setAudioPaused, audioList, audioRender, audioInfo } from './audio.js';
 import { ART } from './assets.js';
-import { createSaveStore, validTrail, validOpenQuestion } from './save.js';
+import { createSaveStore, validTrail, validOpenQuestion, SEEN_MAX } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
 const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal', seenCoach: true }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
@@ -121,6 +121,7 @@ G.hooks.save = saveTrail;
 G.hooks.finish = () => R.finishAnims();
 G.hooks.say = (p, text) => R.say(p, text);
 G.hooks.saveQuiz = saveQuiz;
+G.hooks.seen = () => noted(G.save.commitSeen(G.state.asked.slice(-SEEN_MAX)));
 // The Trail record: a human's play (see record.js for the intents). Achievements earned show a toast; the result goes back to the rules engine.
 G.hooks.record = (intent) => {
   const r = noted(applyCommittedSettings(G.save.commitProgress({ ...intent, today: G.today() })));
@@ -147,7 +148,7 @@ G.hooks.effect = (kind, p) => {
 };
 
 function newState() {
-  return { v: 1, scene: 'title', mode: null, settings: validSpeed({ ...baseSettings(), ...(G.save.data.settings || {}) }), asked: [], trail: null, question: null, quiz: null, rngSeed: 1 };
+  return { v: 1, scene: 'title', mode: null, settings: validSpeed({ ...baseSettings(), ...(G.save.data.settings || {}) }), asked: (G.save.data.seen || []).slice(-SEEN_MAX), trail: null, question: null, quiz: null, rngSeed: 1 }; // asked starts from the questions remembered from earlier visits (S3-06)
 }
 
 // ---------- actions (shared by clicks, keys and __game.act) ----------
@@ -173,7 +174,7 @@ const ACTIONS = {
     const sq = saved.trail.phase === 'question' && validOpenQuestion(saved.trail.question) ? saved.trail.question : null; delete saved.trail.question;
     const bq = sq && getQ(sq.id); // only a question that is still in the bank, with its true answer, is brought back
     const open = bq && CAT[sq.category] && sq.choices[sq.correctIndex] === bq.answer ? sq : null;
-    G.state.trail = saved.trail; G.state.mode = 'trail'; G.state.asked = (saved.asked || []).slice();
+    G.state.trail = saved.trail; G.state.mode = 'trail'; G.state.asked = [...new Set([...(G.save.data.seen || []), ...(saved.asked || [])])].slice(-SEEN_MAX); // this trip's own history, after what other visits asked
     G.rng = makeRng((Date.now() ^ performance.now()) >>> 0); // new dice and questions, not a replay of the saved ones
     syncSavedSettings();
     R.resetTokens();

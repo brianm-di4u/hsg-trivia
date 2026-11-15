@@ -40,6 +40,7 @@ export function next() {
   } else {
     const eras = q.kind === 'era' ? (ERA_MODES.find((m) => m.id === q.era) || ERA_MODES[0]).eras : undefined;
     src = pickQuestion(G.rng, G.state.asked, { eras, skill: q.skill });
+    G.hooks.seen();
   }
   if (!src) { finish(); return; }
   // The daily uses its own RNG for choice order so every replay that day looks the same.
