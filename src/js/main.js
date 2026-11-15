@@ -400,9 +400,10 @@ function trapFocus(e) {
 }
 
 // ---------- loop ----------
-// The AI and the auto-advancing phases hold while the tab is hidden or the pause menu is open, and pick up again after.
+// The AI and the auto-advancing phases hold while the tab is hidden or anything is open over the board (the pause menu, the Passport,
+// the trolley sheet, the save-conflict notice), and pick up again after.
 function syncPause() {
-  Game.setPaused(document.visibilityState === 'hidden' || (G.state.scene === 'game' && ui.menuOpen));
+  Game.setPaused(document.visibilityState === 'hidden' || (G.state.scene === 'game' && (ui.menuOpen || !!ui.modal || ui.saveConflict)));
   setAudioPaused(G.state.scene === 'game' && ui.menuOpen);
 }
 
