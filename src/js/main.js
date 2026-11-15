@@ -491,7 +491,7 @@ function frameStep(ts) {
   if (open) {
     q.timeLeft -= tdt;
     const sec = Math.ceil(q.timeLeft);
-    if (sec !== tickSec && sec <= 5 && sec > 0) { tickSec = sec; sfx('tick'); }
+    if (sec !== tickSec && sec <= 5 && sec > 0) { tickSec = sec; sfx('tick', { sec }); }
     if ((sec === 10 || sec === 5) && sec < q.timeMax && warnKey !== q.id + ':' + sec) { warnKey = q.id + ':' + sec; UI.announce(`${sec} seconds left.`); }
     if (q.timeLeft <= 0) { q.timeLeft = 0; UI.announce('Time is up.'); Game.answer('timeout'); if (st.mode !== 'trail') Quiz.settle(); }
     UI.updateTimerBar();

@@ -157,7 +157,12 @@ function noise({ t = 0, d = 0.3, v = 0.25, type = 'bandpass', f = 1200, f2 = nul
 // o: { i: step along a walk, pan: screen position -1..1, streak: right answers in a row }
 const PRESETS = {
   click: () => { tone({ type: 'sine', f: 760, f2: 560, d: 0.03, v: 0.12 }); noise({ d: 0.025, v: 0.1, f: 2200, qv: 1.5 }); },
-  gauge: () => { const w = rand(-0.3, 0.3); for (let i = 0; i < 7; i++) tone({ type: 'triangle', f: 500 + i * 60, t: i * 0.08, d: 0.04, v: 0.12, pan: w * (i / 6), j: 0.4 }); },
+  // The steam gauge counts the roll: n + 2 ticks climb, then a held note settles at a pitch set by n (a 1 lands low, a 6 high) with a bell partial.
+  gauge: (o) => {
+    const n = Math.min(6, Math.max(1, o.n | 0 || 4)), w = rand(-0.3, 0.3), end = (n + 2) * 0.08, f = 440 * 2 ** ((n - 1) / 6);
+    for (let i = 0; i < n + 2; i++) tone({ type: 'triangle', f: 500 + i * 60, t: i * 0.08, d: 0.04, v: 0.12, pan: w * (i / (n + 1)), j: 0.4 });
+    tone({ type: 'triangle', f, t: end, d: 0.35, v: 0.08, pan: w, pair: 5 }); tone({ type: 'sine', f: f * 2.76, t: end, d: 0.22, v: 0.02, pan: w });
+  },
   hop: (o) => {
     const i = o.i | 0, f = 261.63 * 2 ** ((PENTA[i % 5] + 12 * (Math.floor(i / 5) % 2)) / 12), pan = o.pan || 0;
     tone({ type: 'triangle', f, f2: f * 0.7, d: 0.09, v: 0.34, pan, pair: 6 }); tone({ type: 'sine', f: f * 2, f2: f * 1.4, d: 0.05, v: 0.06, pan });
@@ -184,7 +189,14 @@ const PRESETS = {
   bugle: () => { [[392, 0, 0.12], [523.25, 0.16, 0.12], [659.25, 0.32, 0.12], [783.99, 0.48, 0.55]].forEach(([f, t, d]) => { tone({ type: 'sawtooth', f, t, d, a: 0.02, v: 0.16, q: 2200, pair: 5 }); tone({ type: 'square', f: f * 0.5, t, d, a: 0.02, v: 0.06, q: 900 }); }); },
   warp: () => { tone({ type: 'sawtooth', f: 200, f2: 1200, d: 0.5, v: 0.14, q: 1800 }); tone({ type: 'sine', f: 1200, f2: 300, t: 0.45, d: 0.4, v: 0.2 }); },
   gavel: () => { noise({ d: 0.08, v: 0.5, type: 'lowpass', f: 700 }); tone({ type: 'sine', f: 180, f2: 90, d: 0.12, v: 0.6 }); },
-  tick: () => { tone({ type: 'sine', f: 1500, d: 0.03, v: 0.1 }); noise({ d: 0.015, v: 0.08, type: 'highpass', f: 4000 }); },
+  // The answer timer's tick, once a second under 5 s: it climbs a whole tone each second (o.sec is the seconds left, 5 down to 1).
+  tick: (o) => { const f = 1500 * 2 ** ((5 - Math.min(5, Math.max(1, o.sec | 0 || 5))) * 2 / 12); tone({ type: 'sine', f, d: 0.06, v: 0.45 }); noise({ d: 0.02, v: 0.2, type: 'highpass', f: 4000 }); },
+  // Time ran out: a buzzy two-step fall (sawtooth under a low-pass with a breath of noise), unlike the soft sine fall of a wrong answer.
+  timeout: () => {
+    const pan = rand(-0.2, 0.2);
+    tone({ type: 'sawtooth', f: 330, f2: 220, d: 0.26, v: 0.3, q: 1300, pan, pair: 9 }); tone({ type: 'sawtooth', f: 247, f2: 123, t: 0.22, d: 0.42, v: 0.3, q: 1000, pan, pair: 9 });
+    noise({ d: 0.5, v: 0.1, type: 'lowpass', f: 700, pan });
+  },
   win: () => { const pan = rand(-0.15, 0.15); [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.12, d: 0.45, v: 0.3, pan, pair: 6 })); [523.25, 659.25, 783.99].forEach((f) => tone({ type: 'sine', f, t: 0.7, d: 1.2, v: 0.16, pan })); },
   page: () => noise({ d: 0.18, v: 0.14, f: 3000, f2: 1500, qv: 0.5, pan: rand(-0.3, 0.3) }),
   // An achievement: a small two-note bell (a fifth apart) with a soft shimmer, short enough to sit on top of play.
@@ -192,10 +204,10 @@ const PRESETS = {
 };
 // How loud each cue sits at the default volume: the preset's own shape is kept, this trims the whole cue so that the ones
 // the player must notice peak near 0.3 (measured by audioRender). click and tick are quiet interface sounds.
-const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, page: 6.6, gauge: 4 };
+const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, page: 6.6, gauge: 3.2, tick: 1, timeout: 0.8 };
 const play = (name, o) => { trim = TRIM[name] || 1; try { PRESETS[name](o); } finally { trim = 1; } };
 // The big cues the music steps back for.
-const DUCKS = { correct: 6, wrong: 6, win: 8, stamp: 5 };
+const DUCKS = { correct: 6, wrong: 6, timeout: 6, win: 8, stamp: 5 };
 
 export function sfx(name, o = {}) {
   if (!opts.on || !opts.effects || !PRESETS[name]) return;

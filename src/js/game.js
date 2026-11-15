@@ -201,7 +201,7 @@ export function roll(force) {
   const t = T(); if (t.phase !== 'roll') return false;
   const p = cur();
   t.roll = force ? clamp(force | 0, 1, 6) : 1 + G.rng.int(6);
-  sfx('gauge');
+  sfx('gauge', { n: t.roll });
   t.dests = reachable(p.node, t.roll, eligible(p)).map((d) => ({ node: d.node, path: d.path }));
   // A computer traveler's list is ordered best first (it takes the first). A human's is ordered across the board, left to right, so that nothing in the
   // order or in the preselected first row hints at the best move, and the arrow keys move across the map the way they read (S2-03).
@@ -333,7 +333,7 @@ export function answer(choice) {
   q.chosen = i; q.correct = i === q.correctIndex;
   // a run of right answers climbs: the cue is told how many in a row this one makes
   const run = (G.state.mode === 'trail' ? cur().streak : (G.state.quiz && G.state.quiz.streak) || 0) + 1;
-  sfx(q.correct ? 'correct' : 'wrong', { streak: run });
+  sfx(q.correct ? 'correct' : i === -1 ? 'timeout' : 'wrong', { streak: run });
   if (G.state.mode !== 'trail') return true; // quiz modes settle in quiz.js
   const t = T(); const p = cur();
   p.answered++; if (q.correct) { p.correct++; p.streak++; p.bestStreak = Math.max(p.bestStreak | 0, p.streak); if (p.streak === 5 || p.streak === 10) record(p, { ev: 'streak', n: p.streak }); } else p.streak = 0;

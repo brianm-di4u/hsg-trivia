@@ -1,9 +1,18 @@
 // Council wave 3, batch E: sound (CL-01, S2-07, S3-24, S4-23, S5-06, S5-13, S5-16, S5-17, S3-19).
-import { H1, H2, soloGame, waitFor, phase } from './helpers.mjs';
+import { H1, H2, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
 const render = (t, ...a) => t.page.evaluate((x) => window.__game.audioRender(...x), a);
 const audio = (t) => t.page.evaluate(() => window.__game.audioState());
 const unlock = async (t) => { await t.page.mouse.click(5, 5); await waitFor(t, (s) => s.audio.state === 'running', 3000, 'audio running'); };
+
+// The pitch of a cue in a window (seconds), from a WAV render: zero crossings in the left channel.
+const hz = (b64, from, to) => {
+  const b = Buffer.from(b64, 'base64'), rate = b.readUInt32LE(24), at = (i) => b.readInt16LE(44 + i * 4);
+  const a = Math.floor(from * rate), z = Math.floor(to * rate); let n = 0;
+  for (let i = a + 1; i < z; i++) if ((at(i - 1) < 0) !== (at(i) < 0)) n++;
+  return n / 2 / (to - from);
+};
+const wav = (t, name, seconds, o) => render(t, name, seconds, true, 0.7, o);
 
 export const tests = [
   // ---------------- CL-01 ----------------
@@ -55,6 +64,71 @@ export const tests = [
       await t.game('setState', { settings: { effects: false } });
       g = await waitFor2(t, async () => (await gains()).sfx < 0.001, 'cue bus silent with Sound effects off');
       t.expect(g.master > 0.09, 'the master stays up for the music: ' + JSON.stringify(g));
+    },
+  },
+  // ---------------- S5-06 ----------------
+  {
+    name: 'S5-06 the steam gauge counts the roll: a 6 lands higher and later than a 1',
+    viewports: ['desktop'],
+    async run(t) {
+      // n + 2 ticks, then a settle note at 440 * 2^((n-1)/6) Hz; judged just after the ticks and their echoes have died
+      const settle = async (n) => { const r = await wav(t, 'cue:gauge', 2, { n }); const end = (n + 2) * 0.08; return { f: hz(r.wav, end + 0.14, end + 0.3), secs: r.secs }; };
+      const one = await settle(1), six = await settle(6);
+      t.log(`settle note: roll 1 ${one.f.toFixed(0)} Hz, roll 6 ${six.f.toFixed(0)} Hz`);
+      t.expect(one.f > 330 && one.f < 560, 'a 1 settles near 440 Hz: ' + one.f);
+      t.expect(six.f > 640 && six.f < 940, 'a 6 settles near 784 Hz: ' + six.f);
+      t.expect(six.f / one.f > 1.4, 'a 6 is clearly higher than a 1');
+      // the game says which roll it is: the cue log carries n
+      await unlock(t); await soloGame(t);
+      for (const n of [1, 6]) {
+        await t.game('act', 'roll', n); await phase(t, 'choose');
+        const log = (await t.state()).audio.log.filter((x) => x.name === 'gauge');
+        t.equal(log[log.length - 1].n, n, 'the gauge cue for a roll of ' + n + ' carries it');
+        await t.game('setState', { trail: { phase: 'roll' } });
+      }
+    },
+  },
+  // ---------------- S5-16 ----------------
+  {
+    name: 'S5-16 running out of time has its own cue, and the tick is audible and climbs each second',
+    viewports: ['desktop'],
+    async run(t) {
+      await unlock(t);
+      await soloGame(t, { settings: { timer: 10 } });
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('setState', { question: { timeLeft: 5.3 } });
+      const ticks = () => t.state().then((s) => s.audio.log.filter((x) => x.name === 'tick').map((x) => x.sec));
+      for (let end = Date.now() + 9000; Date.now() < end && (await ticks()).length < 5; ) await t.page.waitForTimeout(80);
+      const secs = await ticks();
+      t.equal(JSON.stringify(secs.slice(0, 5)), JSON.stringify([5, 4, 3, 2, 1]), 'a tick each second from 5 down to 1');
+      await phase(t, 'feedback');
+      const names = (await t.state()).audio.log.map((x) => x.name);
+      t.expect(names.includes('timeout') && !names.slice(names.indexOf('timeout')).includes('wrong'), 'time up plays the timeout cue, not the wrong-answer cue: ' + names.join());
+      // a wrong answer still has its own sound
+    },
+  },
+  {
+    name: 'S5-16 a wrong answer still plays the wrong cue; the tick climbs and is no longer inaudible',
+    viewports: ['desktop'],
+    async run(t) {
+      await unlock(t); await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      const names = (await t.state()).audio.log.map((x) => x.name);
+      t.expect(names.includes('wrong') && !names.includes('timeout'), 'wrong answer: ' + names.join());
+      const f5 = hz((await wav(t, 'cue:tick', 0.3, { sec: 5 })).wav, 0.02, 0.05), f1 = hz((await wav(t, 'cue:tick', 0.3, { sec: 1 })).wav, 0.02, 0.05);
+      t.log(`tick pitch: 5 s left ${f5.toFixed(0)} Hz, 1 s left ${f1.toFixed(0)} Hz`);
+      t.expect(f1 / f5 > 1.3, 'the tick is higher with 1 second left than with 5');
+      const peaks = []; for (let i = 0; i < 5; i++) peaks.push((await render(t, 'cue:tick', 1, false, 0.7, { sec: 3 })).peak);
+      peaks.sort((a, b) => a - b);
+      t.expect(peaks[2] >= 0.07, 'the tick is audible: median peak ' + peaks[2] + ' (it was 0.02)');
+      const to = []; for (let i = 0; i < 5; i++) to.push((await render(t, 'cue:timeout', 2.5, false)).peak);
+      to.sort((a, b) => a - b);
+      t.expect(to[2] >= 0.2 / 1.19 && to[2] <= 0.45 * 1.19, 'the timeout cue sits with the other cues: median peak ' + to[2]);
     },
   },
 ];
