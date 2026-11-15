@@ -5,7 +5,7 @@ const KEY = 'hs-trivia-v1';
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const own = (v, k) => Object.prototype.hasOwnProperty.call(v, k);
-const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, seen: [], ...freshRecord() });
+const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, ...freshRecord() });
 // The ids of the questions asked most recently, across trips and quizzes, so a new game does not start by repeating them (S3-06).
 export const SEEN_MAX = 400;
 const cleanSeen = (v) => (Array.isArray(v) ? v.filter((id) => typeof id === 'string' && id.length <= 40).slice(-SEEN_MAX) : []);
@@ -50,7 +50,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     out.settings = { ...out.settings };
     out.best = { ...out.best, era: { ...(out.best.era || {}) } };
     out.daily = { ...out.daily, results: { ...(out.daily.results || {}) } };
-    out.seen = cleanSeen(data.seen);
+    if (own(data, 'seen')) out.seen = cleanSeen(data.seen); // absent until the first question is asked: a save from before gains nothing else
     Object.assign(out, cleanRecord(data)); // stats, ach, profile: defaults for a save that predates them, repair for a damaged one
     return out;
   };

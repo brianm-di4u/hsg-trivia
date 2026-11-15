@@ -161,7 +161,7 @@ export const tests = [
     node: true,
     async run() {
       const m = memStore(null); const s = createSaveStore({ storage: m.storage }); s.load();
-      assert.deepEqual(s.data.seen, [], 'a new profile remembers nothing');
+      assert.deepEqual(s.data.seen || [], [], 'a new profile remembers nothing');
       assert.ok(s.commitSeen(ids(450)).ok);
       assert.equal(m.read().seen.length, SEEN_MAX, 'the last 400 are kept');
       assert.equal(m.read().seen[SEEN_MAX - 1], 'hs-0449', 'and they are the newest');
@@ -176,7 +176,7 @@ export const tests = [
       const mixed = memStore({ v: 1, seen: ['hs-0001', 5, null, 'x'.repeat(80), 'hs-0002'] }); const ms = createSaveStore({ storage: mixed.storage }); ms.load();
       assert.deepEqual(ms.data.seen, ['hs-0001', 'hs-0002'], 'only ids are kept');
       // an older save with no such key loads, and keeps everything else
-      const old = memStore(VETERAN); const os = createSaveStore({ storage: old.storage }); os.load(); assert.deepEqual(os.data.seen, []); assert.equal(os.data.best.quick, 55);
+      const old = memStore(VETERAN); const os = createSaveStore({ storage: old.storage }); os.load(); assert.deepEqual(os.data.seen || [], []); assert.equal(os.data.best.quick, 55); assert.equal(old.read().seen, undefined, 'and nothing is added to it until a question is asked');
     },
   },
   {
