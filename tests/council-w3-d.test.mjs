@@ -187,4 +187,77 @@ export const tests = [
       await waitFor(t, (v) => v.ui.tip === null, 3000, 'the label to go when the pointer leaves the spaces');
     },
   },
+
+  // ---------------- S2-08 ----------------
+  {
+    name: 'S2-08 the seat player-type pill shows its whole label on the setup card',
+    initScript: withSave(VETERAN),
+    async run(t) {
+      await t.game('scene', 'setup');
+      await t.waitForStable(8000);
+      // every option's text, in the select's own font, must fit inside the select once its padding and arrow room are taken off
+      const r = await t.page.evaluate(() => {
+        const sel = document.querySelector('#seat-kind-1'); const cs = getComputedStyle(sel);
+        const g = document.createElement('canvas').getContext('2d'); g.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+        const room = sel.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - parseFloat(cs.borderLeftWidth) - parseFloat(cs.borderRightWidth);
+        return { room, widest: Math.max(...[...sel.options].map((o) => g.measureText(o.textContent).width)), label: sel.options[sel.selectedIndex].textContent };
+      });
+      t.expect(r.widest <= r.room, `the longest label (${r.widest.toFixed(1)} px) fits the select (${r.room.toFixed(1)} px)`);
+      await t.shot('S2-08-setup-seats');
+    },
+  },
+  {
+    name: 'S2-08 the Daily Challenge says today or a short date, never 2026-11-12, and the share text keeps the full date',
+    initScript: withSave(VETERAN, '2026-11-12'),
+    async run(t) {
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      const btn = await t.page.evaluate(() => document.querySelector('[data-act="daily"]').textContent);
+      t.expect(/7 questions for today/.test(btn) && !/2026/.test(btn), 'the title button: ' + btn);
+      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
+      await t.waitForStable(8000);
+      const head = await t.page.evaluate(() => document.querySelector('.qt-title').textContent);
+      t.equal(head, 'Daily Challenge · Nov 12', 'the quiz header');
+      for (let i = 0; i < 7; i++) { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); }
+      await waitFor(t, (s) => s.scene === 'results', 4000, 'results');
+      const res = await t.page.evaluate(() => ({ eyebrow: document.querySelector('.results-card .eyebrow').textContent, share: document.querySelector('#share').value }));
+      t.equal(res.eyebrow, 'Daily Challenge · Nov 12', 'the results header');
+      t.expect(/Daily 2026-11-12/.test(res.share), 'the text to share keeps the full date');
+    },
+  },
+  {
+    name: 'S2-08 a destination row does not say its kind twice, and the start space is not called The Y',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s0 = await t.state();
+      const rows = async (from, n) => {
+        await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false, players: [{ node: from }] } });
+        await t.game('act', 'roll', n); await phase(t, 'choose'); await t.waitForStable(8000);
+        return t.page.evaluate(() => [...document.querySelectorAll('.dest')].map((b) => ({ id: +b.dataset.arg, name: b.querySelector('.dname').textContent, sub: b.querySelector('.dsub').textContent })));
+      };
+      const first = (type) => s0.board.types.indexOf(type);
+      const neighbor = async (id) => (await t.game('act', 'adj', id))[0];
+      let list = await rows(await neighbor(first('postcard')), 1);
+      let r = list.find((x) => x.id === first('postcard'));
+      t.expect(r && r.name === 'Postcard' && r.sub === 'Bridge Street', 'the postcard row names its district once: ' + JSON.stringify(r));
+      list = await rows(await neighbor(first('jury')), 1);
+      r = list.find((x) => x.id === first('jury'));
+      t.expect(r && r.name === 'Grand Jury' && r.sub === 'Central Avenue', 'the Grand Jury row: ' + JSON.stringify(r));
+      list = await rows(await neighbor(first('trolley')), 1);
+      r = list.find((x) => x.id === first('trolley'));
+      t.expect(r && r.sub === 'Oaklawn', 'the Oaklawn trolley stop row: ' + JSON.stringify(r));
+      list = await rows(await neighbor(s0.board.start), 1);
+      r = list.find((x) => x.id === s0.board.start);
+      t.expect(r && r.sub === 'Start · trolley stop · Downtown' && !/The Y/.test(r.sub), 'the start row says what it is: ' + JSON.stringify(r));
+      list = await rows(await neighbor(first('cat')), 1);
+      r = list.find((x) => x.id === first('cat'));
+      t.expect(r && /^[A-Za-z &]+ · /.test(r.sub), 'an ordinary space still names its category: ' + JSON.stringify(r));
+      // the trolley sheet calls the start space's place Downtown
+      await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false, players: [{ node: first('trolley'), tickets: 5 }] } });
+      await t.game('act', 'ui', 'trolley-open');
+      await waitFor(t, (s) => s.ui.modal === 'trolley', 3000, 'the trolley sheet');
+      const small = await t.page.evaluate(() => [...document.querySelectorAll('#modal .listb small')].map((e) => e.textContent));
+      t.expect(small.includes('Downtown') && !small.includes('The Y'), 'the trolley sheet: ' + small.join(' | '));
+    },
+  },
 ];

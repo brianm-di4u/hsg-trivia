@@ -34,6 +34,9 @@ const pts = (n) => Number(n).toLocaleString('en-US');
 const timerWords = (s) => (s ? s + ' s timer' : 'no timer');
 // A best score with what it was made of, for the results: "1,820 (8 of 10, 30 s timer)" (S3-12).
 const bestWords = (n, m) => pts(n) + (m ? ` (${m.right} of ${m.total}, ${timerWords(m.timer)})` : '');
+// A date for a person: "Nov 12" (the saved and shared forms stay 2026-11-12).
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const dayWords = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m && MONTHS[+m[2] - 1] ? `${MONTHS[+m[2] - 1]} ${+m[3]}` : String(iso || ''); };
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
 // Painted art (assets/), used only when the manifest lists it; every use has a non-art fallback.
@@ -157,7 +160,7 @@ function titleHTML() {
       ${btn('goto', 'Trail Game <small>board game · 1–6 players</small>', { arg: 'setup', cls: has ? '' : 'primary', auto: !has })}
       ${btn('quick', `Quick 10 <small>ten questions, solo${sv.best.quick ? ' · best ' + pts(sv.best.quick) : ''}</small>`)}
       ${btn('goto', 'Era Express <small>pick a period of history</small>', { arg: 'era' })}
-      ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts` : `7 questions for ${G.today()}`}</small>`)}
+      ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts` : '7 questions for today'}</small>`)}
     </div>
     <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('goto', 'Trail Record', { arg: 'record' })}</div>
     <p class="foot">${BANK.length} sourced questions · Trail wins: ${sv.stats.wins} · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${liveStreak(sv.daily, G.today())}</p>
@@ -223,10 +226,12 @@ function expressOffer(p) {
 // What a space is, and where: the destination list's second line, and the name label on the board (S1-07).
 function spaceKind(n) {
   const c = n.cat ? CAT[n.cat] : null;
-  return n.type === 'landmark' ? `Landmark · ${c.short}` : n.type === 'cat' ? c.short : { vent: 'Steam vent', wager: 'Post Time wager', warp: 'Time Warp', postcard: 'Postcard', jury: 'Grand Jury', trolley: 'Trolley stop', start: 'The Y · trolley', trailhead: 'Trailhead', trail: 'Mountain trail', tower: 'Mountain Tower!' }[n.type];
+  return n.type === 'landmark' ? `Landmark · ${c.short}` : n.type === 'cat' ? c.short : { vent: 'Steam vent', wager: 'Post Time wager', warp: 'Time Warp', postcard: 'Postcard', jury: 'Grand Jury', trolley: 'Trolley stop', start: 'Start · trolley stop', trailhead: 'Trailhead', trail: 'Mountain trail', tower: 'Mountain Tower!' }[n.type];
 }
 const spaceDistrict = (n) => (n.district && DISTRICT[n.district] ? DISTRICT[n.district].name : n.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown');
-export const spaceLabel = (id) => { const n = NODES[id]; return `${n.name} · ${spaceKind(n)}`; };
+// The kind is left out where the space's own name already says it ("Postcard", "Grand Jury", "Park Avenue trolley stop").
+const kindOf = (n) => { const k = spaceKind(n); return k.toLowerCase().split(' · ').every((part) => n.name.toLowerCase().includes(part)) ? '' : k; };
+export const spaceLabel = (id) => { const n = NODES[id]; const k = kindOf(n); return k ? `${n.name} · ${k}` : n.name; };
 
 function panelHTML() {
   const t = Game.T(); if (!t) return '';
@@ -243,10 +248,10 @@ function panelHTML() {
     case 'choose': {
       const list = t.dests.map((d, i) => {
         const n = NODES[d.node]; const c = n.cat ? CAT[n.cat] : null;
-        const kind = spaceKind(n); const dn = spaceDistrict(n);
+        const kind = kindOf(n); const dn = spaceDistrict(n);
         return `<li><button class="dest${i === t.sel ? ' sel' : ''}" data-act="choose" data-arg="${d.node}" data-key="dest${d.node}"${ai ? ' disabled' : ''} aria-current="${i === t.sel}">
           <span class="num" aria-hidden="true">${i + 1}</span>${c && (n.type === 'cat' || n.type === 'landmark') ? ico(c.icon, c.color, c.ink, 24) : ico(n.type === 'tower' ? 'tower' : n.type === 'trail' ? 'trailhead' : ({ start: 'star' }[n.type] || n.type), '', 'currentColor', 24)}
-          <span class="dtext"><span class="dname">${esc(n.name)}</span><span class="dsub">${esc(kind)} · ${esc(dn)}</span></span></button></li>`;
+          <span class="dtext"><span class="dname">${esc(n.name)}</span><span class="dsub">${kind ? esc(kind) + ' · ' : ''}${esc(dn)}</span></span></button></li>`;
       }).join('');
       action = `<p class="status rolled">${gaugeHTML(t)}<span>${who} rolled <span class="die" aria-label="${t.roll}">${t.roll}</span> ${ai ? 'and is choosing…' : '— pick where to stop:'}</span></p>
         <ol class="dests" aria-label="Destinations">${list}</ol>
@@ -410,7 +415,7 @@ function passportHTML() {
 }
 
 function trolleyHTML() {
-  const list = Game.trolleyOptions().map((id, i) => { const n = NODES[id]; return btn('trolley', `${ico('trolley', '', 'currentColor', 22)}<span>${esc(n.name)}</span><small>${esc(n.district ? DISTRICT[n.district].name : 'The Y')}</small>`, { arg: String(id), cls: 'listb', hint: String(i + 1), auto: i === 0 }); }).join('');
+  const list = Game.trolleyOptions().map((id, i) => { const n = NODES[id]; return btn('trolley', `${ico('trolley', '', 'currentColor', 22)}<span>${esc(n.name)}</span><small>${esc(n.district ? DISTRICT[n.district].name : 'Downtown')}</small>`, { arg: String(id), cls: 'listb', hint: String(i + 1), auto: i === 0 }); }).join('');
   return `<div class="mcard"><div class="mhead">${ico('trolley', '#1F2F5C', '#FFFFFF', 44)}<h2 id="mtitle">Ride the trolley</h2></div><p>Pay 2 tickets to ride to another stop. Your turn ends there.</p><div class="list">${list}</div><div class="mfoot">${btn('close-modal', 'Cancel', { cls: 'ghost', hint: 'Esc' })}</div></div>`;
 }
 
@@ -449,7 +454,7 @@ function menuHTML() {
 // ---------- quiz scene ----------
 function quizHTML() {
   const qz = G.state.quiz; const q = G.state.question; if (!qz || !q) return '';
-  const title = qz.kind === 'daily' ? `Daily Challenge · ${qz.date}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
+  const title = qz.kind === 'daily' ? `Daily Challenge · ${dayWords(qz.date)}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
   const tint = qz.kind === 'era' ? qz.era : 'any';
   return `<div class="quiz-wrap" data-era="${tint}">
     <div class="quiz-top"><span class="qt-title">${title}</span><span class="qt-prog" aria-label="Question ${qz.idx + 1} of ${qz.total}">${qz.idx + 1} / ${qz.total}</span><span class="qt-score">${qz.score} pts${qz.streak > 1 ? ` · streak ${qz.streak}` : ''}</span></div>
@@ -465,7 +470,7 @@ function resultsHTML() {
   const best = qz.kind === 'quick' ? G.save.data.best.quick : qz.kind === 'era' ? (G.save.data.best.era || {})[qz.era] : null;
   const bm = G.save.data.bestMeta; const bestMeta = bm ? (qz.kind === 'quick' ? bm.quick : bm.era && bm.era[qz.era]) : null;
   const rows = qz.results.map((r) => { const b = BANK.find((x) => x.id === r.id); return `<li class="${r.correct ? 'y' : 'n'}"><span aria-label="${r.correct ? 'correct' : 'wrong'}">${r.correct ? '✔' : '✘'}</span> ${esc(b.question)} <small>— ${esc(b.answer)}</small></li>`; }).join('');
-  const title = qz.kind === 'daily' ? `Daily Challenge · ${qz.date}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
+  const title = qz.kind === 'daily' ? `Daily Challenge · ${dayWords(qz.date)}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
   return `<div class="page-card results-card"><p class="eyebrow">${title}</p><h2>${right} of ${qz.total} right</h2>
     <p class="score">${pts(qz.score)} points (${right} of ${qz.total} right${qz.timer ? ', ' + timerWords(qz.timer) : ''}) · best streak ${qz.bestStreak}${best ? ` · personal best ${bestWords(best, bestMeta)}` : ''}</p>
     ${qz.kind === 'daily' ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}` : ''}
