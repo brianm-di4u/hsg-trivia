@@ -693,6 +693,7 @@ function helpHTML() {
     <p class="hint">Terrain: USGS 3DEP. Streets: US Census TIGER. Lakes and creeks: USGS National Hydrography Dataset (all public domain). Building footprints and trails: © OpenStreetMap contributors (ODbL).</p>
     <div class="row">${btn('back', 'Back', { cls: 'primary', auto: true })}</div></div>`;
 }
+    <h3>Gamepad</h3><p class="keys">D-pad picks a space or moves between buttons · A confirms, continues and rolls · the face buttons answer A to D · X re-roll · shoulder buttons 50/50 · Select passport · B or Start menu</p>
 
 // The Vibration switch shows only where there is a motor to switch: a touch screen in a browser that can vibrate.
 const canVibrate = () => typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && typeof matchMedia === 'function' && matchMedia('(any-pointer: coarse)').matches;

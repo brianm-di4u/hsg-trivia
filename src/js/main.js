@@ -443,6 +443,40 @@ function onKey(e) {
     default:
   }
 }
+// S6-15: a gamepad (the standard layout) plays through the same keys. The D-pad is the arrow keys, A is Enter (or the focused button), B and Start
+// are Escape, X is R (roll, re-roll), Select is P (passport), the shoulder buttons are F (50/50). While a question is open A, B, X, Y answer A to D.
+// In a menu, a sheet or a page the D-pad moves the focus from button to button and A presses it. A press is acted on once, when the button goes down.
+const PAD_KEYS = { 0: 'Enter', 1: 'Escape', 2: 'r', 4: 'f', 5: 'f', 8: 'p', 9: 'Escape', 12: 'ArrowUp', 13: 'ArrowDown', 14: 'ArrowLeft', 15: 'ArrowRight' };
+let padHeld = {};
+function padPress(i) {
+  unlockAudio(); ui.input = 'keys';
+  const st = G.state, q = st.question;
+  const over = ui.modal || ui.menuOpen || ui.confirm || ui.saveConflict || ui.crash;
+  const asking = !over && q && q.chosen === null && (st.scene === 'quiz' || (st.scene === 'game' && st.trail && st.trail.phase === 'question'));
+  if (asking && i <= 3) return onKey({ key: 'abcd'[i], preventDefault() {} });
+  const menuLike = over || (st.scene !== 'game' && st.scene !== 'quiz');
+  if (menuLike && i >= 12 && i <= 15) {
+    const root = !$modalEl().hidden ? $modalEl() : document.querySelector('#scene-' + st.scene);
+    const items = root ? [...root.querySelectorAll('button:not([disabled])')].filter((b) => b.offsetParent !== null) : [];
+    if (!items.length) return;
+    const at = items.indexOf(document.activeElement);
+    items[(at + (i === 12 || i === 14 ? -1 : 1) + items.length) % items.length].focus({ preventScroll: true });
+    return;
+  }
+  const ae = document.activeElement;
+  if (i === 0 && ae && ae.tagName === 'BUTTON' && !ae.disabled && (menuLike || !ae.closest('#topbar'))) return ae.click();
+  if (PAD_KEYS[i]) onKey({ key: PAD_KEYS[i], preventDefault() {} });
+}
+const $modalEl = () => document.querySelector('#modal');
+function pollPad() {
+  let pads; try { pads = typeof navigator.getGamepads === 'function' ? navigator.getGamepads() : null; } catch (e) { return; }
+  if (!pads) return;
+  const now = {};
+  for (const g of pads) if (g && g.connected) g.buttons.forEach((b, i) => { if (b && b.pressed) now[i] = true; });
+  for (const i in now) if (!padHeld[i]) padPress(+i);
+  padHeld = now;
+}
+
 const answerKey = (l) => ({ a: 0, b: 1, c: 2, d: 3, 1: 0, 2: 1, 3: 2, 4: 3 }[l] ?? -1);
 
 function trapFocus(e) {
@@ -490,7 +524,7 @@ function frameStep(ts) {
   // Animation steps are capped at 50 ms so a stall never teleports tokens; the answer timer runs on wall-clock
   // time (capped at 0.5 s for a backgrounded tab), so a 10 s timer is 10 s even on a slow device.
   const raw = lastT ? (ts - lastT) / 1000 : 0.016; const dt = Math.min(0.05, raw); const tdt = Math.min(0.5, raw); lastT = ts; fpsFrames++;
-  syncPause(); syncSoundscape(); UI.coachTick();
+  pollPad(); syncPause(); syncSoundscape(); UI.coachTick();
   const st = G.state;
   // question timer (humans only in the Trail Game)
   const q = st.question;
