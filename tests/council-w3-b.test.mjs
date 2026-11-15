@@ -352,4 +352,27 @@ export const tests = [
       t.expect(eh[1] > mh[1] - 5 && eh[1] < 97, `Hard beats Easy at least as clearly, but not always: ${eh[1]}`);
     },
   },
+  // ---------------- S3-11 ----------------
+  {
+    name: 'S3-11 each trip length says about how long it takes, and more travelers or stamps mean longer',
+    async run(t) {
+      await t.game('scene', 'setup');
+      await t.waitForStable(8000);
+      const read = () => t.page.evaluate(() => [...document.querySelectorAll('#scene-setup .seg-b')].map((b) => b.innerText.replace(/\s+/g, ' ')));
+      const mins = (txt) => +/about (\d+) min/.exec(txt)[1];
+      const one = await read();
+      t.equal(one.length, 3, 'three lengths');
+      for (const s of one) t.expect(/about \d+ min/.test(s), 'each shows a time: ' + s);
+      t.expect(mins(one[0]) < mins(one[1]) && mins(one[1]) < mins(one[2]), 'a longer trip says longer: ' + one.join(' | '));
+      for (let i = 0; i < 4; i++) await t.page.locator('#scene-setup [data-act="seat-add"]').click();
+      const six = await read();
+      t.expect(mins(six[1]) > mins(one[1]), `six travelers take longer than two for the same trip: ${mins(six[1])} vs ${mins(one[1])}`);
+      await t.shot('S3-11-setup-estimates');
+      await t.checkLayout({ allowScrollY: true });
+      // an Easy computer traveler takes longer than a Hard one
+      await t.game('scene', 'setup');
+      const est = (lvl) => t.page.evaluate((l) => window.__game.tripMinutes([{ kind: 'human' }, { kind: 'ai', level: l }], 6, 'brisk'), lvl);
+      t.expect((await est('easy')) > (await est('hard')), 'an Easy table is slower than a Hard one');
+    },
+  },
 ];

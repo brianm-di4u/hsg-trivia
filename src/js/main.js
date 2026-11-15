@@ -488,6 +488,7 @@ window.__game = {
   audioList,
   coachTexts: (input) => UI.coachTexts(input),
   voices: () => Game.AI_LINES,
+  tripMinutes: (seats, target, speed) => Game.tripMinutes(seats, target, speed),
   audioRender,
   audioState: audioInfo,
   setState(s) {

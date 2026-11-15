@@ -63,6 +63,18 @@ export const AI_PACE = {
   fast: { factor: 1, cap: 220, hop: 0.35 },
 };
 export const DEFAULT_AI_SPEED = 'brisk';
+// S3-11: roughly how long a trip takes. Median rounds are from tools/econ-sim.mjs (Medium travelers, 80 games a row, seeds 1000 and up; index = travelers - 1).
+export const TRIP_ROUNDS = { 4: [28, 23, 20, 20, 19, 18], 6: [41, 36, 34, 33, 31, 29], 8: [58, 50, 45, 43, 42, 42] };
+const LEVEL_ROUNDS = { easy: 1.2, medium: 1, hard: 0.8 }; // a table of Easy computers took 43 rounds where Medium took 36, Hard 28 to 29
+const TURN_SECONDS = { human: 20, normal: 6.6, brisk: 3.7, fast: 1.5 }; // computer turns are measured (PACE=... tools/econ-sim.mjs); a human turn (roll, choose, answer, read) is a plain guess
+// Minutes for a trip: the seats are { kind, level }, the target is 4, 6 or 8.
+export function tripMinutes(seats, target, aiSpeed = DEFAULT_AI_SPEED) {
+  const n = Math.max(1, Math.min(6, seats.length)); const row = TRIP_ROUNDS[target] || TRIP_ROUNDS[6];
+  const levels = seats.filter((s) => s.kind === 'ai').map((s) => LEVEL_ROUNDS[s.level] || 1);
+  const rounds = row[n - 1] * (levels.length ? (levels.reduce((a, b) => a + b, 0) + (n - levels.length)) / n : 1);
+  const secs = seats.reduce((a, s) => a + (s.kind === 'ai' ? TURN_SECONDS[aiSpeed] || TURN_SECONDS.brisk : TURN_SECONDS.human), 0);
+  return (rounds * secs) / 60;
+}
 export const TARGETS = [{ n: 4, label: 'Day Trip' }, { n: 6, label: 'Weekend' }, { n: 8, label: 'Grand Tour' }];
 
 export const T = () => G.state.trail;
