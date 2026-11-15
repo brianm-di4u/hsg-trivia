@@ -109,4 +109,82 @@ export const tests = [
       await t.game('act', 'stopAI');
     },
   },
+
+  // ---------------- S1-07 ----------------
+  {
+    name: 'S1-07 a tap that misses pulses the nearest destination, a sloppy tap still counts, a cancelled press does nothing, and a space is named by a long press',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      await t.game('act', 'roll', 3);
+      let s = await phase(t, 'choose');
+      if (s.ui.camera === 'follow') { await t.game('act', 'ui', 'zoom'); } // the Whole map view on a phone is the hard case: small spaces
+      await t.waitForStable(8000);
+      s = await t.state();
+      const box = await rect(t, '#board');
+      const at = async (id) => (await t.game('act', 'screenOf', id));
+      const inBoard = ([x, y]) => x > box.left + 30 && x < box.right - 30 && y > box.top + 30 && y < box.bottom - 30;
+      const dests = [];
+      for (const id of s.trail.dests) { const p = await at(id); if (inBoard(p)) dests.push({ id, p }); }
+      t.expect(dests.length >= 1, 'a destination is on screen: ' + s.trail.dests.length);
+      const d = dests[0];
+      // a miss: some other space far from every destination
+      let far = null;
+      for (let id = 0; id < s.board.nodes && !far; id++) {
+        if (s.trail.dests.includes(id)) continue;
+        const p = await at(id); if (!inBoard(p)) continue;
+        const all = await Promise.all(s.trail.dests.map(at));
+        if (all.every((q) => Math.hypot(q[0] - p[0], q[1] - p[1]) > 70)) far = { id, p };
+      }
+      t.expect(far, 'found a spot far from every destination');
+      await t.page.mouse.click(far.p[0], far.p[1]);
+      s = await waitFor(t, (x) => x.ui.nudge !== null, 3000, 'the nearest ring to pulse');
+      t.expect(s.trail.dests.includes(s.ui.nudge), 'the pulsing ring is a destination: ' + s.ui.nudge);
+      t.equal(s.trail.phase, 'choose', 'a miss chooses nothing');
+      await t.page.waitForFunction(() => /No space there/.test(document.querySelector('#live').textContent), null, { timeout: 4000 }).catch(() => t.fail('the miss was not announced to a screen reader'));
+      // a cancelled press (the browser took the touch for scrolling) leaves nothing behind
+      await t.page.mouse.move(d.p[0], d.p[1]); await t.page.mouse.down();
+      await t.page.evaluate(() => document.querySelector('#board').dispatchEvent(new PointerEvent('pointercancel', { bubbles: true })));
+      await t.page.mouse.up();
+      s = await t.state();
+      t.equal(s.trail.phase, 'choose', 'a cancelled press chooses nothing');
+      // a long press names the space and does not choose it
+      await t.page.mouse.move(d.p[0], d.p[1]); await t.page.mouse.down();
+      s = await waitFor(t, (x) => x.ui.tip !== null, 4000, 'the name label');
+      t.equal(s.ui.tip.id, d.id, 'it names the space under the finger');
+      t.expect(s.ui.tip.text.length > 3, 'with its name: ' + s.ui.tip.text);
+      await t.waitForStable(8000);
+      await t.shot('S1-07-name-label');
+      await t.page.mouse.up();
+      s = await t.state();
+      t.equal(s.trail.phase, 'choose', 'releasing a long press does not choose the space');
+      await waitFor(t, (x) => x.ui.tip === null, 8000, 'the label to go');
+      // a tap with a little slip (more than the old 6 px, under the new 10 px) is still a tap
+      // (it ends 16 px from the space's centre: a finger's tap on the Whole map view, where the space itself is about 10 px across)
+      await t.page.mouse.move(d.p[0], d.p[1] - 18); await t.page.mouse.down();
+      await t.page.mouse.move(d.p[0] + 3, d.p[1] - 16); await t.page.mouse.move(d.p[0] + 5, d.p[1] - 15);
+      await t.page.mouse.up();
+      s = await waitFor(t, (x) => x.trail.phase !== 'choose', 4000, 'the sloppy tap to choose');
+      t.equal(s.trail.players[0].node === d.id || s.trail.phase === 'moving', true, 'the token set off for that space');
+      await t.game('act', 'finishAnim');
+    },
+  },
+  {
+    name: 'S1-07 hovering a space with a mouse names it',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s = await t.state();
+      const id = s.board.landmarks['Sports'];
+      const [x, y] = await t.game('act', 'screenOf', id);
+      await t.page.mouse.move(x - 40, y - 40); await t.page.mouse.move(x, y);
+      let st = await waitFor(t, (v) => v.ui.tip !== null, 4000, 'a label on hover');
+      t.equal(st.ui.tip.id, id, 'the space under the pointer');
+      t.expect(/Whittington Park/.test(st.ui.tip.text) && /Landmark/.test(st.ui.tip.text), 'its name and what it is: ' + st.ui.tip.text);
+      await t.waitForStable(8000);
+      await t.shot('S1-07-hover-label');
+      const box = await rect(t, '#board');
+      await t.page.mouse.move(box.left + 4, box.top + 4);
+      await waitFor(t, (v) => v.ui.tip === null, 3000, 'the label to go when the pointer leaves the spaces');
+    },
+  },
 ];

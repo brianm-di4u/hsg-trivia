@@ -288,22 +288,42 @@ function wireInput() {
   document.querySelector('#btn-sound').addEventListener('click', () => { changeSettings({ sound: !G.state.settings.sound }); UI.update(); sfx('click'); });
   document.querySelector('#btn-zoom').addEventListener('click', () => act('zoom'));
 
-  // Board pointer: tap a highlighted space; drag to pan when zoomed.
+  // Board pointer: tap a highlighted space; drag to pan when zoomed. Any space is named on hover (a mouse) or a long press (a finger).
+  // A tap that moves less than TAP_SLOP px is still a tap; one that hits no destination pulses the nearest one (S1-07).
   const cv = document.querySelector('#board');
-  let down = null;
-  cv.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY, moved: false }; cv.setPointerCapture(e.pointerId); unlockAudio(); });
-  cv.addEventListener('pointermove', (e) => {
-    if (!down) return; const dx = e.clientX - down.x, dy = e.clientY - down.y;
-    if (Math.abs(dx) + Math.abs(dy) > 6) down.moved = true;
-    if (down.moved && R.view.mode === 'follow') { R.panBy(dx, dy); down.x = e.clientX; down.y = e.clientY; }
+  const TAP_SLOP = 10, LONG_PRESS_MS = 450, TIP_HOLD_MS = 2200;
+  let down = null, tipTimer = 0;
+  const here = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const showTip = (id) => R.setTip(id, UI.spaceLabel(id));
+  const endPress = () => { if (down && down.timer) clearTimeout(down.timer); down = null; };
+  cv.addEventListener('pointerdown', (e) => {
+    endPress(); clearTimeout(tipTimer); R.setTip(null);
+    down = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: false, long: false };
+    cv.setPointerCapture(e.pointerId); unlockAudio();
+    if (G.state.scene === 'game' && !ui.saveConflict) down.timer = setTimeout(() => { if (!down || down.moved) return; const id = R.spaceAt(...here(down.at || e)); if (id !== null) { down.long = true; showTip(id); } }, LONG_PRESS_MS);
   });
+  cv.addEventListener('pointermove', (e) => {
+    if (!down) {
+      if (e.pointerType === 'mouse' && G.state.scene === 'game' && !R.view.backdrop && !ui.saveConflict && !ui.menuOpen && !ui.modal) { const id = R.spaceAt(...here(e)); if (id === null) R.setTip(null); else showTip(id); }
+      return;
+    }
+    down.at = e;
+    if (!down.moved && Math.hypot(e.clientX - down.sx, e.clientY - down.sy) > TAP_SLOP) { down.moved = true; clearTimeout(down.timer); }
+    if (down.moved && R.view.mode === 'follow') { R.panBy(e.clientX - down.x, e.clientY - down.y); down.x = e.clientX; down.y = e.clientY; }
+  });
+  cv.addEventListener('pointerleave', () => { if (!down) R.setTip(null); });
+  cv.addEventListener('pointercancel', () => { endPress(); R.setTip(null); });
   cv.addEventListener('pointerup', (e) => {
-    if (!down) return; const moved = down.moved; down = null;
+    if (!down) return; const { moved, long } = down; endPress();
+    if (long) { clearTimeout(tipTimer); tipTimer = setTimeout(() => R.setTip(null), TIP_HOLD_MS); return; }
     if (moved || G.state.scene !== 'game' || ui.saveConflict) return;
     const t = G.state.trail; if (t && Game.cur().kind === 'ai' && !ui.modal && !ui.menuOpen && !ui.confirm) return void Game.skipBeat(); // a tap on the board skips an AI beat
     if (!t || Game.cur().kind !== 'human') return;
-    const r = cv.getBoundingClientRect(); const hit = R.hitDest(e.clientX - r.left, e.clientY - r.top, t);
-    if (hit === null) return;
+    const [x, y] = here(e); const hit = R.hitDest(x, y, t);
+    if (hit === null) {
+      if (!ui.modal && !ui.menuOpen && !ui.confirm && (t.phase === 'choose' || t.phase === 'warp')) { const near = R.nearestDest(x, y, t); if (near !== null) { R.nudgeDest(near); UI.announce('No space there. Tap one of the lit spaces, or a numbered button.'); } }
+      return;
+    }
     if (t.phase === 'choose') Game.choose(hit); else if (t.phase === 'warp') Game.warp(hit);
   });
 
@@ -490,7 +510,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     say: G.say,
-    ui: { keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    ui: { keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), tip: R.view.tip ? { id: R.view.tip.id, text: R.view.tip.text } : null, nudge: R.view.nudge ? R.view.nudge.id : null, fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));

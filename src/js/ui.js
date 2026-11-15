@@ -220,6 +220,14 @@ function expressOffer(p) {
   return btn('express', `Express to ${esc(NODES[to].name)} · ${free ? 'free, Final Lap' : plural(ECON.EXPRESS_COST, 'ticket')}`, { cls: free ? '' : 'ghost', hint: 'E', dis: p.tickets < Game.expressCost(p) });
 }
 
+// What a space is, and where: the destination list's second line, and the name label on the board (S1-07).
+function spaceKind(n) {
+  const c = n.cat ? CAT[n.cat] : null;
+  return n.type === 'landmark' ? `Landmark · ${c.short}` : n.type === 'cat' ? c.short : { vent: 'Steam vent', wager: 'Post Time wager', warp: 'Time Warp', postcard: 'Postcard', jury: 'Grand Jury', trolley: 'Trolley stop', start: 'The Y · trolley', trailhead: 'Trailhead', trail: 'Mountain trail', tower: 'Mountain Tower!' }[n.type];
+}
+const spaceDistrict = (n) => (n.district && DISTRICT[n.district] ? DISTRICT[n.district].name : n.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown');
+export const spaceLabel = (id) => { const n = NODES[id]; return `${n.name} · ${spaceKind(n)}`; };
+
 function panelHTML() {
   const t = Game.T(); if (!t) return '';
   const p = Game.cur(); const ai = p.kind === 'ai';
@@ -235,8 +243,7 @@ function panelHTML() {
     case 'choose': {
       const list = t.dests.map((d, i) => {
         const n = NODES[d.node]; const c = n.cat ? CAT[n.cat] : null;
-        const kind = n.type === 'landmark' ? `Landmark · ${c.short}` : n.type === 'cat' ? c.short : { vent: 'Steam vent', wager: 'Post Time wager', warp: 'Time Warp', postcard: 'Postcard', jury: 'Grand Jury', trolley: 'Trolley stop', start: 'The Y · trolley', trailhead: 'Trailhead', trail: 'Mountain trail', tower: 'Mountain Tower!' }[n.type];
-        const dn = n.district && DISTRICT[n.district] ? DISTRICT[n.district].name : n.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown';
+        const kind = spaceKind(n); const dn = spaceDistrict(n);
         return `<li><button class="dest${i === t.sel ? ' sel' : ''}" data-act="choose" data-arg="${d.node}" data-key="dest${d.node}"${ai ? ' disabled' : ''} aria-current="${i === t.sel}">
           <span class="num" aria-hidden="true">${i + 1}</span>${c && (n.type === 'cat' || n.type === 'landmark') ? ico(c.icon, c.color, c.ink, 24) : ico(n.type === 'tower' ? 'tower' : n.type === 'trail' ? 'trailhead' : ({ start: 'star' }[n.type] || n.type), '', 'currentColor', 24)}
           <span class="dtext"><span class="dname">${esc(n.name)}</span><span class="dsub">${esc(kind)} · ${esc(dn)}</span></span></button></li>`;

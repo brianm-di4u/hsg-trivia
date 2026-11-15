@@ -302,7 +302,7 @@ export function panBy(dx, dy) {
 
 // ---------- tokens and animation ----------
 export function tokenPos(p) { if (!view.tok[p.id]) { const n = NODES[p.node]; view.tok[p.id] = { x: n.x, y: n.y, lift: 0, sq: 0 }; } return view.tok[p.id]; }
-export function resetTokens() { view.tok = {}; view.anims = []; view.particles = []; view.bubble = null; }
+export function resetTokens() { view.tok = {}; view.anims = []; view.particles = []; view.bubble = null; view.nudge = null; view.tip = null; }
 
 export function animate(dur, update, done) {
   if (view.reduced || dur <= 0) { update(1); done && done(); return; }
@@ -396,7 +396,7 @@ export function frame(dt, st) {
   // With only ambient motion (steam, backdrop drift, the active token's bob) a 30 fps redraw is enough;
   // tweens, particles, camera moves and destination pulses draw every frame.
   const t = st && st.trail; const pulsing = t && st.mode === 'trail' && !view.backdrop && ['choose', 'warp'].includes(t.phase);
-  const busy = view.anims.length || view.particles.length || !camSettled() || pulsing || view.dirty || view.bubble;
+  const busy = view.anims.length || view.particles.length || !camSettled() || pulsing || view.dirty || view.bubble || view.tip || view.nudge;
   view.odd = !view.odd;
   if (busy || view.odd) { view.dirty = false; draw(st, dt + (busy ? 0 : view.lastSkip || 0)); view.lastSkip = 0; } else view.lastSkip = dt;
 }
@@ -432,10 +432,13 @@ function draw(st, dt) {
     }
     if (trail.phase === 'choose') drawDests(ctx, trail, T);
     if (trail.phase === 'warp' && trail.pending) drawTargets(ctx, trail.pending.options, T);
+    if (view.nudge) { if (['choose', 'warp'].includes(trail.phase)) drawNudge(ctx); else view.nudge = null; }
     drawTokens(ctx, trail, T);
   }
+  if (!trail) view.nudge = null;
   drawParticles(ctx, dt);
   if (view.bubble && trail) drawBubble(ctx, dpr, trail, T);
+  if (view.tip && !view.backdrop) drawTip(ctx, dpr);
 }
 
 // A speech bubble over a pawn (S4-01): one at a time, a few seconds, then gone. It is words, so reduced motion keeps it but skips the fade.
@@ -681,12 +684,44 @@ function drawParticles(ctx, dt = 1 / 60) {
   ctx.globalAlpha = 1;
 }
 
-export function hitDest(sx, sy, trail) {
+// S1-07: a tap lands on a space within 26 board units, and never within less than about 24 px on the screen (the Whole map view on a phone is about 0.4 of a pixel per unit).
+const hitRadius = () => Math.max(26, 24 / (baseScale() * view.cam.z));
+const destIds = (trail) => (trail.phase === 'choose' ? trail.dests.map((d) => d.node) : trail.phase === 'warp' ? trail.pending.options : []);
+function nearestOf(ids, sx, sy, limit) {
   const [x, y] = screenToWorld(sx, sy);
-  let best = null, bd = 26 * 26;
-  const ids = trail.phase === 'choose' ? trail.dests.map((d) => d.node) : trail.phase === 'warp' ? trail.pending.options : [];
+  let best = null, bd = limit * limit;
   for (const id of ids) { const n = NODES[id]; const d = (n.x - x) ** 2 + ((n.y - y) / SQ) ** 2; if (d < bd) { bd = d; best = id; } }
   return best;
+}
+export function hitDest(sx, sy, trail) { return nearestOf(destIds(trail), sx, sy, hitRadius()); }
+// The destination nearest a tap that hit none, wherever it is (null when there is none).
+export const nearestDest = (sx, sy, trail) => nearestOf(destIds(trail), sx, sy, Infinity);
+// Any space under the pointer, for the name label.
+export const spaceAt = (sx, sy) => nearestOf(NODES.map((n) => n.id), sx, sy, hitRadius() * 0.85);
+// A tap that missed: the nearest destination's ring pulses once (it stays lit for the same moment under reduced motion).
+const NUDGE_S = 0.8;
+export function nudgeDest(id) { view.nudge = { id, at: view.time }; view.dirty = true; }
+function drawNudge(ctx) {
+  const nu = view.nudge; const age = view.time - nu.at;
+  if (age > NUDGE_S) { view.nudge = null; return; }
+  const n = NODES[nu.id]; const k = age / NUDGE_S;
+  ctx.save(); ctx.globalAlpha = view.reduced ? 1 : 1 - k; ctx.lineWidth = 5.5; ctx.strokeStyle = '#FFFFFF'; ell(ctx, n.x, n.y, spaceR(n) + 9 + (view.reduced ? 6 : k * 26)); ctx.stroke();
+  ctx.lineWidth = 2.4; ctx.strokeStyle = '#1F2A24'; ell(ctx, n.x, n.y, spaceR(n) + 9 + (view.reduced ? 6 : k * 26) + 3); ctx.stroke(); ctx.restore();
+}
+// The name of a space, on hover or a long press: view.tip = { id, text }.
+export function setTip(id, text) { if (id === null || id === undefined) { if (view.tip) { view.tip = null; view.dirty = true; } return; } if (!view.tip || view.tip.id !== id) { view.tip = { id, text }; view.dirty = true; } }
+function drawTip(ctx, dpr) {
+  const tp = view.tip; const n = NODES[tp.id];
+  const [sx, sy] = worldToScreen(n.x, n.y); const s = baseScale() * view.cam.z;
+  ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.font = '600 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  const w = Math.min(view.w - 16, Math.ceil(ctx.measureText(tp.text).width) + 18), h = 26;
+  const x = Math.max(8, Math.min(view.w - 8 - w, sx - w / 2)); const above = sy - spaceR(n) * s - h - 12; const y = above < 8 ? sy + spaceR(n) * s + 12 : above;
+  const dark = view.theme === 'dark';
+  ctx.fillStyle = dark ? '#2a2433' : '#FBF6EA'; ctx.strokeStyle = dark ? '#E8DFCC' : '#1F2F5C'; ctx.lineWidth = 1.8;
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, 8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = dark ? '#E8DFCC' : '#1F2F5C'; ctx.fillText(tp.text, x + 9, y + h / 2 + 0.5, w - 14);
+  ctx.restore();
 }
 export const towerTop = () => { const t = towerTopY(); return t ? { x: t[0], y: t[1] } : { x: NODES[TOWER].x, y: NODES[TOWER].y - 40 }; };
 export { START, ADJ };
