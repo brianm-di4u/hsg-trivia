@@ -342,7 +342,7 @@ export const tests = [
     viewports: ['desktop'],
     async run(t) {
       const l = await t.page.evaluate(() => window.__game.audioList());
-      const QUIET = ['click', 'tick']; // interface sounds, meant to sit under the gameplay cues
+      const QUIET = ['click', 'tick', 'turn']; // interface sounds, meant to sit under the gameplay cues
       const ALLOW = 1.19; // a repeat may sit 1.5 dB outside the range (a single repeat is 1 to 2 dB louder or softer on purpose)
       for (const n of l.cues) {
         // Five renders of the same cue: the middle one is judged, so one loud or soft repeat cannot fail the test.

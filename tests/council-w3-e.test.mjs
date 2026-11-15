@@ -149,6 +149,69 @@ export const tests = [
       t.equal(await played() - base, 4, 'the same cue sounds again after a short gap');
     },
   },
+  // ---------------- S3-24 ----------------
+  {
+    name: 'S3-24 a right answer rings higher for a harder question, and a run of 3 or 5 adds a chime',
+    viewports: ['desktop'],
+    async run(t) {
+      const w = async (tier) => hz((await wav(t, 'cue:correct', 0.3, { streak: 1, tier })).wav, 0.035, 0.085);
+      const [e, m, h] = [await w(0), await w(1), await w(2)];
+      t.log(`right-answer pitch (zero crossings): easy ${e.toFixed(0)}, medium ${m.toFixed(0)}, hard ${h.toFixed(0)}`);
+      t.expect(h / e > 1.15 && h / e < 1.4, 'hard rings about four semitones above easy: ' + (h / e).toFixed(2));
+      t.expect(m > e && h > m, 'easy < medium < hard');
+      await unlock(t); await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('setState', { trail: { players: [{ streak: 2 }] } });
+      const q = (await t.state()).question;
+      await t.game('act', 'answer', 'correct');
+      const log = (await t.state()).audio.log;
+      const c = log.filter((x) => x.name === 'correct').pop();
+      t.equal(c.tier, ['easy', 'medium', 'hard'].indexOf(q.difficulty), 'the cue is told the difficulty of the question');
+      const ch = log.filter((x) => x.name === 'streak').pop();
+      t.expect(ch && ch.n === 3, 'the third right answer in a row adds the chime: ' + JSON.stringify(ch));
+    },
+  },
+  {
+    name: 'S3-24 tickets earned play a coin after the answer; a miss plays none and a first right answer has no chime',
+    viewports: ['desktop'],
+    async run(t) {
+      await unlock(t); await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      const before = (await t.state()).trail.players[0].tickets;
+      await t.game('act', 'answer', 'correct');
+      const s = await t.state(), names = s.audio.log.map((x) => x.name);
+      t.expect(s.trail.players[0].tickets > before, 'the answer paid tickets');
+      const coin = s.audio.log.filter((x) => x.name === 'coin').pop();
+      t.expect(coin && coin.at > 0.2 && coin.k >= 1, 'a coin follows the answer cue: ' + JSON.stringify(coin));
+      t.expect(!names.includes('streak'), 'no chime for a first right answer');
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      const n0 = (await t.state()).audio.log.filter((x) => x.name === 'coin').length;
+      await landOn(t, s0.board.types.indexOf('cat', s0.board.types.indexOf('cat') + 1));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      t.equal((await t.state()).audio.log.filter((x) => x.name === 'coin').length, n0, 'a wrong answer pays nothing and plays no coin');
+    },
+  },
+  {
+    name: 'S3-24 the turn passing to another traveler ticks softly',
+    viewports: ['desktop'],
+    async run(t) {
+      await unlock(t);
+      await soloGame(t, { players: [H1, H2] });
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      await t.game('act', 'continue');
+      const s = await waitFor(t, (x) => x.trail.turn === 1, 4000, 'the next turn');
+      const tk = s.audio.log.filter((x) => x.name === 'turn').pop();
+      t.expect(tk && tk.me === true, 'the turn of a person starts with a tick: ' + JSON.stringify(tk));
+    },
+  },
 ];
 async function waitFor2(t, pred, label, ms = 4000) {
   const end = Date.now() + ms;

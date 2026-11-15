@@ -333,13 +333,16 @@ export function answer(choice) {
   q.chosen = i; q.correct = i === q.correctIndex;
   // a run of right answers climbs: the cue is told how many in a row this one makes
   const run = (G.state.mode === 'trail' ? cur().streak : (G.state.quiz && G.state.quiz.streak) || 0) + 1;
-  sfx(q.correct ? 'correct' : i === -1 ? 'timeout' : 'wrong', { streak: run });
+  // A right answer rings higher for a harder question; a run reaching 3 or 5 adds a chime to it (for a person, not a computer traveler).
+  const person = G.state.mode !== 'trail' || cur().kind === 'human';
+  sfx(q.correct ? 'correct' : i === -1 ? 'timeout' : 'wrong', { streak: run, tier: ['easy', 'medium', 'hard'].indexOf(q.difficulty) });
+  if (q.correct && person && (run === 3 || run === 5)) sfx('streak', { n: run, at: 0.3 });
   if (G.state.mode !== 'trail') return true; // quiz modes settle in quiz.js
   const t = T(); const p = cur();
   p.answered++; if (q.correct) { p.correct++; p.streak++; p.bestStreak = Math.max(p.bestStreak | 0, p.streak); if (p.streak === 5 || p.streak === 10) record(p, { ev: 'streak', n: p.streak }); } else p.streak = 0;
   const cs = p.catStats[q.category] || (p.catStats[q.category] = [0, 0]); cs[1]++; if (q.correct) cs[0]++;
   p.skill = updateSkill(p.skill, q.difficulty, q.correct);
-  const out = [];
+  const out = [], ticketsBefore = p.tickets;
   const pay = ECON.DISTRICT_PAY[q.difficulty];
   switch (q.purpose) {
     case 'district':
@@ -370,6 +373,7 @@ export function answer(choice) {
     default:
   }
   if (q.correct && out.length === 0) out.push('Well done');
+  if (q.correct && person && p.tickets > ticketsBefore) sfx('coin', { at: 0.34, k: 2 ** ((Math.min(4, p.tickets - ticketsBefore) - 1) * 2 / 12) }); // tickets earned: a coin after the answer, higher for more
   q.outcome = out;
   const ev = p.kind !== 'ai' ? null : out.some((o) => o.startsWith('Stamp earned')) ? 'stamp' : q.purpose === 'summit' ? (q.correct ? null : 'summitMiss') : q.correct ? (q.difficulty === 'hard' ? 'hard' : null) : 'miss';
   if (!q.correct) G.hooks.effect('miss', p, q.purpose);
@@ -509,6 +513,7 @@ export function endTurn() {
   G.state.question = null; t.pending = null;
   t.turn = (t.turn + 1) % t.players.length;
   if (t.turn === 0) t.round++;
+  if (t.players.length > 1) sfx('turn', { me: t.players[t.turn].kind === 'human' });
   G.hooks.save();
   beginTurn();
 }

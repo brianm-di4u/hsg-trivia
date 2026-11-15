@@ -154,7 +154,8 @@ function noise({ t = 0, d = 0.3, v = 0.25, type = 'bandpass', f = 1200, f2 = nul
   s.connect(fl); fl.connect(g); g.connect(panned(pan, sfxIn)); s.start(now, rand(0, 0.9)); s.stop(now + d + 0.05);
 }
 
-// o: { i: step along a walk, pan: screen position -1..1, streak: right answers in a row }
+// o: { i: step along a walk, pan: screen position -1..1, streak: right answers in a row, tier: 0 easy, 1 medium, 2 hard, n: the roll or the run,
+//      k: pitch multiplier, at: seconds to wait before it sounds }
 const PRESETS = {
   click: () => { tone({ type: 'sine', f: 760, f2: 560, d: 0.03, v: 0.12 }); noise({ d: 0.025, v: 0.1, f: 2200, qv: 1.5 }); },
   // The steam gauge counts the roll: n + 2 ticks climb, then a held note settles at a pitch set by n (a 1 lands low, a 6 high) with a bell partial.
@@ -169,7 +170,7 @@ const PRESETS = {
     noise({ d: 0.05, v: 0.13, f: 2000, pan });
   },
   correct: (o) => {
-    const k = 2 ** (Math.min(7, Math.max(0, (o.streak || 1) - 1)) / 12), pan = rand(-0.2, 0.2);
+    const k = 2 ** ((Math.min(7, Math.max(0, (o.streak || 1) - 1)) + 2 * Math.min(2, Math.max(0, o.tier | 0))) / 12), pan = rand(-0.2, 0.2); // a hard question rings up to four semitones above an easy one
     [523.25, 659.25, 783.99].forEach((f, i) => { tone({ type: 'triangle', f: f * k, t: i * 0.09, d: 0.32, v: 0.3, pan, pair: 6 }); tone({ type: 'sine', f: f * k * 2, t: i * 0.09, d: 0.5, v: 0.05, pan }); });
     tone({ type: 'sine', f: 1046.5 * k, t: 0.27, d: 0.5, v: 0.16, pan });
     for (const m of [1, 2, 3]) tone({ type: 'sine', f: 523.25 * k * m, d: 0.6, v: 0.16 / m, pan, j: 0.4 });
@@ -182,7 +183,11 @@ const PRESETS = {
   },
   stamp: () => { tone({ type: 'sine', f: 140, f2: 60, d: 0.18, v: 0.6 }); noise({ d: 0.12, v: 0.3, type: 'lowpass', f: 900 }); noise({ t: 0.08, d: 0.25, v: 0.1, f: 3500, qv: 0.6 }); },
   steam: () => { noise({ d: 0.9, v: 0.26, f: 600, f2: 4000, qv: 0.7, pan: rand(-0.3, 0.3) }); },
-  coin: () => { const pan = rand(-0.2, 0.2); tone({ type: 'square', f: 988, d: 0.06, v: 0.12, q: 4000, pan }); tone({ type: 'square', f: 1319, t: 0.06, d: 0.22, v: 0.12, q: 4000, pan }); },
+  coin: (o) => { const pan = rand(-0.2, 0.2), k = o.k || 1; tone({ type: 'square', f: 988 * k, d: 0.06, v: 0.12, q: 4000, pan }); tone({ type: 'square', f: 1319 * k, t: 0.06, d: 0.22, v: 0.12, q: 4000, pan }); },
+  // A run of right answers reaches 3 or 5: a quick rising chime (a fourth note for the 5) on top of the answer's own cue.
+  streak: (o) => { const pan = rand(-0.2, 0.2); (o.n >= 5 ? [1046.5, 1318.5, 1568, 2093] : [1046.5, 1318.5, 1568]).forEach((f, i) => { tone({ type: 'sine', f, t: i * 0.07, d: 0.3, v: 0.22, pan }); tone({ type: 'triangle', f: f * 2.01, t: i * 0.07, d: 0.18, v: 0.05, pan, pair: 6 }); }); },
+  // The turn passes to someone: one soft tick, a little higher when it is a person's turn.
+  turn: (o) => { const f = o.me ? 880 : 660; tone({ type: 'sine', f, f2: f * 0.9, d: 0.05, v: 0.2 }); noise({ d: 0.02, v: 0.05, f: 2600, qv: 1.5 }); },
   bell: () => { [1, 2.76, 5.4].forEach((m, i) => tone({ type: 'sine', f: 660 * m, d: 0.9 - i * 0.25, v: 0.3 / (i + 1) })); tone({ type: 'sine', f: 660, t: 0.25, d: 0.7, v: 0.2 }); },
   trolley: () => { const pan = rand(-0.4, 0.4); for (const at of [0, 0.22]) [1, 2.4, 4.1].forEach((m, i) => tone({ type: 'sine', f: 880 * m, t: at, d: 0.7 - i * 0.2, v: 0.28 / (i + 1), pan })); },
   // Post Time: three short notes and a long one.
@@ -204,8 +209,8 @@ const PRESETS = {
 };
 // How loud each cue sits at the default volume: the preset's own shape is kept, this trims the whole cue so that the ones
 // the player must notice peak near 0.3 (measured by audioRender). click and tick are quiet interface sounds.
-const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, page: 6.6, gauge: 3.2, tick: 1, timeout: 0.8 };
-const play = (name, o) => { trim = TRIM[name] || 1; try { PRESETS[name](o); } finally { trim = 1; } };
+const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, page: 6.6, gauge: 3.2, tick: 1, timeout: 0.8, streak: 1.5, turn: 2.5 };
+const play = (name, o) => { trim = TRIM[name] || 1; const base = cueBase; cueBase += o.at || 0; try { PRESETS[name](o); } finally { trim = 1; cueBase = base; } };
 // The big cues the music steps back for.
 const DUCKS = { correct: 6, wrong: 6, timeout: 6, win: 8, stamp: 5 };
 
