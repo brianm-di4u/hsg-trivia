@@ -355,7 +355,7 @@ export function answer(choice) {
         p.tickets += ECON.LANDMARK_PAY;
         if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); const bell = finalLap(p); if (bell) out.push(bell); G.hooks.effect('stamp', p); record(p, { ev: 'stamp', count: p.stamps.length, d: DISTRICTS.find((d) => d.cat === cat).key }); }
         out.push(`+${ECON.LANDMARK_PAY} tickets`);
-      }
+      } else if (!p.stamps.includes(cat)) out.push('No stamp this time. Land here again to retry.');
       break;
     }
     case 'wager': {

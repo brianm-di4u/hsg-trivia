@@ -213,8 +213,11 @@ function gaugeHTML(t) {
   }).join('');
   return `<svg class="gauge${spin ? ' spin' : ''}" viewBox="0 0 60 60" style="--a:${ang(t.roll)}deg" aria-hidden="true"><circle cx="30" cy="30" r="28" class="g-rim"/><circle cx="30" cy="30" r="24.5" class="g-face"/><path class="g-arc" d="M11.6 48.4 A26 26 0 1 1 48.4 48.4"/>${marks}<g class="g-needle"><path d="M30 32 L30 10"/><circle cx="30" cy="30" r="3.4"/></g></svg>`;
 }
-function stampPips(p) {
-  return `<span class="pips" aria-label="${p.stamps.length} stamps">${DISTRICTS.map((d) => { const have = p.stamps.includes(d.cat); const c = CAT[d.cat]; return have ? ico(c.icon, c.color, c.ink, 16, 'pip') : '<span class="pip empty"></span>'; }).join('')}</span>`;
+// One circle for each stamp the trip needs (the target: 4, 6 or 8): a stamp held fills one in, and a trip gone past its target shows the extra ones too.
+function stampPips(p, target) {
+  const held = DISTRICTS.filter((d) => p.stamps.includes(d.cat)).map((d) => { const c = CAT[d.cat]; return ico(c.icon, c.color, c.ink, 16, 'pip'); });
+  const empty = Array.from({ length: Math.max(0, target - held.length) }, () => '<span class="pip empty"></span>');
+  return `<span class="pips" aria-label="${p.stamps.length} of ${target} stamps">${held.concat(empty).join('')}</span>`;
 }
 
 // The Express ticket, shown from the roll until the stamp target is met: where it goes and what it costs, before anything is spent.
@@ -282,7 +285,7 @@ function panelHTML() {
   const leader = leaderOf(t);
   const players = t.players.map((q, i) => `<li class="pl${i === t.turn ? ' on' : ''}${q === leader ? ' ahead' : ''}" style="--pc:${q.color}">${tokenIco(q, 30)}
       <span class="pname">${esc(q.name)}${q.kind === 'ai' ? ` <small>AI · ${q.level}</small>` : ''}${q === leader ? ' <small class="lead">ahead</small>' : ''}${q.skip ? ' <small class="warn">skips next</small>' : ''}${q.kind === 'ai' && Game.personaTrait(q.persona) ? `<small class="trait">${esc(Game.personaTrait(q.persona))}</small>` : ''}</span>
-      ${stampPips(q)}<span class="pstat"><span>${q.stamps.length}/${t.target}</span><span class="tix" title="Bath tickets">${TICKET}<span class="sr-only">tickets:</span> ${q.tickets}</span></span></li>`).join('');
+      ${stampPips(q, t.target)}<span class="pstat"><span>${q.stamps.length}/${t.target}</span><span class="tix" title="Bath tickets">${TICKET}<span class="sr-only">tickets:</span> ${q.tickets}</span></span></li>`).join('');
   const el = Game.eligible(p);
   // Where the active token stands: the district painting, its blurb and the space name.
   const here = NODES[p.node]; const hd = here.district && DISTRICT[here.district];
