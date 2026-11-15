@@ -131,6 +131,24 @@ export const tests = [
       t.expect(to[2] >= 0.2 / 1.19 && to[2] <= 0.45 * 1.19, 'the timeout cue sits with the other cues: median peak ' + to[2]);
     },
   },
+  // ---------------- S5-17 ----------------
+  {
+    name: 'S5-17 a cue struck again within a few milliseconds does not pile on itself',
+    viewports: ['desktop'],
+    async run(t) {
+      await unlock(t);
+      const played = async () => (await t.state()).audio.played;
+      const base = await played();
+      // one task: the audio clock cannot move between the calls
+      await t.page.evaluate(() => { for (let i = 0; i < 4; i++) window.__game.cue('steam'); });
+      t.equal(await played() - base, 1, 'four steam cues in one moment sound once');
+      await t.page.evaluate(() => { for (let i = 0; i < 3; i++) window.__game.cue('hop', { i }); window.__game.cue('click'); });
+      t.equal(await played() - base, 3, 'a different cue is not held back by the first (steam, hop, click = 3)');
+      await t.page.waitForTimeout(250);
+      await t.page.evaluate(() => window.__game.cue('steam'));
+      t.equal(await played() - base, 4, 'the same cue sounds again after a short gap');
+    },
+  },
 ];
 async function waitFor2(t, pred, label, ms = 4000) {
   const end = Date.now() + ms;

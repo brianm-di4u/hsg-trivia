@@ -527,6 +527,7 @@ window.__game = {
   voices: () => Game.AI_LINES,
   tripMinutes: (seats, target, speed) => Game.tripMinutes(seats, target, speed),
   audioRender,
+  cue: sfx,
   audioState: audioInfo,
   setState(s) {
     const st = G.state;
