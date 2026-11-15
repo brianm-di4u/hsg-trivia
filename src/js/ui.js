@@ -655,7 +655,7 @@ function settingsHTML() {
     <h3>Answer timer</h3>${seg('timer', [[0, 'Off'], [30, '30 s'], [20, '20 s'], [10, '10 s']])}
     <h3>Motion</h3>${seg('motion', [['auto', 'System'], ['full', 'Full'], ['reduced', 'Reduced']])}
     <h3>Text size</h3>${seg('textScale', [[1, '100%'], [1.15, '115%'], [1.3, '130%']])}
-    <h3>Theme</h3>${seg('theme', [['auto', 'System'], ['light', 'Day'], ['dark', 'Night']])}
+    <h3>Theme</h3>${seg('theme', [['auto', 'System'], ['light', 'Day'], ['dark', 'Night'], ['dusk', 'Day to dusk']])}
     <h3>Hot-seat pass screen</h3>${seg('passScreen', [[true, 'On'], [false, 'Off']])}
     <h3>AI speed</h3>${seg('aiSpeed', [['normal', 'Relaxed'], ['brisk', 'Brisk'], ['fast', 'Fast']])}
     <h3>First-run tips</h3><p class="hint">${s.seenCoach === false ? 'Tips will show on your next Trail Game turn.' : 'Short hints for your first Trail Game turn.'}</p>${btn('coach-replay', 'Show tips again', { cls: 'ghost small' })}

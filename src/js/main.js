@@ -76,6 +76,7 @@ function applySettings() {
   setAudio({ on: s.sound, volume: s.volume, effects: s.effects, music: s.music, ambience: s.ambience });
   const dark = s.theme === 'dark' || (s.theme === 'auto' && mq('(prefers-color-scheme: dark)'));
   document.body.dataset.theme = dark ? 'dark' : 'light';
+  if (R.view.duskOn !== (s.theme === 'dusk')) { R.setDusk(s.theme === 'dusk'); R.requestArt(); }
   // setTheme throws the board cache away, so only call it when the resolved theme really changes (not on volume or mute).
   if (appliedTheme !== (dark ? 'dark' : 'light')) { appliedTheme = dark ? 'dark' : 'light'; R.setTheme(appliedTheme); R.requestArt(); }
   R.view.reduced = s.motion === 'reduced' || (s.motion === 'auto' && mq('(prefers-reduced-motion: reduce)'));
@@ -477,7 +478,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     say: G.say,
-    ui: { fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    ui: { fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));

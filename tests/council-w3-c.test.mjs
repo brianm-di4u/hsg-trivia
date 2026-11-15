@@ -278,4 +278,78 @@ export const tests = [
       assert.ok(on.firstToCollectWins <= 76, `and is well under the old 85: ${on.firstToCollectWins}`);
     },
   },
+  // ---------------- S4-08 ----------------
+  {
+    name: 'S4-08 Day to dusk: the dusk comes in with the leader\'s stamps, reaches the summit step at the Tower, and Day and Night stay fixed',
+    viewports: ['desktop', 'mobile'],
+    reducedMotion: true,
+    async run(t) {
+      const lum = () => t.page.evaluate(() => {
+        const c = document.querySelector('#stage canvas'); const k = document.createElement('canvas'); k.width = 160; k.height = 100;
+        const g = k.getContext('2d'); g.drawImage(c, 0, 0, 160, 100); const d = g.getImageData(0, 0, 160, 100).data; let s = 0;
+        for (let i = 0; i < d.length; i += 4) s += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+        return s / (d.length / 4);
+      });
+      const dusk = async () => (await t.state()).ui.dusk;
+      const settle = async () => { await t.waitIdle(15000); await t.waitFrames(6); };
+      // Day: stamps change nothing
+      await soloGame(t, { target: 4, settings: { seenCoach: true, theme: 'light' } });
+      const lands = Object.keys((await t.state()).board.landmarks);
+      await t.game('setState', { trail: { players: [{ stamps: lands.slice(0, 4) }] } });
+      await t.waitFrames(6);
+      t.equal(await dusk(), 0, 'Day never dims, whatever the stamps');
+      // Dusk: from the first frame it is the day board
+      await t.game('setState', { settings: { theme: 'dusk' }, trail: { players: [{ stamps: [] }] } });
+      await settle();
+      t.equal(await dusk(), 0, 'with no stamp the dusk board is the day board');
+      const l0 = await lum();
+      const seen = [];
+      for (let n = 1; n <= 4; n++) {
+        await t.game('setState', { trail: { players: [{ stamps: lands.slice(0, n) }] } });
+        await waitFor(t, (s) => Math.abs(s.ui.dusk - (n / 4) * 0.55) < 0.001, 2000, `dusk step ${n}`);
+        seen.push(await dusk());
+      }
+      t.expect(seen.every((v, i) => !i || v > seen[i - 1]), 'each stamp brings more dusk: ' + seen.join(', '));
+      t.expect(Math.abs(seen[3] - 0.55) < 0.001, 'the last stamp lands at golden hour (0.55): ' + seen[3]);
+      await settle();
+      const l1 = await lum();
+      t.expect(l1 < l0 - 2, `the board really is darker with all the stamps (mean brightness ${l0.toFixed(1)} to ${l1.toFixed(1)})`);
+      await t.shot('S4-08-dusk-golden-hour');
+      // the Tower: the summit step
+      const tower = (await t.state()).board.tower; const s = await t.state();
+      const nb = (await t.game('act', 'adj', tower)).find((n) => s.board.types[n] === 'trail');
+      await moveTo(t, nb, 1, tower);
+      await waitFor(t, (s) => s.ui.dusk > 0.84, 3000, 'summit dusk');
+      t.expect(Math.abs((await dusk()) - 0.85) < 0.001, 'at the Tower it is dusk (0.85)');
+      await settle();
+      const l2 = await lum();
+      t.expect(l2 < l1 - 2, `and darker again (${l1.toFixed(1)} to ${l2.toFixed(1)})`);
+      await t.shot('S4-08-dusk-summit');
+      // Night stays a fixed choice
+      await t.game('setState', { settings: { theme: 'dark' } });
+      await waitFor(t, (s) => s.ui.dusk === 0 && s.ui.theme === 'dark', 3000, 'night');
+      t.equal(await dusk(), 0, 'Night is Night, not a stage of the trip');
+    },
+  },
+  {
+    name: 'S4-08 the dusk eases in by itself when motion is allowed, Settings offers it, and it is kept across a reload',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { target: 4, settings: { seenCoach: true, theme: 'dusk' } });
+      const lands = Object.keys((await t.state()).board.landmarks);
+      await t.game('setState', { trail: { players: [{ stamps: lands.slice(0, 2) }] } });
+      const first = await waitFor(t, (s) => s.ui.dusk > 0, 3000, 'dusk begins');
+      t.expect(first.ui.dusk < 0.275, 'it eases in, it does not jump to the half-way step: ' + first.ui.dusk);
+      await waitFor(t, (s) => Math.abs(s.ui.dusk - 0.275) < 0.001, 8000, 'dusk arrives');
+      await t.game('scene', 'settings');
+      await t.waitForStable(8000);
+      const opts = await t.page.evaluate(() => [...document.querySelectorAll('#scene-settings [aria-label="Theme"] [role="radio"]')].map((b) => b.innerText + ':' + b.getAttribute('aria-checked')));
+      t.equal(opts.join(' '), 'System:false Day:false Night:false Day to dusk:true', 'Settings offers four themes, Day to dusk chosen');
+      await t.page.locator('#scene-settings [data-arg="theme=light"]').click();
+      t.equal((await t.state()).settings.theme, 'light', 'choosing Day by hand still works');
+      await t.page.locator('#scene-settings [data-arg="theme=dusk"]').click();
+      await t.reload();
+      t.equal((await t.state()).settings.theme, 'dusk', 'the choice survives a reload');
+    },
+  },
 ];

@@ -18,7 +18,7 @@ const TOK = { w: 208, h: 240, fx: 104, fy: 169.5, unit: 66.67, r: 20 };
 export const view = {
   canvas: null, ctx: null, w: 0, h: 0, dpr: 1, theme: 'light', T: THEMES.light, fontsReady: false,
   cache: null, cacheKey: '', cam: { x: BW / 2, y: BH / 2, z: 1 }, camTarget: { x: BW / 2, y: BH / 2, z: 1 },
-  mode: 'fit', backdrop: true, reduced: false, tok: {}, anims: [], particles: [], fx: { slump: 0, chill: 0 }, drag: null, manual: false, time: 0,
+  duskOn: false, duskA: 0, duskStep: 0, mode: 'fit', backdrop: true, reduced: false, tok: {}, anims: [], particles: [], fx: { slump: 0, chill: 0 }, drag: null, manual: false, time: 0,
 };
 
 // Edge polylines by node pair, for path previews that follow the baked route.
@@ -47,6 +47,24 @@ export function resize() {
 
 export function setTheme(name) { view.theme = name; view.T = THEMES[name]; view.cacheKey = ''; }
 
+// S4-08: the 'Day to dusk' theme lets the painted night come in over the day board as the trip goes on: the leader's stamps as a share of the target
+// take it to DUSK_AT_STAMPS (golden hour when the last stamp lands), and standing at the Mountain Tower takes it to DUSK_AT_SUMMIT. The cache is rebuilt each 0.1.
+export const DUSK_AT_STAMPS = 0.55, DUSK_AT_SUMMIT = 0.85, DUSK_SPEED = 0.25; // per second: a stamp's step takes a couple of seconds to arrive
+export function setDusk(on) { if (view.duskOn !== !!on) { view.duskOn = !!on; view.cacheKey = ''; view.dirty = true; } }
+function duskGoal(st) {
+  const t = st && st.scene === 'game' && st.mode === 'trail' ? st.trail : null;
+  if (!view.duskOn || !t) return 0;
+  const most = Math.max(0, ...t.players.map((p) => p.stamps.length));
+  const atTower = t.players.some((p) => NODES[p.node] && NODES[p.node].district === 'mountain' && most >= t.target);
+  return atTower ? DUSK_AT_SUMMIT : DUSK_AT_STAMPS * Math.min(1, most / Math.max(1, t.target));
+}
+function stepDusk(st, dt) {
+  const goal = duskGoal(st);
+  view.duskA = view.reduced ? goal : view.duskA + Math.max(-DUSK_SPEED * dt, Math.min(DUSK_SPEED * dt, goal - view.duskA));
+  const step = Math.round(view.duskA * 10) / 10;
+  if (step !== view.duskStep) { view.duskStep = step; view.dirty = true; }
+}
+
 const baseScale = () => (view.backdrop ? Math.max(view.w / BW, view.h / BH) * 1.08 : Math.min(view.w / BW, view.h / BH) * 0.985);
 const followZoom = () => (view.w < 600 ? 1.9 : 1.6);
 export const isZoomed = () => view.mode === 'follow';
@@ -68,6 +86,7 @@ export function requestArt() {
   const a = boardArt();
   Assets.load(a.lo);
   if (wantRes() > 1700) Assets.load(a.hi);
+  if (view.duskOn) { Assets.load('board-night-lo'); if (wantRes() > 1700) Assets.load('board-night'); }
   for (const s of ['circle', 'square', 'triangle', 'diamond', 'star', 'hexagon']) Assets.load('token-' + s);
   for (const d of Object.keys(DISTRICT)) { Assets.load('land-' + d); Assets.load('stamp-' + d); }
   Assets.load('land-tower');
@@ -80,7 +99,9 @@ function ensureCache() {
   const hi = Assets.img(a.hi), lo = Assets.img(a.lo);
   const art = wantRes() > 1700 && hi ? hi : lo || hi;
   const res = Math.round(wantRes() / 100) * 100;
-  const key = `${view.theme}:${res}:${art ? art.width : 0}:${view.fontsReady}`;
+  const hiN = Assets.img('board-night'), loN = Assets.img('board-night-lo');
+  const dusk = view.duskOn && view.duskStep > 0 ? (wantRes() > 1700 && hiN ? hiN : loN || hiN) : null; // the painted night, to fade in
+  const key = `${view.theme}:${res}:${art ? art.width : 0}:${view.fontsReady}:${dusk ? view.duskStep + ':' + dusk.width : 0}`;
   if (key === view.cacheKey && view.cache) return;
   const c = view.cache && view.cache.width === res ? view.cache : document.createElement('canvas');
   c.width = res; c.height = Math.round(res * BH / BW);
@@ -89,6 +110,10 @@ function ensureCache() {
   const T = view.T;
   if (art) { g.imageSmoothingQuality = 'high'; g.drawImage(art, 0, 0, BW, BH); }
   else drawVectorBoard(g, T);
+  if (dusk && art) {
+    g.globalAlpha = view.duskStep; g.drawImage(dusk, 0, 0, BW, BH);
+    g.globalAlpha = 0.2 * (1 - Math.abs(2 * view.duskStep - 1)); g.fillStyle = '#ff9a3c'; g.fillRect(0, 0, BW, BH); g.globalAlpha = 1; // a warm wash that peaks half way
+  }
   if (view.theme === 'dark' && art && !Assets.img('board-night') && !Assets.img('board-night-lo')) {
     g.fillStyle = 'rgba(10,12,30,0.55)'; g.fillRect(0, 0, BW, BH);
   }
@@ -355,6 +380,7 @@ export function burst(x, y, colors, n = 26, kind = 'spark') {
 // ---------- frame ----------
 export function frame(dt, st) {
   view.time += dt;
+  stepDusk(st, dt);
   for (const a of view.anims.slice()) {
     a.t += dt * 1000;
     const k = Math.min(1, a.t / a.dur); a.update(k);
