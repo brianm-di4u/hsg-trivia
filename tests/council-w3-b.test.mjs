@@ -358,7 +358,7 @@ export const tests = [
     async run(t) {
       await t.game('scene', 'setup');
       await t.waitForStable(8000);
-      const read = () => t.page.evaluate(() => [...document.querySelectorAll('#scene-setup .seg-b')].map((b) => b.innerText.replace(/\s+/g, ' ')));
+      const read = () => t.page.evaluate(() => [...document.querySelectorAll('#scene-setup [aria-label="Stamps to collect"] .seg-b')].map((b) => b.innerText.replace(/\s+/g, ' ')));
       const mins = (txt) => +/about (\d+) min/.exec(txt)[1];
       const one = await read();
       t.equal(one.length, 3, 'three lengths');

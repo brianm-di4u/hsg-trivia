@@ -166,7 +166,8 @@ function titleHTML() {
 }
 
 // ---------- setup ----------
-function defaultSetup() { return { seats: [{ name: '', kind: 'human', level: 'medium' }, { name: '', kind: 'ai', level: 'medium' }], target: 6 }; }
+function defaultSetup() { return { seats: [{ name: '', kind: 'human', level: 'medium' }, { name: '', kind: 'ai', level: 'medium' }], target: 6, qdiff: 'adaptive' }; }
+const QDIFF_HINT = { relaxed: 'Relaxed: mostly easy and medium questions, however you are doing.', adaptive: 'Adaptive: harder as you win, easier as you miss.', expert: 'Expert: mostly medium and hard questions from the start.' };
 function setupHTML() {
   const su = ui.setup || (ui.setup = defaultSetup());
   const names = Game.defaultNames(su.seats);
@@ -188,6 +189,9 @@ function setupHTML() {
     <p class="goal-line"><strong>Goal:</strong> win district stamps at the gold-ring landmarks (the dots under each traveler’s name fill in), then climb to the Mountain Tower and answer the Summit question.</p>
     <h3>Stamps to collect</h3>
     <div class="seg" role="radiogroup" aria-label="Stamps to collect">${Game.TARGETS.map((x, i) => `<button class="seg-b${su.target === x.n ? ' on' : ''}" role="radio" aria-checked="${su.target === x.n}" tabindex="${stop(su.target === x.n, i, Game.TARGETS.some((y) => y.n === su.target))}" data-act="target" data-arg="${x.n}" data-key="target${x.n}">${x.label}<small>${x.n} stamps</small><small>about ${Math.max(5, Math.round(Game.tripMinutes(su.seats, x.n, G.state.settings.aiSpeed) / 5) * 5)} min</small></button>`).join('')}</div>
+    <h3>Questions</h3>
+    <div class="seg" role="radiogroup" aria-label="Question difficulty">${Object.keys(Game.QDIFF).map((id, i) => `<button class="seg-b${su.qdiff === id ? ' on' : ''}" role="radio" aria-checked="${su.qdiff === id}" tabindex="${stop(su.qdiff === id, i, !!Game.QDIFF[su.qdiff])}" data-act="qdiff" data-arg="${id}" data-key="qdiff-${id}">${Game.QDIFF[id].label}</button>`).join('')}</div>
+    <p class="hint" id="qdiff-hint">${QDIFF_HINT[su.qdiff] || QDIFF_HINT.adaptive}</p>
     <p class="hint">Answer timer: <strong>${G.state.settings.timer ? G.state.settings.timer + ' s' : 'Off'}</strong> · change it in Settings. Hot-seat: pass the device when the screen says so.</p>
     <div class="row">${btn('goto', 'Back', { arg: 'title', cls: 'ghost' })}${btn('start-trail', 'Start the trip', { cls: 'primary' })}</div>
   </div>`;
@@ -623,7 +627,7 @@ function helpHTML() {
   return `<div class="page-card help-card"><h2>How to play</h2>
     <p><strong>Goal:</strong> collect your stamp target (4, 6 or 8 district stamps), climb from the Grand Promenade trailhead to the Mountain Tower, and answer the Summit question.</p>
     <ol class="rules"><li>Roll the steam gauge (1–6) and move exactly that many spaces, either way. Highlighted spaces show where you can stop.</li>
-    <li>Answer the question for the space. District spaces pay tickets (Easy 1, Medium 2, Hard 3).</li>
+    <li>Answer the question for the space. District spaces pay tickets (Easy 1, Medium 2, Hard 3). The Trail adjusts the questions to how you are doing; the trip plan can make them Relaxed or Expert instead.</li>
     <li>Spend tickets on a 50/50 (2), a re-roll (1, then 2, 3 and 4 as you use them in a trip) or the trolley (2). Win more at Post Time.</li>
     <li>Two big buys: the <strong>Express ticket</strong> (6) jumps you to the nearest landmark you have no stamp for and asks its question; the <strong>Summit hint</strong> (4) is a 50/50 on the Summit question.</li>
     <li>After every answer you’ll see what’s true and where it comes from.</li>

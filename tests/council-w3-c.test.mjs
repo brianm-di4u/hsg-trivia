@@ -140,4 +140,83 @@ export const tests = [
       assert.deepEqual(r.flagged, [true, false, true, true], 'it catches the price, the 2020 film and the 2020 rally listing; the crappie limit names no year or price, so it waits for the owner (facts-for-review.md)');
     },
   },
+  // ---------------- S2-14 ----------------
+  {
+    name: 'S2-14 each question difficulty has its own mix, Adaptive is exactly what the Trail did before, and an old trip is Adaptive',
+    node: true,
+    async run() {
+      const r = inNode(`const Game = await imp('game.js'); const D = await imp('data.js'); const { makeRng } = await imp('util.js');
+        const out = { skills: {}, old: null, draws: {} };
+        for (const id of Object.keys(Game.QDIFF)) out.skills[id] = [0.05, 0.35, 0.95].map((s) => +Game.questionSkill({ skill: s }, { qdiff: id }).toFixed(3));
+        out.old = [0.05, 0.35, 0.95].map((s) => Game.questionSkill({ skill: s }, {}));
+        out.junk = Game.questionSkill({ skill: 0.35 }, { qdiff: 'nope' });
+        for (const id of Object.keys(Game.QDIFF)) { const rng = makeRng(77); const n = { easy: 0, medium: 0, hard: 0 };
+          for (let i = 0; i < 600; i++) n[D.pickQuestion(rng, [], { skill: Game.questionSkill({ skill: 0.35 }, { qdiff: id }) }).difficulty]++; out.draws[id] = n; }
+        console.log(JSON.stringify(out));`);
+      assert.deepEqual(r.skills.adaptive, [0.05, 0.35, 0.95], 'Adaptive is the hidden skill itself');
+      assert.deepEqual(r.old, [0.05, 0.35, 0.95], 'a trip with no setting (saved before) is Adaptive');
+      assert.equal(r.junk, 0.35, 'and so is one with a setting nobody knows');
+      assert.ok(r.skills.relaxed[2] < 0.5 && r.skills.expert[0] >= 0.5, `Relaxed never rises above half, Expert never starts below it: ${r.skills.relaxed} / ${r.skills.expert}`);
+      // 600 seeded draws from a new traveler (skill 0.35): the shares are fixed by the seed, and these windows are wide
+      const share = (id, k) => r.draws[id][k] / 600;
+      assert.ok(share('relaxed', 'hard') < 0.06 && share('relaxed', 'easy') > 0.5, `Relaxed is mostly easy: ${JSON.stringify(r.draws.relaxed)}`);
+      assert.ok(share('adaptive', 'hard') > 0.06 && share('adaptive', 'hard') < 0.25, `Adaptive starts mixed: ${JSON.stringify(r.draws.adaptive)}`);
+      assert.ok(share('expert', 'hard') > 0.35 && share('expert', 'easy') < 0.2, `Expert is mostly medium and hard: ${JSON.stringify(r.draws.expert)}`);
+    },
+  },
+  {
+    name: 'S2-14 the trip plan offers Relaxed, Adaptive and Expert; the choice reaches the trip, survives a reload, and an old save is Adaptive',
+    viewports: ['desktop', 'mobile'],
+    async run(t) {
+      await t.seed(5);
+      await t.game('setState', { settings: { seenCoach: true, passScreen: false, aiSpeed: 'fast', timer: 0 } });
+      await setupHeader(t);
+      await t.waitForStable(8000);
+      const labels = await t.page.evaluate(() => [...document.querySelectorAll('#scene-setup [aria-label="Question difficulty"] [role="radio"]')].map((b) => b.innerText + ':' + b.getAttribute('aria-checked')));
+      t.equal(labels.join(' '), 'Relaxed:false Adaptive:true Expert:false', 'three choices, Adaptive chosen');
+      const hint = () => t.page.locator('#scene-setup #qdiff-hint').innerText();
+      t.expect(/harder as you win/i.test(await hint()), 'and the hint says Adaptive means harder as you win: ' + await hint());
+      // arrow keys move inside the group
+      await t.page.locator('#scene-setup [data-act="qdiff"][data-arg="adaptive"]').focus();
+      await t.page.keyboard.press('ArrowRight');
+      t.equal(await t.page.locator('#scene-setup [data-act="qdiff"][data-arg="expert"]').getAttribute('aria-checked'), 'true', 'the right arrow chooses Expert');
+      t.expect(/medium and hard/i.test(await hint()), 'the hint follows: ' + await hint());
+      await t.shot('S2-14-setup-expert');
+      await t.checkLayout({ allowScrollY: true });
+      await t.page.locator('#scene-setup [data-act="start-trail"]').click();
+      await waitFor(t, (s) => s.scene === 'game' && s.trail, 4000, 'trip started');
+      t.equal((await t.state()).trail.qdiff, 'expert', 'the trip is an Expert trip');
+      t.equal(await t.page.evaluate((k) => JSON.parse(localStorage.getItem(k)).trail.qdiff, KEY), 'expert', 'and the save says so');
+      await t.reload();
+      await t.game('act', 'ui', 'continue-trail');
+      await waitFor(t, (s) => s.scene === 'game' && s.trail, 4000, 'continued trip');
+      t.equal((await t.state()).trail.qdiff, 'expert', 'it comes back Expert after a reload');
+      // a trip saved before the setting existed has no key at all
+      await t.page.evaluate((k) => { const d = JSON.parse(localStorage.getItem(k)); delete d.trail.qdiff; localStorage.setItem(k, JSON.stringify(d)); }, KEY);
+      await t.reload();
+      await t.game('act', 'ui', 'continue-trail');
+      await waitFor(t, (s) => s.scene === 'game' && s.trail, 4000, 'continued old trip');
+      t.equal((await t.state()).trail.qdiff, 'adaptive', 'an old trip is Adaptive');
+    },
+  },
+  // ---------------- S3-08 ----------------
+  {
+    name: 'S3-08 the game says that it adapts: in the trip plan and in How to play, and the card still names each question\'s difficulty',
+    viewports: ['desktop'],
+    async run(t) {
+      await setupHeader(t);
+      await t.waitForStable(8000);
+      t.expect(/Adaptive: harder as you win/i.test(await t.page.locator('#scene-setup').innerText()), 'the plan says Adaptive is harder as you win');
+      await t.game('scene', 'help');
+      await t.waitForStable(8000);
+      t.expect(/adjusts the questions to how you are doing/i.test(await t.page.locator('#scene-help').innerText()), 'How to play says the Trail adjusts the questions');
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s = await t.state();
+      const cat = s.board.types.indexOf('cat');
+      await moveTo(t, (await t.game('act', 'adj', cat))[0], 1, cat);
+      await phase(t, 'question');
+      await t.waitForStable(8000);
+      t.expect(/(Easy|Medium|Hard) · /.test(await t.page.locator('#modal .qmeta').innerText()), 'the question card says which difficulty it is');
+    },
+  },
 ];

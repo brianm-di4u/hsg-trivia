@@ -145,14 +145,14 @@ export const tests = [
     async run(t) {
       await t.game('scene', 'setup');
       await t.waitForStable(8000);
-      const stops = await t.page.evaluate(() => [...document.querySelectorAll('#scene-setup [role="radiogroup"] [role="radio"]')].map((b) => b.tabIndex));
+      const stops = await t.page.evaluate(() => [...document.querySelectorAll('#scene-setup [aria-label="Stamps to collect"] [role="radio"]')].map((b) => b.tabIndex));
       t.equal(stops.filter((n) => n === 0).length, 1, 'one Tab stop');
-      await t.page.locator('#scene-setup [role="radio"][tabindex="0"]').focus();
+      await t.page.locator('#scene-setup [aria-label="Stamps to collect"] [role="radio"][tabindex="0"]').focus();
       await t.page.keyboard.press('ArrowRight');
-      t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [role="radio"][aria-checked="true"]').dataset.key), 'target8', 'ArrowRight moves from Weekend to Grand Tour');
+      t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [aria-label="Stamps to collect"] [role="radio"][aria-checked="true"]').dataset.key), 'target8', 'ArrowRight moves from Weekend to Grand Tour');
       t.equal(await t.page.evaluate(() => document.activeElement.dataset.key), 'target8', 'focus follows');
       await t.page.keyboard.press('ArrowLeft'); await t.page.keyboard.press('ArrowLeft');
-      t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [role="radio"][aria-checked="true"]').dataset.key), 'target4', 'ArrowLeft twice reaches Day Trip');
+      t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [aria-label="Stamps to collect"] [role="radio"][aria-checked="true"]').dataset.key), 'target4', 'ArrowLeft twice reaches Day Trip');
     },
   },
   // ---------------- S3-06 ----------------

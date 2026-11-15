@@ -184,13 +184,13 @@ const ACTIONS = {
   },
   'start-trail': () => {
     const su = ui.setup;
-    const opts = { players: su.seats.map((s) => ({ name: s.name, kind: s.kind, level: s.level })), target: su.target };
+    const opts = { players: su.seats.map((s) => ({ name: s.name, kind: s.kind, level: s.level })), target: su.target, qdiff: su.qdiff };
     const saved = G.save.trailDiscarded ? null : G.save.data.trail;
     if (saved && saved.phase !== 'over') askConfirm({ kind: 'new-trail', round: saved.round, opts }); else startTrail(opts);
   },
   restart: () => {
     const t = G.state.trail; if (!t) return;
-    const opts = { players: t.players.map((p) => ({ name: p.name, kind: p.kind, level: p.level })), target: t.target };
+    const opts = { players: t.players.map((p) => ({ name: p.name, kind: p.kind, level: p.level })), target: t.target, qdiff: t.qdiff };
     if (t.phase === 'over') startTrail(opts); else askConfirm({ kind: 'restart', round: t.round, opts });
   },
   'quiz-quit': () => { const qz = G.state.quiz; if (qz && qz.idx > 0) askConfirm({ kind: 'quit-quiz' }); else scene('title'); },
@@ -211,6 +211,7 @@ const ACTIONS = {
   'seat-remove': (a) => { ui.setup.seats.splice(+a, 1); UI.update(); },
   target: (a) => { ui.setup.target = +a; sfx('click'); UI.update(); },
   roll: () => { if (Game.cur().kind === 'human') Game.roll(); },
+  qdiff: (a) => { if (Game.QDIFF[a]) ui.setup.qdiff = a; sfx('click'); UI.update(); },
   reroll: () => Game.reroll(),
   'ai-speed': () => {
     const order = Object.keys(Game.AI_PACE); const next = order[(order.indexOf(G.state.settings.aiSpeed) + 1) % order.length];
@@ -467,7 +468,7 @@ function publicState() {
   const st = G.state; const t = st.trail;
   return JSON.parse(JSON.stringify({
     scene: st.scene, mode: st.mode, settings: st.settings, asked: st.asked,
-    trail: t ? { target: t.target, round: t.round, turn: t.turn, phase: t.phase, roll: t.roll, rerolled: t.rerolled, sel: t.sel,
+    trail: t ? { target: t.target, qdiff: Game.qdiffOf(t), round: t.round, turn: t.turn, phase: t.phase, roll: t.roll, rerolled: t.rerolled, sel: t.sel,
       dests: t.dests.map((d) => d.node), destPaths: t.dests.map((d) => d.path),
       players: t.players.map(({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color }) => ({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color })),
       pending: t.pending, winner: t.winner, final: t.final || null, log: t.log.slice(0, 6) } : null,
@@ -509,7 +510,7 @@ window.__game = {
   newGame(opts = {}) {
     if (opts.seed !== undefined) this.seed(opts.seed);
     const mode = opts.mode || 'trail';
-    if (mode === 'trail') startTrail({ players: opts.players, target: opts.target || 6 });
+    if (mode === 'trail') startTrail({ players: opts.players, target: opts.target || 6, qdiff: opts.qdiff });
     else if (mode === 'daily') startQuiz('daily', { date: opts.date || G.today() });
     else startQuiz(mode, { era: opts.era });
     return publicState();
