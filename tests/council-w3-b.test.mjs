@@ -303,4 +303,36 @@ export const tests = [
       t.equal(anim, 'none', 'no shake under reduced motion');
     },
   },
+  // ---------------- S3-07 ----------------
+  {
+    name: 'S3-07 at the Summit a traveler may spin the vane again, once, and never gets the same category',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      let s = await atSummit(t);
+      const first = s.trail.pending.cat;
+      t.expect(await t.page.locator('#modal [data-act="summit-redraw"]').count() === 1, 'the button is offered');
+      await t.shot('S3-07-summit-redraw');
+      await t.page.locator('#modal [data-act="summit-redraw"]').click();
+      s = await t.state();
+      t.expect(s.trail.pending.cat !== first, `the category changed (${first} to ${s.trail.pending.cat})`);
+      t.equal(s.trail.pending.redraws, 1, 'and it is counted');
+      t.equal(await t.page.locator('#modal [data-act="summit-redraw"]').count(), 0, 'the button goes after its one use');
+      await t.page.keyboard.press('s');
+      t.equal((await t.state()).trail.pending.cat, s.trail.pending.cat, 'the key does nothing a second time');
+      await t.game('act', 'continue'); await phase(t, 'question');
+      t.equal((await t.state()).question.category, s.trail.pending.cat, 'the question is from the category that is on the vane');
+    },
+  },
+  {
+    name: 'S3-07 the S key spins the vane',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s = await atSummit(t);
+      await t.page.evaluate(() => { if (document.activeElement) document.activeElement.blur(); });
+      await t.page.keyboard.press('s');
+      const now = await t.state();
+      t.expect(now.trail.pending.cat !== s.trail.pending.cat && now.trail.pending.redraws === 1, 'S spun it');
+    },
+  },
 ];

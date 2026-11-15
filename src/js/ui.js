@@ -377,7 +377,7 @@ function modalHTML() {
     case 'summit': {
       const c = CAT[pd.cat];
       const tw = artSrc('land-tower');
-      return `<div class="mcard center summit">${tw ? `<div class="mbanner"><img src="${tw}" alt="" aria-hidden="true"></div>` : ''}<div class="mhead">${ico('tower', '#8C877C', '#FFFFFF', 44)}<h2 id="mtitle">The Summit question</h2></div><p>You climbed to the 216-ft Mountain Tower. The weather vane swings to…</p><p class="vane">${ico(c.icon, c.color, c.ink, 48)}<strong>${esc(c.id)}</strong></p><p class="hint">A hard question. Get it right to win; miss and you head back to the trailhead.</p><div class="mfoot">${cont('Take the question')}</div></div>`;
+      return `<div class="mcard center summit">${tw ? `<div class="mbanner"><img src="${tw}" alt="" aria-hidden="true"></div>` : ''}<div class="mhead">${ico('tower', '#8C877C', '#FFFFFF', 44)}<h2 id="mtitle">The Summit question</h2></div><p>You climbed to the 216-ft Mountain Tower. The weather vane swings to…</p><p class="vane">${ico(c.icon, c.color, c.ink, 48)}<strong>${esc(c.id)}</strong></p><p class="hint">A hard question. Get it right to win; miss and you head back to the trailhead.</p>${!ai && Game.canRedraw() ? btn('summit-redraw', 'Spin the vane again · once', { cls: 'ghost small', hint: 'S' }) : ''}<div class="mfoot">${cont('Take the question')}</div></div>`;
     }
     default: return '';
   }

@@ -46,6 +46,7 @@ export const ECON = {
   EXPRESS_COST: 6, // new: jump to the nearest landmark that has no stamp yet, then answer its question
   TROLLEY_COST: 2, // unchanged
   WAGER_BASE_CAP: 5, WAGER_MAX_CAP: 10, WAGER_HOARD_SHARE: 0.25, // was a flat cap of 5: now the larger of 5 and 25% of the hoard, up to 10
+  SUMMIT_REDRAWS: 1, // S3-07: how many times a human may spin the Summit vane again for another category (0 turns the button off)
   AI_REROLL_KEEP: 3, // a Hard AI re-rolls only if it keeps this many tickets after paying (was: tickets >= 4 at a price of 1)
   AI_EXPRESS_CHANCE: { easy: 0, medium: 0, hard: 1 }, // how readily each level buys an Express ticket when it can (only The Professor does)
   AI_HINT_SCOPE: { easy: 'any', medium: 'any', hard: 'landmark-hard' }, // which questions each level pays to 50/50: any, or only hard landmark questions (the Summit question always)
@@ -244,6 +245,16 @@ export function startPendingQuestion() {
   const t = T(); const pd = t.pending; if (!pd) return;
   if (t.phase === 'jury') return ask('Legends & Oddities', 'jury');
   if (t.phase === 'summit') return ask(pd.cat, 'summit');
+}
+
+// S3-07: at the Tower a human may spin the vane once more; the new category is never the one just drawn.
+export const canRedraw = (p = cur()) => { const t = T(); return t.phase === 'summit' && p.kind === 'human' && (t.pending.redraws | 0) < ECON.SUMMIT_REDRAWS; };
+export function summitRedraw() {
+  const t = T(); const p = cur(); if (!canRedraw(p)) return false;
+  const others = CATS.filter((c) => c.id !== t.pending.cat);
+  t.pending.cat = others[G.rng.int(others.length)].id; t.pending.redraws = (t.pending.redraws | 0) + 1;
+  log(`${p.name} spins the vane again: ${t.pending.cat}.`); sfx('click'); G.hooks.update();
+  return true;
 }
 
 // The most a traveler may wager: 5, or a quarter of the hoard when that is more, never above 10 or what they hold.

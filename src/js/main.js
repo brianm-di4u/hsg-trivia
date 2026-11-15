@@ -240,6 +240,7 @@ const ACTIONS = {
     const [kind, id] = a.split(':'); const r = G.save.commitProgress({ kind: 'profile', title: kind === 'title' ? id || null : G.save.data.profile.title, cover: kind === 'cover' ? id || null : G.save.data.profile.cover });
     noted(r); sfx('click'); UI.update();
   },
+  'summit-redraw': () => { if (Game.cur().kind === 'human') Game.summitRedraw(); },
   'coach-next': () => UI.coachAction('next'),
   'coach-skip': () => { changeSettings({ seenCoach: true }); UI.coachAction('skip'); UI.announce('Tips off. Turn them back on in Settings.'); },
   'coach-replay': () => { changeSettings({ seenCoach: false }); UI.coachAction('replay'); sfx('click'); UI.update(); },
@@ -388,6 +389,7 @@ function onKey(e) {
     }
     case 'feedback': case 'postcard': case 'orderResult': case 'jury': case 'summit': case 'stuck': case 'skipped':
       if (k === 'Enter' || k === ' ') { act('proceed'); return done(); }
+      if (lower === 's' && t.phase === 'summit') { act('summit-redraw'); return done(); }
       break;
     case 'vent': if (lower === 'y') { act('vent', '1'); return done(); } if (lower === 'n') { act('vent', '0'); return done(); } break;
     case 'wager': if (/^[0-9]$/.test(k) && +k <= Game.wagerCap(p)) { act('wager', k); return done(); } break;
