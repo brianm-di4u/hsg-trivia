@@ -64,6 +64,9 @@ export const PLACE_RES = {
 };
 export const isAbout = (q, place) => !!PLACE_RES[place] && PLACE_RES[place].test(q.question);
 
+// S4-10: a question that names a 2020s year or a dollar price will be wrong within a year or two. The Daily Challenge, which every player sees, leaves these out.
+export const isDated = (q) => /\b202\d\b|\$\d/.test([q.question, q.answer, ...q.wrong, q.explanation].join(' '));
+
 // Difficulty weights from a player's skill s in [0,1] (MECHANICS §5).
 export function diffWeights(s) {
   return { easy: (1 - s) * (1 - s), medium: 2 * s * (1 - s) + 0.1, hard: s * s };

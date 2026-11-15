@@ -1,6 +1,6 @@
 // Quick 10, Era Express and Daily Challenge (PRD §3, AC23–25).
 import { makeRng, hash32, todayISO } from './util.js';
-import { BANK, CATS, ERA_MODES, pickQuestion, makeQuestion, updateSkill } from './data.js';
+import { BANK, CATS, ERA_MODES, isDated, pickQuestion, makeQuestion, updateSkill } from './data.js';
 import { G } from './game.js';
 import { sfx } from './audio.js';
 
@@ -23,8 +23,9 @@ export function dailyIds(date) {
   const ramp = ['easy', 'easy', 'medium', 'medium', 'medium', 'hard', 'hard'];
   const out = [];
   for (let k = 0; k < DAILY_LEN; k++) {
-    let pool = BANK.filter((q) => q.category === cats[k] && q.confidence === 'confirmed' && q.difficulty === ramp[k]);
-    if (!pool.length) pool = BANK.filter((q) => q.category === cats[k] && q.confidence === 'confirmed');
+    const lasting = (q) => q.category === cats[k] && q.confidence === 'confirmed' && !isDated(q); // S4-10: nothing dated in the Daily
+    let pool = BANK.filter((q) => lasting(q) && q.difficulty === ramp[k]);
+    if (!pool.length) pool = BANK.filter(lasting);
     out.push(pool[r.int(pool.length)].id);
   }
   return out;

@@ -122,4 +122,22 @@ export const tests = [
       await t.shot('P-N02-title-streak');
     },
   },
+  // ---------------- S4-10 ----------------
+  {
+    name: 'S4-10 the Daily Challenge never draws a question that names a 2020s year or a price, on 400 different dates',
+    node: true,
+    async run() {
+      const r = inNode(`const Q = await imp('quiz.js'); const D = await imp('data.js');
+        let dated = 0, bad = 0, cats = 0; const seen = new Set();
+        for (let i = 0; i < 400; i++) { const date = new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10); const ids = Q.dailyIds(date); if (ids.length !== 7) bad++;
+          const qs = ids.map((id) => D.getQ(id)); dated += qs.filter(D.isDated).length; cats += new Set(qs.map((q) => q.category)).size === 7 ? 1 : 0; ids.forEach((x) => seen.add(x)); }
+        console.log(JSON.stringify({ dated, bad, cats, distinct: seen.size, bank: D.BANK.length, datedInBank: D.BANK.filter(D.isDated).length, flagged: ['hs-0452', 'hs-0136', 'hs-0461', 'hs-0389'].map((id) => D.isDated(D.getQ(id))) }));`);
+      assert.equal(r.dated, 0, 'no dated question in any of 400 Dailies');
+      assert.equal(r.bad, 0, 'every Daily has seven questions');
+      assert.equal(r.cats, 400, 'in seven different categories, as before');
+      assert.ok(r.distinct > 150, 'the pool is still wide: ' + r.distinct);
+      assert.ok(r.datedInBank >= 30 && r.datedInBank < r.bank / 4, `the filter leaves out a few (${r.datedInBank} of ${r.bank}), not the bank`);
+      assert.deepEqual(r.flagged, [true, false, true, true], 'it catches the price, the 2020 film and the 2020 rally listing; the crappie limit names no year or price, so it waits for the owner (facts-for-review.md)');
+    },
+  },
 ];
