@@ -166,6 +166,11 @@ body[data-theme="dark"] .star.on { color: #F2C94C; }
 .rec-cats li { display: grid; grid-template-columns: minmax(120px, 190px) 1fr minmax(70px, auto); align-items: center; gap: 10px; }
 .cat-n { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; } .cat-v { text-align: right; font-weight: 600; } .cat-v small { color: var(--color-muted); font-weight: 400; }
 .cat-bar { height: 10px; border-radius: 6px; background: var(--color-border); overflow: hidden; } .cat-bar i { display: block; height: 100%; }
+.journal { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.jpage { display: grid; gap: 4px; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--color-border); align-content: start; }
+.jpage.got { background: var(--color-bg); border-color: var(--color-success); } .jpage.lock { opacity: 0.75; border-style: dashed; }
+.jpage img { width: 100%; height: 92px; object-fit: cover; border-radius: var(--radius-md); display: block; }
+.jpage small, .jpage em { display: block; color: var(--color-muted); font-style: normal; } .jpage em { font-size: 0.85rem; }
 .ach-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .ach-list li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; padding: 6px 8px; border-radius: var(--radius-md); border: 1px solid var(--color-border); }
 .ach-list li.got { background: var(--color-bg); border-color: var(--color-success); } .ach-list li.lock { opacity: 0.75; }
@@ -180,6 +185,7 @@ body[data-theme="dark"] .star.on { color: #F2C94C; }
 body.reduced #toast { transition: none; }
 .toast-i { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: var(--radius-lg); background: var(--color-primary); color: var(--color-on-primary); border: 2px solid var(--color-highlight); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
 .toast-k { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; } .toast-i strong { font-family: var(--font-serif-victorian); font-size: 1.1rem; }
+@media (max-width: 520px) { .journal { grid-template-columns: 1fr; } }
 @media (max-width: 760px) { .rec-tiles { grid-template-columns: repeat(3, 1fr); } .rec-cats li { grid-template-columns: 1fr 70px; } .rec-cats .cat-bar { grid-column: 1 / -1; grid-row: 2; } .objective { font-size: 0.8rem; } }
 .ai-quote { font-style: italic; }
 .cast { list-style: none; margin: var(--space-4) 0; padding: 0; display: grid; gap: 6px; text-align: left; }

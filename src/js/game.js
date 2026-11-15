@@ -297,7 +297,7 @@ export function answer(choice) {
       const cat = q.landmarkCat || NODES[p.node].cat;
       if (q.correct) {
         p.tickets += ECON.LANDMARK_PAY;
-        if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); G.hooks.effect('stamp', p); record(p, { ev: 'stamp', count: p.stamps.length }); }
+        if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); G.hooks.effect('stamp', p); record(p, { ev: 'stamp', count: p.stamps.length, d: DISTRICTS.find((d) => d.cat === cat).key }); }
         out.push(`+${ECON.LANDMARK_PAY} tickets`);
       }
       break;

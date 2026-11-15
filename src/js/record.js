@@ -41,7 +41,9 @@ export const TITLES = ACHIEVEMENTS.filter((a) => a.title).map((a) => ({ id: a.id
 
 // ---------- the saved shape, with defaults and repair ----------
 const zero = () => ({ games: 0, wins: 0, byLevel: { easy: [0, 0], medium: [0, 0], hard: [0, 0] }, cat: {}, bestStreak: 0, stamps: 0, summits: 0, fastest: {}, stars: {} });
-export const freshRecord = () => ({ stats: zero(), ach: {}, profile: { title: null, cover: null } });
+// journal: the day each district's stamp was first won, by district key (S3-20); it fills from now on, a trip played before it has no dates.
+export const JOURNAL_KEYS = ['row', 'bridge', 'central', 'oaklawn', 'lakes', 'ballfields', 'hollow', 'park'];
+export const freshRecord = () => ({ stats: zero(), ach: {}, profile: { title: null, cover: null }, journal: {} });
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const cnt = (v) => (typeof v === 'number' && Number.isFinite(v) ? Math.max(0, Math.min(CAP, Math.floor(v))) : 0);
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
@@ -54,6 +56,7 @@ export function cleanRecord(raw) {
   if (isObj(s.fastest)) for (const n of TARGET_SIZES) if (cnt(s.fastest[n]) > 0) out.stats.fastest[n] = cnt(s.fastest[n]);
   if (isObj(s.stars)) for (const n of TARGET_SIZES) for (const l of LEVELS) if (s.stars[n + ':' + l] === true) out.stats.stars[n + ':' + l] = true;
   if (isObj(r.ach)) for (const a of ACHIEVEMENTS) if (typeof r.ach[a.id] === 'string' && DAY.test(r.ach[a.id])) out.ach[a.id] = r.ach[a.id];
+  if (isObj(r.journal)) for (const k of JOURNAL_KEYS) if (typeof r.journal[k] === 'string' && DAY.test(r.journal[k])) out.journal[k] = r.journal[k];
   const p = isObj(r.profile) ? r.profile : {};
   out.profile.title = TITLES.some((t) => t.id === p.title && out.ach[t.need]) ? p.title : null;
   out.profile.cover = COVERS.some((c) => c.id === p.cover && (!c.need || out.ach[c.need])) ? p.cover : null;
@@ -66,7 +69,7 @@ export const coverOf = (rec) => COVERS.find((c) => c.id === rec.profile.cover &&
 
 // ---------- applying an intent ----------
 // data: the saved object (it has stats, ach, profile). Returns { earned: [ids], best: [notes] } and changes data in place.
-//   { kind: 'event', ev: 'stamp', count }   a human earned a stamp and now holds `count`
+//   { kind: 'event', ev: 'stamp', count, d }   a human earned the stamp of district `d` and now holds `count`
 //   { kind: 'event', ev: 'streak', n }      a human is on a run of n right answers
 //   { kind: 'event', ev: 'summit' | 'express' | 'warp' }   a human reached the Tower / bought an Express / ordered a Time Warp right
 //   { kind: 'event', ev: 'wager', won }     a human won `won` tickets at Post Time
@@ -78,7 +81,7 @@ export function applyIntent(data, intent) {
   const earn = (id) => { if (!data.ach[id]) { data.ach[id] = DAY.test(intent.today || '') ? intent.today : '2026-01-01'; earned.push(id); } };
   const bump = (k, by = 1) => { st[k] = Math.min(CAP, st[k] + by); };
   if (intent.kind === 'event') {
-    if (intent.ev === 'stamp') { bump('stamps'); earn('first-stamp'); if (intent.count >= 8) earn('full-passport'); }
+    if (intent.ev === 'stamp') { bump('stamps'); if (JOURNAL_KEYS.includes(intent.d) && !data.journal[intent.d]) data.journal[intent.d] = DAY.test(intent.today || '') ? intent.today : '2026-01-01'; earn('first-stamp'); if (intent.count >= 8) earn('full-passport'); }
     else if (intent.ev === 'streak') { st.bestStreak = Math.max(st.bestStreak, cnt(intent.n)); if (intent.n >= 5) earn('streak5'); if (intent.n >= 10) earn('streak10'); }
     else if (intent.ev === 'summit') bump('summits');
     else if (intent.ev === 'express') earn('express');

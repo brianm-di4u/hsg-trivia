@@ -505,6 +505,14 @@ function recordHTML() {
   const star = (n, l) => (st.stars[n + ':' + l] ? `<span class="star on" role="img" aria-label="${TARGET_NAMES[n]} against ${LEVEL_NAMES[l]}: earned">★</span>` : `<span class="star" role="img" aria-label="${TARGET_NAMES[n]} against ${LEVEL_NAMES[l]}: not yet">☆</span>`);
   const stars = TARGET_SIZES.map((n) => `<tr><th scope="row">${TARGET_NAMES[n]}</th>${LEVELS.map((l) => `<td>${star(n, l)}</td>`).join('')}</tr>`).join('');
   const cats = CATS.map((c) => { const a = st.cat[c.id] || [0, 0]; return `<li><span class="cat-n">${ico(c.icon, c.color, c.ink, 22)} ${esc(c.id)}</span><span class="cat-bar" aria-hidden="true"><i style="width:${a[1] ? Math.round((100 * a[0]) / a[1]) : 0}%;background:${c.color}"></i></span><span class="cat-v">${a[1] ? `${pct(a[0], a[1])} <small>${a[0]}/${a[1]}</small>` : '<small>no answers yet</small>'}</span></li>`; }).join('');
+  // The passport journal: one page per district, opened by the first stamp won there (S3-20).
+  const jr = d.journal || {};
+  const pages = DISTRICTS.map((x) => {
+    const got = !!jr[x.key]; const src = got ? artSrc('land-' + x.key) : null;
+    return got
+      ? `<li class="jpage got">${src ? `<img src="${src}" alt="" aria-hidden="true" loading="lazy">` : ''}<span><strong>${esc(x.name)}</strong><small>${esc(x.stamp)} stamp · won ${esc(jr[x.key])}</small><em>${esc(x.blurb)}</em></span></li>`
+      : `<li class="jpage lock"><span><strong>${esc(x.name)}</strong><small>Win the ${esc(x.stamp)} stamp to open this page.</small></span></li>`;
+  }).join('');
   const eraBest = Object.values(d.best.era || {}).filter((v) => v > 0).length;
   const ach = ACHIEVEMENTS.map((a) => `<li class="${d.ach[a.id] ? 'got' : 'lock'}"><span class="ach-mark" aria-hidden="true">${d.ach[a.id] ? '✔' : '·'}</span><span><strong>${esc(a.name)}</strong><small>${esc(a.text)}${d.ach[a.id] ? ' · earned ' + esc(d.ach[a.id]) : ' · not yet'}</small></span></li>`).join('');
   const wear = (kind, id, label, ok, cond, on) => (ok
@@ -520,6 +528,7 @@ function recordHTML() {
     <h3>Summit stars</h3><table class="rec-table stars"><thead><tr><th scope="col">Trip</th>${LEVELS.map((l) => `<th scope="col">vs ${LEVEL_NAMES[l]}</th>`).join('')}</tr></thead><tbody>${stars}</tbody></table>
     <h3>Accuracy by category</h3><ul class="rec-cats">${cats}</ul>
     <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${dr.streak || 0}</strong></li><li><span>Daily Challenges played</span><strong>${Object.keys(dr.results || {}).length}</strong></li></ul>
+    <h3>Passport journal <small>${Object.keys(jr).length} of ${DISTRICTS.length} pages</small></h3><ul class="journal">${pages}</ul>
     <h3>Achievements <small>${earned.length} of ${ACHIEVEMENTS.length}</small></h3><ul class="ach-list">${ach}</ul>
     <h3>Titles</h3><div class="wear-row" role="group" aria-label="Title">${titles}</div>
     <h3>Passport covers</h3><div class="wear-row" role="group" aria-label="Passport cover">${covers}</div>

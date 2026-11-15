@@ -248,4 +248,56 @@ export const tests = [
       t.equal((await t.state()).scene, 'quiz', 'and a game starts');
     },
   },
+  // ---------------- S3-20 ----------------
+  {
+    name: 'S3-20 the journal rules: a page opens with the first stamp in a district, keeps its first day, and is repaired',
+    node: true,
+    async run() {
+      const d = freshRecord();
+      assert.deepEqual(d.journal, {});
+      applyIntent(d, { kind: 'event', ev: 'stamp', count: 1, d: 'oaklawn', today: '2026-11-13' });
+      applyIntent(d, { kind: 'event', ev: 'stamp', count: 2, d: 'oaklawn', today: '2026-11-20' });
+      assert.deepEqual(d.journal, { oaklawn: '2026-11-13' }, 'the first day is kept');
+      applyIntent(d, { kind: 'event', ev: 'stamp', count: 3, d: 'nowhere', today: '2026-11-21' });
+      assert.deepEqual(Object.keys(d.journal), ['oaklawn'], 'an unknown district opens no page');
+      assert.equal(d.stats.stamps, 3, 'the count is as before');
+      const bad = cleanRecord({ journal: { row: '2026-11-01', park: 'yesterday', zzz: '2026-11-02', lakes: 5 } });
+      assert.deepEqual(bad.journal, { row: '2026-11-01' }, 'damage falls back, good pages stay');
+      assert.deepEqual(cleanRecord({ journal: 'x' }).journal, {}); assert.deepEqual(cleanRecord(null), freshRecord());
+      assert.equal(JOURNAL_KEYS.length, 8, 'eight districts');
+      const m = memStore({ ...VETERAN, stats: { stamps: 4 } }); const s = createSaveStore({ storage: m.storage }); s.load();
+      assert.deepEqual(s.data.journal, {}, 'an older save loads with no pages and keeps its counts'); assert.equal(s.data.stats.stamps, 4);
+      assert.ok(s.commitProgress({ kind: 'event', ev: 'stamp', count: 5, d: 'row', today: '2026-11-14' }).ok);
+      assert.equal(m.read().journal.row, '2026-11-14'); assert.equal(m.read().stats.stamps, 5);
+    },
+  },
+  {
+    name: 'S3-20 a stamp won on the board opens its journal page, which is saved and shown from the title',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s0 = await t.state();
+      await landOn(t, s0.board.landmarks['Sports']);
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'correct');
+      await phase(t, 'feedback');
+      const sv = await stored(t);
+      t.equal(Object.keys(sv.journal).join(), 'ballfields', 'the Ballfields page is open');
+      t.equal(sv.journal.ballfields.length, 10, 'with the day it was won');
+      await t.reload();
+      await t.game('setState', { settings: { seenCoach: true } });
+      await t.game('scene', 'title');
+      await t.page.locator('#scene-title [data-arg="record"]').click();
+      const rec = await text(t, '#scene-record');
+      t.expect(/Passport journal\s*1 of 8 pages/i.test(rec), 'the record counts the pages');
+      const got = t.page.locator('#scene-record .jpage.got');
+      t.equal(await got.count(), 1, 'one page is open');
+      const page = await got.first().innerText();
+      t.expect(page.includes('The Ballfields') && page.includes('Whittington Park stamp') && page.includes('Ballpark from 1894'), 'it names the district, the stamp and its blurb: ' + page.replace(/\s+/g, ' '));
+      t.equal(await t.page.locator('#scene-record .jpage.lock').count(), 7, 'the other seven say how to open them');
+      t.expect((await text(t, '#scene-record .jpage.lock')).includes('Win the'), 'in plain words');
+      await t.page.locator('#scene-record .journal').scrollIntoViewIfNeeded();
+      await t.shot('S3-20-journal');
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
 ];
