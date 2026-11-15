@@ -339,8 +339,8 @@ export function proceed() {
     G.state.question = null; return endTurn();
   }
   if (t.phase === 'postcard') return endTurn();
-  if (t.phase === 'orderResult') {
   if (t.phase === 'stuck' || t.phase === 'skipped') { clearTimers(); return endTurn(); } // Continue: the wait for the next turn is cut short
+  if (t.phase === 'orderResult') {
     if (t.pending.ok) {
       t.pending = { kind: 'warp', options: warpOptions(p) }; t.phase = 'warp'; G.hooks.update(); aiMaybe(); return;
     }

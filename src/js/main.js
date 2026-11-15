@@ -320,7 +320,6 @@ function onKey(e) {
   if ((k === 'Enter' || k === ' ') && ae && ae.tagName === 'BUTTON') return;
   const st = G.state; const sc = st.scene; const lower = k.toLowerCase();
   const done = () => e.preventDefault();
-  if (ui.saveConflict) {
   // Inside a radio group (the Settings choices, the length of a trip) the arrow keys move to the next option and choose it.
   if (ae && ae.getAttribute('role') === 'radio' && /^(Arrow(Left|Right|Up|Down)|Home|End)$/.test(k) && !ui.saveConflict && !ui.crash && !ui.confirm) {
     const opts = [...ae.parentElement.querySelectorAll('[role="radio"]')]; const i = opts.indexOf(ae);
@@ -328,6 +327,7 @@ function onKey(e) {
     opts[to].click(); (document.querySelector(`[data-key="${CSS.escape(opts[to].dataset.key)}"]`) || opts[to]).focus({ preventScroll: true });
     return done();
   }
+  if (ui.saveConflict) {
     if (k === 'Tab') return trapFocus(e);
     if (k === 'Escape') act('save-conflict-dismiss');
     return done();
