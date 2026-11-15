@@ -79,6 +79,31 @@ function blankLiterals(code) {
   return out;
 }
 
+// Whole-line // comments removed from module code: they are the largest part of the dead weight in a built page.
+// Scans like blankLiterals, so a // inside a string or template is left alone; trailing comments stay.
+function stripLineComments(code) {
+  let out = '', lineStart = true;
+  for (let i = 0; i < code.length;) {
+    const c = code[i];
+    if (c === '\n') { out += c; lineStart = true; i++; continue; }
+    if (lineStart && (c === ' ' || c === '\t')) { out += c; i++; continue; }
+    if (lineStart && c === '/' && code[i + 1] === '/') {
+      const nl = code.indexOf('\n', i);
+      out = out.replace(/[ \t]*$/, '');
+      i = nl < 0 ? code.length : nl + 1;
+      continue;
+    }
+    lineStart = false;
+    let end = -1;
+    if (c === '"' || c === "'" || c === '`') end = skipQuoted(code, i);
+    else if (c === '/' && code[i + 1] === '/') { end = code.indexOf('\n', i); if (end < 0) end = code.length; }
+    else if (c === '/' && code[i + 1] === '*') { end = code.indexOf('*/', i + 2); end = end < 0 ? code.length : end + 2; }
+    if (end < 0) { out += c; i++; continue; }
+    out += code.slice(i, end); i = end;
+  }
+  return out;
+}
+
 // Names bound by the declarators of `export const|let|var …` starting at code[i]:
 //   a = 1, b = 2   { a, b: c, d = 1, ...e } = o   [x, , y] = arr
 // Scans to the end of the statement (top-level `;`, or a newline that ASI would end it at).
@@ -186,7 +211,7 @@ function bundleModules(entryFile) {
       const line = code.slice(0, stray.index).split('\n').length;
       throw new Error(`unsupported export form in ${where} (bundled line ${line}): ${stray[0].trim().slice(0, 80)}`);
     }
-    parts.push(`// ── ${path.relative(srcDir, file).replace(/\\/g, '/')}\nconst ${id} = (() => {\n${code}\nreturn { ${exportsList.join(', ')} };\n})();`);
+    parts.push(`// ── ${path.relative(srcDir, file).replace(/\\/g, '/')}\nconst ${id} = (() => {\n${stripLineComments(code)}\nreturn { ${exportsList.join(', ')} };\n})();`);
   }
   return parts.join('\n\n');
 }
