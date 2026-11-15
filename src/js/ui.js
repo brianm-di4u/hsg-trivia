@@ -466,6 +466,8 @@ function quizHTML() {
   </div>`;
 }
 
+// A line for how a quiz went, on the postcard header of its results (S4-07).
+export const quizTier = (right, total) => { const k = total ? right / total : 0; return k >= 0.9 ? 'Spa City local' : k >= 0.7 ? 'Bathhouse Row regular' : k >= 0.4 ? 'Getting to know the Row' : 'Visiting for the first time'; };
 function resultsHTML() {
   const qz = G.state.quiz; if (!qz) return '';
   const right = qz.results.filter((r) => r.correct).length;
@@ -473,7 +475,9 @@ function resultsHTML() {
   const bm = G.save.data.bestMeta; const bestMeta = bm ? (qz.kind === 'quick' ? bm.quick : bm.era && bm.era[qz.era]) : null;
   const rows = qz.results.map((r) => { const b = BANK.find((x) => x.id === r.id); return `<li class="${r.correct ? 'y' : 'n'}"><span aria-label="${r.correct ? 'correct' : 'wrong'}">${r.correct ? '✔' : '✘'}</span> ${esc(b.question)} <small>— ${esc(b.answer)}</small></li>`; }).join('');
   const title = qz.kind === 'daily' ? `Daily Challenge · ${dayWords(qz.date)}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
-  return `<div class="page-card results-card"><p class="eyebrow">${title}${qz.practice ? ' · Practice' : ''}</p><h2>${right} of ${qz.total} right</h2>
+  return `<div class="page-card results-card"><p class="eyebrow">${title}${qz.practice ? ' · Practice' : ''}</p>
+    <div class="rc-head"><span class="pc-stamp" aria-hidden="true">${right}/${qz.total}</span><p class="pc-greet">Greetings from Hot Springs</p><p class="rc-tier">${esc(quizTier(right, qz.total))}</p></div>
+    <h2>${right} of ${qz.total} right</h2>
     <p class="score">${pts(qz.score)} points (${right} of ${qz.total} right${qz.timer ? ', ' + timerWords(qz.timer) : ''}) · best streak ${qz.bestStreak}${best ? ` · personal best ${bestWords(best, bestMeta)}` : ''}</p>
     ${qz.practice ? '<p class="practice">Practice (not counted): today’s Daily was already taken, so this run changes no result and no streak.</p>' : ''}
     ${qz.kind === 'daily' && !qz.practice ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}` : ''}
@@ -496,7 +500,8 @@ function winHTML() {
   const order = t.players.slice().sort((a, b) => (b.id === t.winner) - (a.id === t.winner) || b.stamps.length - a.stamps.length || b.tickets - a.tickets);
   const tw = artSrc('land-tower');
   const podium = order.slice(0, 3).map((p, i) => `<li class="pod p${i + 1}"><span class="place">${['1st', '2nd', '3rd'][i]}</span>${tokenIco(p, 30)}<strong>${esc(p.name)}</strong><span class="pstamps">${DISTRICTS.map((d) => (p.stamps.includes(d.cat) ? `<span class="mini" style="--c:${CAT[d.cat].color}" title="${esc(d.stamp)}"></span>` : '')).join('')}</span><small>${plural(p.stamps.length, 'stamp')} · ${plural(p.tickets, 'ticket')}</small></li>`).join('');
-  return `<div class="page-card win-card">${tw ? `<div class="win-art"><img src="${tw}" alt="" aria-hidden="true"></div>` : ''}<p class="eyebrow">Summit reached · round ${t.round}</p><div class="plinth" aria-hidden="true">${tokenIco(w, 96)}<span class="plinth-top"></span></div><div class="win-stamps" aria-hidden="true">${DISTRICTS.filter((d) => w.stamps.includes(d.cat)).map((d, i) => `<span style="--i:${i}">${stampImg(d, true, 46)}</span>`).join('')}</div><h2>${esc(w.name)} conquered the Mountain Tower!</h2>
+  return `<div class="page-card win-card">${tw ? `<div class="win-art"><img src="${tw}" alt="" aria-hidden="true"></div>` : ''}<p class="eyebrow">Summit reached · round ${t.round}</p><div class="plinth" aria-hidden="true">${tokenIco(w, 96)}<span class="plinth-top"></span></div><div class="win-stamps" aria-hidden="true">${DISTRICTS.filter((d) => w.stamps.includes(d.cat)).map((d, i) => `<span style="--i:${i}">${stampImg(d, true, 46)}</span>`).join('')}</div><h2>${esc(w.name)} ${w.kind === 'ai' && t.players.some((x) => x.kind === 'human') ? 'reached the Mountain Tower first!' : 'conquered the Mountain Tower!'}</h2>
+    ${winLine(t) ? `<p class="win-line">${esc(winLine(t))}</p>` : ''}
     <p>Three towers have stood on Hot Springs Mountain since 1877; today’s rises 216 feet.</p>
     <ol class="podium">${podium}</ol>
     <table class="standings"><thead><tr><th>Traveler</th><th>Stamps</th><th>Tickets</th><th>Right</th></tr></thead><tbody>
@@ -504,6 +509,17 @@ function winHTML() {
     ${castHTML(t)}
     ${winRecordHTML()}
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${btn('restart', 'Play again', { cls: 'primary', auto: true })}</div></div>`;
+}
+
+// The line under the winner's name: who won, and by how much (S4-07). When a computer traveler wins, the people are told they were beaten to the summit.
+const joinNames = (l) => (l.length < 3 ? l.join(' and ') : l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1]);
+export function winLine(t) {
+  const w = t.players[t.winner]; if (!w) return '';
+  const humans = t.players.filter((p) => p.kind === 'human'); const others = t.players.filter((p) => p.id !== w.id);
+  if (w.kind === 'ai') return !humans.length ? '' : humans.length === 1 ? 'You were beaten to the summit. The mountain will wait.' : `${joinNames(humans.map((p) => p.name))} were beaten to the summit. The mountain will wait.`;
+  if (!others.length) return 'A quiet climb, all to yourself.';
+  const run = others.slice().sort((a, b) => b.stamps.length - a.stamps.length)[0];
+  return run.stamps.length >= t.target ? `A close race: ${run.name} held all ${t.target} stamps too.` : `The next traveler, ${run.name}, held ${run.stamps.length} of ${t.target} stamps.`;
 }
 
 // The computer travelers' last words, in their own voices, under the podium.
@@ -572,7 +588,7 @@ function recordHTML() {
 // A short banner that never takes focus or blocks a tap; several at once show one after another.
 let toastQueue = [], toastBusy = false;
 export function toastAchievements(ids) {
-  const list = ids.map((i) => ACH[i]).filter(Boolean); if (!list.length) return;
+  const list = ids.map((i) => ACH[i]).filter(Boolean).map((a) => ({ k: 'Achievement', name: a.name, text: a.text })); if (!list.length) return;
   toastQueue.push(...list);
   sfx('achieve');
   announce(`Achievement earned: ${list.map((a) => a.name).join(', ')}.`);
@@ -581,9 +597,16 @@ export function toastAchievements(ids) {
 function nextToast() {
   const el = $('#toast'); if (!el || toastBusy || !toastQueue.length) return;
   const a = toastQueue.shift(); toastBusy = true;
-  el.innerHTML = `<div class="toast-i"><span class="toast-k">Achievement</span><strong>${esc(a.name)}</strong><span>${esc(a.text)}</span></div>`;
+  el.innerHTML = `<div class="toast-i"><span class="toast-k">${esc(a.k)}</span><strong>${esc(a.name)}</strong><span>${esc(a.text)}</span></div>`;
   el.classList.add('on');
-  setTimeout(() => { el.classList.remove('on'); setTimeout(() => { toastBusy = false; nextToast(); }, 350); }, 4200);
+  setTimeout(() => { el.classList.remove('on'); setTimeout(() => { toastBusy = false; nextToast(); }, 350); }, a.ms || 4200);
+}
+
+// The departure card (S4-07): a short banner as a new trip begins. It takes no focus and no taps, and goes by itself (the trip is announced by its first log line already).
+export const DEPARTURE_MS = 2600;
+export function departure(t) {
+  toastQueue.unshift({ k: 'Departure', name: 'All aboard at Arlington Lawn', text: `Collect ${t.target} stamps, then climb the Mountain Tower.`, ms: DEPARTURE_MS });
+  nextToast();
 }
 
 // ---------- first-run tips (S2-01) ----------

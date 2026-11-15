@@ -58,7 +58,8 @@ body[data-theme="dark"] .flyup { color: #ffd76a; text-shadow: 0 0 10px rgba(0,0,
 }
 body.reduced .ans.burst::before, body.reduced .flyup, body.reduced .plinth img.tok, body.reduced .win-stamps span { animation: none; }
 body.reduced .flyup { display: none; }
-@media (prefers-reduced-motion: reduce) { .ans.burst::before, .flyup, .plinth img.tok, .win-stamps span { animation: none; } .flyup { display: none; } }
+body.reduced .rc-head .pc-stamp { animation: none; }
+@media (prefers-reduced-motion: reduce) { .rc-head .pc-stamp { animation: none; } .ans.burst::before, .flyup, .plinth img.tok, .win-stamps span { animation: none; } .flyup { display: none; } }
 
 .standings td img.tok, .listb img.tok { display: inline-block; vertical-align: middle; margin-right: 4px; }
 

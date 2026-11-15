@@ -167,7 +167,8 @@ export const tests = [
       await phase(t, 'question');
       await t.game('act', 'answer', 'correct');
       await phase(t, 'feedback');
-      await t.page.waitForSelector('#toast.on', { timeout: 3000 });
+      // (a new trip opens with a short departure card in the same place (S4-07); the achievement shows once it has gone)
+      await t.page.waitForFunction(() => { const el = document.querySelector('#toast'); return el.classList.contains('on') && /Ink on the Passport/.test(el.innerText); }, null, { timeout: 8000 });
       const info = await t.page.evaluate(() => { const el = document.querySelector('#toast'); const cs = getComputedStyle(el); return { text: el.innerText, events: cs.pointerEvents, aria: el.getAttribute('aria-hidden'), focus: el.contains(document.activeElement) }; });
       t.expect(info.text.includes('Ink on the Passport') && info.text.includes('Win your first district stamp.'), 'toast names the achievement: ' + info.text.replace(/\s+/g, ' '));
       t.equal(info.events, 'none', 'a tap goes through it'); t.expect(!info.focus, 'it never takes focus');

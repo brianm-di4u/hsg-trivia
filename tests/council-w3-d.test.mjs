@@ -523,4 +523,95 @@ export const tests = [
       t.equal(list2[1], '', 'a traveler from before the personas shows no line, and nothing breaks');
     },
   },
+
+  // ---------------- S4-07 ----------------
+  {
+    name: 'S4-07 a new trip opens with a short departure card that takes no taps and goes by itself',
+    initScript: withSave(VETERAN),
+    async run(t) {
+      await t.game('scene', 'setup');
+      await t.waitForStable(8000);
+      await t.game('act', 'ui', 'start-trail');
+      await waitFor(t, (s) => s.scene === 'game', 4000, 'game');
+      await t.game('act', 'stopAI');
+      await t.page.waitForFunction(() => document.querySelector('#toast').classList.contains('on'), null, { timeout: 4000 }).catch(() => t.fail('no departure card'));
+      const card = await t.page.evaluate(() => { const e = document.querySelector('#toast'); const r = e.getBoundingClientRect(); const p = document.querySelector('#panel').getBoundingClientRect(); return { text: e.textContent, events: getComputedStyle(e).pointerEvents, r: { l: r.left, t: r.top, rt: r.right, b: r.bottom }, p: { l: p.left, t: p.top, rt: p.right, b: p.bottom }, vw: innerWidth }; });
+      t.expect(/Departure/.test(card.text) && /All aboard at Arlington Lawn/.test(card.text) && /Collect 6 stamps, then climb the Mountain Tower\./.test(card.text), 'the card: ' + card.text);
+      t.equal(card.events, 'none', 'it takes no taps');
+      const overlap = card.r.l < card.p.rt && card.r.rt > card.p.l && card.r.t < card.p.b && card.r.b > card.p.t;
+      t.expect(!overlap && card.r.l >= 0 && card.r.rt <= card.vw, 'it does not cover the panel or leave the screen');
+      await t.shot('S4-07-departure-card');
+      // the roll button still works with the card up
+      await t.page.click('[data-act="roll"]');
+      await phase(t, ['choose', 'stuck']);
+      await t.page.waitForFunction(() => !document.querySelector('#toast').classList.contains('on'), null, { timeout: 8000 }).catch(() => t.fail('the departure card did not go away'));
+    },
+  },
+  {
+    name: 'S4-07 the win card says who won and by how much: a close race, a clear lead, or that a computer beat you to the summit',
+    async run(t) {
+      const cardText = async () => t.page.evaluate(() => ({ h: document.querySelector('.win-card h2').textContent, line: (document.querySelector('.win-card .win-line') || {}).textContent || '' }));
+      const ALL6 = ['Sports', 'Entertainment', 'Nature & Lakes', 'People', 'History', 'Places & Landmarks'];
+      const finish = async (s0, winner) => {
+        await moveTo(t, s0.board.tower - 1, 1, s0.board.tower);
+        await t.game('act', 'continue');
+        await phase(t, 'question');
+        await t.game('act', 'answer', 'correct');
+        await phase(t, 'feedback');
+        await t.game('act', 'continue');
+        return waitFor(t, (x) => x.scene === 'win', 4000, 'win scene');
+      };
+      // a human wins with the computer a few stamps behind
+      await soloGame(t, { players: [H1, { kind: 'ai', level: 'hard' }], settings: { seenCoach: true } });
+      let s0 = await t.state();
+      await t.game('act', 'stopAI');
+      await t.game('setState', { trail: { players: [{ stamps: ALL6, tickets: 7 }, { stamps: ALL6.slice(0, 3) }] } });
+      await finish(s0);
+      let c = await cardText();
+      t.equal(c.h, 'Ada conquered the Mountain Tower!', 'the title when a person wins');
+      t.equal(c.line, 'The next traveler, The Professor, held 3 of 6 stamps.', 'a clear lead');
+      await t.shot('S4-07-win-human');
+      // the same, with the computer holding every stamp too
+      await soloGame(t, { players: [H1, { kind: 'ai', level: 'hard' }], settings: { seenCoach: true } });
+      s0 = await t.state();
+      await t.game('act', 'stopAI');
+      await t.game('setState', { trail: { players: [{ stamps: ALL6, tickets: 7 }, { stamps: ALL6 }] } });
+      await finish(s0);
+      c = await cardText();
+      t.equal(c.line, 'A close race: The Professor held all 6 stamps too.', 'a close race');
+      // a computer traveler wins: the person is told they were beaten to the summit
+      await soloGame(t, { players: [{ kind: 'ai', level: 'hard' }, H1], settings: { seenCoach: true } });
+      s0 = await t.state();
+      await t.game('act', 'stopAI');
+      await t.game('setState', { trail: { players: [{ stamps: ALL6, tickets: 7 }, { stamps: ALL6.slice(0, 2) }] } });
+      await finish(s0);
+      c = await cardText();
+      t.equal(c.h, 'The Professor reached the Mountain Tower first!', 'the title when a computer wins');
+      t.equal(c.line, 'You were beaten to the summit. The mountain will wait.', 'and the person is told');
+      await t.shot('S4-07-win-computer');
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
+  {
+    name: 'S4-07 a quiz result is a postcard with a score stamp and a line for how it went',
+    async run(t) {
+      const tiers = [[10, 'Spa City local'], [7, 'Bathhouse Row regular'], [5, 'Getting to know the Row'], [0, 'Visiting for the first time']];
+      for (const [right, tier] of tiers) {
+        await t.game('newGame', { mode: 'quick', seed: 5 });
+        for (let i = 0; i < 10; i++) { await t.game('act', 'answer', i < right ? 'correct' : 'wrong'); await t.game('act', 'continue'); }
+        await waitFor(t, (s) => s.scene === 'results', 4000, 'results');
+        await t.waitForStable(8000);
+        const r = await t.page.evaluate(() => ({ stamp: document.querySelector('.rc-head .pc-stamp').textContent, tier: document.querySelector('.rc-tier').textContent, greet: document.querySelector('.rc-head .pc-greet').textContent }));
+        t.equal(r.stamp, right + '/10', 'the stamp shows the score');
+        t.equal(r.tier, tier, `${right} of 10`);
+        t.equal(r.greet, 'Greetings from Hot Springs', 'the postcard greeting');
+        if (right === 7) {
+          await t.page.waitForFunction(() => !document.querySelector('#toast').classList.contains('on') && getComputedStyle(document.querySelector('#toast')).opacity === '0', null, { timeout: 20000 }).catch(() => {});
+          await t.page.evaluate(() => { const c = document.querySelector('.results-card'); c.parentElement.scrollTop = 0; window.scrollTo(0, 0); });
+          await t.shot('S4-07-quiz-postcard');
+        }
+      }
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
 ];

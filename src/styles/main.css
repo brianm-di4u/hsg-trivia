@@ -231,6 +231,11 @@ body[data-theme="dark"] .badge.claim { color: #FFB38A; } body[data-theme="dark"]
 .era-card[data-era="revival"] { --era-bg: #E4DAC6; --era-accent: #8C6A3F; }
 .era-card[data-era="modern"] { --era-bg: #D5E1EC; --era-accent: #1E4E79; }
 .quiz-wrap[data-era="roaring"] .qcard { border-color: #D4AF37; }
+.rc-head { position: relative; min-height: 96px; margin: 4px 0 6px; }
+.rc-head .pc-greet { margin-right: 96px; }
+.rc-tier { font-weight: 700; color: var(--color-muted); margin: 0; font-size: 1.05rem; }
+.rc-head .pc-stamp { animation: slam 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) both; --rot: 4deg; }
+.win-line { font-weight: 700; }
 .results-card .score { font-family: var(--font-mono); font-weight: 700; }
 .review { padding-left: 0; list-style: none; display: grid; gap: 6px; font-size: 0.92rem; }
 .review li.y span { color: var(--color-success); font-weight: 900; } .review li.n span { color: var(--color-danger); font-weight: 900; }

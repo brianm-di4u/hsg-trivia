@@ -163,6 +163,7 @@ function startTrail(opts = {}) {
   R.resetTokens();
   Game.newTrail(opts);
   scene('game');
+  UI.departure(G.state.trail);
 }
 function askConfirm(c) { ui.confirm = c; UI.update(); }
 function startQuiz(kind, opts) { Quiz.newQuiz(kind, opts); scene('quiz'); }
