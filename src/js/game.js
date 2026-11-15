@@ -55,12 +55,12 @@ export const ECON = {
   AI_HINT_SCOPE: { easy: 'any', medium: 'any', hard: 'landmark-hard' }, // which questions each level pays to 50/50: any, or only hard landmark questions (the Summit question always)
   AI_HINT_KEEP: { easy: 4, medium: 4, hard: 0 }, // tickets an AI keeps after buying a 50/50 or Summit hint
 };
-// ---------- AI pace (S1-03): how long each AI beat lasts ----------
 // S2-14: how hard the questions of a trip run. A player's hidden skill (0.35 to start, up with right answers, down with misses) picks the mix of
 // easy, medium and hard; this scales it: Relaxed halves it, Adaptive is the skill itself (what every trip was before), Expert lifts it to between 0.5 and 1.
 export const QDIFF = { relaxed: { mul: 0.5, add: 0, label: 'Relaxed' }, adaptive: { mul: 1, add: 0, label: 'Adaptive' }, expert: { mul: 0.5, add: 0.5, label: 'Expert' } };
 export const qdiffOf = (t = T()) => (t && QDIFF[t.qdiff] ? t.qdiff : 'adaptive'); // a trip saved before the setting existed is Adaptive
 export const questionSkill = (p, t = T()) => { const m = QDIFF[qdiffOf(t)]; return clamp(p.skill * m.mul + m.add, 0, 1); };
+// ---------- AI pace (S1-03): how long each AI beat lasts ----------
 // A wait is scaled by factor, then capped; hop scales the AI token's walk. 'brisk' is the default for a new player.
 export const AI_PACE = {
   normal: { factor: 1, cap: Infinity, hop: 1 }, // the old default, labelled Relaxed (about 7 s a turn)

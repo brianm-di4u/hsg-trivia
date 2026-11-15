@@ -210,8 +210,8 @@ const ACTIONS = {
   'seat-add': () => { if (ui.setup.seats.length < 6) ui.setup.seats.push({ name: '', kind: 'ai', level: 'medium' }); UI.update(); },
   'seat-remove': (a) => { ui.setup.seats.splice(+a, 1); UI.update(); },
   target: (a) => { ui.setup.target = +a; sfx('click'); UI.update(); },
-  roll: () => { if (Game.cur().kind === 'human') Game.roll(); },
   qdiff: (a) => { if (Game.QDIFF[a]) ui.setup.qdiff = a; sfx('click'); UI.update(); },
+  roll: () => { if (Game.cur().kind === 'human') Game.roll(); },
   reroll: () => Game.reroll(),
   'ai-speed': () => {
     const order = Object.keys(Game.AI_PACE); const next = order[(order.indexOf(G.state.settings.aiSpeed) + 1) % order.length];
