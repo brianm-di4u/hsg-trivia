@@ -172,4 +172,50 @@ export const tests = [
       await t.shot('S6-08-title-landscape-continue');
     },
   },
+  // ---------------- S4-09 ----------------
+  {
+    name: 'S4-09 a landmark stamp asks about its own place where the bank has such a question',
+    viewports: ['desktop'],
+    async run(t) {
+      const WORDS = {
+        row: /bathhouse|bath house|fordyce|quapaw|buckstaff|maurice|superior|ozark|lamar|hale bath|display spring/i,
+        bridge: /bridge street|parade|malco|malvern|reserve street/i,
+        lakes: /lake (ouachita|hamilton|catherine)|garvan|dam\b|fishing|bass/i,
+        ballfields: /whittington|ballpark|spring training|baseball|majestic park|fogel|ban johnson/i,
+      };
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s0 = await t.state();
+      const lm = s0.board.landmarks;
+      const catOf = (key) => ({ row: 'Places & Landmarks', bridge: 'Food & Culture', lakes: 'Nature & Lakes', ballfields: 'Sports' })[key];
+      let asked = 0;
+      for (const [key, re] of Object.entries(WORDS)) {
+        const node = lm[catOf(key)];
+        for (let i = 0; i < 4; i++) {
+          await t.seed(100 + i);
+          await t.game('setState', { asked: [] });
+          await landOn(t, node); await phase(t, 'question');
+          const q = (await t.state()).question;
+          t.expect(re.test(q.text), `${key} stamp, try ${i + 1}: "${q.text.slice(0, 70)}" is about the place`);
+          asked++;
+          await t.game('act', 'answer', 'wrong'); await t.game('act', 'continue'); await phase(t, 'roll');
+        }
+      }
+      t.equal(asked, 16, 'sixteen stamp questions looked at');
+      // a district the bank says little about falls back to its category
+      await t.seed(5); await t.game('setState', { asked: [] });
+      await landOn(t, lm['Legends & Oddities']); await phase(t, 'question');
+      t.equal((await t.state()).question.category, 'Legends & Oddities', 'a district with no such question still asks its category');
+      // an ordinary district space is not narrowed
+      await t.game('act', 'answer', 'wrong'); await t.game('act', 'continue'); await phase(t, 'roll');
+      const cats = new Set();
+      const cat = await firstOf(t, 'cat');
+      for (let i = 0; i < 12; i++) {
+        await t.seed(300 + i); await t.game('setState', { asked: [] });
+        await landOn(t, cat); await phase(t, 'question');
+        cats.add((await t.state()).question.text);
+        await t.game('act', 'answer', 'wrong'); await t.game('act', 'continue'); await phase(t, 'roll');
+      }
+      t.expect(cats.size >= 6, 'ordinary spaces still draw a spread of questions: ' + cats.size);
+    },
+  },
 ];

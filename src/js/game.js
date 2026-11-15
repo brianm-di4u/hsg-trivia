@@ -228,7 +228,8 @@ function resolve() {
 function ask(category, purpose, extra = {}) {
   const t = T(); const p = cur();
   const forceDiff = purpose === 'summit' || (purpose === 'expressLandmark' && ECON.EXPRESS_HARD) ? 'hard' : undefined;
-  const q = pickQuestion(G.rng, G.state.asked, { category, skill: p.skill, difficulty: forceDiff });
+  const landmark = ['landmark', 'warpLandmark', 'expressLandmark'].includes(purpose) ? DISTRICTS.find((x) => x.cat === category) : null;
+  const q = pickQuestion(G.rng, G.state.asked, { category, skill: p.skill, difficulty: forceDiff, place: landmark && landmark.key });
   G.hooks.seen();
   G.state.question = makeQuestion(q, G.rng, purpose);
   Object.assign(G.state.question, { hadStamp: p.stamps.includes(category) }, extra);

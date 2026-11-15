@@ -50,6 +50,20 @@ export const ERA_MODES = [
 ];
 export const eraCount = (mode) => BANK.filter((q) => mode.eras.includes(q.era)).length;
 
+// Which district a question is about (S4-09), read from the question's own words: the landmark stamp asks about its place when the bank has such a question.
+// Only the question text is read, never the answer. A district the bank says little about (see the counts in the S4-09 report) falls back to its category.
+export const PLACE_RES = {
+  row: /bathhouse|bath house|fordyce|quapaw|buckstaff|maurice|superior|ozark|lamar|hale bath|display spring/i,
+  bridge: /bridge street|parade|malco|malvern|reserve street/i,
+  central: /arlington|central avenue|ohio club|southern club|medical arts/i,
+  oaklawn: /oaklawn|racing|derby|thoroughbred|jockey|racetrack|grandstand|paddock/i,
+  lakes: /lake (ouachita|hamilton|catherine)|garvan|dam|fishing|bass/i,
+  ballfields: /whittington|ballpark|spring training|baseball|majestic park|fogel|ban johnson/i,
+  hollow: /happy hollow|mcleod|goat rock|north mountain/i,
+  park: /park avenue|motor court|motel|velda rose|tourist court|mountainaire/i,
+};
+export const isAbout = (q, place) => !!PLACE_RES[place] && PLACE_RES[place].test(q.question);
+
 // Difficulty weights from a player's skill s in [0,1] (MECHANICS §5).
 export function diffWeights(s) {
   return { easy: (1 - s) * (1 - s), medium: 2 * s * (1 - s) + 0.1, hard: s * s };
@@ -64,7 +78,7 @@ export function updateSkill(s, diff, correct) {
 
 // Pick a question. `asked` is the session's used-id array (mutated). Filters: category, eras[],
 // difficulty (forced) or skill (adaptive). Never repeats until the filtered pool is exhausted.
-export function pickQuestion(rng, asked, { category, eras, difficulty, skill = 0.35, pool } = {}) {
+export function pickQuestion(rng, asked, { category, eras, difficulty, skill = 0.35, pool, place } = {}) {
   const base = pool || BANK.filter((q) => (!category || q.category === category) && (!eras || eras.includes(q.era)));
   if (!base.length) return null;
   const used = new Set(asked);
@@ -75,6 +89,7 @@ export function pickQuestion(rng, asked, { category, eras, difficulty, skill = 0
     for (let i = asked.length - 1; i >= 0; i--) if (ids.has(asked[i])) asked.splice(i, 1);
     fresh = base.slice();
   }
+  if (place) { const about = fresh.filter((q) => isAbout(q, place)); if (about.length) fresh = about; } // a landmark prefers questions about its own place
   const want = difficulty || weightedPick(diffWeights(skill), rng);
   const order = { easy: ['easy', 'medium', 'hard'], medium: ['medium', 'easy', 'hard'], hard: ['hard', 'medium', 'easy'] }[want];
   for (const d of order) {
