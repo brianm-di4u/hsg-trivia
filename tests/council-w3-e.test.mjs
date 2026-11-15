@@ -288,6 +288,38 @@ export const tests = [
       await t.shot('S4-23-no-vibration-desktop');
     },
   },
+  // ---------------- S2-07 ----------------
+  {
+    name: 'S2-07 the answer timer shows the seconds left in digits, and they stay in step with the bar',
+    viewports: ['desktop', 'mobile'],
+    async run(t) {
+      await soloGame(t, { settings: { timer: 30 } });
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      const num = () => t.page.locator('#modal .timer .tnum');
+      const words = async () => (await num().innerText()).trim();
+      t.expect(/^(29|30) s$/.test(await words()), 'a full timer reads 30 s: ' + await words());
+      const box = await t.page.evaluate(() => { const r = document.querySelector('#modal .timer').getBoundingClientRect(), n = document.querySelector('#modal .timer .tnum').getBoundingClientRect(), b = document.querySelector('#modal .timer .bar').getBoundingClientRect(); return { tl: r.left, tr: r.right, nl: n.left, nr: n.right, bw: b.width, h: r.height, vw: innerWidth }; });
+      t.expect(box.nl >= box.tl - 1 && box.nr <= box.tr + 1, 'the number sits inside the timer');
+      t.expect(box.bw > 80 && box.h < 40, 'the bar still has room (' + Math.round(box.bw) + ' px) and the timer is one line');
+      await t.shot('S2-07-timer-digits');
+      // with nothing else touching the page, the clock alone moves the digits
+      for (let end = Date.now() + 6000; Date.now() < end && /^30 s$/.test(await words()); ) await t.page.waitForTimeout(60);
+      t.expect(/^(29|28|27) s$/.test(await words()), 'the digits count down with the clock: ' + await words());
+      await t.game('setState', { question: { timeLeft: 12.5 } });
+      for (let end = Date.now() + 4000; Date.now() < end && !/^(1[0-3]) s$/.test(await words()); ) await t.page.waitForTimeout(60);
+      t.expect(/^(1[0-3]) s$/.test(await words()), 'the digits follow the clock: ' + await words());
+      t.expect(!(await num().getAttribute('class')).includes('low'), 'not in the low state at 12 s');
+      await t.game('setState', { question: { timeLeft: 3.5 } });
+      for (let end = Date.now() + 4000; Date.now() < end && !/^[34] s$/.test(await words()); ) await t.page.waitForTimeout(60);
+      t.expect(/^[34] s$/.test(await words()) && (await num().getAttribute('class')).includes('low'), 'under 5 s the digits take the low colour: ' + await words());
+      t.equal(await t.page.locator('#modal .timer').getAttribute('aria-hidden'), null, 'the timer itself is still announced');
+      t.equal(await num().getAttribute('aria-hidden'), 'true', 'the digits are not read out twice');
+      await t.shot('S2-07-timer-low');
+      await t.checkLayout();
+    },
+  },
 ];
 async function waitFor2(t, pred, label, ms = 4000) {
   const end = Date.now() + ms;

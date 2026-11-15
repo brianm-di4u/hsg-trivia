@@ -70,7 +70,7 @@ body.reduced .rc-head .pc-stamp { animation: none; }
   .win-card .podium { margin: 8px 0 4px; } .plinth { height: 92px; } .plinth img.tok { width: 70px; height: 80px; }
   .win-card .standings td, .win-card .standings th { padding: 3px 6px; }
 }
-.timer { height: 10px; } .timer .bar.low { animation: tpulse 0.6s ease-in-out infinite alternate; }
+.timer .track { height: 10px; } .timer .bar.low { animation: tpulse 0.6s ease-in-out infinite alternate; }
 @keyframes tpulse { from { opacity: 1; } to { opacity: 0.55; } }
 body.reduced .timer .bar.low { animation: none; }
 .ans.wrong { filter: saturate(0.6); }

@@ -321,7 +321,7 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
     ${banner ? `<div class="qbanner"><img class="qart" src="${banner}" alt="" aria-hidden="true"><span class="qcap">Illustration · ${esc(art.name)}</span></div>` : ''}
     <div class="qhead">${ico(c.icon, c.color, c.ink, 40)}<div class="qh"><div class="qcat" id="mtitle">${esc(q.category)}</div><div class="qmeta">${DIFF_LABEL[q.difficulty]} · ${esc(eraName(q.era))}</div></div>${badge}</div>
     ${purposeLine ? `<p class="purpose">${purposeLine}</p>` : ''}
-    ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left: ${Math.ceil(q.timeLeft)} seconds"><div class="bar" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div>` : ''}
+    ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left: ${Math.ceil(q.timeLeft)} seconds"><div class="track"><div class="bar${q.timeLeft < 5 ? ' low' : ''}" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div><span class="tnum${q.timeLeft < 5 ? ' low' : ''}" aria-hidden="true">${Math.ceil(Math.max(0, q.timeLeft))} s</span></div>` : ''}
     <h2 class="qtext" id="qtext">${esc(q.text)}</h2>
     <div class="answers">${answers}</div>
     ${!answered && allowLifeline ? `<div class="qtools">${btn('lifeline', `${q.purpose === 'summit' ? 'Summit hint' : '50/50'} · ${plural(Game.lifelineCost(q), 'ticket')}`, { cls: 'ghost small', hint: 'F', dis: tickets < Game.lifelineCost(q) || q.removed.length > 0 })}</div>` : ''}
@@ -706,7 +706,8 @@ function settingsHTML() {
 export function updateTimerBar() {
   const q = G.state.question; const bar = document.querySelector('.qcard .timer .bar');
   if (bar && q && q.timeMax) {
-    const label = `Time left: ${Math.ceil(Math.max(0, q.timeLeft))} seconds`, timer = bar.parentElement;
+    const left = Math.ceil(Math.max(0, q.timeLeft)), label = `Time left: ${left} seconds`, timer = bar.closest('.timer'), num = timer.querySelector('.tnum');
     if (timer.getAttribute('aria-label') !== label) timer.setAttribute('aria-label', label);
+    if (num) { const words = left + ' s'; if (num.textContent !== words) num.textContent = words; num.classList.toggle('low', q.timeLeft < 5); } // the number is there for the eyes: the timer's own label is what a screen reader says
     bar.style.width = (100 * Math.max(0, q.timeLeft) / q.timeMax).toFixed(1) + '%'; bar.classList.toggle('low', q.timeLeft < 5); }
 }
