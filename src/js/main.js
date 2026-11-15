@@ -246,7 +246,7 @@ const ACTIONS = {
   'trolley-open': () => { if (Game.canTrolley()) { ui.modal = 'trolley'; sfx('page'); UI.update(); } },
   trolley: (a) => { ui.modal = null; Game.trolley(+a); },
   passport: () => { ui.modal = 'passport'; sfx('page'); UI.update(); },
-  'close-modal': () => { if (ui.modal) sfx('page'); ui.modal = null; ui.menuOpen = false; UI.update(); },
+  'close-modal': () => { if (ui.modal === 'trolley') sfx('page'); ui.modal = null; ui.menuOpen = false; UI.update(); },
   menu: () => { ui.menuOpen = true; UI.update(); },
   zoom: () => { R.setCameraMode(R.view.mode === 'follow' ? 'fit' : 'follow'); UI.update(); },
   wear: (a) => {
