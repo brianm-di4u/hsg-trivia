@@ -121,7 +121,9 @@ export function update() {
     if (write(sheet, m, 'modal') && !modal.contains(document.activeElement)) focusFirst(modal);
     // A question dialog is named by its category; the question itself is its description, so it is read on entering.
     if (sheet.querySelector('#qtext')) sheet.setAttribute('aria-describedby', 'qtext'); else sheet.removeAttribute('aria-describedby');
-  } else if (was) { modal.hidden = true; last.modal = ''; modal.innerHTML = ''; focusFirst(sc === 'game' ? $('#panel') : $('#scene-' + sc)); }
+    // S4-13: a question takes the panel's place, so the board and the token stay in view while it is open.
+    modal.classList.toggle('dock', sc === 'game' && !!sheet.querySelector('.qcard'));
+  } else if (was) { modal.classList.remove('dock'); modal.hidden = true; last.modal = ''; modal.innerHTML = ''; focusFirst(sc === 'game' ? $('#panel') : $('#scene-' + sc)); }
   document.body.classList.toggle('modal-open', !!m);
   if (ui.focusNext === 'scene') { ui.focusNext = null; const root = sc === 'game' ? (m ? modal : $('#panel')) : $('#scene-' + sc); focusFirst(root); }
   updateTopbar();

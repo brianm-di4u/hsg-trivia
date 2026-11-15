@@ -218,4 +218,31 @@ export const tests = [
       t.expect(cats.size >= 6, 'ordinary spaces still draw a spread of questions: ' + cats.size);
     },
   },
+  // ---------------- S4-13 ----------------
+  {
+    name: 'S4-13 an open question leaves the board and the active token in view, and the Continue button reachable',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const cat = await firstOf(t, 'cat');
+      await landOn(t, cat);
+      await phase(t, 'question');
+      await t.waitForStable(8000);
+      const [tx, ty] = await t.game('act', 'screenOf', cat);
+      const stage = await rect(t, '#stage'); const modal = await rect(t, '#modal'); const sheet = await rect(t, '#modal .sheet');
+      t.expect(tx > stage.left && tx < stage.right && ty > stage.top && ty < stage.bottom, `the token (${Math.round(tx)}, ${Math.round(ty)}) is on the stage`);
+      t.expect(!(tx >= sheet.left && tx <= sheet.right && ty >= sheet.top && ty <= sheet.bottom), 'and the question card is not over it');
+      if (t.viewport === 'mobile') t.expect(modal.top >= stage.bottom - 1, `the card sits below the board (${modal.top} vs ${stage.bottom})`);
+      else t.expect(modal.left >= stage.right - 1, `the card sits in the panel's column (${modal.left} vs ${stage.right})`);
+      const scrim = await t.page.evaluate(() => { const b = document.querySelector('#board'); const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return e && e.id; });
+      t.equal(scrim, 'board', 'nothing is laid over the board');
+      await t.shot('S4-13-question-docked');
+      await t.game('act', 'answer', 'wrong');
+      await t.waitForStable(8000);
+      const cont = await rect(t, '#modal [data-act="proceed"]');
+      const vh = await t.page.evaluate(() => innerHeight);
+      t.expect(cont && cont.bottom <= vh + 1 && cont.top >= 0, 'Continue is on screen after the answer: ' + JSON.stringify(cont));
+      await t.shot('S4-13-feedback-docked');
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
 ];
