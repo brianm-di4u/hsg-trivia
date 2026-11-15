@@ -81,4 +81,4 @@ function finish() {
   G.hooks.update();
 }
 
-export const shareText = (q) => `Valley of Vapors Trivia Trail — Daily ${q.date}\n${q.results.map((r) => (r.correct ? '♨' : '·')).join('')}  ${q.results.filter((r) => r.correct).length}/${q.total} · ${q.score} pts`;
+export const shareText = (q) => `Valley of Vapors Trivia Trail — Daily ${q.date}\n${q.results.map((r) => (r.correct ? '●' : '○')).join('')}  ${q.results.filter((r) => r.correct).length}/${q.total} · ${q.score} pts`;

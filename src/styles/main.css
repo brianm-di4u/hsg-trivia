@@ -35,7 +35,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 #topbar .spacer { flex: 1; }
 .brand { display: flex; align-items: center; gap: 8px; background: none; border: 0; cursor: pointer; min-height: 44px; padding: 0 8px; border-radius: var(--radius-md);
   font-family: var(--font-serif-victorian); font-weight: 700; font-size: 1.1rem; color: var(--color-primary); }
-.brand-mark { font-size: 1.4rem; }
+.brand-mark { display: inline-flex; } .brand-mark .mark { width: 26px; height: 26px; }
 .tb { width: 44px; height: 44px; border: 0; background: none; border-radius: var(--radius-md); cursor: pointer; color: var(--color-text); display: grid; place-items: center; }
 .tb:hover, .brand:hover { background: rgba(0, 0, 0, 0.08); }
 .tb svg { width: 24px; height: 24px; }
