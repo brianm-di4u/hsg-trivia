@@ -216,12 +216,13 @@ const DUCKS = { correct: 6, wrong: 6, timeout: 6, win: 8, stamp: 5 };
 
 // A cue is not struck again within a short gap of its own last start: at the Fast AI speed the same long cue (a 0.9 s steam sweep, the
 // arpeggio) would otherwise be laid on top of itself. A walk's hops come quicker than that, so they have a shorter gap.
-const MIN_GAP = { hop: 0.04 }, DEFAULT_GAP = 0.08, lastAt = {};
+// It is judged on the page's own clock, not the audio clock, which stands still while the context is slow to start.
+const MIN_GAP = { hop: 40 }, DEFAULT_GAP = 80, lastAt = {};
 export function sfx(name, o = {}) {
   if (!opts.on || !opts.effects || !PRESETS[name]) return;
   const c = ensure(); if (!c) return;
   if (c.state !== 'running') { if (resuming) pending = name; return; }
-  const at = c.currentTime;
+  const at = performance.now();
   if (at - (lastAt[name] === undefined ? -1 : lastAt[name]) < (MIN_GAP[name] || DEFAULT_GAP)) return;
   lastAt[name] = at;
   try { play(name, o); audioStats.played++; audioStats.log.push({ name, ...o }); if (audioStats.log.length > 40) audioStats.log.shift(); if (DUCKS[name] && kit) kit.music.duck(DUCKS[name], name === 'win' ? 1600 : 700); } catch (e) { /* audio must never break the game */ }
