@@ -693,12 +693,12 @@ function helpHTML() {
     <h3>Districts and categories</h3><ul class="legend">${legend}</ul>
     <h3>Special spaces</h3><ul class="legend">${sp.map(([, i, t]) => `<li>${ico(i, '', 'currentColor', 26)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Keyboard</h3><p class="keys"><kbd>Space</kbd> roll · <kbd>←</kbd><kbd>→</kbd> or <kbd>1</kbd>–<kbd>9</kbd> pick a space · <kbd>Enter</kbd> confirm / continue · <kbd>A</kbd>–<kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>F</kbd> 50/50 or Summit hint · <kbd>R</kbd> re-roll · <kbd>T</kbd> trolley · <kbd>E</kbd> Express · <kbd>P</kbd> passport · <kbd>Z</kbd> zoom · <kbd>M</kbd> mute · <kbd>Esc</kbd> menu</p>
+    <h3>Gamepad</h3><p class="keys">D-pad picks a space or moves between buttons · A confirms, continues and rolls · the face buttons answer A to D · X re-roll · shoulder buttons 50/50 · Select passport · B or Start menu</p>
     <h3>About the facts</h3><p>Questions come from a sourced research corpus and were audited against their sources. “Local claim” marks how a place bills itself. Real Hot Springs places appear as setting only; no business, park or school endorses or is affiliated with this game. Characters are fictional.</p>
     <h3>About the map</h3><p>The board is a model of the real valley, seen from the west: Bathhouse Row’s eight bathhouses stand in their true north-to-south order (Superior, Hale, Maurice, Fordyce, Quapaw, Ozark, Buckstaff, Lamar), with Hot Springs Mountain and its tower behind. Downtown is magnified and Central Avenue is drawn wider so both sidewalks can carry spaces; directions from the Row are true. Oaklawn and the three lakes are moved closer and ringed with a dashed line, and their plates give the real distance. The paintings on question cards are illustrations, not photographs.</p>
     <p class="hint">Terrain: USGS 3DEP. Streets: US Census TIGER. Lakes and creeks: USGS National Hydrography Dataset (all public domain). Building footprints and trails: © OpenStreetMap contributors (ODbL).</p>
     <div class="row">${btn('back', 'Back', { cls: 'primary', auto: true })}</div></div>`;
 }
-    <h3>Gamepad</h3><p class="keys">D-pad picks a space or moves between buttons · A confirms, continues and rolls · the face buttons answer A to D · X re-roll · shoulder buttons 50/50 · Select passport · B or Start menu</p>
 
 // The Vibration switch shows only where there is a motor to switch: a touch screen in a browser that can vibrate.
 const canVibrate = () => typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && typeof matchMedia === 'function' && matchMedia('(any-pointer: coarse)').matches;
