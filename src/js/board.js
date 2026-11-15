@@ -21,19 +21,19 @@ export const DISTRICTS = [
     names: ['Central Avenue', 'Grand Jury', 'Ohio Club', 'Postcard', 'Southern Club', 'Medical Arts', 'Arlington Hotel'] },
   { key: 'oaklawn', name: 'Oaklawn', cat: 'Entertainment', stamp: 'Oaklawn', blurb: 'Racing since 1904 or 1905 — sources differ',
     types: ['cat', 'wager', 'cat', 'landmark', 'wager', 'cat', 'trolley'],
-    names: ['Grandstand', 'Post Time', 'Paddock', 'Oaklawn', 'Post Time', 'Homestretch', 'Trolley stop'] },
+    names: ['Grandstand', 'Post Time', 'Paddock', 'Oaklawn', 'Post Time', 'Homestretch', 'Oaklawn trolley stop'] },
   { key: 'lakes', name: 'The Lakes', cat: 'Nature & Lakes', stamp: 'Lake Ouachita', blurb: 'Blakely Mountain Dam, 1948–53',
     types: ['cat', 'vent', 'cat', 'landmark', 'cat', 'postcard', 'cat'],
     names: ['Lake Hamilton', 'Creek mouth vent', 'Garvan Gardens', 'Lake Ouachita', 'Blakely Mountain Dam', 'Postcard', 'Lake Ouachita State Park'] },
   { key: 'ballfields', name: 'The Ballfields', cat: 'Sports', stamp: 'Whittington Park', blurb: 'Ballpark from 1894 · Ruth’s long homer, 1918',
     types: ['cat', 'warp', 'cat', 'landmark', 'cat', 'trolley', 'cat'],
-    names: ['Ban Johnson Field', 'Time Warp', 'Fogel Field', 'Whittington Park', 'Baseball Trail', 'Trolley stop', 'Whittington Avenue'] },
+    names: ['Ban Johnson Field', 'Time Warp', 'Fogel Field', 'Whittington Park', 'Baseball Trail', 'Ballfields trolley stop', 'Whittington Avenue corner'] },
   { key: 'hollow', name: 'Happy Hollow', cat: 'Legends & Oddities', stamp: 'Happy Hollow', blurb: 'Home of a cold spring treated by ozone filtration',
     types: ['cat', 'jury', 'cat', 'landmark', 'vent', 'warp', 'cat'],
     names: ['Goat Rock', 'Grand Jury', 'North Mountain', 'Happy Hollow', 'Happy Hollow Spring vent', 'Time Warp', 'Fountain Street'] },
   { key: 'park', name: 'Park Avenue', cat: 'People', stamp: 'Park Avenue', blurb: 'Motor courts and a mid-century hotel boom',
     types: ['cat', 'trolley', 'cat', 'landmark', 'cat', 'postcard', 'cat'],
-    names: ['Velda Rose', 'Trolley stop', 'Motor courts', 'Park Avenue', 'Tourist courts', 'Postcard', 'Mountainaire'] },
+    names: ['Velda Rose', 'Park Avenue trolley stop', 'Motor courts', 'Park Avenue', 'Tourist courts', 'Postcard', 'Mountainaire'] },
 ];
 export const DISTRICT = Object.fromEntries(DISTRICTS.map((d) => [d.key, d]));
 
@@ -61,7 +61,8 @@ link(START, at('row', 0)); link(at('row', 6), at('bridge', 0)); link(at('bridge'
 link(at('bridge', 3), at('oaklawn', 0)); link(at('oaklawn', 6), at('lakes', 0)); link(at('lakes', 6), at('ballfields', 0));
 link(at('ballfields', 6), at('park', 0)); link(at('park', 6), at('hollow', 0)); link(at('hollow', 6), START);
 // Whittington Avenue: from the Arlington past the Y, west to the ballfields.
-const whit = [0, 1, 2].map(() => addNode({ type: 'cat', district: 'ballfields', cat: 'Sports', name: 'Whittington Avenue' }));
+const WHIT_NAMES = ['Whittington Avenue at the Y', 'Whittington Avenue midway', 'Whittington Avenue near the Ballfields']; // three spaces, named so no two rows read alike (S4-05)
+const whit = WHIT_NAMES.map((name) => addNode({ type: 'cat', district: 'ballfields', cat: 'Sports', name }));
 link(START, whit[0]); link(whit[0], whit[1]); link(whit[1], whit[2]); link(whit[2], at('ballfields', 6));
 
 // Mountain spur (real NPS trails, geography-lakes-mountains.md → Trails).

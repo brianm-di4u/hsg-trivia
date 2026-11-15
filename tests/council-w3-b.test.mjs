@@ -114,4 +114,32 @@ export const tests = [
       t.expect(/personal best 1,820/.test(line) && !/personal best 1,820 \(/.test(line), 'a best with no meta is shown as points alone: ' + line);
     },
   },
+  // ---------------- S4-05 ----------------
+  {
+    name: 'S4-05 no two spaces of the same plain kind share a name, and the trolley stops are told apart',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const names = await t.page.evaluate(() => { const s = window.__game.getState(); return { types: s.board.types, trolleys: s.board.trolleys }; });
+      // each named space, by node id, from the destination rows the game would show
+      const rows = await t.page.evaluate(async () => {
+        const out = {};
+        const st = window.__game.getState();
+        for (let n = 0; n < st.board.nodes; n++) {
+          window.__game.setState({ trail: { phase: 'choose', roll: 1, dests: [{ node: n, path: [n] }], players: [{}] } });
+          const el = document.querySelector('#panel .dest .dname'); out[n] = el ? el.textContent : null;
+        }
+        return out;
+      });
+      const plain = Object.entries(rows).filter(([n]) => names.types[n] === 'cat').map(([, v]) => v);
+      t.equal(plain.length, names.types.filter((x) => x === 'cat').length, 'every ordinary space has a name');
+      t.expect(plain.every(Boolean) && plain.length >= 30, 'and there are plenty to compare: ' + plain.length);
+      const dup = plain.filter((v, i) => plain.indexOf(v) !== i);
+      t.equal(dup.length, 0, 'no ordinary space shares a name: ' + dup.join(', '));
+      const trol = Object.entries(rows).filter(([n]) => names.trolleys.includes(+n) && names.types[n] === 'trolley').map(([, v]) => v);
+      t.equal(trol.length, 3, 'three trolley stops');
+      t.equal(new Set(trol).size, 3, 'with three different names: ' + trol.join(' | '));
+      t.expect(trol.every((v) => /trolley stop/i.test(v)), 'each says it is a trolley stop');
+    },
+  },
 ];
