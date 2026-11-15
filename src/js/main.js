@@ -243,10 +243,10 @@ const ACTIONS = {
   wager: (a) => Game.setWager(+a),
   'order-pick': (a) => Game.orderPick(+a),
   warp: (a) => Game.warp(+a),
-  'trolley-open': () => { if (Game.canTrolley()) { ui.modal = 'trolley'; UI.update(); } },
+  'trolley-open': () => { if (Game.canTrolley()) { ui.modal = 'trolley'; sfx('page'); UI.update(); } },
   trolley: (a) => { ui.modal = null; Game.trolley(+a); },
   passport: () => { ui.modal = 'passport'; sfx('page'); UI.update(); },
-  'close-modal': () => { ui.modal = null; ui.menuOpen = false; UI.update(); },
+  'close-modal': () => { if (ui.modal) sfx('page'); ui.modal = null; ui.menuOpen = false; UI.update(); },
   menu: () => { ui.menuOpen = true; UI.update(); },
   zoom: () => { R.setCameraMode(R.view.mode === 'follow' ? 'fit' : 'follow'); UI.update(); },
   wear: (a) => {

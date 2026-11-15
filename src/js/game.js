@@ -277,6 +277,7 @@ function ask(category, purpose, extra = {}) {
   const tm = p.kind === 'human' ? G.state.settings.timer : 0;
   G.state.question.timeMax = tm; G.state.question.timeLeft = tm;
   t.phase = 'question';
+  if (p.kind === 'human') sfx('ask', { at: purpose === 'wager' ? 0.12 : 0 }); // the question opens with a rising pair of notes, just after the wager chip
   if (p.kind === 'human') G.hooks.save({ inQuestion: true }); // a reload brings back this very question
   G.hooks.update(); aiMaybe();
 }
@@ -302,7 +303,7 @@ export const wagerCap = (p = cur()) => Math.min(p.tickets, Math.max(ECON.WAGER_B
 export function setWager(n) {
   const t = T(); const p = cur(); if (t.phase !== 'wager') return false;
   const w = clamp(n | 0, 0, wagerCap(p));
-  t.pending.wager = w; log(`${p.name} wagers ${w} ticket${w === 1 ? '' : 's'} at Post Time.`);
+  t.pending.wager = w; if (p.kind === 'human') sfx('chip'); log(`${p.name} wagers ${w} ticket${w === 1 ? '' : 's'} at Post Time.`);
   ask(CATS[G.rng.int(CATS.length)].id, 'wager', { wager: w });
   return true;
 }
