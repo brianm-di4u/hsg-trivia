@@ -376,4 +376,29 @@ export const tests = [
       t.expect(/done today/.test(lab) && /practice/.test(lab), 'the title button: ' + lab);
     },
   },
+
+  // ---------------- P-N06 ----------------
+  {
+    name: 'P-N06 a stamp space reads Landmark with a gold edge, and an ordinary Places & Landmarks space reads Places: no row says Landmarks',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s0 = await t.state();
+      const stamp = s0.board.landmarks['Places & Landmarks'];
+      const place = s0.board.types.findIndex((ty, i) => ty === 'cat' && s0.board.cats[i] === 'Places & Landmarks');
+      const row = async (id) => {
+        const nb = (await t.game('act', 'adj', id))[0];
+        await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false, players: [{ node: nb }] } });
+        await t.game('act', 'roll', 1); await phase(t, 'choose'); await t.waitForStable(8000);
+        return t.page.evaluate((nid) => { const b = document.querySelector('.dest[data-arg="' + nid + '"]'); if (!b) return null; const cs = getComputedStyle(b); return { sub: b.querySelector('.dsub').textContent, all: [...document.querySelectorAll('.dest .dsub')].map((e) => e.textContent), lm: b.classList.contains('lm'), edge: cs.borderLeftColor, edgeW: parseFloat(cs.borderLeftWidth) }; }, id);
+      };
+      let r = await row(stamp);
+      t.expect(r && r.sub === 'Landmark · Places · Bathhouse Row', 'the stamp space: ' + (r && r.sub));
+      t.expect(r.lm && r.edge === 'rgb(217, 162, 58)' && r.edgeW >= 5, 'with a gold edge: ' + r.edge + ' ' + r.edgeW);
+      await t.shot('P-N06-stamp-row');
+      r = await row(place);
+      t.expect(r && r.sub === 'Places · Bathhouse Row', 'the ordinary space: ' + (r && r.sub));
+      t.expect(!r.lm && r.edgeW < 5, 'and has no gold edge');
+      t.expect(!r.all.some((x) => /Landmarks/.test(x)), 'no row says Landmarks: ' + r.all.join(' | '));
+    },
+  },
 ];

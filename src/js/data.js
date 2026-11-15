@@ -7,7 +7,8 @@ import { shuffle, weightedPick, clamp } from './util.js';
 // Category colors are a game-derived Okabe–Ito based set (colorblind-aware); every use is paired
 // with an icon and a text label, so color is never the only cue. `ink` is the icon/text color on the fill.
 export const CATS = [
-  { id: 'Places & Landmarks', short: 'Landmarks', icon: 'dome', color: '#0072B2', ink: '#FFFFFF' },
+  // `short` is the destination list's word for a category. 'Places' was 'Landmarks', which read like the stamp space's own label "Landmark" (P-N06).
+  { id: 'Places & Landmarks', short: 'Places', icon: 'dome', color: '#0072B2', ink: '#FFFFFF' },
   { id: 'Food & Culture', short: 'Food & Culture', icon: 'smoker', color: '#8C5A2B', ink: '#FFFFFF' },
   { id: 'History', short: 'History', icon: 'spring', color: '#C2410C', ink: '#FFFFFF' },
   { id: 'Entertainment', short: 'Entertainment', icon: 'reel', color: '#56B4E9', ink: '#10233A' },

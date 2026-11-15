@@ -249,7 +249,7 @@ function panelHTML() {
       const list = t.dests.map((d, i) => {
         const n = NODES[d.node]; const c = n.cat ? CAT[n.cat] : null;
         const kind = kindOf(n); const dn = spaceDistrict(n);
-        return `<li><button class="dest${i === t.sel ? ' sel' : ''}" data-act="choose" data-arg="${d.node}" data-key="dest${d.node}"${ai ? ' disabled' : ''} aria-current="${i === t.sel}">
+        return `<li><button class="dest${i === t.sel ? ' sel' : ''}${n.type === 'landmark' ? ' lm' : ''}" data-act="choose" data-arg="${d.node}" data-key="dest${d.node}"${ai ? ' disabled' : ''} aria-current="${i === t.sel}">
           <span class="num" aria-hidden="true">${i + 1}</span>${c && (n.type === 'cat' || n.type === 'landmark') ? ico(c.icon, c.color, c.ink, 24) : ico(n.type === 'tower' ? 'tower' : n.type === 'trail' ? 'trailhead' : ({ start: 'star' }[n.type] || n.type), '', 'currentColor', 24)}
           <span class="dtext"><span class="dname">${esc(n.name)}</span><span class="dsub">${kind ? esc(kind) + ' · ' : ''}${esc(dn)}</span></span></button></li>`;
       }).join('');
