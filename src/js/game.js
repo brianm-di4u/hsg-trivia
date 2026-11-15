@@ -187,7 +187,10 @@ export function roll(force) {
   t.roll = force ? clamp(force | 0, 1, 6) : 1 + G.rng.int(6);
   sfx('gauge');
   t.dests = reachable(p.node, t.roll, eligible(p)).map((d) => ({ node: d.node, path: d.path }));
-  t.dests.sort((a, b) => scoreDest(p, b.node) - scoreDest(p, a.node) || a.node - b.node);
+  // A computer traveler's list is ordered best first (it takes the first). A human's is ordered across the board, left to right, so that nothing in the
+  // order or in the preselected first row hints at the best move, and the arrow keys move across the map the way they read (S2-03).
+  if (p.kind === 'ai') t.dests.sort((a, b) => scoreDest(p, b.node) - scoreDest(p, a.node) || a.node - b.node);
+  else t.dests.sort((a, b) => NODES[a.node].x - NODES[b.node].x || NODES[a.node].y - NODES[b.node].y || a.node - b.node);
   t.sel = 0;
   log(`${p.name} rolled a ${t.roll}.`);
   if (!t.dests.length) {

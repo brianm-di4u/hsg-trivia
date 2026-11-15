@@ -401,4 +401,44 @@ export const tests = [
       t.expect(!r.all.some((x) => /Landmarks/.test(x)), 'no row says Landmarks: ' + r.all.join(' | '));
     },
   },
+
+  // ---------------- S2-03 ----------------
+  {
+    name: 'S2-03 a human’s destination list runs left to right across the board, with no hint in its order; a computer traveler still takes its best first',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { seed: 11, players: [H1, { kind: 'ai', level: 'medium' }], settings: { seenCoach: true } });
+      await t.game('act', 'stopAI');
+      const s0 = await t.state();
+      const geo = await t.game('act', 'geo');
+      const order = (ids) => ids.slice().sort((a, b) => geo.nodes[a].x - geo.nodes[b].x || geo.nodes[a].y - geo.nodes[b].y || a - b);
+      const stamp = s0.board.landmarks['Places & Landmarks'];
+      const near = (await t.game('act', 'adj', stamp))[0];
+      let seenMany = 0, notBestFirst = 0;
+      for (const [from, n] of [[near, 1], [near, 2], [s0.board.start, 3], [s0.board.start, 5], [s0.board.landmarks['Sports'], 2], [s0.board.landmarks['History'], 4]]) {
+        await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false, players: [{ node: from }] } });
+        await t.game('act', 'roll', n);
+        const s = await phase(t, ['choose', 'stuck']);
+        if (s.trail.phase !== 'choose') continue;
+        t.equal(s.trail.dests.join(), order(s.trail.dests).join(), `from space ${from} with a ${n}: left to right`);
+        t.equal(s.trail.sel, 0, 'the first row is selected, whatever it is');
+        if (s.trail.dests.length > 1) seenMany++;
+        if (s.trail.dests[0] !== stamp && s.trail.dests.includes(stamp)) notBestFirst++;
+      }
+      t.expect(seenMany >= 3, 'several lists with more than one row were checked: ' + seenMany);
+      t.expect(notBestFirst >= 1, 'a list where the stamp space is on offer but is not first: ' + notBestFirst);
+      // the arrow keys step across the map in that order
+      await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false, players: [{ node: near }] } });
+      await t.game('act', 'roll', 1);
+      let s = await phase(t, 'choose');
+      await t.page.keyboard.press('ArrowRight');
+      s = await t.state();
+      t.equal(s.trail.sel, 1 % s.trail.dests.length, 'ArrowRight selects the next space to the right');
+      // the computer traveler's own list is still best first (the stamp space scores highest)
+      await t.game('setState', { trail: { turn: 1, phase: 'roll', roll: null, dests: [], rerolled: false, players: [{}, { node: near }] } });
+      await t.game('act', 'roll', 1);
+      s = await phase(t, 'choose');
+      t.equal(s.trail.dests[0], stamp, 'a computer traveler takes the stamp space first');
+    },
+  },
 ];
