@@ -251,6 +251,7 @@ function panelHTML() {
   const hname = hd ? hd.name : here.district === 'mountain' ? 'Hot Springs Mountain' : 'Downtown';
   const herecard = hsrc ? `<figure class="here"><img src="${hsrc}" alt="" aria-hidden="true"><figcaption><strong>${esc(here.name)}</strong><span>${esc(hname)}${hd ? ' · ' + esc(hd.blurb) : ''}</span></figcaption></figure>` : '';
   return `<div class="turn" style="--pc:${p.color}">${tokenIco(p, 44)}<div><div class="tname">${esc(p.name)}’s turn</div><div class="tsub">Round ${t.round} · ${p.stamps.length}/${t.target} stamps · ${plural(p.tickets, 'ticket')}${el ? ' · <strong class="ok">Trail open!</strong>' : ''}</div></div></div>
+    <p class="lastline" aria-hidden="true">${esc(t.log[0] || '')}</p>
     <p class="objective">${esc(objective(t))}</p>${coachHTML('panel')}
     <div class="action">${action}${ai && t.phase !== 'over' ? '<p class="hint skip-hint">Tap or press a key to skip ahead.</p>' : ''}</div>
     ${herecard}
