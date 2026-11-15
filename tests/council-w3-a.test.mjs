@@ -300,4 +300,32 @@ export const tests = [
       await t.checkLayout({ allowScrollY: true });
     },
   },
+  // ---------------- S4-02 ----------------
+  {
+    name: 'S4-02 the line after an answer varies from question to question and stays put when the card redraws',
+    async run(t) {
+      const RIGHT = ['Correct!', 'That’s right!', 'Well done!', 'Right on the mark!', 'Spot on!'];
+      await t.seed(3);
+      await t.game('setState', { settings: { timer: 0, seenCoach: true } });
+      await t.game('newGame', { mode: 'quick' });
+      const right = new Set(), wrong = new Set(); let stable = true;
+      const line = () => t.page.evaluate(() => document.querySelector('#scene-quiz .verdict').firstChild.textContent.trim());
+      for (let i = 0; ; i++) {
+        const s = await t.state();
+        if (s.scene !== 'quiz') break;
+        const ok = i % 2 === 0;
+        await t.game('act', 'answer', ok ? 'correct' : 'wrong');
+        const a = await line();
+        await t.game('setState', { settings: { timer: 0 } }); // draws the card again
+        if (a !== await line()) stable = false;
+        (ok ? right : wrong).add(a);
+        await t.game('act', 'continue');
+      }
+      t.expect(stable, 'the line does not change when the card is drawn again');
+      t.expect(right.size >= 3, 'right answers get at least three different lines: ' + [...right].join(' | '));
+      t.expect(wrong.size >= 3, 'wrong answers get at least three different lines: ' + [...wrong].join(' | '));
+      for (const l of right) t.expect(RIGHT.includes(l), 'a right answer is praised: ' + l);
+      for (const l of wrong) t.expect(!RIGHT.includes(l) && /[.!]$/.test(l), 'a wrong answer is not praised, and the line is a sentence: ' + l);
+    },
+  },
 ];

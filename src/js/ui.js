@@ -1,6 +1,6 @@
 // DOM UI: scenes, side panel, modals, question card, keyboard map, live announcements.
 // Rendering is "compute HTML → write only if changed" per region, preserving focus by data-key.
-import { esc } from './util.js';
+import { esc, hash32 } from './util.js';
 import { CATS, CAT, ERA, ERA_MODES, eraCount, BANK } from './data.js';
 import { NODES, DISTRICTS, DISTRICT, TRAILHEAD, TOWER } from './board.js';
 import { drawIcon, drawStamp, tokenPath, THEMES, TOKEN_NAMES } from './art.js';
@@ -260,6 +260,9 @@ function panelHTML() {
     <ul class="log" aria-label="Recent events">${t.log.slice(0, 4).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
 }
 
+// What the card says after an answer: one of a few lines, fixed by the question so the card does not change when it redraws (S4-02).
+const VERDICTS = { right: ['Correct!', 'That’s right!', 'Well done!', 'Right on the mark!', 'Spot on!'], wrong: ['Not quite.', 'Not this time.', 'Not that one.', 'Next one’s yours.', 'Close, but no.'] };
+const verdict = (q) => (q.chosen === -1 ? 'Time’s up!' : VERDICTS[q.correct ? 'right' : 'wrong'][hash32('verdict:' + q.id) % VERDICTS.right.length]);
 // ---------- question card ----------
 export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, tickets = 0, canAnswer = true } = {}) {
   const c = CAT[q.category];
@@ -284,7 +287,7 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
   const gain = answered && q.correct ? (q.outcome || []).find((o) => /^\+\d|^Won \d/.test(o)) : null;
   const fly = gain ? `<span class="flyup" aria-hidden="true">${esc(gain.replace(/^Won /, '+'))}</span>` : '';
   const fb = answered ? `<div class="fb ${q.correct ? 'ok' : 'bad'}" role="status">${slam}${fly}
-      <p class="verdict">${q.correct ? 'Correct!' : q.chosen === -1 ? 'Time’s up!' : 'Not quite.'} ${q.outcome && q.outcome.length ? `<span class="outcome">${esc(q.outcome.join(' · '))}</span>` : ''}</p>
+      <p class="verdict">${verdict(q)} ${q.outcome && q.outcome.length ? `<span class="outcome">${esc(q.outcome.join(' · '))}</span>` : ''}</p>
       ${!q.correct ? `<p class="ansline">Answer: <strong>${esc(q.choices[q.correctIndex])}</strong></p>` : ''}
       <p class="expl">${esc(q.explanation)}</p>
       <p class="src">Source: ${esc(q.source)}</p></div>` : '';
