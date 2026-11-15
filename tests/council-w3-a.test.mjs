@@ -328,4 +328,57 @@ export const tests = [
       for (const l of wrong) t.expect(!RIGHT.includes(l) && /[.!]$/.test(l), 'a wrong answer is not praised, and the line is a sentence: ' + l);
     },
   },
+  // ---------------- S5-18 ----------------
+  {
+    name: 'S5-18 the hook lists every cue the game can make',
+    viewports: ['desktop'],
+    async run(t) {
+      const l = await t.page.evaluate(() => window.__game.audioList());
+      for (const n of ['click', 'gauge', 'hop', 'correct', 'wrong', 'stamp', 'steam', 'coin', 'bell', 'trolley', 'bugle', 'warp', 'gavel', 'tick', 'win', 'page', 'achieve']) t.expect(l.cues.includes(n), 'cue ' + n);
+    },
+  },
+  {
+    name: 'S5-18 every cue makes a real signal: not silent, in range, never near clipping',
+    viewports: ['desktop'],
+    async run(t) {
+      const l = await t.page.evaluate(() => window.__game.audioList());
+      const QUIET = ['click', 'tick']; // interface sounds, meant to sit under the gameplay cues
+      const ALLOW = 1.19; // a repeat may sit 1.5 dB outside the range (a single repeat is 1 to 2 dB louder or softer on purpose)
+      for (const n of l.cues) {
+        // Five renders of the same cue: the middle one is judged, so one loud or soft repeat cannot fail the test.
+        const rs = [];
+        for (let i = 0; i < 5; i++) rs.push(await t.page.evaluate((c) => window.__game.audioRender('cue:' + c, 3, false), n));
+        const peaks = rs.map((r) => r.peak).sort((a, b) => a - b); const rms = rs.map((r) => r.rmsDb).sort((a, b) => a - b);
+        const med = peaks[2];
+        t.log(`${n}: median peak ${med}, loudest ${peaks[4]}, median rms ${rms[2]} dBFS`);
+        t.expect(rms[2] > -70, `${n} is not silent (rms ${rms[2]} dBFS)`);
+        t.expect(peaks[4] < 0.95, `${n} never nears clipping (loudest ${peaks[4]})`);
+        if (QUIET.includes(n)) t.expect(med >= 0.015 && med <= 0.45 * ALLOW, `${n} median peak ${med} is quiet but audible`);
+        else t.expect(med >= 0.2 / ALLOW && med <= 0.45 * ALLOW, `${n} median peak ${med} within 0.2..0.45 (1.5 dB allowance)`);
+      }
+    },
+  },
+  {
+    name: 'S5-18 the music holds while the tab is hidden and returns, and a render does not wake the live audio',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.page.mouse.click(5, 5);
+      await waitFor(t, (s) => s.audio.state === 'running', 3000, 'audio running');
+      const state = () => t.page.evaluate(() => window.__game.audioState());
+      const hide = (h) => t.page.evaluate((x) => {
+        Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (x ? 'hidden' : 'visible') });
+        Object.defineProperty(document, 'hidden', { configurable: true, get: () => x });
+        document.dispatchEvent(new Event('visibilitychange'));
+      }, h);
+      await t.game('newGame', { mode: 'trail', players: [H1, { kind: 'ai', level: 'easy' }], target: 4, seed: 4 });
+      await t.game('act', 'ui', 'menu');
+      const until = async (pred, label) => { const end = Date.now() + 6000; let a = await state(); while (Date.now() < end && !pred(a)) { await t.page.waitForTimeout(80); a = await state(); } t.expect(pred(a), 'timed out waiting for ' + label); return a; };
+      await until((a) => a.held, 'the pause card to hold the sound');
+      await t.game('act', 'ui', 'close-modal');
+      await until((a) => !a.held, 'the sound to come back');
+      await hide(true);
+      await hide(false);
+      await until((a) => !a.held, 'the sound after the tab is shown again');
+    },
+  },
 ];

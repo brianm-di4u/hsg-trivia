@@ -185,7 +185,7 @@ export function sfx(name, o = {}) {
 export const SOUND_NAMES = Object.keys(PRESETS);
 
 // ---- test hooks: what pieces exist, and a render of one on its own ----
-export const audioList = () => ({ music: Object.keys(SCORES), ambience: Object.keys(SCENES) });
+export const audioList = () => ({ music: Object.keys(SCORES), ambience: Object.keys(SCENES), cues: SOUND_NAMES });
 export const audioInfo = () => ({
   held: held || paused, music: kit && kit.music.score ? Object.keys(SCORES).find((k) => SCORES[k] === kit.music.score) : null,
   ambience: kit && kit.amb.scene ? Object.keys(SCENES).find((k) => SCENES[k] === kit.amb.scene) : null,
