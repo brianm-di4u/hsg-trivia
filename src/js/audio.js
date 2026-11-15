@@ -19,12 +19,22 @@ const makeNoise = (c) => {
   const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   return b;
 };
-// master gain, a limiter, the destination; cues enter at sfxIn, which also feeds two quiet echo taps for a little room.
+// A soft clip ends the chain: straight up to CLIP_FROM, then curving towards CLIP_TOP, so nothing passes 0.92 however loud the
+// volume or the pile of cues (a landmark answer's right-answer cue and stamp thud struck together reached 1.05 at full volume).
+// Everything under 0.75 is untouched, so no level at the shipped volume moves.
+const CLIP_FROM = 0.75, CLIP_TOP = 0.92;
+const SOFT_CLIP = (() => {
+  const n = 4097, curve = new Float32Array(n), span = CLIP_TOP - CLIP_FROM;
+  for (let i = 0; i < n; i++) { const x = (i / (n - 1)) * 2 - 1, v = Math.abs(x); curve[i] = Math.sign(x) * (v <= CLIP_FROM ? v : CLIP_FROM + span * Math.tanh((v - CLIP_FROM) / span)); }
+  return curve;
+})();
+// master gain, a limiter, the soft clip, the destination; cues enter at sfxIn, which also feeds two quiet echo taps for a little room.
 function chain(c, dest, volume) {
   const m = c.createGain(); m.gain.value = volume * MASTER_K;
   const lim = c.createDynamicsCompressor();
   lim.threshold.value = -3; lim.knee.value = 2; lim.ratio.value = 20; lim.attack.value = 0.003; lim.release.value = 0.12;
-  m.connect(lim); lim.connect(dest);
+  const clip = c.createWaveShaper(); clip.curve = SOFT_CLIP; clip.oversample = '4x';
+  m.connect(lim); lim.connect(clip); clip.connect(dest);
   const s = c.createGain(); s.gain.value = SFX_LEVEL; s.connect(m);
   for (const ms of [90, 140]) { const d = c.createDelay(0.5); d.delayTime.value = ms / 1000; const g = c.createGain(); g.gain.value = 0.16; s.connect(d); d.connect(g); g.connect(m); }
   return { master: m, sfxIn: s };
@@ -194,16 +204,20 @@ export const audioInfo = () => ({
 });
 // Renders a piece ('board', ...), a scene ('row', ...), a cue ('cue:correct'), or all three at once ('mix') on an
 // offline context at the shipped level (default volume), and measures it. Never touches the live audio or settings.
-export function audioRender(name, seconds = 30, wantWav = false) {
+// volume: the Volume slider to render at (0..1; the default is the shipped one, 1 is the slider at its maximum). 'busy' is the
+// loudest moment a landmark answer makes: the board piece, the Row bed, and a stamp struck with a right answer, a coin just after (the winning stamp's own win cue comes later, in 'mix').
+// o: the options the cue is played with ('cue:' pieces only; the default is a first right answer in the middle).
+export function audioRender(name, seconds = 30, wantWav = false, volume = DEFAULT_VOLUME, o = { streak: 1, i: 2, pan: 0 }) {
   const build = (oc, dest) => {
-    const { master: m, sfxIn: s } = chain(oc, dest, DEFAULT_VOLUME);
+    const { master: m, sfxIn: s } = chain(oc, dest, volume);
     const k = makeAudioKit(oc, m, { seed: 11, music: MUSIC_LEVEL, ambience: AMB_LEVEL });
     // A cue is built by the same preset code as in play: point it at the offline context for the call, then put the live one back.
     const cue = (n, at, o = {}) => { const live = { ac, sfxIn, noiseBuf }; ac = oc; sfxIn = s; noiseBuf = makeNoise(oc); cueBase = at; try { play(n, o); } finally { ({ ac, sfxIn, noiseBuf } = live); cueBase = 0; } };
     if (SCORES[name]) { k.music.play(SCORES[name], { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); return () => k.music.info(); }
     if (SCENES[name]) { k.amb.play(SCENES[name], { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); return () => ({ scene: name }); }
     if (name === 'mix') { k.music.play(SCORES.board, { fade: 0.02, at: 0 }); k.amb.play(SCENES.row, { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); cue('win', 5); return () => k.music.info(); }
-    if (name.startsWith('cue:') && PRESETS[name.slice(4)]) { cue(name.slice(4), 0, { streak: 1, i: 2, pan: 0 }); return () => ({ cue: name.slice(4) }); }
+    if (name === 'busy') { k.music.play(SCORES.board, { fade: 0.02, at: 0 }); k.amb.play(SCENES.row, { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); for (const n of ['stamp', 'correct']) cue(n, 5, { streak: 3, i: 2 }); cue('coin', 5.3); return () => k.music.info(); }
+    if (name.startsWith('cue:') && PRESETS[name.slice(4)]) { cue(name.slice(4), 0, o); return () => ({ cue: name.slice(4) }); }
     throw new Error('unknown audio piece: ' + name);
   };
   return measureAudio(build, seconds, { wav: wantWav });
