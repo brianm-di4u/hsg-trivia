@@ -49,6 +49,7 @@ export const ECON = {
   TROLLEY_COST: 2, // unchanged
   WAGER_BASE_CAP: 5, WAGER_MAX_CAP: 10, WAGER_HOARD_SHARE: 0.25, // was a flat cap of 5: now the larger of 5 and 25% of the hoard, up to 10
   SUMMIT_REDRAWS: 1, // S3-07: how many times a human may spin the Summit vane again for another category (0 turns the button off)
+  FINAL_LAP_EXPRESS: 3, // S3-03: when the first traveler holds every stamp, the bell rings and each of the others may ride this many free Expresses (0 turns the Final Lap off; before wave 3 there was none)
   AI_EASY_RANDOM_MOVE: 0.1, // how often an Easy computer picks its destination at random instead of the best-scored one (S3-09: was 0.6)
   AI_REROLL_KEEP: 3, // a Hard AI re-rolls only if it keeps this many tickets after paying (was: tickets >= 4 at a price of 1)
   AI_EXPRESS_CHANCE: { easy: 0, medium: 0, hard: 1 }, // how readily each level buys an Express ticket when it can (only The Professor does)
@@ -329,7 +330,7 @@ export function answer(choice) {
       const cat = q.landmarkCat || NODES[p.node].cat;
       if (q.correct) {
         p.tickets += ECON.LANDMARK_PAY;
-        if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); G.hooks.effect('stamp', p); record(p, { ev: 'stamp', count: p.stamps.length, d: DISTRICTS.find((d) => d.cat === cat).key }); }
+        if (!p.stamps.includes(cat)) { p.stamps.push(cat); out.push(`Stamp earned: ${DISTRICTS.find((d) => d.cat === cat).stamp}!`); const bell = finalLap(p); if (bell) out.push(bell); G.hooks.effect('stamp', p); record(p, { ev: 'stamp', count: p.stamps.length, d: DISTRICTS.find((d) => d.cat === cat).key }); }
         out.push(`+${ECON.LANDMARK_PAY} tickets`);
       }
       break;
@@ -452,12 +453,21 @@ export function expressTarget(p = cur()) {
   if (!left.length) return null;
   return left.reduce((best, id) => (hops(p.node, id) < hops(p.node, best) ? id : best), left[0]);
 }
-export function canExpress(p = cur()) { return T().phase === 'roll' && !eligible(p) && p.tickets >= ECON.EXPRESS_COST && expressTarget(p) !== null; }
+export const expressCost = (p = cur()) => (p.lap > 0 ? 0 : ECON.EXPRESS_COST); // a traveler holding the Final Lap ride pays nothing
+export function canExpress(p = cur()) { return T().phase === 'roll' && !eligible(p) && p.tickets >= expressCost(p) && expressTarget(p) !== null; }
+// S3-03: the first traveler to hold every stamp rings the Final Lap bell (the answer's own line says so): each of the others may ride a free Express (ECON.FINAL_LAP_EXPRESS of them) to the nearest landmark they have no stamp for.
+function finalLap(p) {
+  const t = T(); if (!(ECON.FINAL_LAP_EXPRESS > 0) || t.lapBell || !eligible(p)) return '';
+  t.lapBell = true; sfx('bell');
+  const others = t.players.filter((o) => o !== p && !eligible(o)); others.forEach((o) => { o.lap = ECON.FINAL_LAP_EXPRESS; });
+  return `The Final Lap bell rings: everyone else may ride ${ECON.FINAL_LAP_EXPRESS === 1 ? 'one free Express' : ECON.FINAL_LAP_EXPRESS + ' free Expresses'}.`;
+}
 export function express() {
   const t = T(); const p = cur(); if (!canExpress(p)) return false;
   const to = expressTarget(p);
-  p.tickets -= ECON.EXPRESS_COST; sfx('coin'); sfx('trolley'); record(p, { ev: 'express' });
-  log(`${p.name} buys an Express ticket (${ECON.EXPRESS_COST} tickets) to ${NODES[to].name}.`);
+  const cost = expressCost(p); const free = p.lap > 0; if (free) p.lap--;
+  p.tickets -= cost; sfx('coin'); sfx('trolley'); record(p, { ev: 'express' });
+  log(free ? `${p.name} rides the free Final Lap Express to ${NODES[to].name}.` : `${p.name} buys an Express ticket (${cost} tickets) to ${NODES[to].name}.`);
   t.phase = 'moving'; G.hooks.update();
   G.hooks.moveToken(p, [p.node, to], () => { p.node = to; ask(NODES[to].cat, 'expressLandmark', { landmarkCat: NODES[to].cat }); }, 'jump');
   return true;
@@ -524,6 +534,7 @@ export function aiMaybe() {
   const go = (ms, fn) => later(aiDelay(ms), () => { if (T() === t && t.phase === ph && cur() === p) fn(); });
   switch (ph) {
     case 'roll':
+      if (p.lap > 0 && canExpress(p)) return go(800, () => express());
       if (canExpress(p) && p.tickets >= ECON.EXPRESS_COST && G.rng.next() < ECON.AI_EXPRESS_CHANCE[p.level]) return go(800, () => express());
       if (canTrolley(p) && !eligible(p) && p.tickets >= 5 && G.rng.next() < 0.3) return go(800, () => trolley(trolleyOptions(p)[G.rng.int(trolleyOptions(p).length)]));
       return go(800, () => roll());

@@ -216,7 +216,8 @@ function stampPips(p) {
 // The Express ticket, shown from the roll until the stamp target is met: where it goes and what it costs, before anything is spent.
 function expressOffer(p) {
   const to = !Game.eligible(p) && Game.expressTarget(p); if (to === null || to === false) return '';
-  return btn('express', `Express to ${esc(NODES[to].name)} · ${plural(ECON.EXPRESS_COST, 'ticket')}`, { cls: 'ghost', hint: 'E', dis: p.tickets < ECON.EXPRESS_COST });
+  const free = Game.expressCost(p) === 0; // the Final Lap bell (S3-03)
+  return btn('express', `Express to ${esc(NODES[to].name)} · ${free ? 'free, Final Lap' : plural(ECON.EXPRESS_COST, 'ticket')}`, { cls: free ? '' : 'ghost', hint: 'E', dis: p.tickets < Game.expressCost(p) });
 }
 
 function panelHTML() {

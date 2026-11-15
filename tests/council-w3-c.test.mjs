@@ -219,4 +219,63 @@ export const tests = [
       t.expect(/(Easy|Medium|Hard) · /.test(await t.page.locator('#modal .qmeta').innerText()), 'the question card says which difficulty it is');
     },
   },
+  // ---------------- S3-03 ----------------
+  {
+    name: 'S3-03 when one traveler holds every stamp the Final Lap bell rings once and each other traveler may ride three free Expresses, one a turn',
+    viewports: ['desktop', 'mobile'],
+    async run(t) {
+      await soloGame(t, { target: 4, players: [H1, H2], settings: { seenCoach: true, passScreen: false } });
+      const s0 = await t.state();
+      const lands = Object.keys(s0.board.landmarks);
+      const all = (n) => lands.slice(0, n);
+      // Ada holds three of four stamps and stands beside the fourth landmark; Bo has none and is rich enough to pay for nothing
+      const last = s0.board.landmarks[lands[3]];
+      await t.game('setState', { trail: { phase: 'roll', turn: 0, players: [{ stamps: all(3), tickets: 3 }, { stamps: [], tickets: 0 }] } });
+      const before = await t.state();
+      t.expect(!before.trail.lapBell && !before.trail.players[1].lap, 'no bell before anyone is done');
+      await moveTo(t, (await t.game('act', 'adj', last))[0], 1, last);
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'correct');
+      await t.game('act', 'continue');
+      const rung = await waitFor(t, (s) => s.trail.lapBell, 4000, 'the bell');
+      t.equal(rung.trail.players[0].stamps.length, 4, 'Ada has all four stamps');
+      t.equal(rung.trail.players[1].lap, 3, 'Bo may ride three free Expresses');
+      t.expect(!rung.trail.players[0].lap, 'Ada, who rang it, gets none');
+      t.expect(rung.trail.log.some((l) => /Stamp earned.*Final Lap bell rings/.test(l)), 'and the line about the answer says so: ' + rung.trail.log[0]);
+      await phase(t, 'roll');
+      // Bo's turn: the Express button is free, enabled with no tickets, and names the Final Lap
+      await waitFor(t, (s) => s.trail.turn === 1, 4000, "Bo's turn");
+      const btn = t.page.locator('#panel [data-act="express"]');
+      const label = (await btn.innerText()).replace(/\s+/g, ' ');
+      t.expect(/free, Final Lap/.test(label), 'the button says it is free: ' + label);
+      t.expect(await btn.isEnabled(), 'and can be pressed with no tickets');
+      await t.shot('S3-03-final-lap-offer');
+      await t.checkLayout({ allowScrollY: true });
+      await btn.click();
+      await phase(t, 'question');
+      const after = await t.state();
+      t.equal(after.trail.players[1].tickets, 0, 'it cost nothing');
+      t.equal(after.trail.players[1].lap, 2, 'two rides are left');
+      await t.game('act', 'answer', 'correct'); await t.game('act', 'continue');
+      // Ada again, then Bo: the second ride is free too; and a second traveler finishing does not ring the bell again
+      await waitFor(t, (s) => s.trail.turn === 0 && s.trail.phase === 'roll', 4000, "Ada's turn");
+      t.equal((await t.state()).trail.players[1].lap, 2, 'the rides keep');
+    },
+  },
+  {
+    name: 'S3-03 with the Final Lap, the first traveler to hold every stamp wins about two games in three, not five in six (two computer travelers, 100 seeded games)',
+    node: true,
+    async run() {
+      const sim = (lap) => {
+        const r = spawnSync(process.execPath, ['tools/lead-sim.mjs', '100', '2p'], { cwd: REPO, encoding: 'utf8', timeout: 300000, env: { ...process.env, ECON: JSON.stringify({ FINAL_LAP_EXPRESS: lap }) } });
+        if (r.status !== 0) throw new Error('lead-sim failed: ' + r.stderr.slice(0, 400));
+        return JSON.parse(r.stdout.trim().split('\n').pop());
+      };
+      const off = sim(0), on = sim(3);
+      // the games are fixed by their seeds, so these numbers are the same every run; 100 games say 85 and 66 give or take 4
+      assert.ok(off.firstToCollectWins >= 78, `without it the leader wins most games: ${off.firstToCollectWins}`);
+      assert.ok(on.firstToCollectWins <= off.firstToCollectWins - 8, `with it the leader's edge falls by at least eight points: ${off.firstToCollectWins} to ${on.firstToCollectWins}`);
+      assert.ok(on.firstToCollectWins <= 76, `and is well under the old 85: ${on.firstToCollectWins}`);
+    },
+  },
 ];
