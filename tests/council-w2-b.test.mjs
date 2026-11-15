@@ -278,8 +278,8 @@ export const tests = [
       t.expect(fan.win[0] >= 76.7 - 10, `fan profile still wins ${fan.win[0]} % against Medium (was 76.7 %; run is small, so a 10-point band)`);
       t.expect(strong.win[0] >= 89 - 10, `strong profile still wins ${strong.win[0]} % against Medium (was 89 %)`);
       const [mh, em] = run('6,8', 80);
-      t.expect(mh.win[1] > 70, `Hard beats Medium (${mh.win[1]} %)`);
-      t.expect(em.win[1] > 85, `Medium beats Easy (${em.win[1]} %)`);
+      t.expect(mh.win[1] > 55, `Hard beats Medium (${mh.win[1]} %; S3-09 pulled the tiers to about 65/35, it was above 70)`);
+      t.expect(em.win[1] > 55, `Medium beats Easy (${em.win[1]} %; S3-09 pulled the tiers to about 65/35, it was above 85)`);
     },
   },
   // ---------------- S1-03 ----------------

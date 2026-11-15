@@ -33,7 +33,9 @@ export function defaultNames(seats) {
     used.add(n); return n;
   });
 }
-export const AI_ACC = { easy: { easy: 0.6, medium: 0.4, hard: 0.25 }, medium: { easy: 0.8, medium: 0.6, hard: 0.4 }, hard: { easy: 0.92, medium: 0.8, hard: 0.65 } };
+// Chance a computer traveler answers right, by level and question difficulty. S3-09 pulled the tiers together so each level beats the one below it about 65 to 35
+// (before: Easy 0.6/0.4/0.25, Hard 0.92/0.8/0.65; Medium is unchanged). Easy also moves at random less often: ECON.AI_EASY_RANDOM_MOVE.
+export const AI_ACC = { easy: { easy: 0.72, medium: 0.52, hard: 0.32 }, medium: { easy: 0.8, medium: 0.6, hard: 0.4 }, hard: { easy: 0.82, medium: 0.63, hard: 0.43 } };
 // ---------- Ticket economy: every number to retune lives here (S3-02) ----------
 export const ECON = {
   START_TICKETS: 3,
@@ -47,6 +49,7 @@ export const ECON = {
   TROLLEY_COST: 2, // unchanged
   WAGER_BASE_CAP: 5, WAGER_MAX_CAP: 10, WAGER_HOARD_SHARE: 0.25, // was a flat cap of 5: now the larger of 5 and 25% of the hoard, up to 10
   SUMMIT_REDRAWS: 1, // S3-07: how many times a human may spin the Summit vane again for another category (0 turns the button off)
+  AI_EASY_RANDOM_MOVE: 0.1, // how often an Easy computer picks its destination at random instead of the best-scored one (S3-09: was 0.6)
   AI_REROLL_KEEP: 3, // a Hard AI re-rolls only if it keeps this many tickets after paying (was: tickets >= 4 at a price of 1)
   AI_EXPRESS_CHANCE: { easy: 0, medium: 0, hard: 1 }, // how readily each level buys an Express ticket when it can (only The Professor does)
   AI_HINT_SCOPE: { easy: 'any', medium: 'any', hard: 'landmark-hard' }, // which questions each level pays to 50/50: any, or only hard landmark questions (the Summit question always)
@@ -491,7 +494,7 @@ function scoreDest(p, node) {
 
 function aiChooseIndex(p) {
   const t = T();
-  if (p.level === 'easy' && G.rng.next() < 0.6) return G.rng.int(t.dests.length);
+  if (p.level === 'easy' && G.rng.next() < ECON.AI_EASY_RANDOM_MOVE) return G.rng.int(t.dests.length);
   return 0; // dests are pre-sorted by score
 }
 

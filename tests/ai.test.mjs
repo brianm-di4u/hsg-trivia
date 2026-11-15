@@ -24,7 +24,7 @@ export const tests = [
     async run(t) {
       await t.seed(5);
       const r = {};
-      for (const level of ['easy', 'medium', 'hard']) r[level] = await t.game('act', 'aiSample', level, 600);
+      for (const level of ['easy', 'medium', 'hard']) r[level] = await t.game('act', 'aiSample', level, 12000); // S3-09 put Hard within two or three points of Medium, so the sample must be large enough to tell them apart (was 600)
       t.log(Object.entries(r).map(([l, v]) => `${l}: ${v.easy.toFixed(2)}/${v.medium.toFixed(2)}/${v.hard.toFixed(2)}`).join(' · '));
       for (const d of ['easy', 'medium', 'hard']) t.expect(r.easy[d] < r.medium[d] && r.medium[d] < r.hard[d], `levels ordered on ${d} questions`);
     },

@@ -335,4 +335,21 @@ export const tests = [
       t.expect(now.trail.pending.cat !== s.trail.pending.cat && now.trail.pending.redraws === 1, 'S spun it');
     },
   },
+  // ---------------- S3-09 ----------------
+  {
+    name: 'S3-09 each computer level beats the one below it, by about 65 to 35 and not by 90 to 10',
+    node: true,
+    async run(t) {
+      // The economy simulation plays whole Trail Games with the real rules on virtual timers and fixed seeds (1000 and up),
+      // so the answer is the same every run. 80 games a row; the windows are wide and sit far from the old figures (Hard 87 and 100).
+      const sim = fileURLToPath(new URL('../tools/econ-sim.mjs', import.meta.url));
+      const out = execFileSync(process.execPath, [sim, '80', '6,7,8'], { encoding: 'utf8', maxBuffer: 1 << 24, timeout: 280000 });
+      const rows = Object.fromEntries(out.trim().split('\n').map((l) => JSON.parse(l)).map((r) => [r.label, r]));
+      const mh = rows['AI medium vs hard'].win; const eh = rows['AI easy vs hard'].win; const em = rows['AI easy vs medium'].win;
+      t.log(`Medium vs Hard ${mh.join('/')} · Easy vs Hard ${eh.join('/')} · Easy vs Medium ${em.join('/')}`);
+      t.expect(mh[1] > 52 && mh[1] < 85, `Hard beats Medium by a fair margin, not a rout: ${mh[1]}`);
+      t.expect(em[1] > 52 && em[1] < 85, `Medium beats Easy by a fair margin, not a rout: ${em[1]}`);
+      t.expect(eh[1] > mh[1] - 5 && eh[1] < 97, `Hard beats Easy at least as clearly, but not always: ${eh[1]}`);
+    },
+  },
 ];
