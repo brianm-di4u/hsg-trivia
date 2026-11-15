@@ -213,17 +213,18 @@ body[data-theme="dark"] .badge.claim { color: #FFB38A; } body[data-theme="dark"]
 .dots span { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; background: rgba(255,255,255,0.3); }
 .dots span.y { background: var(--color-success); } .dots span.n { background: var(--color-danger); } .dots span.cur { background: #fff; }
 .quiz-wrap > .mfoot { background: var(--card-bg); border: 2px solid var(--card-edge); border-radius: var(--radius-lg); padding: 8px 12px; margin-top: 8px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); }
-.eras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.era-card { text-align: left; padding: 14px; border-radius: var(--radius-lg); border: 2px solid var(--color-border); cursor: pointer; display: flex; flex-direction: column; gap: 4px; min-height: 44px; }
+/* S4-16: six cards of one height and one lightness range: each era keeps its own accent on a light card, instead of near-black and pale grey cards. */
+.eras { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 10px; }
+.era-card { text-align: left; padding: 14px 14px 14px 20px; border-radius: var(--radius-lg); border: 2px solid var(--era-accent); box-shadow: inset 7px 0 0 var(--era-accent); background: var(--era-bg); color: #1F2A24; cursor: pointer; display: flex; flex-direction: column; gap: 4px; min-height: 44px; }
 .era-name { font-family: var(--font-serif-victorian); font-weight: 700; font-size: 1.15rem; }
 .era-yrs { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; }
 .era-sum { font-size: 0.88rem; }
-.era-card[data-era="frontier"] { background: #C9D3D6; color: #2A2420; }
-.era-card[data-era="gilded-spa"] { background: #E6D7B5; color: #1F2A24; }
-.era-card[data-era="roaring"] { background: #14121F; color: #D8CFBD; border-color: #D4AF37; }
-.era-card[data-era="midcentury"] { background: #D9D4CA; color: #222222; border-color: #8FD0E8; }
-.era-card[data-era="revival"] { background: #3E3528; color: #EDE3C8; }
-.era-card[data-era="modern"] { background: #1E4E79; color: #F6F3EC; }
+.era-card[data-era="frontier"] { --era-bg: #D8DFE0; --era-accent: #8E3B2B; }
+.era-card[data-era="gilded-spa"] { --era-bg: #EADFC3; --era-accent: #A9432C; }
+.era-card[data-era="roaring"] { --era-bg: #E3DCCB; --era-accent: #B8922A; }
+.era-card[data-era="midcentury"] { --era-bg: #DCE6EA; --era-accent: #2E8FB5; }
+.era-card[data-era="revival"] { --era-bg: #E4DAC6; --era-accent: #8C6A3F; }
+.era-card[data-era="modern"] { --era-bg: #D5E1EC; --era-accent: #1E4E79; }
 .quiz-wrap[data-era="roaring"] .qcard { border-color: #D4AF37; }
 .results-card .score { font-family: var(--font-mono); font-weight: 700; }
 .review { padding-left: 0; list-style: none; display: grid; gap: 6px; font-size: 0.92rem; }

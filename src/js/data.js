@@ -40,13 +40,14 @@ const byId = new Map(BANK.map((q) => [q.id, q]));
 export const getQ = (id) => byId.get(id);
 
 // Era ids for Era Express: `ancient` is too small for a round, so it rides with `frontier`.
+// `short` is the one line the era card shows (S4-16): at most 120 characters, made only of words from the era's own summary in the timeline data.
 export const ERA_MODES = [
-  { id: 'frontier', label: 'Ancient & Frontier', eras: ['ancient', 'frontier'] },
-  { id: 'gilded-spa', label: 'Gilded Spa', eras: ['gilded-spa'] },
-  { id: 'roaring', label: 'Roaring Spa Town', eras: ['roaring'] },
-  { id: 'midcentury', label: 'Midcentury Vapors', eras: ['midcentury'] },
-  { id: 'revival', label: 'Revival Years', eras: ['revival'] },
-  { id: 'modern', label: 'Modern Spa City', eras: ['modern'] },
+  { id: 'frontier', label: 'Ancient & Frontier', eras: ['ancient', 'frontier'], short: 'Native peoples and novaculite quarries, the first settlers and cabins, and a Civil War capital.' },
+  { id: 'gilded-spa', label: 'Gilded Spa', eras: ['gilded-spa'], short: 'The railroad, Victorian then brick bathhouses, great fires, Oaklawn and the birth of spring training.' },
+  { id: 'roaring', label: 'Roaring Spa Town', eras: ['roaring'], short: 'National park status, Bathhouse Row at its peak, the visiting gangsters, the new lakes and World War II.' },
+  { id: 'midcentury', label: 'Midcentury Vapors', eras: ['midcentury'], short: 'The GI Revolt, revived casinos, motor hotels, desegregation and the 1967 shutdown.' },
+  { id: 'revival', label: 'Revival Years', eras: ['revival'], short: 'Bathhouse closures, Magic Springs, the Clinton years and the Fordyce visitor center.' },
+  { id: 'modern', label: 'Modern Spa City', eras: ['modern'], short: 'Crystal Falls, adaptive reuse of the bathhouses, Oaklawn’s casino and the Majestic fire.' },
 ];
 export const eraCount = (mode) => BANK.filter((q) => mode.eras.includes(q.era)).length;
 

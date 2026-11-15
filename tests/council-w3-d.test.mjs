@@ -260,4 +260,36 @@ export const tests = [
       t.expect(small.includes('Downtown') && !small.includes('The Y'), 'the trolley sheet: ' + small.join(' | '));
     },
   },
+
+  // ---------------- S4-16 ----------------
+  {
+    name: 'S4-16 each Era Express card has a one-line summary of 120 characters or fewer, made only of words from its era’s own summary',
+    viewports: ['desktop'],
+    async run() {
+      const r = inNode(`const d = await imp('data.js'); const words = (s) => s.toLowerCase().replace(/\u2019/g, "'").match(/[a-z0-9'\u2013-]+/g) || [];
+        console.log(JSON.stringify(d.ERA_MODES.map((m) => { const src = new Set(m.eras.flatMap((e) => words(d.ERA[e].summary))); return { id: m.id, n: m.short.length, extra: words(m.short).filter((w) => w.length >= 5 && !src.has(w)) }; })));`);
+      assert.equal(r.length, 6, 'six era cards');
+      for (const m of r) { assert.ok(m.n > 20 && m.n <= 120, m.id + ' short is ' + m.n + ' characters'); assert.deepEqual(m.extra, [], m.id + ' uses only words of its era summary'); }
+    },
+  },
+  {
+    name: 'S4-16 the six Era Express cards share one height and one lightness range, with readable ink',
+    initScript: withSave(VETERAN),
+    async run(t) {
+      await t.game('scene', 'era');
+      await t.waitForStable(8000);
+      const cards = await t.page.evaluate(() => {
+        const lum = (c) => { const [r, g, b] = c.match(/[\d.]+/g).slice(0, 3).map(Number).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+        const light = (c) => { const [r, g, b] = c.match(/[\d.]+/g).slice(0, 3).map(Number).map((v) => v / 255); const mx = Math.max(r, g, b), mn = Math.min(r, g, b); return (mx + mn) / 2 * 100; };
+        return [...document.querySelectorAll('.era-card')].map((e) => { const cs = getComputedStyle(e); const L1 = lum(cs.backgroundColor), L2 = lum(cs.color); const r = e.getBoundingClientRect(); return { h: r.height, l: light(cs.backgroundColor), contrast: (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05), lines: e.querySelector('.era-sum').getBoundingClientRect().height / parseFloat(getComputedStyle(e.querySelector('.era-sum')).lineHeight || 20) }; });
+      });
+      t.equal(cards.length, 6, 'six cards');
+      t.expect(Math.max(...cards.map((c) => c.h)) - Math.min(...cards.map((c) => c.h)) < 1.5, 'one height: ' + cards.map((c) => Math.round(c.h)).join(', '));
+      t.expect(Math.min(...cards.map((c) => c.l)) >= 75 && Math.max(...cards.map((c) => c.l)) - Math.min(...cards.map((c) => c.l)) <= 12, 'one lightness range: ' + cards.map((c) => Math.round(c.l)).join(', '));
+      t.expect(Math.min(...cards.map((c) => c.contrast)) >= 7, 'the ink reads on every card: ' + cards.map((c) => c.contrast.toFixed(1)).join(', '));
+      const back = await rect(t, '#scene-era [data-act="goto"]');
+      if (t.viewport === 'desktop') t.expect(back.bottom <= t.vp.height, 'Back is on the first screen: ' + Math.round(back.bottom));
+      await t.shot('S4-16-era-cards');
+    },
+  },
 ];

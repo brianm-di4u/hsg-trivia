@@ -480,10 +480,10 @@ function resultsHTML() {
 
 function eraHTML() {
   const bestEra = G.save.data.best.era || {};
-  const cards = ERA_MODES.map((m, i) => { const e = ERA[m.eras[m.eras.length - 1]]; const first = ERA[m.eras[0]];
+  const cards = ERA_MODES.map((m, i) => { const e = ERA[m.eras[m.eras.length - 1]];
     const yrs = m.eras.length > 1 ? `before ${e.end + 1}` : `${e.start}–${e.end}`;
     return `<button class="era-card" data-era="${m.id}" data-act="era-start" data-arg="${m.id}" data-key="era${m.id}"${i === 0 ? ' data-autofocus' : ''}>
-      <span class="era-name">${esc(m.label)}</span><span class="era-yrs">${yrs} · ${eraCount(m)} questions</span>${bestEra[m.id] ? `<span class="era-best">Best ${pts(bestEra[m.id])}</span>` : ''}<span class="era-sum">${esc(m.eras.length > 1 ? first.summary + ' ' + e.summary : e.summary)}</span></button>`; }).join('');
+      <span class="era-name">${esc(m.label)}</span><span class="era-yrs">${yrs} · ${eraCount(m)} questions</span>${bestEra[m.id] ? `<span class="era-best">Best ${pts(bestEra[m.id])}</span>` : ''}<span class="era-sum">${esc(m.short)}</span></button>`; }).join('');
   return `<div class="page-card era-page"><h2>Era Express</h2><p>Ten questions from one chapter of Hot Springs history.</p><div class="eras">${cards}</div><div class="row">${btn('goto', 'Back', { arg: 'title', cls: 'ghost' })}</div></div>`;
 }
 
