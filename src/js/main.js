@@ -314,6 +314,13 @@ function wireInput() {
   document.addEventListener('visibilitychange', () => { syncPause(); if (document.visibilityState === 'hidden') saveOnLeave(); });
 }
 
+// S1-04: a habitual double press must not do two things. A held key does nothing after its first press, and Enter, Space or R (roll, confirm,
+// re-roll, answer a focused button) is ignored for KEY_GUARD_MS after the last one in a game or quiz, so the second tap of a double tap cannot
+// re-roll for a ticket, pick the first destination or answer the question that has just appeared.
+const KEY_GUARD_MS = 250;
+let lastActKey = -1e9;
+const keyGuardMs = () => (typeof window.__TEST_KEY_GUARD_MS === 'number' ? window.__TEST_KEY_GUARD_MS : KEY_GUARD_MS); // (a test widens the moment so that a slow machine cannot separate two presses)
+const keyGuardLeft = () => Math.max(0, Math.round(keyGuardMs() - (performance.now() - lastActKey)));
 function onKey(e) {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   unlockAudio();
@@ -321,6 +328,11 @@ function onKey(e) {
   const k = e.key; const ae = document.activeElement;
   const typing = ae && (ae.tagName === 'INPUT' || ae.tagName === 'SELECT' || ae.tagName === 'TEXTAREA');
   if (typing && k !== 'Escape') return;
+  if (e.repeat && !/^(Arrow|Tab$)/.test(k)) return e.preventDefault();
+  if ((k === 'Enter' || k === ' ' || k.toLowerCase() === 'r') && (G.state.scene === 'game' || G.state.scene === 'quiz')) {
+    if (keyGuardLeft() > 0) return e.preventDefault();
+    lastActKey = performance.now();
+  }
   // Let a focused button handle its own Enter/Space activation.
   if ((k === 'Enter' || k === ' ') && ae && ae.tagName === 'BUTTON') return;
   const st = G.state; const sc = st.scene; const lower = k.toLowerCase();
@@ -478,7 +490,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     say: G.say,
-    ui: { fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    ui: { keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));
