@@ -39,6 +39,8 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export const dayWords = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m && MONTHS[+m[2] - 1] ? `${MONTHS[+m[2] - 1]} ${+m[3]}` : String(iso || ''); };
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
+// The period lettered on a question's painting (S4-04): the era and its years, from the timeline data; a question of no one era has none.
+const eraTag = (id) => (ERA[id] ? ERA[id].name + (ERA[id].start > 0 ? ` ${ERA[id].start}–${ERA[id].end}` : '') : '');
 // Painted art (assets/), used only when the manifest lists it; every use has a non-art fallback.
 const artSrc = (name) => (Assets.has(name) ? `assets/${name}.webp` : null);
 const DIST_OF = Object.fromEntries(DISTRICTS.map((d) => [d.cat, d]));
@@ -335,7 +337,7 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
       <p class="expl">${esc(q.explanation)}</p>
       <p class="src">Source: ${esc(q.source)}</p></div>` : '';
   return `<div class="qcard${banner ? ' has-art' : ''}${fresh ? ' reveal' : ''}${slam ? ' slammed' : ''}${answered && !q.correct ? ' missed' : ''}" style="--cat:${c.color};--catink:${c.ink}">
-    ${banner ? `<div class="qbanner"><img class="qart" src="${banner}" alt="" aria-hidden="true"><span class="qcap">Illustration · ${esc(art.name)}</span></div>` : ''}
+    ${banner ? `<div class="qbanner" data-era="${ERA[q.era] ? q.era : 'any'}"><img class="qart" src="${banner}" alt="" aria-hidden="true">${eraTag(q.era) ? `<span class="qera">${esc(eraTag(q.era))}</span>` : ''}<span class="qcap">Illustration · ${esc(art.name)}</span></div>` : ''}
     <div class="qhead">${ico(c.icon, c.color, c.ink, 40)}<div class="qh"><div class="qcat" id="mtitle">${esc(q.category)}</div><div class="qmeta">${DIFF_LABEL[q.difficulty]} · ${esc(eraName(q.era))}</div></div>${badge}</div>
     ${purposeLine ? `<p class="purpose">${purposeLine}</p>` : ''}
     ${q.timeMax && !answered ? `<div class="timer" role="timer" aria-label="Time left: ${Math.ceil(q.timeLeft)} seconds"><div class="track"><div class="bar${q.timeLeft < 5 ? ' low' : ''}" style="width:${(100 * q.timeLeft / q.timeMax).toFixed(1)}%"></div></div><span class="tnum${q.timeLeft < 5 ? ' low' : ''}" aria-hidden="true">${Math.ceil(Math.max(0, q.timeLeft))} s</span></div>` : ''}
