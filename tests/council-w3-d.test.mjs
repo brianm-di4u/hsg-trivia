@@ -292,4 +292,88 @@ export const tests = [
       await t.shot('S4-16-era-cards');
     },
   },
+
+  // ---------------- S6-18 ----------------
+  {
+    name: 'S6-18 the save marks a Daily as started, keeps the newest 30 days, repairs damage, and an older save reads as before',
+    viewports: ['desktop'],
+    async run() {
+      const r = inNode(`const sv = await imp('save.js'); const mk = (init) => { const m = init ? { 'hs-trivia-v1': JSON.stringify(init) } : {}; return { m, mem: { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = v; } } }; };
+        const out = {}; const a = mk(); const s = sv.createSaveStore({ storage: () => a.mem }); s.load();
+        out.before = sv.dailyTaken(s.data.daily, '2026-11-12');
+        s.commitDailyStart('2026-11-12'); out.started = JSON.parse(a.m['hs-trivia-v1']).daily.started; out.after = sv.dailyTaken(s.data.daily, '2026-11-12'); out.other = sv.dailyTaken(s.data.daily, '2026-11-13');
+        s.commitQuiz({ kind: 'daily', date: '2026-11-12', score: 300, right: 4, total: 7, timer: 0, marks: '1111000' }); const res = JSON.parse(a.m['hs-trivia-v1']).daily; out.result = res.results['2026-11-12'] && res.results['2026-11-12'].score; out.streak = res.streak;
+        s.commitDailyStart('2026-11-12'); out.again = Object.keys(JSON.parse(a.m['hs-trivia-v1']).daily.started);
+        const old = { v: 1, settings: {}, best: { quick: 0, era: {} }, daily: { last: '2026-11-03', streak: 1, results: { '2026-11-03': { score: 50, right: 3, marks: '1110000' } } }, trail: null };
+        const b = mk(old); const s2 = sv.createSaveStore({ storage: () => b.mem }); s2.load(); out.oldHasKey = 'started' in s2.data.daily; out.oldTaken = sv.dailyTaken(s2.data.daily, '2026-11-03'); out.oldFree = sv.dailyTaken(s2.data.daily, '2026-11-04');
+        const c = mk({ ...old, daily: { ...old.daily, started: { x: true, '2026-11-01': 'yes', '2026-11-02': true, '2026-11-05': false } } }); const s3 = sv.createSaveStore({ storage: () => c.mem }); s3.load(); out.repaired = Object.keys(s3.data.daily.started);
+        const many = {}; for (let i = 1; i <= 40; i++) many['2026-10-' + String(i).padStart(2, '0')] = true;
+        const d = mk({ ...old, daily: { ...old.daily, started: many } }); const s4 = sv.createSaveStore({ storage: () => d.mem }); s4.load(); s4.commitDailyStart('2026-11-20'); const kept = Object.keys(JSON.parse(d.m['hs-trivia-v1']).daily.started); out.kept = kept.length; out.newest = kept.includes('2026-11-20');
+        console.log(JSON.stringify(out));`);
+      assert.equal(r.before, false, 'a new date is not taken');
+      assert.deepEqual(r.started, { '2026-11-12': true }, 'the first question marks the date');
+      assert.equal(r.after, true); assert.equal(r.other, false, 'only that date');
+      assert.equal(r.result, 300, 'a result is still written'); assert.equal(r.streak, 1);
+      assert.deepEqual(r.again, ['2026-11-12'], 'starting twice marks once');
+      assert.equal(r.oldHasKey, false, 'a save from before gains no key by being read');
+      assert.equal(r.oldTaken, true, 'a date with a result is taken'); assert.equal(r.oldFree, false);
+      assert.deepEqual(r.repaired, ['2026-11-02'], 'damaged marks fall away, a good one stays');
+      assert.equal(r.kept, 30, 'at most 30 days are kept'); assert.equal(r.newest, true, 'the newest among them');
+    },
+  },
+  {
+    name: 'S6-18 an abandoned Daily makes the next run practice: labelled, not saved, no streak, nothing to share',
+    initScript: withSave(VETERAN, '2026-11-12'),
+    async run(t) {
+      const saved = () => t.page.evaluate(() => JSON.parse(localStorage.getItem('hs-trivia-v1')).daily);
+      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
+      let s = await t.state();
+      t.equal(s.quiz.practice, false, 'the first run counts');
+      t.equal(await t.page.evaluate(() => !!document.querySelector('.practice')), false, 'and carries no practice label');
+      t.equal((await saved()).started['2026-11-12'], true, 'the first question marked the date as started');
+      await t.game('act', 'ui', 'quiz-quit'); // at the first question this goes straight to the title
+      await waitFor(t, (x) => x.scene === 'title', 3000, 'title');
+      const lab = await t.page.evaluate(() => document.querySelector('[data-act="daily"]').textContent);
+      t.expect(/started today/.test(lab) && /practice/.test(lab), 'the title button says so: ' + lab);
+      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
+      s = await t.state();
+      t.equal(s.quiz.practice, true, 'the next run is practice');
+      await t.waitForStable(8000);
+      const note = await rect(t, '.practice');
+      t.expect(note && note.right <= t.vp.width && note.left >= 0, 'the label fits the screen');
+      t.equal(await t.page.evaluate(() => document.querySelector('.practice').textContent), 'Practice (not counted)', 'the label');
+      await t.shot('S6-18-practice-label');
+      for (let i = 0; i < 7; i++) { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); }
+      await waitFor(t, (x) => x.scene === 'results', 4000, 'results');
+      const res = await t.page.evaluate(() => ({ eyebrow: document.querySelector('.results-card .eyebrow').textContent, share: !!document.querySelector('#share'), note: (document.querySelector('.results-card .practice') || {}).textContent }));
+      t.expect(/Practice/.test(res.eyebrow) && /not counted/.test(res.note), 'the results say practice: ' + res.eyebrow);
+      t.equal(res.share, false, 'there is no perfect score to post');
+      const d = await saved();
+      t.equal(d.results['2026-11-12'], undefined, 'no result was written for the date');
+      t.equal(d.streak, 0, 'and no streak');
+      await t.shot('S6-18-practice-results');
+    },
+  },
+  {
+    name: 'S6-18 a finished Daily keeps its first result; a perfect replay the same day changes nothing',
+    initScript: withSave(VETERAN, '2026-11-12'),
+    async run(t) {
+      const saved = () => t.page.evaluate(() => JSON.parse(localStorage.getItem('hs-trivia-v1')).daily);
+      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
+      for (let i = 0; i < 7; i++) { await t.game('act', 'answer', 'wrong'); await t.game('act', 'continue'); }
+      await waitFor(t, (x) => x.scene === 'results', 4000, 'results');
+      let d = await saved();
+      t.equal(d.results['2026-11-12'].right, 0, 'the first run was written: no answers right');
+      t.equal(d.streak, 1, 'a streak of one');
+      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
+      t.equal((await t.state()).quiz.practice, true, 'the replay is practice');
+      for (let i = 0; i < 7; i++) { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); }
+      await waitFor(t, (x) => x.scene === 'results', 4000, 'results');
+      d = await saved();
+      t.equal(d.results['2026-11-12'].right, 0, 'the first result stands');
+      await t.game('scene', 'title');
+      const lab = await t.page.evaluate(() => document.querySelector('[data-act="daily"]').textContent);
+      t.expect(/done today/.test(lab) && /practice/.test(lab), 'the title button: ' + lab);
+    },
+  },
 ];

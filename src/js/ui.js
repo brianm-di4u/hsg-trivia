@@ -9,7 +9,7 @@ import { G, ECON } from './game.js';
 import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
 import * as Assets from './assets.js';
-import { liveStreak } from './save.js';
+import { liveStreak, dailyTaken } from './save.js';
 import { ACHIEVEMENTS, ACH, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, TARGET_NAMES, coverOf, coverUnlocked, titleName } from './record.js';
 
 const $ = (s) => document.querySelector(s);
@@ -148,7 +148,7 @@ function updateTopbar() {
 // ---------- title ----------
 function titleHTML() {
   const sv = G.save.data; const has = G.save.data.trail && !G.save.trailDiscarded && G.save.data.trail.phase !== 'over';
-  const daily = sv.daily && sv.daily.results && sv.daily.results[G.today()];
+  const daily = sv.daily && sv.daily.results && sv.daily.results[G.today()]; const taken = dailyTaken(sv.daily, G.today());
   const hero = artSrc('land-row');
   return `<div class="page-card title-card">
     ${hero ? `<div class="title-art"><img src="${hero}" alt="" aria-hidden="true"></div>` : ''}
@@ -160,7 +160,7 @@ function titleHTML() {
       ${btn('goto', 'Trail Game <small>board game · 1–6 players</small>', { arg: 'setup', cls: has ? '' : 'primary', auto: !has })}
       ${btn('quick', `Quick 10 <small>ten questions, solo${sv.best.quick ? ' · best ' + pts(sv.best.quick) : ''}</small>`)}
       ${btn('goto', 'Era Express <small>pick a period of history</small>', { arg: 'era' })}
-      ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts` : '7 questions for today'}</small>`)}
+      ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts · replay is practice` : taken ? 'started today · replay is practice' : '7 questions for today'}</small>`)}
     </div>
     <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('goto', 'Trail Record', { arg: 'record' })}</div>
     <p class="foot">${BANK.length} sourced questions · Trail wins: ${sv.stats.wins} · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${liveStreak(sv.daily, G.today())}</p>
@@ -458,6 +458,7 @@ function quizHTML() {
   const tint = qz.kind === 'era' ? qz.era : 'any';
   return `<div class="quiz-wrap" data-era="${tint}">
     <div class="quiz-top"><span class="qt-title">${title}</span><span class="qt-prog" aria-label="Question ${qz.idx + 1} of ${qz.total}">${qz.idx + 1} / ${qz.total}</span><span class="qt-score">${qz.score} pts${qz.streak > 1 ? ` · streak ${qz.streak}` : ''}</span></div>
+    ${qz.practice ? '<p class="practice">Practice (not counted)</p>' : ''}
     <div class="dots" aria-hidden="true">${Array.from({ length: qz.total }, (_, i) => `<span class="${i < qz.results.length ? (qz.results[i].correct ? 'y' : 'n') : i === qz.idx ? 'cur' : ''}"></span>`).join('')}</div>
     ${questionCardHTML(q)}
     ${q.chosen !== null ? `<div class="mfoot">${btn('quiz-next', qz.idx + 1 >= qz.total ? 'See results' : 'Next question', { cls: 'primary', hint: 'Enter', auto: true })}</div>` : `<div class="mfoot">${btn('quiz-quit', 'Quit', { cls: 'ghost small' })}</div>`}
@@ -471,9 +472,10 @@ function resultsHTML() {
   const bm = G.save.data.bestMeta; const bestMeta = bm ? (qz.kind === 'quick' ? bm.quick : bm.era && bm.era[qz.era]) : null;
   const rows = qz.results.map((r) => { const b = BANK.find((x) => x.id === r.id); return `<li class="${r.correct ? 'y' : 'n'}"><span aria-label="${r.correct ? 'correct' : 'wrong'}">${r.correct ? '✔' : '✘'}</span> ${esc(b.question)} <small>— ${esc(b.answer)}</small></li>`; }).join('');
   const title = qz.kind === 'daily' ? `Daily Challenge · ${dayWords(qz.date)}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
-  return `<div class="page-card results-card"><p class="eyebrow">${title}</p><h2>${right} of ${qz.total} right</h2>
+  return `<div class="page-card results-card"><p class="eyebrow">${title}${qz.practice ? ' · Practice' : ''}</p><h2>${right} of ${qz.total} right</h2>
     <p class="score">${pts(qz.score)} points (${right} of ${qz.total} right${qz.timer ? ', ' + timerWords(qz.timer) : ''}) · best streak ${qz.bestStreak}${best ? ` · personal best ${bestWords(best, bestMeta)}` : ''}</p>
-    ${qz.kind === 'daily' ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}` : ''}
+    ${qz.practice ? '<p class="practice">Practice (not counted): today’s Daily was already taken, so this run changes no result and no streak.</p>' : ''}
+    ${qz.kind === 'daily' && !qz.practice ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}` : ''}
     <ol class="review">${rows}</ol>
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${qz.kind === 'daily' ? '' : btn(qz.kind === 'era' ? 'era-start' : 'quick', 'Play again', { arg: qz.era || '', cls: 'primary', auto: true })}</div></div>`;
 }

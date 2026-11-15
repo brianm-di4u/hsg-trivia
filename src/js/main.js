@@ -61,6 +61,7 @@ function retryUnsavedTrail() {
   if (turnSnap && turnSnap.trail && (G.save.pending.trail || G.save.pending.reservation)) noted(applyCommittedSettings(G.save.commitTrail(turnSnap)));
 }
 function saveQuiz(q) {
+  if (q.practice) return { ok: true }; // a practice Daily is not counted: nothing is saved (S6-18)
   const right = q.results.filter((r) => r.correct).length;
   const result = noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score, total: q.total, timer: q.timer,
     right, marks: q.results.map((r) => r.correct ? '1' : '0').join('') })));
@@ -122,6 +123,7 @@ G.hooks.save = saveTrail;
 G.hooks.finish = () => R.finishAnims();
 G.hooks.say = (p, text) => R.say(p, text);
 G.hooks.saveQuiz = saveQuiz;
+G.hooks.dailyStart = (date) => noted(G.save.commitDailyStart(date));
 G.hooks.seen = () => noted(G.save.commitSeen(G.state.asked.slice(-SEEN_MAX)));
 // The Trail record: a human's play (see record.js for the intents). Achievements earned show a toast; the result goes back to the rules engine.
 G.hooks.record = (intent) => {

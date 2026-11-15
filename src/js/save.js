@@ -46,6 +46,13 @@ export const liveStreak = (daily, today) => {
   return n > 0 && daily.last && (daily.last === today || daily.last === previousDay(today)) ? n : 0;
 };
 
+// S6-18: the days whose Daily Challenge was started, kept beside the results (a save from before has none): a Daily played again after its first run,
+// finished or not, is practice and is not counted. At most DAILY_STARTED_MAX days are kept, the newest.
+const DAILY_STARTED_MAX = 30;
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const cleanStarted = (v) => Object.fromEntries((object(v) ? Object.keys(v).filter((d) => DATE.test(d) && v[d] === true).sort().slice(-DAILY_STARTED_MAX) : []).map((d) => [d, true]));
+export const dailyTaken = (daily, date) => !!daily && ((object(daily.results) && own(daily.results, date)) || (object(daily.started) && daily.started[date] === true));
+
 export function createSaveStore({ storage = () => window.localStorage, newGeneration = generation, onConflict = () => {} } = {}) {
   let trailBase = null, conflictNotified = false;
   const store = { data: defaults(), ok: true, fresh: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [], progress: [] } };
@@ -64,6 +71,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     out.settings = { ...out.settings };
     out.best = { ...out.best, era: { ...(out.best.era || {}) } };
     out.daily = { ...out.daily, results: { ...(out.daily.results || {}) } };
+    if (own(data.daily || {}, 'started')) out.daily.started = cleanStarted(data.daily.started);
     if (own(data, 'bestMeta')) out.bestMeta = cleanBestMeta(data.bestMeta);
     if (own(data, 'seen')) out.seen = cleanSeen(data.seen); // absent until the first question is asked: a save from before gains nothing else
     Object.assign(out, cleanRecord(data)); // stats, ach, profile: defaults for a save that predates them, repair for a damaged one
@@ -167,6 +175,15 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     }
     if (!write(next)) return unavailable();
     store.pending.quiz = [];
+    return { ok: true };
+  };
+  // The first question of a counted Daily was shown: today's Daily is taken from now on, so another run is practice (S6-18).
+  store.commitDailyStart = (date) => {
+    if (!DATE.test(date)) return { ok: true };
+    const current = readOrNull(); if (!current) return unavailable();
+    if (dailyTaken(current.daily, date)) return { ok: true };
+    const next = clone(current); next.daily.started = cleanStarted({ ...(next.daily.started || {}), [date]: true });
+    if (!write(next)) return unavailable();
     return { ok: true };
   };
   // The questions asked lately (S3-06): its own key, outside the trip's conflict group, so a quiz can record it and no other tab's trip is touched.

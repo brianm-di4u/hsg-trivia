@@ -2,6 +2,7 @@
 import { makeRng, hash32, todayISO } from './util.js';
 import { BANK, CATS, ERA_MODES, isDated, pickQuestion, makeQuestion, updateSkill } from './data.js';
 import { G } from './game.js';
+import { dailyTaken } from './save.js';
 import { sfx } from './audio.js';
 
 const MULT = { easy: 1, medium: 1.5, hard: 2 };
@@ -10,7 +11,7 @@ export const DAILY_LEN = 7;
 export function newQuiz(kind, { era, date } = {}) {
   const total = kind === 'daily' ? DAILY_LEN : 10;
   const q = { kind, era: era || null, date: kind === 'daily' ? date || todayISO() : null, idx: -1, total, score: 0, streak: 0, bestStreak: 0, skill: 0.35, results: [], ids: [], timer: G.state.settings.timer | 0 };
-  if (kind === 'daily') q.ids = dailyIds(q.date);
+  if (kind === 'daily') { q.ids = dailyIds(q.date); q.practice = dailyTaken(G.save && G.save.data.daily, q.date); } // S6-18: the first run of a date counts; a later one, finished or not, is practice
   G.state.quiz = q; G.state.mode = kind; G.state.question = null;
   next();
 }
@@ -47,6 +48,7 @@ export function next() {
   // The daily uses its own RNG for choice order so every replay that day looks the same.
   const r = q.kind === 'daily' ? makeRng(hash32(q.date + src.id)) : G.rng;
   G.state.question = makeQuestion(src, r, 'quiz');
+  if (q.kind === 'daily' && q.idx === 0 && !q.practice) G.hooks.dailyStart(q.date); // the date is taken from the first question on, even if this run is left unfinished
   const tm = G.state.settings.timer;
   G.state.question.timeMax = tm; G.state.question.timeLeft = tm;
   G.hooks.update();

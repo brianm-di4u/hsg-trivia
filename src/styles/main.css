@@ -208,6 +208,7 @@ body[data-theme="dark"] .badge.claim { color: #FFB38A; } body[data-theme="dark"]
 /* ---------- quiz scene ---------- */
 .quiz-wrap { max-width: 700px; margin: 0 auto; }
 .quiz-top { display: flex; gap: 12px; align-items: center; background: var(--page-bg); border: 2px solid var(--color-border); border-radius: var(--radius-lg); padding: 8px 14px; margin-bottom: 8px; font-weight: 700; }
+.practice { margin: 0 0 8px; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--color-bg); border: 2px dashed var(--color-border); font-weight: 700; font-size: 0.9rem; }
 .qt-title { flex: 1; font-family: var(--font-serif-victorian); } .qt-prog, .qt-score { font-family: var(--font-mono); }
 .dots { display: flex; gap: 6px; justify-content: center; margin: 0 auto 10px; width: max-content; padding: 6px 10px; border-radius: var(--radius-pill); background: rgba(31, 42, 36, 0.55); }
 .dots span { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; background: rgba(255,255,255,0.3); }
