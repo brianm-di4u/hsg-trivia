@@ -377,7 +377,7 @@ function onKey(e) {
       if (lower === 'f') { act('lifeline'); return done(); }
       break;
     }
-    case 'feedback': case 'postcard': case 'orderResult': case 'jury': case 'summit':
+    case 'feedback': case 'postcard': case 'orderResult': case 'jury': case 'summit': case 'stuck': case 'skipped':
       if (k === 'Enter' || k === ' ') { act('proceed'); return done(); }
       break;
     case 'vent': if (lower === 'y') { act('vent', '1'); return done(); } if (lower === 'n') { act('vent', '0'); return done(); } break;

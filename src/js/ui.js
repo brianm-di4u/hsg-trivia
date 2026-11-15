@@ -233,8 +233,8 @@ function panelHTML() {
       break;
     }
     case 'moving': action = `<p class="status">${who} is on the move…</p>`; break;
-    case 'skipped': action = `<p class="status">${who} sits out this turn.</p>`; break;
-    case 'stuck': action = `<p class="status">No space is exactly ${t.roll} away — ${who} waits in the steam.</p>`; break;
+    case 'skipped': action = `<p class="status">${who} sits out this turn.</p>${ai ? '' : btn('proceed', 'Continue', { cls: 'primary', hint: 'Enter', auto: true })}`; break;
+    case 'stuck': action = `<p class="status">No space is exactly ${t.roll} away — ${who} waits in the steam.</p>${ai ? '' : btn('proceed', 'Continue', { cls: 'primary', hint: 'Enter', auto: true })}`; break;
     case 'landed': action = `<p class="status">${who} stops at ${esc(NODES[p.node].name)}.</p>`; break;
     case 'over': action = `<p class="status">${who} wins!</p>`; break;
     default: action = `<p class="status">${who} ${ai ? 'is thinking…' : ['question', 'feedback'].includes(t.phase) ? 'answers at ' + esc(NODES[p.node].name) : '— your move'}</p>`;

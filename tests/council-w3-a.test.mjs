@@ -49,4 +49,57 @@ export const tests = [
       t.expect(s.trail.roll !== null, 'the AI rolled after the Passport closed');
     },
   },
+  // ---------------- S1-06 ----------------
+  {
+    name: 'S1-06 a sit-out turn and a stuck roll have a Continue button and Enter ends them at once',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      await readyToSit(t);
+      // Everything from the click to the check is one synchronous step in the page, so no timer can end the turn first.
+      const clicked = await t.page.evaluate(() => {
+        window.__game.act('continue');
+        const b = document.querySelector('#panel [data-act="proceed"]');
+        const before = { phase: window.__game.getState().trail.phase, label: b ? b.innerText : null };
+        if (b) b.click();
+        return { before, after: window.__game.getState().trail.phase };
+      });
+      t.equal(clicked.before.phase, 'skipped', 'the sit-out turn is showing');
+      t.expect(clicked.before.label && clicked.before.label.includes('Continue'), 'it has a Continue button: ' + clicked.before.label);
+      t.equal(clicked.after, 'roll', 'Continue ends the turn at once');
+      await phase(t, 'roll');
+      await readyToSit(t);
+      const keyed = await t.page.evaluate(() => {
+        window.__game.act('continue');
+        const before = window.__game.getState().trail.phase;
+        if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur(); // as in play, where the Roll button has gone and nothing holds focus
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+        return { before, after: window.__game.getState().trail.phase };
+      });
+      t.equal(keyed.before, 'skipped', 'sit-out again');
+      t.equal(keyed.after, 'roll', 'Enter ends it at once');
+      // A stuck roll (no space that far away) is shown the same way.
+      const stuck = await t.page.evaluate(() => {
+        window.__game.setState({ trail: { phase: 'stuck', roll: 6 } });
+        const b = document.querySelector('#panel [data-act="proceed"]');
+        const had = !!b; const round = window.__game.getState().trail.round;
+        if (b) b.click();
+        return { had, phase: window.__game.getState().trail.phase, advanced: window.__game.getState().trail.round > round };
+      });
+      t.expect(stuck.had, 'a stuck roll has a Continue button');
+      t.equal(stuck.phase, 'roll', 'and it ends the wait');
+      t.expect(stuck.advanced, 'the turn moved on');
+    },
+  },
+  {
+    name: 'S1-06 the screen with Continue is laid out at both sizes',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      await t.game('setState', { trail: { phase: 'stuck', roll: 6 } }); // held here with no timer armed, for the picture
+      await t.page.locator('#panel [data-act="proceed"]').waitFor();
+      await t.shot('S1-06-continue');
+      await t.checkLayout({ allowScrollY: true });
+      const box = await t.page.locator('#panel [data-act="proceed"]').boundingBox();
+      t.expect(box && box.height >= 36, 'the button is big enough to hit: ' + (box && box.height));
+    },
+  },
 ];

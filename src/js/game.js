@@ -115,7 +115,8 @@ export function skipBeat() {
   return true;
 }
 // Phases that end the turn by themselves after a short pause, with that pause in ms.
-const AUTO_END = { landed: () => (isAI() ? aiDelay(500) : 450), stuck: () => 1200, skipped: () => (isAI() ? aiDelay(900) : 1200) };
+const HUMAN_WAIT = 700; // how long a human sees a stuck roll or a sit-out turn before it ends by itself (was 1200); Continue ends it at once
+const AUTO_END = { landed: () => (isAI() ? aiDelay(500) : 450), stuck: () => (isAI() ? 1200 : HUMAN_WAIT), skipped: () => (isAI() ? aiDelay(900) : HUMAN_WAIT) };
 function armAutoEnd(t) { const ph = t.phase; later(AUTO_END[ph](), () => { if (T() === t && t.phase === ph) endTurn(); }); }
 
 // ---------- setup ----------
@@ -339,6 +340,7 @@ export function proceed() {
   }
   if (t.phase === 'postcard') return endTurn();
   if (t.phase === 'orderResult') {
+  if (t.phase === 'stuck' || t.phase === 'skipped') { clearTimers(); return endTurn(); } // Continue: the wait for the next turn is cut short
     if (t.pending.ok) {
       t.pending = { kind: 'warp', options: warpOptions(p) }; t.phase = 'warp'; G.hooks.update(); aiMaybe(); return;
     }
