@@ -275,3 +275,6 @@ textarea#share { width: 100%; font-family: var(--font-mono); border: 2px solid v
 }
 @media (prefers-reduced-motion: reduce) { .sheet { animation: none; } .timer .bar { transition: none; } }
 .era-best { font-size: 0.82rem; font-weight: 700; }
+.pname small.lead { color: var(--color-text); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; border: 1.5px solid var(--color-highlight); border-radius: 8px; padding: 0 5px; margin-left: 4px; }
+.pl.ahead { box-shadow: inset 3px 0 0 var(--color-highlight); }
+.hint.nearest { margin: 8px 0 0; font-size: 0.88rem; }

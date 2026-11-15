@@ -234,6 +234,19 @@ const spaceDistrict = (n) => (n.district && DISTRICT[n.district] ? DISTRICT[n.di
 const kindOf = (n) => { const k = spaceKind(n); return k.toLowerCase().split(' · ').every((part) => n.name.toLowerCase().includes(part)) ? '' : k; };
 export const spaceLabel = (id) => { const n = NODES[id]; const k = kindOf(n); return k ? `${n.name} · ${k}` : n.name; };
 
+// Where a person stands in the hunt: the nearest landmark with no stamp yet and how far it is (S3-19). Nothing once the stamps needed are held.
+function nearestLine(p) {
+  if (p.kind === 'ai' || Game.eligible(p)) return '';
+  const n = Game.nearestStamp(p); if (!n) return '';
+  return `<p class="hint nearest">Nearest missing stamp: <strong>${esc(NODES[n.id].name)}</strong>, ${plural(n.spaces, 'space')} away.</p>`;
+}
+// The one traveler ahead on stamps, then tickets; nobody when two are level (and nobody in a solo trip).
+function leaderOf(t) {
+  const score = (q) => q.stamps.length * 1000 + q.tickets;
+  if (t.players.length < 2) return null;
+  const top = Math.max(...t.players.map(score)); const lead = t.players.filter((q) => score(q) === top);
+  return lead.length === 1 ? lead[0] : null;
+}
 function panelHTML() {
   const t = Game.T(); if (!t) return '';
   const p = Game.cur(); const ai = p.kind === 'ai';
@@ -244,7 +257,7 @@ function panelHTML() {
       action = ai ? `<p class="status">${who} is getting ready…</p>` :
         `${btn('roll', 'Roll the steam gauge', { cls: 'primary big', hint: 'Space', auto: true })}
          ${Game.canTrolley(p) ? btn('trolley-open', `Ride the trolley · ${plural(ECON.TROLLEY_COST, 'ticket')}`, { cls: 'ghost', hint: 'T' }) : ''}
-         ${expressOffer(p)}`;
+         ${expressOffer(p)}${nearestLine(p)}`;
       break;
     case 'choose': {
       const list = t.dests.map((d, i) => {
@@ -256,7 +269,7 @@ function panelHTML() {
       }).join('');
       action = `<p class="status rolled">${gaugeHTML(t)}<span>${who} rolled <span class="die" aria-label="${t.roll}">${t.roll}</span> ${ai ? 'and is choosing…' : '— pick where to stop:'}</span></p>
         <ol class="dests" aria-label="Destinations">${list}</ol>
-        ${!ai && !t.rerolled ? btn('reroll', `Re-roll · ${plural(Game.rerollCost(p), 'ticket')}`, { cls: 'ghost small', hint: 'R', dis: p.tickets < Game.rerollCost(p) }) : ''}`;
+        ${!ai && !t.rerolled ? btn('reroll', `Re-roll · ${plural(Game.rerollCost(p), 'ticket')}`, { cls: 'ghost small', hint: 'R', dis: p.tickets < Game.rerollCost(p) }) : ''}${nearestLine(p)}`;
       break;
     }
     case 'moving': action = `<p class="status">${who} is on the move…</p>`; break;
@@ -266,8 +279,9 @@ function panelHTML() {
     case 'over': action = `<p class="status">${who} wins!</p>`; break;
     default: action = `<p class="status">${who} ${ai ? 'is thinking…' : ['question', 'feedback'].includes(t.phase) ? 'answers at ' + esc(NODES[p.node].name) : '— your move'}</p>`;
   }
-  const players = t.players.map((q, i) => `<li class="pl${i === t.turn ? ' on' : ''}" style="--pc:${q.color}">${tokenIco(q, 30)}
-      <span class="pname">${esc(q.name)}${q.kind === 'ai' ? ` <small>AI · ${q.level}</small>` : ''}${q.skip ? ' <small class="warn">skips next</small>' : ''}${q.kind === 'ai' && Game.personaTrait(q.persona) ? `<small class="trait">${esc(Game.personaTrait(q.persona))}</small>` : ''}</span>
+  const leader = leaderOf(t);
+  const players = t.players.map((q, i) => `<li class="pl${i === t.turn ? ' on' : ''}${q === leader ? ' ahead' : ''}" style="--pc:${q.color}">${tokenIco(q, 30)}
+      <span class="pname">${esc(q.name)}${q.kind === 'ai' ? ` <small>AI · ${q.level}</small>` : ''}${q === leader ? ' <small class="lead">ahead</small>' : ''}${q.skip ? ' <small class="warn">skips next</small>' : ''}${q.kind === 'ai' && Game.personaTrait(q.persona) ? `<small class="trait">${esc(Game.personaTrait(q.persona))}</small>` : ''}</span>
       ${stampPips(q)}<span class="pstat"><span>${q.stamps.length}/${t.target}</span><span class="tix" title="Bath tickets">${TICKET}<span class="sr-only">tickets:</span> ${q.tickets}</span></span></li>`).join('');
   const el = Game.eligible(p);
   // Where the active token stands: the district painting, its blurb and the space name.

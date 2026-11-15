@@ -564,6 +564,7 @@ window.__game = {
     const t = G.state.trail;
     switch (name) {
       case 'roll': return Game.roll(args[0]);
+      case 'nearestStamp': { const n = Game.nearestStamp(); return n && { name: NODES[n.id].name, spaces: n.spaces }; }
       case 'choose': return Game.choose(args[0]);
       case 'chooseIndex': return t && t.dests[args[0]] ? Game.choose(t.dests[args[0]].node) : false;
       case 'answer': { const r = Game.answer(args[0]); if (r && G.state.mode !== 'trail') Quiz.settle(); return r; }

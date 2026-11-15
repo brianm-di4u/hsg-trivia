@@ -476,6 +476,8 @@ export function expressTarget(p = cur()) {
   if (!left.length) return null;
   return left.reduce((best, id) => (hops(p.node, id) < hops(p.node, best) ? id : best), left[0]);
 }
+// How far the nearest landmark this traveler has no stamp for is, in spaces (the same reckoning the Express ticket and the computer travelers use): { id, spaces }, or null.
+export function nearestStamp(p = cur()) { const id = expressTarget(p); return id === null ? null : { id, spaces: hops(p.node, id) }; }
 export const expressCost = (p = cur()) => (p.lap > 0 ? 0 : ECON.EXPRESS_COST); // a traveler holding the Final Lap ride pays nothing
 export function canExpress(p = cur()) { return T().phase === 'roll' && !eligible(p) && p.tickets >= expressCost(p) && expressTarget(p) !== null; }
 // S3-03: the first traveler to hold every stamp rings the Final Lap bell (the answer's own line says so): each of the others may ride a free Express (ECON.FINAL_LAP_EXPRESS of them) to the nearest landmark they have no stamp for.

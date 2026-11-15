@@ -320,7 +320,53 @@ export const tests = [
       await t.checkLayout();
     },
   },
+  // ---------------- S3-19 ----------------
+  {
+    name: 'S3-19 the destination list says how far the nearest missing stamp is; it goes once the stamps needed are held',
+    viewports: ['desktop', 'mobile'],
+    async run(t) {
+      await soloGame(t, { target: 2 });
+      await t.game('act', 'roll', 3); await phase(t, 'choose');
+      const s = await t.state();
+      const line = t.page.locator('#panel .nearest');
+      t.equal(await line.count(), 1, 'one line under the destination list');
+      const text = (await line.innerText()).replace(/[ \n\t]+/g, ' ');
+      const m = /^Nearest missing stamp: (.+), ([0-9]+) spaces? away[.]$/.exec(text);
+      t.expect(!!m, 'it reads "Nearest missing stamp: <place>, N spaces away.": ' + text);
+      const where = await t.game('act', 'nearestStamp');
+      t.equal(m[1], where.name, 'the place is the nearest landmark with no stamp');
+      t.equal(+m[2], where.spaces, 'and the distance is the one the rules use');
+      await t.shot('S3-19-nearest-stamp');
+      // holding the stamps needed removes the line
+      await t.game('setState', { trail: { phase: 'roll', players: [{ stamps: ALL.slice(0, 2) }] } });
+      await waitFor(t, (x) => x.trail.phase === 'roll', 2000, 'roll');
+      t.equal(await t.page.locator('#panel .nearest').count(), 0, 'no line once the target of 2 stamps is met');
+      await t.game('setState', { trail: { phase: 'roll', players: [{ stamps: [] }] } });
+      await t.page.locator('#panel .nearest').waitFor({ timeout: 3000 });
+      t.equal(await t.page.locator('#panel .nearest').count(), 1, 'it shows before the roll too');
+    },
+  },
+  {
+    name: 'S3-19 the traveler ahead on stamps, then tickets, is marked "ahead" in the list; level travelers are not',
+    viewports: ['desktop', 'mobile'],
+    async run(t) {
+      await soloGame(t, { players: [H1, H2] });
+      const names = async () => t.page.locator('#panel .pl').evaluateAll((els) => els.map((e) => ({ ahead: !!e.querySelector('.lead'), text: e.querySelector('.lead') ? e.querySelector('.lead').textContent : '' })));
+      let l = await names();
+      t.equal(JSON.stringify(l.map((x) => x.ahead)), JSON.stringify([false, false]), 'level at the start: nobody is marked');
+      await t.game('setState', { trail: { players: [{ tickets: 9 }, { tickets: 4 }] } });
+      l = await waitForList(t, names, (x) => x[0].ahead);
+      t.equal(JSON.stringify(l.map((x) => x.ahead)), JSON.stringify([true, false]), 'more tickets: marked');
+      t.equal(l[0].text, 'ahead', 'in words, not colour alone');
+      await t.game('setState', { trail: { players: [{ stamps: [] }, { stamps: ['Sports'] }] } });
+      l = await waitForList(t, names, (x) => x[1].ahead);
+      t.equal(JSON.stringify(l.map((x) => x.ahead)), JSON.stringify([false, true]), 'a stamp outweighs tickets');
+      await t.shot('S3-19-ahead');
+      await t.checkLayout();
+    },
+  },
 ];
+async function waitForList(t, get, ok) { for (let end = Date.now() + 3000; Date.now() < end; ) { const v = await get(); if (ok(v)) return v; await t.page.waitForTimeout(60); } return get(); }
 async function waitFor2(t, pred, label, ms = 4000) {
   const end = Date.now() + ms;
   while (Date.now() < end) { if (await pred()) return (await audio(t)).gains; await t.page.waitForTimeout(60); }
