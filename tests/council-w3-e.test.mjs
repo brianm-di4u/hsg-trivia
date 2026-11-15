@@ -12,6 +12,13 @@ const hz = (b64, from, to) => {
   for (let i = a + 1; i < z; i++) if ((at(i - 1) < 0) !== (at(i) < 0)) n++;
   return n / 2 / (to - from);
 };
+// How much of one frequency a WAV render holds in a window (seconds): a Goertzel sum over the left channel.
+const power = (b64, f, from, to) => {
+  const b = Buffer.from(b64, 'base64'), rate = b.readUInt32LE(24), w = (2 * Math.PI * f) / rate;
+  let re = 0, im = 0;
+  for (let i = Math.floor(from * rate); i < Math.floor(to * rate); i++) { const x = b.readInt16LE(44 + i * 4); re += x * Math.cos(w * i); im += x * Math.sin(w * i); }
+  return re * re + im * im;
+};
 const wav = (t, name, seconds, o) => render(t, name, seconds, true, 0.7, o);
 
 const ALL = ['Sports', 'Entertainment', 'Nature & Lakes', 'People', 'History', 'Places & Landmarks', 'Food & Culture', 'Legends & Oddities'];
@@ -76,16 +83,18 @@ export const tests = [
     name: 'S5-06 the steam gauge counts the roll: a 6 lands higher and later than a 1',
     viewports: ['desktop'],
     async run(t) {
-      // n + 2 ticks, then a settle note at 440 * 2^((n-1)/6) Hz; judged just after the ticks and their echoes have died
-      const settle = async (n) => { const r = await wav(t, 'cue:gauge', 2, { n }); const end = (n + 2) * 0.08; return { f: hz(r.wav, end + 0.14, end + 0.3), secs: r.secs }; };
+      // n + 2 ticks, then a settle note at 440 * 2^((n-1)/6) Hz (440 for a 1, 784 for a 6), judged just after the ticks and their echoes have
+      // died. Zero crossings of a chord are not its pitch (a harmonic can win), so ask how much of each of the two notes the window holds.
+      const settle = async (n) => { const r = await wav(t, 'cue:gauge', 2, { n }); const end = (n + 2) * 0.08; return { low: power(r.wav, 440, end + 0.14, end + 0.3), high: power(r.wav, 440 * 2 ** (5 / 6), end + 0.14, end + 0.3), secs: r.secs }; };
       const one = await settle(1), six = await settle(6);
-      t.log(`settle note: roll 1 ${one.f.toFixed(0)} Hz, roll 6 ${six.f.toFixed(0)} Hz`);
-      t.expect(one.f > 330 && one.f < 560, 'a 1 settles near 440 Hz: ' + one.f);
-      t.expect(six.f > 640 && six.f < 940, 'a 6 settles near 784 Hz: ' + six.f);
-      t.expect(six.f / one.f > 1.4, 'a 6 is clearly higher than a 1');
+      t.log(`settle note power: roll 1 low ${one.low.toExponential(2)} high ${one.high.toExponential(2)}; roll 6 low ${six.low.toExponential(2)} high ${six.high.toExponential(2)}`);
+      t.expect(one.low > one.high * 4, 'a 1 settles on 440 Hz, not on 784 Hz');
+      t.expect(six.high > six.low * 4, 'a 6 settles on 784 Hz, not on 440 Hz');
       // the game says which roll it is: the cue log carries n
       await unlock(t); await soloGame(t);
       for (const n of [1, 6]) {
+        // a cue struck again within 80 ms of its last start is dropped (S5-17): let the gap pass between the two rolls
+        await t.page.waitForTimeout(200);
         await t.game('act', 'roll', n); await phase(t, 'choose');
         const log = (await t.state()).audio.log.filter((x) => x.name === 'gauge');
         t.equal(log[log.length - 1].n, n, 'the gauge cue for a roll of ' + n + ' carries it');
@@ -159,11 +168,16 @@ export const tests = [
     name: 'S3-24 a right answer rings higher for a harder question, and a run of 3 or 5 adds a chime',
     viewports: ['desktop'],
     async run(t) {
-      const w = async (tier) => hz((await wav(t, 'cue:correct', 0.3, { streak: 1, tier })).wav, 0.035, 0.085);
-      const [e, m, h] = [await w(0), await w(1), await w(2)];
-      t.log(`right-answer pitch (zero crossings): easy ${e.toFixed(0)}, medium ${m.toFixed(0)}, hard ${h.toFixed(0)}`);
-      t.expect(h / e > 1.15 && h / e < 1.4, 'hard rings about four semitones above easy: ' + (h / e).toFixed(2));
-      t.expect(m > e && h > m, 'easy < medium < hard');
+      // The cue is a chord of a triangle, sines and noise, each detuned a little at random, so counting zero crossings does not give its
+      // pitch. Ask instead which of the three expected notes (the first note, 523.25 Hz, raised by 0, 2 or 4 semitones) is loudest in
+      // the 75 ms before the second note begins: the candidates are 200 cents apart and the random detune is 20 at most.
+      const notes = [0, 2, 4].map((st) => 523.25 * 2 ** (st / 12));
+      const heard = async (tier) => { const r = await wav(t, 'cue:correct', 0.3, { streak: 1, tier }); const p = notes.map((f) => power(r.wav, f, 0.01, 0.085)); return p.indexOf(Math.max(...p)); };
+      const [e, m, h] = [await heard(0), await heard(1), await heard(2)];
+      t.log(`right-answer note (0 = 523 Hz, 1 = 587 Hz, 2 = 659 Hz): easy ${e}, medium ${m}, hard ${h}`);
+      t.equal(e, 0, 'an easy question rings the base note');
+      t.equal(m, 1, 'a medium question rings a whole tone above');
+      t.equal(h, 2, 'a hard question rings four semitones above the base');
       await unlock(t); await soloGame(t);
       const s0 = await t.state();
       await landOn(t, s0.board.types.indexOf('cat'));
