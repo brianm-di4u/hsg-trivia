@@ -552,12 +552,17 @@ export const tests = [
     async run(t) {
       const cardText = async () => t.page.evaluate(() => ({ h: document.querySelector('.win-card h2').textContent, line: (document.querySelector('.win-card .win-line') || {}).textContent || '' }));
       const ALL6 = ['Sports', 'Entertainment', 'Nature & Lakes', 'People', 'History', 'Places & Landmarks'];
-      const finish = async (s0, winner) => {
+      const finish = async (s0) => {
+        // The winner is always the first traveler. The computer may have a beat in flight when stopAI lands: put the first traveler's turn
+        // back to the roll and wait until the game shows that traveler on the space before the tower, then roll (a loaded machine is slow to settle).
+        await t.game('act', 'finishAnim');
+        await t.game('setState', { trail: { phase: 'roll', turn: 0, players: [{ node: s0.board.tower - 1 }] } });
+        await waitFor(t, (x) => x.trail.phase === 'roll' && x.trail.turn === 0 && x.trail.players[0].node === s0.board.tower - 1, 4000, 'the first traveler on the space before the tower');
         await moveTo(t, s0.board.tower - 1, 1, s0.board.tower);
         await t.game('act', 'continue');
-        await phase(t, 'question');
+        await phase(t, 'question', 20000);
         await t.game('act', 'answer', 'correct');
-        await phase(t, 'feedback');
+        await phase(t, 'feedback', 20000);
         await t.game('act', 'continue');
         return waitFor(t, (x) => x.scene === 'win', 4000, 'win scene');
       };
