@@ -55,12 +55,28 @@ export const ECON = {
   AI_EXPRESS_CHANCE: { easy: 0, medium: 0, hard: 1 }, // how readily each level buys an Express ticket when it can (only The Professor does)
   AI_HINT_SCOPE: { easy: 'any', medium: 'any', hard: 'landmark-hard' }, // which questions each level pays to 50/50: any, or only hard landmark questions (the Summit question always)
   AI_HINT_KEEP: { easy: 4, medium: 4, hard: 0 }, // tickets an AI keeps after buying a 50/50 or Summit hint
+  AI_PERSONA_SWING: 0.1, // S3-04: a named computer traveler is this much more likely to answer right in its strong categories and as much less in its weak ones (0 turns the personalities off; before wave 3 there were none)
+  AI_PERSONA_STEER: 6, // S3-04: and its destination score gets this much for an ordinary space of a strong category (0 for none)
 };
 // S2-14: how hard the questions of a trip run. A player's hidden skill (0.35 to start, up with right answers, down with misses) picks the mix of
 // easy, medium and hard; this scales it: Relaxed halves it, Adaptive is the skill itself (what every trip was before), Expert lifts it to between 0.5 and 1.
 export const QDIFF = { relaxed: { mul: 0.5, add: 0, label: 'Relaxed' }, adaptive: { mul: 1, add: 0, label: 'Adaptive' }, expert: { mul: 0.5, add: 0.5, label: 'Expert' } };
 export const qdiffOf = (t = T()) => (t && QDIFF[t.qdiff] ? t.qdiff : 'adaptive'); // a trip saved before the setting existed is Adaptive
 export const questionSkill = (p, t = T()) => { const m = QDIFF[qdiffOf(t)]; return clamp(p.skill * m.mul + m.add, 0, 1); };
+// S3-04: what each named computer traveler is good and bad at. The same number of strong and weak categories each, so a level's accuracy over the whole bank is what it was;
+// The Professor is even across the board. Keyed by the seat's default name; a seat keeps its persona if the player types another name over it.
+export const AI_PERSONAS = {
+  'Doc Vapor': { up: ['Sports', 'Nature & Lakes'], down: ['Legends & Oddities', 'Entertainment'] },
+  'Miss Promenade': { up: ['History', 'Places & Landmarks'], down: ['Sports', 'Nature & Lakes'] },
+  'The Professor': { up: [], down: [] },
+  'Ticket Taker': { up: ['Entertainment', 'Food & Culture'], down: ['Sports', 'Places & Landmarks'] },
+  'Trail Boss': { up: ['Nature & Lakes', 'Places & Landmarks'], down: ['Entertainment', 'Food & Culture'] },
+  'Lady Tufa': { up: ['Legends & Oddities', 'People'], down: ['History', 'Sports'] },
+};
+// The shift to a persona's chance of a right answer in a category, and the one line that says it (shown on the setup row and in the traveler list).
+export const personaShift = (p, cat) => { const ps = p && AI_PERSONAS[p.persona]; return ps && ECON.AI_PERSONA_SWING ? (ps.up.includes(cat) ? ECON.AI_PERSONA_SWING : 0) - (ps.down.includes(cat) ? ECON.AI_PERSONA_SWING : 0) : 0; };
+export const personaTrait = (persona) => { const ps = AI_PERSONAS[persona]; if (!ps) return ''; if (!ps.up.length) return 'Even across every category.'; const s = (l) => l.map((c) => CAT[c].short).join(', '); return `Sharp on ${s(ps.up)}. Shaky on ${s(ps.down)}.`; };
+const aiChance = (p, diff, cat) => clamp(AI_ACC[p.level][diff] + personaShift(p, cat), 0.05, 0.97);
 // ---------- AI pace (S1-03): how long each AI beat lasts ----------
 // A wait is scaled by factor, then capped; hop scales the AI token's walk. 'brisk' is the default for a new player.
 export const AI_PACE = {
@@ -150,7 +166,7 @@ export function newTrail({ players, target = 6, qdiff = 'adaptive' }) {
     target, qdiff: QDIFF[qdiff] ? qdiff : 'adaptive', round: 1, turn: 0, phase: 'roll', roll: null, rerolled: false, dests: [], sel: 0,
     players: seats.map((s, i) => {
       const name = (s.name || '').trim() || defaults[i];
-      return { id: i, name, kind: s.kind === 'ai' ? 'ai' : 'human', level: s.level || 'medium', shape: TOKEN_SHAPES[i], color: TOKEN_COLORS[i],
+      return { id: i, name, persona: s.kind === 'ai' ? defaults[i] : undefined, kind: s.kind === 'ai' ? 'ai' : 'human', level: s.level || 'medium', shape: TOKEN_SHAPES[i], color: TOKEN_COLORS[i],
         node: START, stamps: [], tickets: ECON.START_TICKETS, rerolls: 0, skill: 0.35, skip: false, correct: 0, answered: 0, catStats: {}, streak: 0 };
     }),
     pending: null, log: [], winner: null, lastTurnAt: Date.now(),
@@ -498,7 +514,7 @@ export function endTurn() {
 }
 
 // ---------- AI ----------
-function scoreDest(p, node) {
+export function scoreDest(p, node) {
   const n = NODES[node];
   const el = eligible(p);
   if (node === TOWER) return el ? 1000 : -5;
@@ -512,7 +528,7 @@ function scoreDest(p, node) {
     s = best(to) < best(node) ? 45 : 8;
   } else if (n.type === 'wager') s = p.tickets >= 3 ? 25 : 5;
   else if (n.type === 'postcard') s = 20;
-  else if (n.type === 'cat') s = 15;
+  else if (n.type === 'cat') s = 15 + (personaShift(p, n.cat) > 0 ? ECON.AI_PERSONA_STEER : 0);
   else if (n.type === 'jury') s = -40;
   else if (n.type === 'trailhead') s = el ? 150 : 12;
   else s = 5;
@@ -548,7 +564,7 @@ export function aiMaybe() {
       const q = G.state.question;
       const pickWrong = () => { const w = [0, 1, 2, 3].filter((k) => k !== q.correctIndex && !q.removed.includes(k)); return w[G.rng.int(w.length)]; };
       // With two wrong answers struck out an AI that did not know still has a coin-flip: acc + (1 - acc) / 2.
-      const reply = () => { const acc = AI_ACC[p.level][q.difficulty] * (q.purpose === 'summit' ? 0.9 : 1); const a = q.removed.length ? acc + (1 - acc) / 2 : acc; answer(G.rng.next() < a ? q.correctIndex : pickWrong()); };
+      const reply = () => { const acc = aiChance(p, q.difficulty, q.category) * (q.purpose === 'summit' ? 0.9 : 1); const a = q.removed.length ? acc + (1 - acc) / 2 : acc; answer(G.rng.next() < a ? q.correctIndex : pickWrong()); };
       // An AI buys the 50/50 (the Summit hint on the Summit question) where its level's scope says so, if it can pay and still keep its reserve.
       const lm = ['landmark', 'warpLandmark', 'expressLandmark'].includes(q.purpose); const hard = q.difficulty === 'hard';
       const wantsHint = !q.removed.length && p.tickets >= lifelineCost(q) + ECON.AI_HINT_KEEP[p.level]
@@ -590,9 +606,11 @@ export function resume() {
   aiMaybe();
 }
 // Test hook: empirical accuracy of the AI answer rule for a level over n draws per difficulty.
-export function aiAccuracySample(level, n = 400) {
-  const p = { level }; const out = {};
+// With a persona's name it also gives the rate on medium questions in each category (S3-04).
+export function aiAccuracySample(level, n = 400, persona = null) {
+  const p = { level, persona }; const out = {};
   for (const d of ['easy', 'medium', 'hard']) { let c = 0; for (let i = 0; i < n; i++) if (aiAnswerCorrect(p, d)) c++; out[d] = c / n; }
+  if (persona) { out.cat = {}; for (const cat of CATS) { let c = 0; for (let i = 0; i < n; i++) if (G.rng.next() < aiChance(p, 'medium', cat.id)) c++; out.cat[cat.id] = c / n; } }
   return out;
 }
 export { eligible, CAT, ERA, getQ, NODES };

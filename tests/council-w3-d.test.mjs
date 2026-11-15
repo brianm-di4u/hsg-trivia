@@ -441,4 +441,86 @@ export const tests = [
       t.equal(s.trail.dests[0], stamp, 'a computer traveler takes the stamp space first');
     },
   },
+
+  // ---------------- S3-04 ----------------
+  {
+    name: 'S3-04 every named computer traveler has a persona with as many strong categories as weak ones, so a level’s accuracy is unchanged, and the strong ones steer its choice of space',
+    viewports: ['desktop'],
+    async run() {
+      const r = inNode(`const g = await imp('game.js'); const d = await imp('data.js');
+        g.G.state = { trail: { target: 6, players: [] } };
+        const cats = d.CATS.map((c) => c.id); const out = { sums: {}, bad: [], traits: {}, steer: {} };
+        for (const [name, ps] of Object.entries(g.AI_PERSONAS)) {
+          out.sums[name] = +cats.reduce((a, c) => a + g.personaShift({ persona: name }, c), 0).toFixed(9);
+          for (const c of [...ps.up, ...ps.down]) if (!cats.includes(c)) out.bad.push(name + ' unknown category ' + c);
+          if (ps.up.some((c) => ps.down.includes(c))) out.bad.push(name + ' is strong and weak in one category');
+          if (ps.up.length !== ps.down.length) out.bad.push(name + ' has unequal strong and weak lists');
+          out.traits[name] = g.personaTrait(name);
+        }
+        out.defaults = g.defaultNames(['easy', 'medium', 'hard', 'medium', 'medium', 'medium'].map((level) => ({ kind: 'ai', level })));
+        out.known = out.defaults.every((n) => !!g.AI_PERSONAS[n]);
+        let lo = 1, hi = 0; for (const l of ['easy', 'medium', 'hard']) for (const df of ['easy', 'medium', 'hard']) for (const c of cats) for (const n of Object.keys(g.AI_PERSONAS)) { const v = g.AI_ACC[l][df] + g.personaShift({ persona: n }, c); lo = Math.min(lo, v); hi = Math.max(hi, v); }
+        out.lo = lo; out.hi = hi;
+        const p = (persona) => ({ stamps: [], tickets: 3, persona, level: 'medium' });
+        const at = (cat) => g.NODES.find((n) => n.type === 'cat' && n.cat === cat).id;
+        const diff = (persona, cat) => g.scoreDest(p(persona), at(cat)) - g.scoreDest(p(undefined), at(cat));
+        out.steer = { strong: diff('Doc Vapor', 'Sports'), weak: diff('Doc Vapor', 'Legends & Oddities'), flat: diff('The Professor', 'Sports'), none: diff(undefined, 'Sports') };
+        g.ECON.AI_PERSONA_STEER = 0; out.steerOff = diff('Doc Vapor', 'Sports');
+        console.log(JSON.stringify(out));`);
+      assert.deepEqual(r.bad, [], 'personas are well formed');
+      for (const [name, sum] of Object.entries(r.sums)) assert.equal(sum, 0, name + ' shifts add up to nothing over the eight categories');
+      assert.equal(r.known, true, 'every default AI name has a persona: ' + r.defaults.join(', '));
+      assert.ok(r.lo >= 0.05 && r.hi <= 0.97, 'a chance stays inside 5 to 97 percent: ' + r.lo + ' to ' + r.hi);
+      assert.equal(r.traits['The Professor'], 'Even across every category.');
+      assert.equal(r.traits['Doc Vapor'], 'Sharp on Sports, Nature & Lakes. Shaky on Legends, Entertainment.');
+      assert.equal(r.steer.strong, 6, 'an ordinary space of a strong category scores 6 more'); assert.equal(r.steer.weak, 0); assert.equal(r.steer.flat, 0); assert.equal(r.steer.none, 0);
+      assert.equal(r.steerOff, 0, 'with the constant at 0 the score is what it was');
+    },
+  },
+  {
+    name: 'S3-04 a persona answers about 20 points better in a strong category than a weak one, in the engine’s own accuracy rule',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t);
+      await t.seed(31); // the draws below are fixed by this seed: the same answer every run
+      const r = await t.game('act', 'aiSample', 'medium', 3000, 'Doc Vapor');
+      const flat = await t.game('act', 'aiSample', 'medium', 3000, 'The Professor');
+      t.expect(r.cat['Sports'] - r.cat['Legends & Oddities'] > 0.14, `Doc Vapor: Sports ${r.cat['Sports']} against Legends ${r.cat['Legends & Oddities']}`);
+      t.expect(Math.abs(r.cat['History'] - 0.6) < 0.04, 'a category outside both lists stays at the Medium level (0.6): ' + r.cat['History']);
+      const spread = Math.max(...Object.values(flat.cat)) - Math.min(...Object.values(flat.cat));
+      t.expect(spread < 0.06, 'The Professor is the same everywhere: spread ' + spread.toFixed(3));
+    },
+  },
+  {
+    name: 'S3-04 the setup row and the traveler list say what a computer traveler is good and bad at; a trip saved before has no persona and shows nothing',
+    initScript: withSave(VETERAN),
+    async run(t) {
+      await t.game('scene', 'setup');
+      await t.waitForStable(8000);
+      const row = async (i) => t.page.evaluate((k) => { const li = document.querySelectorAll('.seat')[k]; const e = li.querySelector('.trait'); const r = e && e.getBoundingClientRect(); return e ? { text: e.textContent, right: r.right, left: r.left, w: innerWidth } : null; }, i);
+      t.equal(await row(0), null, 'a human seat has none');
+      let r = await row(1);
+      t.equal(r.text, 'Sharp on History, Places. Shaky on Sports, Nature & Lakes.', 'the Medium computer is Miss Promenade');
+      t.expect(r.left >= 0 && r.right <= r.w, 'and fits the screen');
+      await t.shot('S3-04-setup-trait');
+      await t.page.selectOption('#seat-kind-1', 'ai:hard');
+      r = await t.page.evaluate(() => document.querySelectorAll('.seat')[1].querySelector('.trait').textContent);
+      t.equal(r, 'Even across every category.', 'a Hard computer is The Professor');
+      await t.page.selectOption('#seat-kind-1', 'ai:easy');
+      await t.game('act', 'ui', 'start-trail');
+      await waitFor(t, (s) => s.scene === 'game', 4000, 'game');
+      await t.game('act', 'stopAI');
+      await t.waitForStable(8000);
+      const s = await t.state();
+      t.equal(s.trail.players[1].persona, 'Doc Vapor', 'the traveler carries its persona');
+      const list = await t.page.evaluate(() => [...document.querySelectorAll('.players .pl')].map((l) => (l.querySelector('.trait') || {}).textContent || ''));
+      t.equal(list[0], '', 'no line for the human');
+      t.equal(list[1], 'Sharp on Sports, Nature & Lakes. Shaky on Legends, Entertainment.', 'the traveler list says it');
+      await t.shot('S3-04-panel-trait');
+      await t.game('setState', { trail: { players: [{}, { persona: undefined }] } });
+      await t.waitForStable(8000);
+      const list2 = await t.page.evaluate(() => [...document.querySelectorAll('.players .pl')].map((l) => (l.querySelector('.trait') || {}).textContent || ''));
+      t.equal(list2[1], '', 'a traveler from before the personas shows no line, and nothing breaks');
+    },
+  },
 ];

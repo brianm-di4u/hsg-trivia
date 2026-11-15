@@ -95,6 +95,8 @@ kbd { font-family: var(--font-mono); font-size: 0.85rem; border: 1px solid var(-
 /* ---------- setup ---------- */
 .seats { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .seat { display: grid; grid-template-columns: 30px 1fr 150px 44px; align-items: center; gap: 8px; }
+.seat .trait { grid-column: 2 / 4; margin: -4px 0 2px; font-size: 0.8rem; color: var(--color-muted); }
+.pname .trait { display: block; font-weight: 400; font-size: 0.74rem; color: var(--color-muted); }
 .seat input, .seat select { min-height: 44px; border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: 6px 10px; background: var(--color-bg); width: 100%; min-width: 0; }
 .seat select { padding-right: 4px; }
 

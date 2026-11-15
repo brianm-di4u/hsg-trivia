@@ -505,7 +505,7 @@ function publicState() {
     scene: st.scene, mode: st.mode, settings: st.settings, asked: st.asked,
     trail: t ? { target: t.target, qdiff: Game.qdiffOf(t), round: t.round, turn: t.turn, phase: t.phase, roll: t.roll, rerolled: t.rerolled, sel: t.sel,
       dests: t.dests.map((d) => d.node), destPaths: t.dests.map((d) => d.path),
-      players: t.players.map(({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color, lap }) => ({ id, name, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color, lap: lap | 0 })),
+      players: t.players.map(({ id, name, persona, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color, lap }) => ({ id, name, persona, kind, level, node, stamps, tickets, rerolls, skill, skip, correct, answered, shape, color, lap: lap | 0 })),
       pending: t.pending, winner: t.winner, lapBell: !!t.lapBell, final: t.final || null, log: t.log.slice(0, 6) } : null,
     question: st.question, quiz: st.quiz,
     board: { nodes: NODES.length, start: START, tower: TOWER, trailhead: TRAILHEAD, spurEntry: SPUR_ENTRY, trolleys: TROLLEYS, landmarks: LANDMARK, vents: VENT_PAIRS,
@@ -572,7 +572,7 @@ window.__game = {
       case 'ui': act(args[0], args[1]); return true;
       case 'stopAI': Game.stopAI(); return true;
       case 'adj': return ADJ[args[0]].slice();
-      case 'aiSample': return Game.aiAccuracySample(args[0], args[1]);
+      case 'aiSample': return Game.aiAccuracySample(args[0], args[1], args[2]);
       // board geometry for tests: node positions and radii (board units), and a node's position on screen (CSS px)
       case 'geo': return { w: BOARD_W, h: BOARD_H, squash: GEO_META ? GEO_META.squash : 0.87, horizon: GEO_META && GEO_META.horizon || 0, tracks: GEO_META ? GEO_META.tracks || [] : [],
         edges: GEO_META ? GEO_META.edges : [], nodes: NODES.map((n) => ({ x: n.x, y: n.y, r: R.spaceR(n), type: n.type })) };

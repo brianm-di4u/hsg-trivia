@@ -183,6 +183,7 @@ function setupHTML() {
         ${[['human', 'Human'], ['ai:easy', 'AI · Easy'], ['ai:medium', 'AI · Medium'], ['ai:hard', 'AI · Hard']].map(([v, l]) => `<option value="${v}"${(s.kind === 'human' ? 'human' : 'ai:' + s.level) === v ? ' selected' : ''}>${l}</option>`).join('')}
       </select>
       ${su.seats.length > 1 ? btn('seat-remove', '<span aria-hidden="true">✕</span><span class="sr-only">Remove seat ' + (i + 1) + '</span>', { arg: String(i), cls: 'icon' }) : ''}
+      ${s.kind === 'ai' && Game.personaTrait(names[i]) ? `<span class="trait">${esc(Game.personaTrait(names[i]))}</span>` : ''}
     </li>`).join('');
   return `<div class="page-card setup-card">
     <h2>Plan your trip</h2>
@@ -266,7 +267,7 @@ function panelHTML() {
     default: action = `<p class="status">${who} ${ai ? 'is thinking…' : ['question', 'feedback'].includes(t.phase) ? 'answers at ' + esc(NODES[p.node].name) : '— your move'}</p>`;
   }
   const players = t.players.map((q, i) => `<li class="pl${i === t.turn ? ' on' : ''}" style="--pc:${q.color}">${tokenIco(q, 30)}
-      <span class="pname">${esc(q.name)}${q.kind === 'ai' ? ` <small>AI · ${q.level}</small>` : ''}${q.skip ? ' <small class="warn">skips next</small>' : ''}</span>
+      <span class="pname">${esc(q.name)}${q.kind === 'ai' ? ` <small>AI · ${q.level}</small>` : ''}${q.skip ? ' <small class="warn">skips next</small>' : ''}${q.kind === 'ai' && Game.personaTrait(q.persona) ? `<small class="trait">${esc(Game.personaTrait(q.persona))}</small>` : ''}</span>
       ${stampPips(q)}<span class="pstat"><span>${q.stamps.length}/${t.target}</span><span class="tix" title="Bath tickets">${TICKET}<span class="sr-only">tickets:</span> ${q.tickets}</span></span></li>`).join('');
   const el = Game.eligible(p);
   // Where the active token stands: the district painting, its blurb and the space name.
