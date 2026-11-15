@@ -102,4 +102,57 @@ export const tests = [
       t.expect(box && box.height >= 36, 'the button is big enough to hit: ' + (box && box.height));
     },
   },
+  // ---------------- S2-09 ----------------
+  {
+    name: 'S2-09 a Settings choice is one Tab stop and the arrow keys move inside it',
+    async run(t) {
+      await t.game('scene', 'settings');
+      await t.waitForStable(8000);
+      const groups = await t.page.evaluate(() => [...document.querySelectorAll('#scene-settings [role="radiogroup"]')].map((g) => ({ label: g.getAttribute('aria-label'), stops: [...g.querySelectorAll('[role="radio"]')].map((b) => b.tabIndex), on: [...g.querySelectorAll('[role="radio"]')].map((b) => b.getAttribute('aria-checked')) })));
+      t.expect(groups.length >= 8, 'the Settings choices are there: ' + groups.length);
+      for (const g of groups) {
+        t.equal(g.stops.filter((n) => n === 0).length, 1, `${g.label}: exactly one Tab stop`);
+        t.equal(g.stops.indexOf(0), g.on.indexOf('true'), `${g.label}: the Tab stop is the chosen option`);
+      }
+      const timer = t.page.locator('#scene-settings [role="radiogroup"][aria-label="Answer timer"] [role="radio"]');
+      await t.game('setState', { settings: { timer: 30 } });
+      await timer.nth(1).focus();
+      await t.page.keyboard.press('ArrowRight');
+      let s = await t.state();
+      t.equal(s.settings.timer, 20, 'ArrowRight chooses the next option');
+      t.equal(await t.page.evaluate(() => document.activeElement.dataset.key), 'set-timer-20', 'and focus follows it');
+      await t.page.keyboard.press('ArrowDown');
+      t.equal((await t.state()).settings.timer, 10, 'ArrowDown does the same');
+      await t.page.keyboard.press('ArrowRight');
+      t.equal((await t.state()).settings.timer, 0, 'the last option wraps to the first');
+      await t.page.keyboard.press('End');
+      t.equal((await t.state()).settings.timer, 10, 'End goes to the last option');
+      await t.page.keyboard.press('Home');
+      t.equal((await t.state()).settings.timer, 0, 'Home goes to the first');
+      await t.page.keyboard.press('ArrowLeft');
+      t.equal((await t.state()).settings.timer, 10, 'ArrowLeft wraps back');
+      const saved = await stored(t);
+      t.equal(saved.settings.timer, 10, 'the choice is saved');
+      // One Tab leaves the group for the next one, not for the next button in the same group.
+      await t.page.keyboard.press('Tab');
+      const next = await t.page.evaluate(() => { const a = document.activeElement; return { role: a.getAttribute('role'), group: a.closest('[role="radiogroup"]') && a.closest('[role="radiogroup"]').getAttribute('aria-label') }; });
+      t.equal(next.group, 'Motion', 'Tab goes to the next choice');
+      await t.shot('S2-09-settings-focus');
+    },
+  },
+  {
+    name: 'S2-09 the length of a trip on the setup screen works the same way',
+    async run(t) {
+      await t.game('scene', 'setup');
+      await t.waitForStable(8000);
+      const stops = await t.page.evaluate(() => [...document.querySelectorAll('#scene-setup [role="radiogroup"] [role="radio"]')].map((b) => b.tabIndex));
+      t.equal(stops.filter((n) => n === 0).length, 1, 'one Tab stop');
+      await t.page.locator('#scene-setup [role="radio"][tabindex="0"]').focus();
+      await t.page.keyboard.press('ArrowRight');
+      t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [role="radio"][aria-checked="true"]').dataset.key), 'target8', 'ArrowRight moves from Weekend to Grand Tour');
+      t.equal(await t.page.evaluate(() => document.activeElement.dataset.key), 'target8', 'focus follows');
+      await t.page.keyboard.press('ArrowLeft'); await t.page.keyboard.press('ArrowLeft');
+      t.equal(await t.page.evaluate(() => document.querySelector('#scene-setup [role="radio"][aria-checked="true"]').dataset.key), 'target4', 'ArrowLeft twice reaches Day Trip');
+    },
+  },
 ];

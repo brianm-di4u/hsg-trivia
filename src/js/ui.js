@@ -22,6 +22,8 @@ const tokenIco = (p, size = 22) => (Assets.has('pawn-' + p.shape)
   : `<canvas class="tok" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-shape="${p.shape}" data-tcolor="${p.color}" aria-hidden="true"></canvas>`);
 const btn = (act, label, { arg = '', cls = '', key = '', hint = '', dis = false, auto = false } = {}) =>
   `<button class="btn ${cls}" data-act="${act}" data-arg="${esc(arg)}" data-key="${esc(key || act + ':' + arg)}"${dis ? ' disabled' : ''}${auto ? ' data-autofocus' : ''}>${label}${hint ? `<span class="kbd" aria-hidden="true">${hint}</span>` : ''}</button>`;
+// A radio group is one Tab stop (the chosen option; the first when none matches) and the arrow keys move inside it (see main.js).
+const stop = (on, i, any) => (on || (!any && i === 0) ? 0 : -1);
 const TICKET = '<svg class="ticket" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 2h20v4a2 2 0 0 0 0 4v4H2v-4a2 2 0 0 0 0-4z" fill="currentColor"/><path d="M15 3v10" stroke="var(--color-surface)" stroke-width="1.4" stroke-dasharray="1.6 1.4"/></svg>';
 const saveWarn = () => (G.save.ok ? '' : '<p class="save-warn" role="status">Progress is not being saved in this browser.</p>');
 const savedTripNote = () => (G.save.trailDiscarded ? '<p class="save-warn" role="status">A saved trip could not be read, so it was set aside.</p>' : '');
@@ -178,7 +180,7 @@ function setupHTML() {
     ${su.seats.length < 6 ? btn('seat-add', '+ Add a traveler', { cls: 'ghost' }) : ''}
     <p class="goal-line"><strong>Goal:</strong> win district stamps at the gold-ring landmarks (the dots under each traveler’s name fill in), then climb to the Mountain Tower and answer the Summit question.</p>
     <h3>Stamps to collect</h3>
-    <div class="seg" role="radiogroup" aria-label="Stamps to collect">${Game.TARGETS.map((x) => `<button class="seg-b${su.target === x.n ? ' on' : ''}" role="radio" aria-checked="${su.target === x.n}" data-act="target" data-arg="${x.n}" data-key="target${x.n}">${x.label}<small>${x.n} stamps</small></button>`).join('')}</div>
+    <div class="seg" role="radiogroup" aria-label="Stamps to collect">${Game.TARGETS.map((x, i) => `<button class="seg-b${su.target === x.n ? ' on' : ''}" role="radio" aria-checked="${su.target === x.n}" tabindex="${stop(su.target === x.n, i, Game.TARGETS.some((y) => y.n === su.target))}" data-act="target" data-arg="${x.n}" data-key="target${x.n}">${x.label}<small>${x.n} stamps</small></button>`).join('')}</div>
     <p class="hint">Answer timer: <strong>${G.state.settings.timer ? G.state.settings.timer + ' s' : 'Off'}</strong> · change it in Settings. Hot-seat: pass the device when the screen says so.</p>
     <div class="row">${btn('goto', 'Back', { arg: 'title', cls: 'ghost' })}${btn('start-trail', 'Start the trip', { cls: 'primary' })}</div>
   </div>`;
@@ -616,7 +618,7 @@ function helpHTML() {
 function settingsHTML() {
   const s = G.state.settings;
   const SEG_LABEL = { sound: 'Sound', effects: 'Sound effects', music: 'Music', ambience: 'Ambience', timer: 'Answer timer', motion: 'Motion', textScale: 'Text size', theme: 'Theme', passScreen: 'Hot-seat pass screen', aiSpeed: 'AI speed' };
-  const seg = (key, opts) => `<div class="seg" role="radiogroup" aria-label="${SEG_LABEL[key] || key}">${opts.map(([v, l]) => `<button class="seg-b${String(s[key]) === String(v) ? ' on' : ''}" role="radio" aria-checked="${String(s[key]) === String(v)}" data-act="set" data-arg="${key}=${v}" data-key="set-${key}-${v}">${l}</button>`).join('')}</div>`;
+  const seg = (key, opts) => `<div class="seg" role="radiogroup" aria-label="${SEG_LABEL[key] || key}">${opts.map(([v, l], i) => `<button class="seg-b${String(s[key]) === String(v) ? ' on' : ''}" role="radio" aria-checked="${String(s[key]) === String(v)}" tabindex="${stop(String(s[key]) === String(v), i, opts.some(([w]) => String(s[key]) === String(w)))}" data-act="set" data-arg="${key}=${v}" data-key="set-${key}-${v}">${l}</button>`).join('')}</div>`;
   return `<div class="page-card settings-card"><h2>Settings</h2>
     <h3>Sound</h3>${seg('sound', [[true, 'On'], [false, 'Off']])}
     <label class="slider">Volume <input type="range" min="0" max="100" value="${Math.round(s.volume * 100)}" data-key="volume" data-setting="volume" aria-label="Volume"></label>
