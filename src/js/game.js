@@ -321,6 +321,7 @@ export function answer(choice) {
   if (q.correct && out.length === 0) out.push('Well done');
   q.outcome = out;
   const ev = p.kind !== 'ai' ? null : out.some((o) => o.startsWith('Stamp earned')) ? 'stamp' : q.purpose === 'summit' ? (q.correct ? null : 'summitMiss') : q.correct ? (q.difficulty === 'hard' ? 'hard' : null) : 'miss';
+  if (!q.correct) G.hooks.effect('miss', p, q.purpose);
   log(`${p.name} ${q.correct ? 'answered correctly' : i === -1 ? 'ran out of time' : 'missed'} (${q.category}). ${out.join(' · ')}`, ev && speak(p, ev));
   t.phase = 'feedback';
   if (!(q.purpose === 'summit' && q.correct)) G.hooks.save({ afterAnswer: true }); // a reload cannot undo this answer

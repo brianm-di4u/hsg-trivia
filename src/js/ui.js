@@ -298,7 +298,7 @@ export function questionCardHTML(q, { purposeLine = '', allowLifeline = false, t
       ${!q.correct ? `<p class="ansline">Answer: <strong>${esc(q.choices[q.correctIndex])}</strong></p>` : ''}
       <p class="expl">${esc(q.explanation)}</p>
       <p class="src">Source: ${esc(q.source)}</p></div>` : '';
-  return `<div class="qcard${banner ? ' has-art' : ''}${fresh ? ' reveal' : ''}${slam ? ' slammed' : ''}" style="--cat:${c.color};--catink:${c.ink}">
+  return `<div class="qcard${banner ? ' has-art' : ''}${fresh ? ' reveal' : ''}${slam ? ' slammed' : ''}${answered && !q.correct ? ' missed' : ''}" style="--cat:${c.color};--catink:${c.ink}">
     ${banner ? `<div class="qbanner"><img class="qart" src="${banner}" alt="" aria-hidden="true"><span class="qcap">Illustration · ${esc(art.name)}</span></div>` : ''}
     <div class="qhead">${ico(c.icon, c.color, c.ink, 40)}<div class="qh"><div class="qcat" id="mtitle">${esc(q.category)}</div><div class="qmeta">${DIFF_LABEL[q.difficulty]} · ${esc(eraName(q.era))}</div></div>${badge}</div>
     ${purposeLine ? `<p class="purpose">${purposeLine}</p>` : ''}

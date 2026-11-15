@@ -140,7 +140,8 @@ G.hooks.moveToken = (p, path, done, mode = 'walk') => {
     sfx('hop', { i: step++, pan: Math.max(-0.6, Math.min(0.6, (sx / (R.view.w || 1) * 2 - 1) * 0.6)) });
   } });
 };
-G.hooks.effect = (kind, p) => {
+G.hooks.effect = (kind, p, purpose) => {
+  if (kind === 'miss') return R.slump(p, purpose === 'summit' || purpose === 'jury');
   const tp = R.tokenPos(p);
   if (kind === 'stamp') { sfx('stamp'); R.burst(tp.x, tp.y - 10, ['#D9A23A', '#FFFFFF', '#A9432C'], 30); }
   if (kind === 'steam') R.burst(tp.x, tp.y - 10, ['rgba(255,255,255,0.9)', 'rgba(200,230,230,0.8)'], 20);
@@ -473,7 +474,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     say: G.say,
-    ui: { bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    ui: { fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));

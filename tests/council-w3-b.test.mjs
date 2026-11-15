@@ -245,4 +245,62 @@ export const tests = [
       await t.checkLayout({ allowScrollY: true });
     },
   },
+  // ---------------- S1-08 ----------------
+  {
+    name: 'S1-08 a miss shakes the card and slumps the token; a hit does neither; the Summit and the Jury add cold steam',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const cat = await firstOf(t, 'cat');
+      await landOn(t, cat); await phase(t, 'question');
+      let fx = (await t.state()).ui.fx;
+      await t.game('act', 'answer', 'wrong');
+      const miss = await t.page.evaluate(() => { const c = document.querySelector('.qcard'); return { cls: c.className, anim: getComputedStyle(c).animationName }; });
+      t.expect(miss.cls.includes('missed'), 'the card is marked missed: ' + miss.cls);
+      t.equal(miss.anim, 'cardshake', 'and shakes');
+      let now = (await t.state()).ui.fx;
+      t.equal(now.slump, fx.slump + 1, 'the token slumps once');
+      t.equal(now.chill, fx.chill, 'an ordinary miss has no cold steam');
+      await t.game('act', 'continue');
+      await phase(t, 'roll');
+      // a hit: neither
+      await landOn(t, cat); await phase(t, 'question');
+      fx = (await t.state()).ui.fx;
+      await t.game('act', 'answer', 'correct');
+      const hit = await t.page.evaluate(() => document.querySelector('.qcard').className);
+      t.expect(!hit.includes('missed'), 'a right answer does not shake the card');
+      now = (await t.state()).ui.fx;
+      t.equal(now.slump, fx.slump, 'and the token does not slump');
+      await t.game('act', 'continue');
+      await phase(t, 'roll');
+      // the Grand Jury
+      await landOn(t, await firstOf(t, 'jury')); await phase(t, 'jury');
+      await t.game('act', 'continue'); await phase(t, 'question');
+      fx = (await t.state()).ui.fx;
+      await t.game('act', 'answer', 'wrong');
+      now = (await t.state()).ui.fx;
+      t.equal(now.chill, fx.chill + 1, 'a Grand Jury miss adds cold steam');
+      await t.game('act', 'continue');
+      await phase(t, ['roll', 'skipped']);
+      // the Summit
+      await t.game('setState', { trail: { phase: 'roll', players: [{ skip: false }] } });
+      await atSummit(t);
+      await t.game('act', 'continue'); await phase(t, 'question');
+      fx = (await t.state()).ui.fx;
+      await t.game('act', 'answer', 'wrong');
+      now = (await t.state()).ui.fx;
+      t.equal(now.chill, fx.chill + 1, 'a Summit miss adds cold steam');
+      t.equal(now.slump, fx.slump + 1, 'and the token slumps');
+    },
+  },
+  {
+    name: 'S1-08 with reduced motion the card does not shake',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true, motion: 'reduced' } });
+      await landOn(t, await firstOf(t, 'cat')); await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      const anim = await t.page.evaluate(() => getComputedStyle(document.querySelector('.qcard')).animationName);
+      t.equal(anim, 'none', 'no shake under reduced motion');
+    },
+  },
 ];

@@ -18,7 +18,7 @@ const TOK = { w: 208, h: 240, fx: 104, fy: 169.5, unit: 66.67, r: 20 };
 export const view = {
   canvas: null, ctx: null, w: 0, h: 0, dpr: 1, theme: 'light', T: THEMES.light, fontsReady: false,
   cache: null, cacheKey: '', cam: { x: BW / 2, y: BH / 2, z: 1 }, camTarget: { x: BW / 2, y: BH / 2, z: 1 },
-  mode: 'fit', backdrop: true, reduced: false, tok: {}, anims: [], particles: [], drag: null, manual: false, time: 0,
+  mode: 'fit', backdrop: true, reduced: false, tok: {}, anims: [], particles: [], fx: { slump: 0, chill: 0 }, drag: null, manual: false, time: 0,
 };
 
 // Edge polylines by node pair, for path previews that follow the baked route.
@@ -330,6 +330,17 @@ function dust(x, y) {
     const a = (i / 6) * Math.PI * 2;
     view.particles.push({ x: x + Math.cos(a) * 6, y: y + Math.sin(a) * 6 * SQ, vx: Math.cos(a) * 26, vy: Math.sin(a) * 12 - 6, life: 0, max: 0.35, c: 'rgba(235,225,200,0.8)', kind: 'puff', s: 2.2, rot: 0, g: 0 });
   }
+}
+
+// S1-08: a missed answer. The token sinks and leans for a moment (skipped under reduced motion); at the Summit and the Grand Jury
+// a few puffs of cold steam rise from it as well. view.fx counts them so a test can see them.
+export function slump(p, cold = false) {
+  view.fx.slump++; if (cold) view.fx.chill++;
+  if (view.reduced) return;
+  const tp = tokenPos(p);
+  animate(420, (k) => { const w = Math.sin(Math.PI * k); tp.lift = -3 * w; tp.sq = 1.1 * w; tp.lean = -0.3 * w; }, () => { tp.lift = 0; tp.sq = 0; tp.lean = 0; });
+  if (!cold) return;
+  for (let i = 0; i < 9; i++) view.particles.push({ x: tp.x + (i - 4) * 2.2, y: tp.y - 8, vx: (i - 4) * 5, vy: -22 - (i % 3) * 8, life: 0, max: 0.8 + (i % 3) * 0.15, c: i % 2 ? 'rgba(176,206,232,0.9)' : 'rgba(214,228,240,0.85)', kind: 'puff', s: 2.6, rot: 0, g: -30 });
 }
 
 export function burst(x, y, colors, n = 26, kind = 'spark') {

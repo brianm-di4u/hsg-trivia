@@ -118,3 +118,9 @@ body.scene-game #modal.dock { left: auto; right: 0; width: var(--panel-w); backg
   #modal.dock .qcard.has-art .qhead { margin-top: 0; }
   #modal.dock .qcard.has-art .qhead .ico { margin-top: 0; width: 40px !important; height: 40px !important; box-shadow: none; }
 }
+
+/* S1-08: a missed answer shakes the whole card for a moment (the wrong pick's own shake is in art.css). */
+.qcard.missed { animation: cardshake 0.16s ease-out; }
+@keyframes cardshake { 0%, 100% { transform: none; } 25% { transform: translateX(-5px); } 75% { transform: translateX(4px); } }
+body.reduced .qcard.missed { animation: none; }
+@media (prefers-reduced-motion: reduce) { .qcard.missed { animation: none; } }
