@@ -82,4 +82,44 @@ export const tests = [
       await set(0, 0, 0);
     },
   },
+  // ---------------- P-N02 ----------------
+  {
+    name: 'P-N02 the streak shown is 0 once a whole day has been missed, and the stored streak is left alone',
+    node: true,
+    async run() {
+      const { liveStreak } = await import('../src/js/save.js');
+      const d = { last: '2026-11-03', streak: 3 };
+      assert.equal(liveStreak(d, '2026-11-03'), 3, 'played today: the streak stands');
+      assert.equal(liveStreak(d, '2026-11-04'), 3, 'played yesterday: it can still be kept today');
+      assert.equal(liveStreak(d, '2026-11-05'), 0, 'a day missed: it is gone');
+      assert.equal(liveStreak(d, '2026-12-25'), 0, 'weeks later: gone');
+      assert.equal(liveStreak({ last: '2026-02-28', streak: 2 }, '2026-03-01'), 2, 'across the end of a month');
+      assert.equal(liveStreak({ last: '2026-12-31', streak: 2 }, '2027-01-01'), 2, 'and of a year');
+      assert.equal(liveStreak({ last: null, streak: 0 }, '2026-11-03'), 0, 'no dailies yet');
+      assert.equal(liveStreak(undefined, '2026-11-03'), 0, 'no daily record at all');
+      assert.equal(liveStreak({ last: null, streak: 5 }, '2026-11-03'), 0, 'a streak with no date cannot be shown');
+      assert.equal(liveStreak({ last: '2026-11-03', streak: 'x' }, '2026-11-03'), 0, 'a damaged streak shows nothing');
+    },
+  },
+  {
+    name: 'P-N02 the title and the record show 0 after a missed day and the streak on the day after a Daily; the save keeps the number',
+    initScript: withSave(STREAKY, '2026-11-12'),
+    async run(t) {
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      t.expect(/Daily streak: 0\b/.test(await t.page.locator('#scene-title .foot').innerText()), 'the title says 0 nine days after the last Daily');
+      await t.game('scene', 'record');
+      await t.waitForStable(8000);
+      const row = await t.page.evaluate(() => [...document.querySelectorAll('#scene-record .rec-list li')].map((l) => l.innerText.replace(/\s+/g, ' ')).find((x) => /Daily Challenge streak/.test(x)));
+      t.expect(/streak\s*0$/.test(row), 'the record says 0 too: ' + row);
+      const saved = await t.page.evaluate((k) => JSON.parse(localStorage.getItem(k)).daily, KEY);
+      t.equal(saved.streak, 3, 'the stored number is untouched');
+      // the day after the last Daily: still alive
+      await t.page.evaluate(() => { window.__TEST_DATE__ = '2026-11-04'; });
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      t.expect(/Daily streak: 3\b/.test(await t.page.locator('#scene-title .foot').innerText()), 'the title says 3 the day after');
+      await t.shot('P-N02-title-streak');
+    },
+  },
 ];

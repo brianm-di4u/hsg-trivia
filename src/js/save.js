@@ -39,6 +39,12 @@ export const FRESH_PROFILE_SETTINGS = { aiSpeed: 'brisk', seenCoach: false }; //
 let fallbackGeneration = 0;
 const generation = () => globalThis.crypto?.randomUUID?.() || ('trip-' + Date.now().toString(36) + '-' + (++fallbackGeneration) + '-' + Math.random().toString(36).slice(2));
 const previousDay = (day) => { const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() - 1); return d.toISOString().slice(0, 10); };
+// The streak as a player should see it on `today`: the stored one while the last Daily was today or yesterday, otherwise 0 (P-N02).
+// The stored value is left alone; the next result recomputes it from the dated results.
+export const liveStreak = (daily, today) => {
+  const n = (daily && daily.streak) | 0;
+  return n > 0 && daily.last && (daily.last === today || daily.last === previousDay(today)) ? n : 0;
+};
 
 export function createSaveStore({ storage = () => window.localStorage, newGeneration = generation, onConflict = () => {} } = {}) {
   let trailBase = null, conflictNotified = false;

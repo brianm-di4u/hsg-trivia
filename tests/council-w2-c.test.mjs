@@ -231,6 +231,7 @@ export const tests = [
     async run(t) {
       const s0 = await t.state();
       t.equal(s0.settings.seenCoach, true, 'an older save is not a newcomer'); t.equal(s0.settings.aiSpeed, 'normal', 'its AI speed is kept');
+      await t.page.evaluate(() => { window.__TEST_DATE__ = '2026-11-11'; }); // the day after its last Daily: P-N02 (wave 3) shows a streak only while it can still be kept, and the fixture's date is in the past
       await t.game('scene', 'record');
       const rec = await text(t, '#scene-record');
       t.expect(rec.includes('55') && rec.includes('Daily Challenge streak') && /Daily Challenge streak\s*2/.test(rec), 'Quick best and daily streak come from the old save');

@@ -9,6 +9,7 @@ import { G, ECON } from './game.js';
 import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
 import * as Assets from './assets.js';
+import { liveStreak } from './save.js';
 import { ACHIEVEMENTS, ACH, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, TARGET_NAMES, coverOf, coverUnlocked, titleName } from './record.js';
 
 const $ = (s) => document.querySelector(s);
@@ -159,7 +160,7 @@ function titleHTML() {
       ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts` : `7 questions for ${G.today()}`}</small>`)}
     </div>
     <div class="menu small">${btn('goto', 'How to play', { arg: 'help' })}${btn('goto', 'Settings', { arg: 'settings' })}${btn('goto', 'Trail Record', { arg: 'record' })}</div>
-    <p class="foot">${BANK.length} sourced questions · Trail wins: ${sv.stats.wins} · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${(sv.daily && sv.daily.streak) || 0}</p>
+    <p class="foot">${BANK.length} sourced questions · Trail wins: ${sv.stats.wins} · Best Quick 10: ${sv.best.quick || '—'} · Daily streak: ${liveStreak(sv.daily, G.today())}</p>
     ${saveWarn()}${savedTripNote()}
   </div>`;
 }
@@ -539,7 +540,7 @@ function recordHTML() {
     <h3>Fastest wins</h3><ul class="rec-list">${fastest}</ul>
     <h3>Summit stars</h3><table class="rec-table stars"><thead><tr><th scope="col">Trip</th>${LEVELS.map((l) => `<th scope="col">vs ${LEVEL_NAMES[l]}</th>`).join('')}</tr></thead><tbody>${stars}</tbody></table>
     <h3>Accuracy by category</h3><ul class="rec-cats">${cats}</ul>
-    <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${dr.streak || 0}</strong></li><li><span>Daily Challenges played</span><strong>${Object.keys(dr.results || {}).length}</strong></li></ul>
+    <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${liveStreak(dr, G.today())}</strong></li><li><span>Daily Challenges played</span><strong>${Object.keys(dr.results || {}).length}</strong></li></ul>
     <h3>Passport journal <small>${Object.keys(jr).length} of ${DISTRICTS.length} pages</small></h3><ul class="journal">${pages}</ul>
     <h3>Achievements <small>${earned.length} of ${ACHIEVEMENTS.length}</small></h3><ul class="ach-list">${ach}</ul>
     <h3>Titles</h3><div class="wear-row" role="group" aria-label="Title">${titles}</div>
