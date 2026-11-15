@@ -33,7 +33,7 @@ export const validTrail = (t) => object(t) && int(t.target, 1, 8) && int(t.round
 export const validOpenQuestion = (q) => object(q) && typeof q.id === 'string' && typeof q.category === 'string' && typeof q.text === 'string' && ['easy', 'medium', 'hard'].includes(q.difficulty)
   && Array.isArray(q.choices) && q.choices.length === 4 && q.choices.every((c) => typeof c === 'string') && int(q.correctIndex, 0, 3)
   && Array.isArray(q.removed) && q.chosen === null && num(q.timeLeft) && num(q.timeMax);
-const SETTINGS = new Set(['sound', 'effects', 'music', 'ambience', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed', 'seenCoach']);
+const SETTINGS = new Set(['sound', 'effects', 'music', 'ambience', 'volume', 'timer', 'motion', 'textScale', 'theme', 'passScreen', 'aiSpeed', 'seenCoach', 'haptics']);
 // A brand-new profile gets the Brisk AI speed written with its first save. A save from before this setting existed has no aiSpeed: that player played at Normal and keeps it.
 export const FRESH_PROFILE_SETTINGS = { aiSpeed: 'brisk', seenCoach: false }; // seenCoach false: a brand-new player gets the first-run tips; a save without the key is not a newcomer
 let fallbackGeneration = 0;

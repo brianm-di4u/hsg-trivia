@@ -13,11 +13,11 @@ import { ART } from './assets.js';
 import { createSaveStore, validTrail, validOpenQuestion, SEEN_MAX } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
-const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal', seenCoach: true }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
+const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, haptics: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal', seenCoach: true }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
 // What a setting is when the save does not name it: a new profile gets the Brisk AI speed, an older save keeps Normal. An unknown speed falls back to Brisk.
 // seenCoach: only a brand-new profile is a newcomer who gets the first-run tips; a save that has no such key is an older player's.
 const baseSettings = () => ({ ...DEFAULT_SETTINGS, aiSpeed: G.save.fresh ? Game.DEFAULT_AI_SPEED : DEFAULT_SETTINGS.aiSpeed, seenCoach: !G.save.fresh });
-const validSpeed = (s) => ({ ...s, aiSpeed: Game.AI_PACE[s.aiSpeed] ? s.aiSpeed : Game.DEFAULT_AI_SPEED, seenCoach: typeof s.seenCoach === 'boolean' ? s.seenCoach : true });
+const validSpeed = (s) => ({ ...s, aiSpeed: Game.AI_PACE[s.aiSpeed] ? s.aiSpeed : Game.DEFAULT_AI_SPEED, seenCoach: typeof s.seenCoach === 'boolean' ? s.seenCoach : true, haptics: typeof s.haptics === 'boolean' ? s.haptics : true });
 
 // ---------- save ----------
 G.save = createSaveStore({ onConflict() {
@@ -143,7 +143,15 @@ G.hooks.moveToken = (p, path, done, mode = 'walk') => {
     sfx('hop', { i: step++, pan: Math.max(-0.6, Math.min(0.6, (sx / (R.view.w || 1) * 2 - 1) * 0.6)) });
   } });
 };
+// A short pulse of the phone's motor on a wrong answer, a stamp and the win (S4-23): where the browser can vibrate, when the Vibration setting is on
+// (it is, by default) and not when the player has asked for reduced motion. A person with a touch screen sees the switch in Settings.
+const HAPTICS = { miss: 20, stamp: 20, win: [20, 50, 20, 50, 25] };
+function haptic(kind) {
+  if (!G.state.settings.haptics || R.view.reduced || typeof navigator.vibrate !== 'function') return;
+  try { navigator.vibrate(HAPTICS[kind]); } catch (e) { /* a device that refuses a pulse is not an error */ }
+}
 G.hooks.effect = (kind, p, purpose) => {
+  if (HAPTICS[kind]) haptic(kind);
   if (kind === 'miss') return R.slump(p, purpose === 'summit' || purpose === 'jury');
   const tp = R.tokenPos(p);
   if (kind === 'stamp') { sfx('stamp'); R.burst(tp.x, tp.y - 10, ['#D9A23A', '#FFFFFF', '#A9432C'], 30); }

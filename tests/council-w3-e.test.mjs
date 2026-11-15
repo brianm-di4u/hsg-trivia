@@ -14,6 +14,11 @@ const hz = (b64, from, to) => {
 };
 const wav = (t, name, seconds, o) => render(t, name, seconds, true, 0.7, o);
 
+const ALL = ['Sports', 'Entertainment', 'Nature & Lakes', 'People', 'History', 'Places & Landmarks', 'Food & Culture', 'Legends & Oddities'];
+// Records every call to navigator.vibrate (a phone's motor) in window.__vib.
+const recordVibration = () => { window.__vib = []; navigator.vibrate = (p) => { window.__vib.push(p); return true; }; };
+const vib = (t) => t.page.evaluate(() => window.__vib.slice());
+
 export const tests = [
   // ---------------- CL-01 ----------------
   {
@@ -210,6 +215,77 @@ export const tests = [
       const s = await waitFor(t, (x) => x.trail.turn === 1, 4000, 'the next turn');
       const tk = s.audio.log.filter((x) => x.name === 'turn').pop();
       t.expect(tk && tk.me === true, 'the turn of a person starts with a tick: ' + JSON.stringify(tk));
+    },
+  },
+  // ---------------- S4-23 ----------------
+  {
+    name: 'S4-23 a wrong answer, a stamp and the win pulse the phone; a right answer on a district does not',
+    viewports: ['mobile'],
+    initScript: recordVibration,
+    async run(t) {
+      await soloGame(t, { players: [H1] });
+      const s0 = await t.state();
+      t.equal(s0.settings.haptics, true, 'Vibration is on by default');
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'correct');
+      t.equal((await vib(t)).length, 0, 'a right answer on a district does not buzz');
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await landOn(t, s0.board.types.indexOf('cat', s0.board.types.indexOf('cat') + 1));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      let v = await vib(t);
+      t.equal(JSON.stringify(v), JSON.stringify([20]), 'a wrong answer is one short pulse');
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await landOn(t, s0.board.types.indexOf('landmark'));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'correct');
+      v = await vib(t);
+      t.equal(JSON.stringify(v), JSON.stringify([20, 20]), 'a stamp is one short pulse');
+      await t.game('act', 'continue'); await phase(t, ['roll', 'landed']);
+      await t.game('setState', { trail: { phase: 'roll', players: [{ tickets: 9, node: 0, stamps: ALL.slice(0, 6) }] } });
+      await landOn(t, s0.board.tower);
+      await phase(t, 'summit'); await t.game('act', 'continue'); await phase(t, 'question');
+      await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); await phase(t, 'over');
+      v = await vib(t);
+      t.expect(Array.isArray(v[v.length - 1]) && v[v.length - 1].length >= 3, 'the win is a pattern: ' + JSON.stringify(v));
+      t.expect(v.flat(2).every((n) => n <= 50), 'every pulse is short');
+    },
+  },
+  {
+    name: 'S4-23 Vibration can be switched off in Settings, and reduced motion keeps the phone still',
+    viewports: ['mobile'],
+    initScript: recordVibration,
+    async run(t) {
+      await t.game('scene', 'settings');
+      const group = t.page.locator('#scene-settings [role=radiogroup][aria-label="Vibration"]');
+      t.equal(await group.count(), 1, 'the Settings page has a Vibration switch on a touch screen');
+      t.equal(await group.locator('[aria-checked=true]').innerText(), 'On', 'it starts On');
+      await t.page.locator('[data-key="set-haptics-false"]').click();
+      t.equal((await t.state()).settings.haptics, false, 'the switch turns it off');
+      await t.shot('S4-23-vibration-setting');
+      await soloGame(t);
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      t.equal((await vib(t)).length, 0, 'switched off: a wrong answer is silent to the hand');
+      await t.game('setState', { settings: { haptics: true, motion: 'reduced' } });
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await landOn(t, s0.board.types.indexOf('cat', s0.board.types.indexOf('cat') + 1));
+      await phase(t, 'question');
+      await t.game('act', 'answer', 'wrong');
+      t.equal((await vib(t)).length, 0, 'reduced motion: no pulse even with Vibration on');
+    },
+  },
+  {
+    name: 'S4-23 a screen with no touch has no Vibration switch',
+    viewports: ['desktop'],
+    initScript: recordVibration,
+    async run(t) {
+      await t.game('scene', 'settings');
+      t.equal(await t.page.locator('#scene-settings [role=radiogroup][aria-label="Vibration"]').count(), 0, 'no Vibration switch on a mouse screen');
+      await t.shot('S4-23-no-vibration-desktop');
     },
   },
 ];
