@@ -49,4 +49,69 @@ export const tests = [
       } else t.equal(r.display, 'none', 'not shown beside the full log on a wide screen');
     },
   },
+  // ---------------- S3-12 ----------------
+  {
+    name: 'S3-12 the era cards and the Quick 10 button show the best score, and the results say what it was made of',
+    initScript: withSave(VETERAN),
+    async run(t) {
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      const quick = await t.page.locator('#scene-title [data-act="quick"]').innerText();
+      t.expect(/best 1,820/i.test(quick), 'Quick 10 says its best: ' + quick.replace(/\n/g, ' '));
+      await t.game('scene', 'era');
+      await t.waitForStable(8000);
+      const cards = await t.page.evaluate(() => [...document.querySelectorAll('.era-card')].map((c) => ({ era: c.dataset.era, best: c.querySelector('.era-best') ? c.querySelector('.era-best').textContent : null })));
+      t.equal(cards.find((c) => c.era === 'roaring').best, 'Best 1,340', 'the era with a score shows it');
+      t.equal(cards.filter((c) => c.best).length, 1, 'the others show none');
+      await t.shot('S3-12-era-best');
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
+  {
+    name: 'S3-12 a best remembers how many were right and the timer it was played with; a lower score does not replace it',
+    async run(t) {
+      await t.game('setState', { settings: { timer: 0 } });
+      await t.seed(11);
+      await t.game('newGame', { mode: 'quick', seed: 11 });
+      for (let i = 0; i < 10; i++) { await t.game('act', 'answer', i < 7 ? 'correct' : 'wrong'); await t.game('act', 'continue'); }
+      await t.waitForStable(8000);
+      let sv = await stored(t);
+      t.expect(sv.best.quick > 0, 'a best was saved: ' + sv.best.quick);
+      t.equal(JSON.stringify(sv.bestMeta.quick), JSON.stringify({ right: 7, total: 10, timer: 0 }), 'with what it was made of');
+      const line = await t.page.locator('#scene-results .score').innerText();
+      t.expect(/7 of 10 right/.test(line), 'the results show accuracy beside the points: ' + line);
+      t.expect(/personal best [\d,]+ \(7 of 10, no timer\)/.test(line), 'and the best with its timer: ' + line);
+      const best = sv.best.quick;
+      // a worse game with the timer on changes nothing
+      await t.game('setState', { settings: { timer: 30 } });
+      await t.game('newGame', { mode: 'quick', seed: 12 });
+      for (let i = 0; i < 10; i++) { await t.game('act', 'answer', i < 2 ? 'correct' : 'wrong'); await t.game('act', 'continue'); }
+      sv = await stored(t);
+      t.equal(sv.best.quick, best, 'the best stands');
+      t.equal(sv.bestMeta.quick.right, 7, 'and so does its meta');
+      // a better one with the timer on replaces both
+      await t.game('newGame', { mode: 'quick', seed: 13 });
+      for (let i = 0; i < 10; i++) { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); }
+      sv = await stored(t);
+      t.expect(sv.best.quick > best, 'a better game raises it');
+      t.equal(JSON.stringify(sv.bestMeta.quick), JSON.stringify({ right: 10, total: 10, timer: 30 }), 'and its meta moves with it');
+      await t.shot('S3-12-results');
+    },
+  },
+  {
+    name: 'S3-12 a save from before has no meta, shows its points alone and keeps them; damaged meta is dropped',
+    initScript: withSave({ ...VETERAN, bestMeta: { quick: { right: 'x', total: 10, timer: 0 }, era: { roaring: { right: 5, total: 10, timer: 20 }, bad: 5 } } }),
+    async run(t) {
+      const sv = await stored(t);
+      t.equal(sv.best.quick, 1820, 'the old best is untouched');
+      await t.game('scene', 'title'); await t.waitForStable(8000);
+      t.expect(/best 1,820/i.test(await t.page.locator('#scene-title [data-act="quick"]').innerText()), 'it still shows');
+      await t.game('setState', { settings: { timer: 0 } });
+      await t.game('newGame', { mode: 'quick', seed: 3 });
+      for (let i = 0; i < 10; i++) { await t.game('act', 'answer', 'wrong'); await t.game('act', 'continue'); }
+      await t.waitForStable(8000);
+      const line = await t.page.locator('#scene-results .score').innerText();
+      t.expect(/personal best 1,820/.test(line) && !/personal best 1,820 \(/.test(line), 'a best with no meta is shown as points alone: ' + line);
+    },
+  },
 ];

@@ -62,7 +62,7 @@ function retryUnsavedTrail() {
 }
 function saveQuiz(q) {
   const right = q.results.filter((r) => r.correct).length;
-  const result = noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score,
+  const result = noted(applyCommittedSettings(G.save.commitQuiz({ kind: q.kind, era: q.era, date: q.date, score: q.score, total: q.total, timer: q.timer,
     right, marks: q.results.map((r) => r.correct ? '1' : '0').join('') })));
   if (result.ok) G.hooks.record({ kind: 'quiz', mode: q.kind, right, total: q.results.length, dailyStreak: (G.save.data.daily && G.save.data.daily.streak) || 0 });
   return result;

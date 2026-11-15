@@ -260,3 +260,4 @@ textarea#share { width: 100%; font-family: var(--font-mono); border: 2px solid v
   .brand-text { font-size: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) { .sheet { animation: none; } .timer .bar { transition: none; } }
+.era-best { font-size: 0.82rem; font-weight: 700; }

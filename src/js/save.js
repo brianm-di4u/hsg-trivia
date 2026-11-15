@@ -9,6 +9,14 @@ const defaults = () => ({ v: 1, settings: {}, best: { quick: 0, era: {} }, daily
 // The ids of the questions asked most recently, across trips and quizzes, so a new game does not start by repeating them (S3-06).
 export const SEEN_MAX = 400;
 const cleanSeen = (v) => (Array.isArray(v) ? v.filter((id) => typeof id === 'string' && id.length <= 40).slice(-SEEN_MAX) : []);
+// What the best Quick 10 and each best Era Express chapter was made of: { right, total, timer }, so a score is read with its answer timer (S3-12).
+// A separate key, absent until a best is set; a save from before has none and shows the points alone.
+const cleanMeta1 = (m) => (object(m) && int(m.right, 0, 99) && int(m.total, 1, 99) && int(m.timer, 0, 600) ? { right: m.right, total: m.total, timer: m.timer } : null);
+export const cleanBestMeta = (v) => {
+  const out = { quick: object(v) ? cleanMeta1(v.quick) : null, era: {} };
+  if (object(v) && object(v.era)) for (const k of Object.keys(v.era)) { const m = cleanMeta1(v.era[k]); if (m && k.length <= 20) out.era[k] = m; }
+  return out;
+};
 const ordered = (v) => Array.isArray(v) ? v.map(ordered) : object(v) ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, ordered(v[k])])) : v;
 const signature = (v) => JSON.stringify(ordered(v));
 const group = (data) => Object.fromEntries(['trail', 'asked', 'rng', 'trailGeneration'].filter((k) => own(data, k)).map((k) => [k, clone(data[k])]));
@@ -50,6 +58,7 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     out.settings = { ...out.settings };
     out.best = { ...out.best, era: { ...(out.best.era || {}) } };
     out.daily = { ...out.daily, results: { ...(out.daily.results || {}) } };
+    if (own(data, 'bestMeta')) out.bestMeta = cleanBestMeta(data.bestMeta);
     if (own(data, 'seen')) out.seen = cleanSeen(data.seen); // absent until the first question is asked: a save from before gains nothing else
     Object.assign(out, cleanRecord(data)); // stats, ach, profile: defaults for a save that predates them, repair for a damaged one
     return out;
@@ -138,8 +147,9 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     const next = clone(current);
     let dailyChanged = false;
     for (const q of store.pending.quiz) {
-      if (q.kind === 'quick') next.best.quick = Math.max(next.best.quick || 0, q.score);
-      if (q.kind === 'era') next.best.era[q.era] = Math.max(next.best.era[q.era] || 0, q.score);
+      const meta = int(q.right, 0, 99) && int(q.total, 1, 99) && int(q.timer, 0, 600) ? { right: q.right, total: q.total, timer: q.timer } : null;
+      if (q.kind === 'quick') { if (q.score > (next.best.quick || 0)) { next.best.quick = q.score; if (meta) next.bestMeta = { ...cleanBestMeta(next.bestMeta), quick: meta }; } }
+      if (q.kind === 'era') { if (q.score > (next.best.era[q.era] || 0)) { next.best.era[q.era] = q.score; if (meta) { const bm = cleanBestMeta(next.bestMeta); bm.era[q.era] = meta; next.bestMeta = bm; } } }
       if (q.kind === 'daily' && !own(next.daily.results, q.date)) { next.daily.results[q.date] = { score: q.score, right: q.right, marks: q.marks }; dailyChanged = true; }
     }
     const days = Object.keys(next.daily.results).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();

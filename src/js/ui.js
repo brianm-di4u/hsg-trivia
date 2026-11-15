@@ -29,6 +29,10 @@ const saveWarn = () => (G.save.ok ? '' : '<p class="save-warn" role="status">Pro
 const savedTripNote = () => (G.save.trailDiscarded ? '<p class="save-warn" role="status">A saved trip could not be read, so it was set aside.</p>' : '');
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 export const AI_SPEED_LABEL = { normal: 'Relaxed', brisk: 'Brisk', fast: 'Fast' };
+const pts = (n) => Number(n).toLocaleString('en-US');
+const timerWords = (s) => (s ? s + ' s timer' : 'no timer');
+// A best score with what it was made of, for the results: "1,820 (8 of 10, 30 s timer)" (S3-12).
+const bestWords = (n, m) => pts(n) + (m ? ` (${m.right} of ${m.total}, ${timerWords(m.timer)})` : '');
 const DIFF_LABEL = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const eraName = (id) => (ERA[id] ? ERA[id].name : 'Any era');
 // Painted art (assets/), used only when the manifest lists it; every use has a non-art fallback.
@@ -148,7 +152,7 @@ function titleHTML() {
     <div class="menu">
       ${has ? btn('continue-trail', 'Continue your trip', { cls: 'primary', auto: true }) : ''}
       ${btn('goto', 'Trail Game <small>board game · 1–6 players</small>', { arg: 'setup', cls: has ? '' : 'primary', auto: !has })}
-      ${btn('quick', 'Quick 10 <small>ten questions, solo</small>')}
+      ${btn('quick', `Quick 10 <small>ten questions, solo${sv.best.quick ? ' · best ' + pts(sv.best.quick) : ''}</small>`)}
       ${btn('goto', 'Era Express <small>pick a period of history</small>', { arg: 'era' })}
       ${btn('daily', `Daily Challenge <small>${daily ? `done today · ${daily.score} pts` : `7 questions for ${G.today()}`}</small>`)}
     </div>
@@ -444,20 +448,22 @@ function resultsHTML() {
   const qz = G.state.quiz; if (!qz) return '';
   const right = qz.results.filter((r) => r.correct).length;
   const best = qz.kind === 'quick' ? G.save.data.best.quick : qz.kind === 'era' ? (G.save.data.best.era || {})[qz.era] : null;
+  const bm = G.save.data.bestMeta; const bestMeta = bm ? (qz.kind === 'quick' ? bm.quick : bm.era && bm.era[qz.era]) : null;
   const rows = qz.results.map((r) => { const b = BANK.find((x) => x.id === r.id); return `<li class="${r.correct ? 'y' : 'n'}"><span aria-label="${r.correct ? 'correct' : 'wrong'}">${r.correct ? '✔' : '✘'}</span> ${esc(b.question)} <small>— ${esc(b.answer)}</small></li>`; }).join('');
   const title = qz.kind === 'daily' ? `Daily Challenge · ${qz.date}` : qz.kind === 'era' ? `Era Express · ${esc((ERA_MODES.find((m) => m.id === qz.era) || {}).label || '')}` : 'Quick 10';
   return `<div class="page-card results-card"><p class="eyebrow">${title}</p><h2>${right} of ${qz.total} right</h2>
-    <p class="score">${qz.score} points · best streak ${qz.bestStreak}${best ? ` · personal best ${best}` : ''}</p>
+    <p class="score">${pts(qz.score)} points (${right} of ${qz.total} right${qz.timer ? ', ' + timerWords(qz.timer) : ''}) · best streak ${qz.bestStreak}${best ? ` · personal best ${bestWords(best, bestMeta)}` : ''}</p>
     ${qz.kind === 'daily' ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}` : ''}
     <ol class="review">${rows}</ol>
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${qz.kind === 'daily' ? '' : btn(qz.kind === 'era' ? 'era-start' : 'quick', 'Play again', { arg: qz.era || '', cls: 'primary', auto: true })}</div></div>`;
 }
 
 function eraHTML() {
+  const bestEra = G.save.data.best.era || {};
   const cards = ERA_MODES.map((m, i) => { const e = ERA[m.eras[m.eras.length - 1]]; const first = ERA[m.eras[0]];
     const yrs = m.eras.length > 1 ? `before ${e.end + 1}` : `${e.start}–${e.end}`;
     return `<button class="era-card" data-era="${m.id}" data-act="era-start" data-arg="${m.id}" data-key="era${m.id}"${i === 0 ? ' data-autofocus' : ''}>
-      <span class="era-name">${esc(m.label)}</span><span class="era-yrs">${yrs} · ${eraCount(m)} questions</span><span class="era-sum">${esc(m.eras.length > 1 ? first.summary + ' ' + e.summary : e.summary)}</span></button>`; }).join('');
+      <span class="era-name">${esc(m.label)}</span><span class="era-yrs">${yrs} · ${eraCount(m)} questions</span>${bestEra[m.id] ? `<span class="era-best">Best ${pts(bestEra[m.id])}</span>` : ''}<span class="era-sum">${esc(m.eras.length > 1 ? first.summary + ' ' + e.summary : e.summary)}</span></button>`; }).join('');
   return `<div class="page-card era-page"><h2>Era Express</h2><p>Ten questions from one chapter of Hot Springs history.</p><div class="eras">${cards}</div><div class="row">${btn('goto', 'Back', { arg: 'title', cls: 'ghost' })}</div></div>`;
 }
 

@@ -9,7 +9,7 @@ export const DAILY_LEN = 7;
 
 export function newQuiz(kind, { era, date } = {}) {
   const total = kind === 'daily' ? DAILY_LEN : 10;
-  const q = { kind, era: era || null, date: kind === 'daily' ? date || todayISO() : null, idx: -1, total, score: 0, streak: 0, bestStreak: 0, skill: 0.35, results: [], ids: [] };
+  const q = { kind, era: era || null, date: kind === 'daily' ? date || todayISO() : null, idx: -1, total, score: 0, streak: 0, bestStreak: 0, skill: 0.35, results: [], ids: [], timer: G.state.settings.timer | 0 };
   if (kind === 'daily') q.ids = dailyIds(q.date);
   G.state.quiz = q; G.state.mode = kind; G.state.question = null;
   next();
