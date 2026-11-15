@@ -142,4 +142,34 @@ export const tests = [
       t.expect(trol.every((v) => /trolley stop/i.test(v)), 'each says it is a trolley stop');
     },
   },
+  // ---------------- S6-08 ----------------
+  {
+    name: 'S6-08 the whole title menu is on the first screen on short and small screens',
+    viewports: ['desktop'],
+    async run(t) {
+      const sizes = [[844, 390], [1024, 600], [320, 568], [360, 640], [1280, 800]];
+      for (const [w, h] of sizes) {
+        await t.page.setViewportSize({ width: w, height: h });
+        await t.game('scene', 'title');
+        await t.waitForStable(8000);
+        const r = await t.page.evaluate(() => [...document.querySelectorAll('#scene-title .btn')].map((b) => { const r = b.getBoundingClientRect(); return { act: b.dataset.act + ':' + b.dataset.arg, top: r.top, bottom: r.bottom, left: r.left, right: r.right }; }));
+        t.expect(r.length >= 6, `${w}x${h}: the menu is there (${r.length} buttons)`);
+        for (const b of r) t.expect(b.bottom <= h + 0.5 && b.top >= 0 && b.right <= w + 0.5, `${w}x${h}: ${b.act} is inside the screen (bottom ${Math.round(b.bottom)})`);
+        const trail = r.find((b) => b.act === 'goto:setup');
+        if (h <= 500) t.expect(trail.bottom <= 300, `${w}x${h}: Trail Game is among the first buttons (${Math.round(trail.bottom)})`);
+        if (w === 844) await t.shot('S6-08-title-landscape');
+        if (w === 320) await t.shot('S6-08-title-small');
+        if (w === 1280) await t.shot('S6-08-title-desktop-size');
+      }
+      // with a trip to continue the menu has one more button: still all inside the screen on a phone on its side
+      await t.page.setViewportSize({ width: 844, height: 390 });
+      await t.game('newGame', { mode: 'trail', players: [H1], target: 4, seed: 4 });
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      const cont = await t.page.evaluate(() => [...document.querySelectorAll('#scene-title .btn')].map((b) => ({ act: b.dataset.act, bottom: b.getBoundingClientRect().bottom })));
+      t.expect(cont.some((b) => b.act === 'continue-trail'), 'the Continue button is there');
+      for (const b of cont) t.expect(b.bottom <= 390.5, `844x390 with Continue: ${b.act} is inside the screen (bottom ${Math.round(b.bottom)})`);
+      await t.shot('S6-08-title-landscape-continue');
+    },
+  },
 ];
