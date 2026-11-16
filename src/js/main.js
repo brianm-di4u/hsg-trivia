@@ -269,6 +269,7 @@ const ACTIONS = {
     const [kind, id] = a.split(':'); const r = G.save.commitProgress({ kind: 'profile', title: kind === 'title' ? id || null : G.save.data.profile.title, cover: kind === 'cover' ? id || null : G.save.data.profile.cover });
     noted(r); sfx('click'); UI.update();
   },
+  'journal-facts': (a) => { ui.journalFacts[a] = !ui.journalFacts[a]; sfx('page'); UI.update(); },
   'summit-redraw': () => { if (Game.cur().kind === 'human') Game.summitRedraw(); },
   'coach-next': () => UI.coachAction('next'),
   'coach-skip': () => { changeSettings({ seenCoach: true }); UI.coachAction('skip'); UI.announce('Tips off. Turn them back on in Settings.'); },

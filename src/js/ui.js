@@ -14,7 +14,7 @@ import { ACHIEVEMENTS, ACH, JOURNAL_BEFORE, COVERS, TITLES, LEVELS, LEVEL_NAMES,
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { input: (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) ? 'touch' : 'mouse', coachStep: 0, coachAt: 0, coachSaid: '', finishCoach() {}, modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null, listAt: 0, listSig: '' };
+export const ui = { input: (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) ? 'touch' : 'mouse', coachStep: 0, coachAt: 0, coachSaid: '', finishCoach() {}, modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null, listAt: 0, listSig: '', journalFacts: {} };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
@@ -593,10 +593,18 @@ function recordHTML() {
   const jr = d.journal || {};
   const opened = DISTRICTS.filter((x) => jr[x.key]).length;
   const ceremony = ui.journalCeremony && opened === DISTRICTS.length; // the eighth page opened in this visit: the journal marks it once (C4-04)
+  const jfacts = ui.journalFacts;
+  // The facts of an opened page sit behind a disclosure that starts closed; which pages are open is kept for this visit only (C4-06).
+  const factsHTML = (x) => {
+    const n = (x.facts || []).length; if (!n) return '';
+    const open = !!jfacts[x.key], id = 'jfacts-' + x.key;
+    return `<button type="button" class="btn ghost small jfacts-btn" data-act="journal-facts" data-arg="${x.key}" data-key="jfacts-${x.key}" aria-expanded="${open}" aria-controls="${id}">${open ? 'Hide' : 'Show'} ${plural(n, 'fact')}</button>`
+      + (open ? `<ol class="jfacts" id="${id}" aria-label="${esc(x.name)}: ${plural(n, 'fact')}">${x.facts.map((f) => `<li>${esc(f.text)}<span class="src">Source: ${esc(f.source)}</span></li>`).join('')}</ol>` : '');
+  };
   const pages = DISTRICTS.map((x, i) => {
     const got = !!jr[x.key]; const src = got ? artSrc('land-' + x.key) : null;
     return got
-      ? `<li class="jpage got"${ceremony ? ` style="--i:${i}"` : ''}>${src ? `<img src="${src}" alt="" aria-hidden="true" loading="lazy">` : ''}<span><strong>${esc(x.name)}</strong><small>${esc(x.stamp)} stamp · ${jr[x.key] === JOURNAL_BEFORE ? 'won before the journal was kept' : 'won ' + esc(jr[x.key])}</small><em>${esc(x.blurb)}</em></span></li>`
+      ? `<li class="jpage got${jfacts[x.key] ? ' open' : ''}"${ceremony ? ` style="--i:${i}"` : ''}>${src ? `<img src="${src}" alt="" aria-hidden="true" loading="lazy">` : ''}<span><strong>${esc(x.name)}</strong><small>${esc(x.stamp)} stamp · ${jr[x.key] === JOURNAL_BEFORE ? 'won before the journal was kept' : 'won ' + esc(jr[x.key])}</small><em>${esc(x.blurb)}</em>${factsHTML(x)}</span></li>`
       : `<li class="jpage lock"><span><strong>${esc(x.name)}</strong><small>Win the ${esc(x.stamp)} stamp to open this page.</small></span></li>`;
   }).join('');
   const eraBest = Object.values(d.best.era || {}).filter((v) => v > 0).length;
