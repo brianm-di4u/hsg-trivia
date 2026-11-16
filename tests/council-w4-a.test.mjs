@@ -277,4 +277,28 @@ export const tests = [
       t.equal(calm.ui.ringFirst, 1, 'no wait with reduced motion');
     },
   },
+
+  // ---------------- S5-19 ----------------
+  {
+    name: 'S5-19 noise cues start anywhere in a three-second buffer, not only in its first second',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.page.mouse.click(5, 5);
+      await waitFor(t, (s) => s.audio.state === 'running', 10000, 'audio running');
+      // The same cue is not struck twice within 80 ms, so each round waits that out (a floor, not a race: waiting longer is fine).
+      await t.page.evaluate(async () => {
+        for (let r = 0; r < 9; r++) {
+          for (const n of ['click', 'gavel', 'steam', 'page', 'stamp']) window.__game.cue(n);
+          await new Promise((ok) => setTimeout(ok, 120));
+        }
+      });
+      const a = (await t.state()).audio;
+      t.expect(a.noiseSeconds >= 3, 'the noise buffer is ' + a.noiseSeconds + ' s');
+      t.equal(a.noiseStarts.length, 40, 'forty starts are kept');
+      t.expect(a.noiseStarts.every((x) => x >= 0 && x <= a.noiseSeconds - 1), 'every start leaves a second of noise after it');
+      // 40 starts spread over 0 to 2 s: the chance that none is past 1 s is 2^-40 (about 1e-12). Before this change no start could pass 0.9 s.
+      t.expect(a.noiseStarts.some((x) => x > 1), 'some start is past the first second: max ' + Math.max(...a.noiseStarts).toFixed(2));
+      t.expect(new Set(a.noiseStarts.map((x) => x.toFixed(3))).size >= 38, 'the starts differ from one another');
+    },
+  },
 ];

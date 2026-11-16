@@ -12,10 +12,14 @@ const PENTA = [0, 2, 4, 7, 9]; // major pentatonic: a hop walks up it and a run 
 
 let ac = null, master = null, sfxIn = null, noiseBuf = null, kit = null, cueBase = 0, trim = 1;
 const opts = { on: true, volume: DEFAULT_VOLUME, effects: true, music: true, ambience: true };
-export const audioStats = { played: 0, log: [], ctx: false, get state() { return ac ? ac.state : 'none'; } };
+export const audioStats = { played: 0, log: [], noiseStarts: [], ctx: false, get noiseSeconds() { return noiseBuf ? noiseBuf.duration : 0; }, get state() { return ac ? ac.state : 'none'; } };
 
+// S5-19: the noise every hop, gavel and steam cue is cut from. It is NOISE_SECONDS long (was 1 s) and each cue starts at a random place in the first
+// NOISE_SECONDS - 1 of it (was 0 to 0.9 s), so the grain of two repeats differs more and a 0.9 s steam sweep does not use nearly the whole buffer.
+// It stays white noise: a softer (pink) fill would change the colour and level of every noise cue, which needs listening, and is left to the owner's ears.
+const NOISE_SECONDS = 3;
 const makeNoise = (c) => {
-  const b = c.createBuffer(1, c.sampleRate * 1, c.sampleRate);
+  const b = c.createBuffer(1, Math.round(c.sampleRate * NOISE_SECONDS), c.sampleRate);
   const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   return b;
 };
@@ -151,7 +155,8 @@ function noise({ t = 0, d = 0.3, v = 0.25, type = 'bandpass', f = 1200, f2 = nul
   const fl = ac.createBiquadFilter(); fl.type = type; fl.frequency.setValueAtTime(f, now); fl.Q.value = qv;
   if (f2) fl.frequency.exponentialRampToValueAtTime(f2, now + d);
   const g = ac.createGain(); g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(v, now + d * 0.2); g.gain.exponentialRampToValueAtTime(0.0001, now + d);
-  s.connect(fl); fl.connect(g); g.connect(panned(pan, sfxIn)); s.start(now, rand(0, 0.9)); s.stop(now + d + 0.05);
+  s.connect(fl); fl.connect(g); g.connect(panned(pan, sfxIn)); const at = rand(0, NOISE_SECONDS - 1); audioStats.noiseStarts.push(at); if (audioStats.noiseStarts.length > 40) audioStats.noiseStarts.shift();
+  s.start(now, at); s.stop(now + d + 0.05);
 }
 
 // o: { i: step along a walk, pan: screen position -1..1, streak: right answers in a row, tier: 0 easy, 1 medium, 2 hard, n: the roll or the run,
