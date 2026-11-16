@@ -97,7 +97,7 @@ const BAD = {
   truncated: '{"v":1,"settings":{"sound":fal',
   nullValue: 'null',
   arrayValue: '[]',
-  futureVersion: JSON.stringify({ v: 2, future: { data: 1 } }),
+  // A newer version's save is no longer quarantined: wave 4 (C4-01, the owner's decision 1) leaves it alone. See tests/council-w4-a.test.mjs.
   notJson: 'garbage',
 };
 for (const [name, raw] of Object.entries(BAD)) {

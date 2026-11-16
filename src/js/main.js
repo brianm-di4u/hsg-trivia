@@ -638,6 +638,7 @@ window.__game = {
 // ---------- boot ----------
 function boot() {
   noted(G.save.load());
+  if (G.save.newer) UI.announce(UI.NEWER_SAVE_NOTE);
   G.state = newState();
   G.rng = makeRng((Date.now() ^ 0x5eed) >>> 0);
   ui.finishCoach = () => changeSettings({ seenCoach: true });

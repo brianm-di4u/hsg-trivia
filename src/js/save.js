@@ -53,10 +53,21 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const cleanStarted = (v) => Object.fromEntries((object(v) ? Object.keys(v).filter((d) => DATE.test(d) && v[d] === true).sort().slice(-DAILY_STARTED_MAX) : []).map((d) => [d, true]));
 export const dailyTaken = (daily, date) => !!daily && ((object(daily.results) && own(daily.results, date)) || (object(daily.started) && daily.started[date] === true));
 
+// A readable save whose version number is higher than this build knows: left exactly as it is, for the newer build to find again (C4-01).
+// Damaged, truncated or wrong-shaped text is not this case and is set aside as before.
+export const isNewerSave = (raw) => {
+  if (typeof raw !== 'string') return false;
+  let data = null;
+  try { data = JSON.parse(raw); } catch { return false; }
+  return object(data) && Number.isInteger(data.v) && data.v > 1;
+};
+
 export function createSaveStore({ storage = () => window.localStorage, newGeneration = generation, onConflict = () => {} } = {}) {
   let trailBase = null, conflictNotified = false;
-  const store = { data: defaults(), ok: true, fresh: true, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [], progress: [] } };
+  // newer: the stored save carries a version this build does not know (C4-01). It is never written over: this visit plays from defaults held in memory.
+  const store = { data: defaults(), ok: true, fresh: true, newer: false, trailDiscarded: false, pending: { reservation: null, trail: null, settings: {}, quiz: [], progress: [] } };
   const read = () => {
+    if (store.newer) return clone(store.data); // the visit's own state lives in memory only
     const raw = storage().getItem(KEY);
     if (raw === null) return defaults(); // External clear never falls back to an old cached object.
     let data = null;
@@ -85,18 +96,22 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
   };
   const write = (next) => {
     if (store.fresh) next = { ...next, settings: { ...FRESH_PROFILE_SETTINGS, ...next.settings } };
+    if (store.newer) { store.data = clone(next); store.ok = true; store.fresh = false; return true; } // kept in memory, never stored
     try { storage().setItem(KEY, JSON.stringify(next)); store.data = clone(next); store.ok = true; store.fresh = false; return true; }
     catch { store.ok = false; return false; }
   };
   const readOrNull = () => { try { return read(); } catch { store.ok = false; return null; } };
   store.load = () => {
+    store.newer = false;
     try { store.fresh = storage().getItem(KEY) === null; } catch { store.fresh = true; }
+    try { store.newer = isNewerSave(storage().getItem(KEY)); } catch { /* unreadable storage is handled below */ }
+    if (store.newer) store.data = defaults();
     const current = readOrNull();
     if (!current) return unavailable();
     store.data = clone(current); trailBase = group(current); conflictNotified = false;
     store.pending = { reservation: null, trail: null, settings: {}, quiz: [], progress: [] };
     // A trip the game could not play is not offered. Its raw text is kept under the .bad key and the live key is replaced by the next trip's first save.
-    store.trailDiscarded = !!current.trail && !validTrail(current.trail);
+    store.trailDiscarded = !store.newer && !!current.trail && !validTrail(current.trail);
     if (store.trailDiscarded) { try { storage().setItem(KEY + '.bad', storage().getItem(KEY)); } catch { /* quarantine is best effort */ } }
     return { ok: true };
   };

@@ -26,7 +26,8 @@ const btn = (act, label, { arg = '', cls = '', key = '', hint = '', dis = false,
 // A radio group is one Tab stop (the chosen option; the first when none matches) and the arrow keys move inside it (see main.js).
 const stop = (on, i, any) => (on || (!any && i === 0) ? 0 : -1);
 const TICKET = '<svg class="ticket" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 2h20v4a2 2 0 0 0 0 4v4H2v-4a2 2 0 0 0 0-4z" fill="currentColor"/><path d="M15 3v10" stroke="var(--color-surface)" stroke-width="1.4" stroke-dasharray="1.6 1.4"/></svg>';
-const saveWarn = () => (G.save.ok ? '' : '<p class="save-warn" role="status">Progress is not being saved in this browser.</p>');
+export const NEWER_SAVE_NOTE = 'This visit is not being saved, because the saved game comes from a newer version of Valley of Vapors.';
+const saveWarn = () => (G.save.newer ? `<p class="save-warn" role="status">${NEWER_SAVE_NOTE}</p>` : G.save.ok ? '' : '<p class="save-warn" role="status">Progress is not being saved in this browser.</p>');
 const savedTripNote = () => (G.save.trailDiscarded ? '<p class="save-warn" role="status">A saved trip could not be read, so it was set aside.</p>' : '');
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 export const AI_SPEED_LABEL = { normal: 'Relaxed', brisk: 'Brisk', fast: 'Fast' };

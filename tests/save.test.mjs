@@ -116,9 +116,9 @@ export const tests = [
     const f = fixture(), a = f.tab(), changed = original(); changed.rng = 123; changed.asked = ['foreign']; f.replace(changed); const before = f.read();
     assert.equal(a.commitTrail(trip('A')).reason, 'trail-conflict'); assert.deepEqual(f.read(), before);
   }),
-  row('unsupported save versions are kept under the .bad key and replaced by a valid save (S6-01)', () => {
-    const f = fixture({ v: 2, future: { data: 1 } }), a = f.tab(), before = f.read(); assert.equal(a.updateSettings({ sound: false }).ok, true); assert.equal(f.read().v, 1); assert.equal(f.read().settings.sound, false);
-    assert.deepEqual(JSON.parse(f.bad()), before);
+  row('a save from a newer version is never written over and plays from defaults in memory (C4-01, was S6-01)', () => {
+    const f = fixture({ v: 2, future: { data: 1 } }), a = f.tab(), before = f.read(); assert.equal(a.updateSettings({ sound: false }).ok, true); assert.deepEqual(f.read(), before); assert.equal(f.bad(), null);
+    assert.equal(a.newer, true); assert.equal(a.data.settings.sound, false);
   }),
 
   row('recovery: next setting write consumes all failed explicit preference deltas', () => {
