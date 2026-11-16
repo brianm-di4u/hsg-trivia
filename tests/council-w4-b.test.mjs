@@ -326,6 +326,7 @@ export const tests = [
       t.equal((await allIn().innerText()).replace(/s+/g, ' '), 'All in · 40', 'it says how many');
       const txt = await t.page.locator('.mcard').textContent();
       t.expect(/go all in with 40 on this Grand Tour/.test(txt) && /A for all in/.test(txt), 'the card says so and names the key: ' + txt.replace(/s+/g, ' ').slice(0, 260));
+      await t.waitForStable(8000);
       await t.shot('S3-14-all-in-chip');
       await t.checkLayout({ allowScrollY: true });
       await allIn().click();
