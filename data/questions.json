@@ -832,7 +832,7 @@
    "category": "History",
    "difficulty": "easy",
    "era": "midcentury",
-   "question": "According to Wikipedia, in what year did Gov. Winthrop Rockefeller end Hot Springs' casino revival?",
+   "question": "In what year did Gov. Winthrop Rockefeller end Hot Springs' casino revival?",
    "answer": "1967",
    "wrong": [
     "1946",
@@ -1767,7 +1767,7 @@
    "category": "Places & Landmarks",
    "difficulty": "easy",
    "era": "modern",
-   "question": "What does the Ozark Bathhouse on Bathhouse Row house today?",
+   "question": "What did the Ozark Bathhouse on Bathhouse Row reopen as in 2014?",
    "answer": "Hot Springs NP Cultural Center",
    "wrong": [
     "The park visitor center",
@@ -2226,7 +2226,7 @@
    "category": "Nature & Lakes",
    "difficulty": "medium",
    "era": "revival",
-   "question": "According to Wikipedia, DeGray Lake holds the distinction as the first Corps of Engineers impoundment able to do what?",
+   "question": "DeGray Lake is described as the first Corps of Engineers impoundment able to do what?",
    "answer": "Pump water back",
    "wrong": [
     "Cool a nuclear plant",
@@ -2515,7 +2515,7 @@
    "category": "Nature & Lakes",
    "difficulty": "easy",
    "era": "any",
-   "question": "According to the USGS, how many hot springs emerge from Hot Springs Mountain in Hot Springs National Park?",
+   "question": "How many hot springs emerge from Hot Springs Mountain in Hot Springs National Park?",
    "answer": "47",
    "wrong": [
     "7",
@@ -2634,14 +2634,14 @@
    "category": "Nature & Lakes",
    "difficulty": "medium",
    "era": "any",
-   "question": "According to Wikipedia's water-chemistry table, which constituent of Hot Springs' thermal water has the highest concentration?",
+   "question": "Which dissolved constituent is most concentrated in Hot Springs' thermal water?",
    "answer": "Bicarbonate",
    "wrong": [
     "Sulfur",
     "Iron",
     "Sodium chloride"
    ],
-   "explanation": "The table lists bicarbonate at 130.0 ppm, ahead of silica (53.0) and calcium (47.0).",
+   "explanation": "Wikipedia's water-chemistry table lists bicarbonate at 130.0 ppm, ahead of silica (53.0) and calcium (47.0).",
    "source": "Wikipedia: Hot Springs National Park",
    "sourceUrl": "https://en.wikipedia.org/wiki/Hot_Springs_National_Park",
    "confidence": "confirmed"
@@ -3076,7 +3076,7 @@
    "category": "Nature & Lakes",
    "difficulty": "easy",
    "era": "any",
-   "question": "Which big cat left the Hot Springs area after European settlement, according to Wikipedia?",
+   "question": "Which big cat left the Hot Springs area after European settlement?",
    "answer": "Cougar",
    "wrong": [
     "Snow leopard",
@@ -4946,7 +4946,7 @@
    "category": "People",
    "difficulty": "hard",
    "era": "gilded-spa",
-   "question": "Which Chicago architect designed Hot Springs' Maurice Bathhouse?",
+   "question": "Which architect designed Hot Springs' Maurice Bathhouse?",
    "answer": "George Gleim Jr.",
    "wrong": [
     "Harry C. Schwebke",
@@ -6068,7 +6068,7 @@
    "category": "Food & Culture",
    "difficulty": "medium",
    "era": "roaring",
-   "question": "According to The Nibble, which legislative chamber has been served Mountain Valley water since the 1920s?",
+   "question": "Mountain Valley water is said to have been served in which legislative chamber since the 1920s?",
    "answer": "The U.S. Senate",
    "wrong": [
     "The British Parliament",
@@ -6255,14 +6255,14 @@
    "category": "Food & Culture",
    "difficulty": "easy",
    "era": "modern",
-   "question": "According to the Encyclopedia of Arkansas, in what year was the first World's Shortest St. Patrick's Day Parade held?",
+   "question": "In what year was the first World's Shortest St. Patrick's Day Parade held?",
    "answer": "2004",
    "wrong": [
     "1964",
     "1987",
     "2014"
    ],
-   "explanation": "It says \"The First Ever First Annual\" parade was held March 17, 2004; the idea came from a 2003 gathering.",
+   "explanation": "The Encyclopedia of Arkansas says \"The First Ever First Annual\" parade was held March 17, 2004; the idea came from a 2003 gathering.",
    "source": "Encyclopedia of Arkansas: World's Shortest St. Patrick's Day Parade",
    "sourceUrl": "https://encyclopediaofarkansas.net/entries/worlds-shortest-st-patricks-day-parade-3749/",
    "confidence": "confirmed"
@@ -8125,7 +8125,7 @@
    "category": "Legends & Oddities",
    "difficulty": "hard",
    "era": "gilded-spa",
-   "question": "According to Wikipedia, where did Hot Springs' Rix Tower first serve before it was moved?",
+   "question": "Where is Hot Springs' Rix Tower said to have stood before it was moved to the mountain?",
    "answer": "The 1904 World's Fair",
    "wrong": [
     "The 1876 Centennial Exposition",
@@ -8601,14 +8601,14 @@
    "category": "Legends & Oddities",
    "difficulty": "easy",
    "era": "modern",
-   "question": "According to Visit Hot Springs, how long is the \"Zero K Foot Race\"?",
+   "question": "How long is Hot Springs' \"Zero K Foot Race\"?",
    "answer": "250 feet",
    "wrong": [
     "25 feet",
     "2,500 feet",
     "26.2 miles"
    ],
-   "explanation": "The 250-foot race follows directly after the Running of the Tubs races.",
+   "explanation": "Visit Hot Springs lists the race at 250 feet. It follows directly after the Running of the Tubs races.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -9162,7 +9162,7 @@
    "category": "Places & Landmarks",
    "difficulty": "hard",
    "era": "gilded-spa",
-   "question": "According to Visit Hot Springs, the Fordyce Bathhouse's third floor opened in 1915 as Arkansas's first what?",
+   "question": "The Fordyce Bathhouse's third floor, opened in 1915, is billed as Arkansas's first what?",
    "answer": "A gymnasium",
    "wrong": [
     "A heated indoor pool",
@@ -9621,14 +9621,14 @@
    "category": "People",
    "difficulty": "hard",
    "era": "revival",
-   "question": "According to the Encyclopedia of Arkansas, which Hot Springs congregation appointed the state's first full-time female rabbi in 1989?",
+   "question": "Which Hot Springs congregation is credited with appointing the state's first full-time female rabbi, in 1989?",
    "answer": "Congregation House of Israel",
    "wrong": [
     "Temple Beth El",
     "Temple B'nai Israel",
     "Congregation Agudath Achim"
    ],
-   "explanation": "Angela Graboys-Rudner was appointed rabbi of Congregation House of Israel in 1989, a first for Arkansas.",
+   "explanation": "The Encyclopedia of Arkansas says Angela Graboys-Rudner was appointed rabbi of Congregation House of Israel in 1989, a first for Arkansas.",
    "source": "Encyclopedia of Arkansas: Hot Springs (Garland County)",
    "sourceUrl": "https://encyclopediaofarkansas.net/entries/hot-springs-887/",
    "confidence": "claim"
@@ -9689,7 +9689,7 @@
    "category": "Food & Culture",
    "difficulty": "hard",
    "era": "roaring",
-   "question": "According to the Encyclopedia of Arkansas, Mountain Valley became the first bottled water sold coast to coast on reaching which state in 1928?",
+   "question": "Mountain Valley is credited as the first bottled water sold coast to coast, on reaching which state in 1928?",
    "answer": "California",
    "wrong": [
     "Oregon",
@@ -9740,7 +9740,7 @@
    "category": "Food & Culture",
    "difficulty": "hard",
    "era": "roaring",
-   "question": "According to the Encyclopedia of Arkansas, which president was first to have Mountain Valley Spring Water served in the White House?",
+   "question": "Which president is believed to have been the first to have Mountain Valley Spring Water served in the White House?",
    "answer": "Calvin Coolidge",
    "wrong": [
     "Woodrow Wilson",
@@ -10352,7 +10352,7 @@
    "category": "Legends & Oddities",
    "difficulty": "hard",
    "era": "midcentury",
-   "question": "According to the Encyclopedia of Arkansas, which Central Avenue gambling club installed Hot Springs' first escalator in the 1950s?",
+   "question": "Which Central Avenue gambling club is credited with Hot Springs' first escalator, installed in the 1950s?",
    "answer": "The Southern Club",
    "wrong": [
     "The Ohio Club",

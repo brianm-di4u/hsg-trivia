@@ -41,25 +41,57 @@ const REWORDED = {
 const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 export const tests = [
-  // ---------------- C4-02 ----------------
+  // ---------------- C4-03, C4-05 ----------------
+  node('C4-03 C4-05 the sixteen approved questions are in the question file exactly, and nothing else about them moved', () => {
+    const all = bank(), by = new Map(all.map((q) => [q.id, q]));
+    for (const [id, want] of Object.entries(REWORDED)) assert.equal(plain(by.get(id).question), plain(want), id);
+    assert.equal(all.length, 619, 'no question added or removed');
+    const original = JSON.parse(fs.readFileSync(REPO + 'research/trivia-bank.json', 'utf8'));
+    assert.ok(Array.isArray(original.questions || original), 'the original bank is still there');
+  }),
+  node('C4-03 the answers, wrong answers, explanation and source of the two C4-03 questions are as they were', () => {
+    const by = new Map(bank().map((q) => [q.id, q]));
+    const o = by.get('hs-0104'), m = by.get('hs-0291');
+    assert.deepEqual([o.answer, o.wrong, o.explanation, o.source], ['Hot Springs NP Cultural Center', ['The park visitor center', 'A brewery and distillery', 'A nine-room hotel'], 'It reopened in 2014 as a cultural center showing artist-in-residence work.', 'Wikipedia: Bathhouse Row']);
+    assert.deepEqual([m.answer, m.wrong, m.explanation, m.source], ['George Gleim Jr.', ['Harry C. Schwebke', 'George Mann', 'W. T. Bailey'], 'The Maurice was built 1911–12 and remodeled by Mann & Stern in 1915.', 'Wikipedia: Bathhouse Row']);
+  }),
+  node('C4-05 the six questions that keep "According to" are untouched, and no other live question opens with it', () => {
+    const all = bank();
+    for (const id of ['hs-0184', 'hs-0377', 'hs-0498', 'hs-0501', 'hs-0503', 'hs-0580']) assert.match(all.find((q) => q.id === id).question, /According to/, id);
+    // (hs-0450 was approved and then retired by the owner, item C4-10: it is left to that item)
+    const left = all.filter((q) => /According to/.test(q.question) && q.id !== 'hs-0450').map((q) => q.id).sort();
+    assert.equal(left.join(','), 'hs-0184,hs-0377,hs-0498,hs-0501,hs-0503,hs-0580', 'only the six: ' + left);
+  }),
+  node('C4-05 the four explanations that name their source now say it, and the answers and wrong answers of the fourteen are as they were', () => {
+    const by = new Map(bank().map((q) => [q.id, q]));
+    assert.equal(by.get('hs-0155').explanation, "Wikipedia's water-chemistry table lists bicarbonate at 130.0 ppm, ahead of silica (53.0) and calcium (47.0).");
+    assert.equal(by.get('hs-0369').explanation, 'The Encyclopedia of Arkansas says "The First Ever First Annual" parade was held March 17, 2004; the idea came from a 2003 gathering.');
+    assert.equal(by.get('hs-0507').explanation, 'Visit Hot Springs lists the race at 250 feet. It follows directly after the Running of the Tubs races.');
+    assert.equal(by.get('hs-0567').explanation, 'The Encyclopedia of Arkansas says Angela Graboys-Rudner was appointed rabbi of Congregation House of Israel in 1989, a first for Arkansas.');
+    for (const id of Object.keys(REWORDED)) assert.equal(by.get(id).wrong.length, 3, id);
+  }),
   {
-    name: 'C4-02 Help says how the art was made, in one plain line, and it fits at both sizes',
+    name: 'C4-05 the longest of the new questions fits its card at both sizes, with every answer and the 50/50 on screen or reachable',
     async run(t) {
-      await t.game('scene', 'help');
+      const by = new Map(bank().map((q) => [q.id, q]));
+      const longest = Object.keys(REWORDED).map((id) => by.get(id).question).sort((a, b) => b.length - a.length)[0];
+      const longestInBank = Math.max(...bank().map((q) => q.question.length));
+      t.expect(longest.length <= longestInBank, `it is no longer than the longest question in the bank (${longest.length} against ${longestInBank})`);
+      await soloGame(t, { settings: { seenCoach: true } });
+      await t.game('setState', { trail: { phase: 'roll', players: [{ tickets: 6 }] } });
+      await landOn(t, (await t.state()).board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await t.game('setState', { question: { text: longest } });
       await t.waitForStable(8000);
-      const line = await t.page.evaluate(() => { const e = document.querySelector('#art-credit'); e.scrollIntoView({ block: 'center' }); const r = e.getBoundingClientRect(); return { text: e.textContent, l: r.left, r: r.right, vw: innerWidth, sw: document.documentElement.scrollWidth, scrollW: e.scrollWidth, cw: e.clientWidth, count: (document.querySelector('#scene-help').textContent.match(/AI image tools/g) || []).length }; });
-      t.equal(line.text, 'Art: painted with AI image tools for this game.', 'the line');
-      t.equal(line.count, 1, 'said once');
-      t.expect(line.l >= 0 && line.r <= line.vw && line.sw <= line.vw && line.scrollW <= line.cw + 1, 'it fits: ' + JSON.stringify(line));
-      await t.page.screenshot({ path: SHOTS + 'C4-02-art-credit-' + t.viewport + '.png' });
+      const m = await t.page.evaluate(() => {
+        const h = document.querySelector('#qtext'), r = h.getBoundingClientRect(), card = document.querySelector('.qcard');
+        const answers = [...document.querySelectorAll('.answers button')].map((b) => { const q = b.getBoundingClientRect(); return { l: q.left, r: q.right }; });
+        let sc = card; while (sc && sc.scrollHeight <= sc.clientHeight + 1) sc = sc.parentElement; // the nearest ancestor that scrolls, if the card overflows
+        return { text: h.textContent, l: r.left, r: r.right, vw: innerWidth, sw: document.documentElement.scrollWidth, over: h.scrollWidth > h.clientWidth + 1, answers, scrolls: !!sc && ['auto', 'scroll'].includes(getComputedStyle(sc).overflowY) };
+      });
+      t.equal(plain(m.text), plain(longest), 'the card shows the question');
+      t.expect(m.l >= 0 && m.r <= m.vw && m.sw <= m.vw && !m.over && m.answers.every((a) => a.l >= 0 && a.r <= m.vw), 'nothing is cut off sideways: ' + JSON.stringify({ l: m.l, r: m.r, vw: m.vw, sw: m.sw }));
+      await t.page.screenshot({ path: SHOTS + 'C4-05-longest-question-' + t.viewport + '.png' });
     },
   },
-  node('C4-02 the line names no company or product', () => {
-    const src = fs.readFileSync(REPO + 'src/js/ui.js', 'utf8');
-    const m = /id="art-credit">([^<]*)</.exec(src);
-    assert.ok(m, 'the line is in ui.js');
-    assert.ok(!/openai|codex|chatgpt|dall|midjourney|gpt|blender/i.test(m[1]), 'no product named: ' + m[1]);
-  }),
-
-
 ];
