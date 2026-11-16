@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { soloGame, landOn, phase } from './helpers.mjs';
 
 const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
 const REPO = fileURLToPath(new URL('..', import.meta.url));
@@ -97,6 +98,44 @@ export const tests = [
       t.equal(await t.page.locator('#scene-record .jfacts li').count(), 5, 'opened');
       const name = await t.page.locator('#scene-record .jfacts').first().getAttribute('aria-label');
       t.expect(/Bathhouse Row: 5 facts/.test(name), 'the list is named with its district and count: ' + name);
+    },
+  },
+  // ---------------- C4-07 ----------------
+  {
+    name: 'C4-07 both Grand Jury spaces show the approved 1946 line in small type under the rule, with the button on screen and the line read with the card',
+    async run(t) {
+      const line = approved().grandJury;
+      await soloGame(t, { settings: { seenCoach: true } });
+      const types = (await t.state()).board.types;
+      const juries = types.map((x, i) => (x === 'jury' ? i : -1)).filter((i) => i >= 0);
+      t.equal(juries.length, 2, 'the board has two Grand Jury spaces');
+      for (const [n, node] of juries.entries()) {
+        await landOn(t, node); await phase(t, 'jury');
+        const card = t.page.locator('#modal .mcard');
+        await card.waitFor();
+        const got = await t.page.locator('#jury-line').innerText();
+        t.equal(norm(got), norm(line), 'space ' + (n + 1) + ' carries the line, word for word');
+        t.expect(await t.page.locator('#jury-line.src').count() === 1, 'in the small type the game uses for a source');
+        t.expect(/grand jury/i.test(await t.page.locator('#jury-rule').innerText()), 'the rule text stays');
+        t.equal(await t.page.locator('#modal .sheet').getAttribute('aria-describedby'), 'jury-rule jury-line', 'a screen reader reads the rule and the line with the card');
+        const box = await t.page.evaluate(() => { const b = document.querySelector('#modal [data-act="proceed"]').getBoundingClientRect(); const l = document.querySelector('#jury-line').getBoundingClientRect(); return { bt: b.top, bb: b.bottom, bl: b.left, br: b.right, lb: l.bottom, h: innerHeight, w: innerWidth, ltop: document.querySelector('#jury-rule').getBoundingClientRect().bottom }; });
+        t.expect(box.bb <= box.h && box.bt >= 0 && box.bl >= 0 && box.br <= box.w, 'the Face the jury button is on screen');
+        t.expect(box.lb <= box.bt && box.ltop <= box.bt, 'and the line sits above the button, under the rule');
+        if (n === 0) await t.page.screenshot({ path: SHOTS + 'C4-07-grand-jury-' + t.viewport + '.png' });
+        await t.checkLayout();
+        await t.game('act', 'continue'); await phase(t, 'question');
+        await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); await phase(t, 'roll');
+      }
+    },
+  },
+  {
+    name: 'C4-07 no other space card carries a history line: Post Time and the postcard stay as they were',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const types = (await t.state()).board.types;
+      await landOn(t, types.indexOf('wager')); await phase(t, 'wager');
+      t.equal(await t.page.locator('#jury-line').count(), 0, 'no jury line on Post Time');
+      t.expect(!/federal judge|poll tax/i.test(await t.page.locator('#modal').innerText()), 'and nothing about 1946');
     },
   },
 ];

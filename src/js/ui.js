@@ -127,7 +127,7 @@ export function update() {
     if (!was) { modal.hidden = false; sheet.classList.remove('enter'); void sheet.offsetWidth; sheet.classList.add('enter'); ui.modalAt = performance.now(); }
     if (write(sheet, m, 'modal') && !modal.contains(document.activeElement)) focusFirst(modal);
     // A question dialog is named by its category; the question itself is its description, so it is read on entering.
-    if (sheet.querySelector('#qtext')) sheet.setAttribute('aria-describedby', 'qtext'); else sheet.removeAttribute('aria-describedby');
+    if (sheet.querySelector('#qtext')) sheet.setAttribute('aria-describedby', 'qtext'); else if (sheet.querySelector('#jury-line')) sheet.setAttribute('aria-describedby', 'jury-rule jury-line'); else sheet.removeAttribute('aria-describedby');
     // S4-13: a question takes the panel's place, so the board and the token stay in view while it is open.
     modal.classList.toggle('dock', sc === 'game' && !!sheet.querySelector('.qcard'));
   } else if (was) { modal.classList.remove('dock'); modal.hidden = true; last.modal = ''; modal.innerHTML = ''; focusFirst(sc === 'game' ? $('#panel') : $('#scene-' + sc)); }
@@ -416,7 +416,7 @@ function modalHTML() {
       return `<div class="mcard postcard"><div class="pc-stamp" aria-hidden="true">${ev.y}</div><p class="pc-greet" id="mtitle">Greetings from Hot Springs</p>
         <p class="pc-year">${ev.y} · ${esc(era ? era.name : '')}</p><p class="pc-text">${esc(ev.e)}</p><p class="src">Source: ${esc(ev.s)}</p><p class="outcome">+1 ticket</p><div class="mfoot">${cont()}</div></div>`;
     }
-    case 'jury': return `<div class="mcard"><div class="mhead">${ico('jury', '#9A2A1C', '#FFFFFF', 44)}<h2 id="mtitle">Grand Jury!</h2></div><p>You’ve been called before the grand jury. Answer a <strong>Legends &amp; Oddities</strong> question, or sit out your next turn.</p><div class="mfoot">${cont('Face the jury')}</div></div>`;
+    case 'jury': return `<div class="mcard"><div class="mhead">${ico('jury', '#9A2A1C', '#FFFFFF', 44)}<h2 id="mtitle">Grand Jury!</h2></div><p id="jury-rule">You’ve been called before the grand jury. Answer a <strong>Legends &amp; Oddities</strong> question, or sit out your next turn.</p><p class="src" id="jury-line">In 1946 a federal judge threw out almost a quarter of the poll tax receipts used in the primary, after GI reform candidates sued.</p><div class="mfoot">${cont('Face the jury')}</div></div>`;
     case 'summit': {
       const c = CAT[pd.cat];
       const tw = artSrc('land-tower');
