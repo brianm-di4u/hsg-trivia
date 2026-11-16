@@ -117,11 +117,17 @@ export function makeQuestion(q, rng, purpose = 'district') {
 
 // Timeline helpers (Time Warp and Postcards).
 export const EVENTS = TIMELINE.events;
+// P-N05: the events a Time Warp offers come from one era or two neighbouring ones, so the order is a real puzzle and not a guess at which era is oldest.
+// ORDER_MIN_GAP: no two events offered together are closer than this many years, so the repo's own dates always settle one right order; no two read the same.
+// (Before: one event from each of three different eras, so a median 33 years between the nearest two, and only distinct years were asked for.)
+export const ORDER_MIN_GAP = 5;
 export function pickOrdering(rng, n = 3) {
+  const eras = ERAS.map((e) => e.id).filter((id) => id !== 'ancient');
   for (let tries = 0; tries < 50; tries++) {
-    const eras = shuffle(ERAS.map((e) => e.id).filter((id) => id !== 'ancient'), rng).slice(0, n);
-    const evs = eras.map((era) => { const list = EVENTS.filter((e) => e.era === era); return list[rng.int(list.length)]; });
-    if (evs.every(Boolean) && new Set(evs.map((e) => e.y)).size === n) return shuffle(evs, rng);
+    const i = rng.int(eras.length - 1);
+    const pool = shuffle(EVENTS.filter((e) => e.era === eras[i] || e.era === eras[i + 1]), rng);
+    const got = [];
+    for (const e of pool) { if (got.every((g) => Math.abs(g.y - e.y) >= ORDER_MIN_GAP && g.e !== e.e)) got.push(e); if (got.length === n) return got; }
   }
   return shuffle(EVENTS, rng).slice(0, n);
 }

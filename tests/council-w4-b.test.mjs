@@ -1,6 +1,8 @@
 // Council wave 4, batch B: controls, rules and play; difficulty, progression and records
 // (S6-12, C4-04, C4-08, S5-20, S3-14, P-N05, S3-25, P-N03).
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { createSaveStore } from '../src/js/save.js';
 import { settleJournal, cleanRecord, applyIntent, freshRecord, JOURNAL_KEYS, JOURNAL_BEFORE, ACHIEVEMENTS } from '../src/js/record.js';
 import { H1, soloGame, landOn, waitFor, phase } from './helpers.mjs';
@@ -18,7 +20,17 @@ const power = (b64, f, from, to) => {
 const median = (a) => a.slice().sort((x, y) => x - y)[Math.floor((a.length - 1) / 2)];
 const wavOf = async (t, tier) => (await render(t, 'cue:win', 4, true, undefined, { tier })).wav;
 
+const REPO = fileURLToPath(new URL('..', import.meta.url));
 const KEY = 'hs-trivia-v1';
+// Runs a snippet of the game's own rules in a separate Node process (the rules read a few globals the page would give them).
+const inNode = (code) => {
+  const head = `import fs from 'node:fs'; import { pathToFileURL } from 'node:url';
+    globalThis.window = {}; for (const [k, f] of [['QUESTIONS','questions'],['TIMELINE','timeline-lite'],['BOARD_GEO','board-geo']]) globalThis[k] = JSON.parse(fs.readFileSync('data/' + f + '.json', 'utf8'));
+    const imp = (f) => import(pathToFileURL(process.cwd() + '/src/js/' + f).href);`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', head + code], { cwd: REPO, encoding: 'utf8', timeout: 120000 });
+  if (r.status !== 0) throw new Error('node snippet failed: ' + r.stderr.slice(0, 600));
+  return JSON.parse(r.stdout.trim().split('\n').pop());
+};
 const stored = (t) => t.page.evaluate((k) => JSON.parse(localStorage.getItem(k) || 'null'), KEY);
 const storedText = (t) => t.page.evaluate((k) => localStorage.getItem(k), KEY);
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
@@ -356,4 +368,44 @@ export const tests = [
     },
   },
 
+  // ---------------- P-N05 ----------------
+  node('P-N05 a Time Warp offers three events from one era or two neighbouring ones, never closer than five years, and the nearest two are much closer than before', (t) => {
+    const r = inNode(`const D = await imp('data.js'); const { makeRng } = await imp('util.js');
+      const order = D.ERAS.map((e) => e.id).filter((id) => id !== 'ancient');
+      const rng = makeRng(7); const gaps = []; let sameEra = 0, bad = 0, ancient = 0, minAny = 1e9;
+      for (let i = 0; i < 5000; i++) {
+        const evs = D.pickOrdering(rng);
+        const ys = evs.map((e) => e.y).sort((a, b) => a - b); const g = Math.min(ys[1] - ys[0], ys[2] - ys[1]);
+        gaps.push(g); minAny = Math.min(minAny, g);
+        const ix = evs.map((e) => order.indexOf(e.era));
+        if (ix.some((k) => k < 0)) ancient++;
+        if (Math.max(...ix) - Math.min(...ix) > 1) bad++;
+        if (new Set(evs.map((e) => e.era)).size < 3) sameEra++;
+        if (evs.length !== 3 || new Set(evs.map((e) => e.e)).size !== 3) bad++;
+      }
+      gaps.sort((a, b) => a - b);
+      console.log(JSON.stringify({ median: gaps[2500], p10: gaps[500], minAny, sameEra, bad, ancient, gapConst: D.ORDER_MIN_GAP }));`);
+    t.log('P-N05 over 5,000 seeded draws: median smallest gap ' + r.median + ' years, p10 ' + r.p10 + ', least ' + r.minAny + ', ' + r.sameEra + ' with two from one era');
+    assert.equal(r.gapConst, 5); assert.ok(r.minAny >= 5, 'no two events within five years: ' + r.minAny);
+    assert.equal(r.bad, 0, 'every set is within two neighbouring eras'); assert.equal(r.ancient, 0, 'no ancient event');
+    assert.ok(r.sameEra > 2500, 'most sets now share an era: ' + r.sameEra);
+    // measured: median 10, p10 5 (it was 33 and 14 with one event from each of three eras); the 5,000 draws are seeded, so this is the same every run
+    assert.ok(r.median <= 15, 'the nearest two are close: ' + r.median);
+  }),
+  {
+    name: 'P-N05 the Time Warp card still sets three events with one right order, and a right order still lets the player warp',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      await landOn(t, (await t.state()).board.types.indexOf('warp'));
+      let s = await phase(t, 'order');
+      const evs = s.trail.pending.events; const ys = evs.map((e) => e.y);
+      t.equal(evs.length, 3, 'three events'); t.expect(new Set(ys).size === 3 && Math.min(Math.abs(ys[0] - ys[1]), Math.abs(ys[1] - ys[2]), Math.abs(ys[0] - ys[2])) >= 5, 'at least five years apart: ' + ys.join(', '));
+      await t.game('act', 'orderCorrect');
+      s = await phase(t, 'orderResult');
+      t.expect(s.trail.pending.ok, 'the right order is accepted');
+      await t.game('act', 'continue');
+      s = await phase(t, 'warp');
+      t.equal(s.trail.pending.options.length, 8, 'and the player may warp to any landmark');
+    },
+  },
 ];
