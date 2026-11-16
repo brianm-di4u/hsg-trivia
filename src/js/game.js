@@ -10,7 +10,7 @@ import { AI_LINES } from './voices.js';
 export const G = {
   state: null,
   rng: makeRng(1),
-  hooks: { update() {}, announce() {}, dailyStart() {}, moveToken() {}, effect() {}, save() {}, seen() {}, scene() {}, finish() {}, record() { return null; }, say() {} },
+  hooks: { update() {}, announce() {}, dailyStart() {}, moveToken() {}, effect() {}, save() {}, seen() {}, scene() {}, finish() {}, record() { return null; }, say() {}, journalDone() {} },
   say: null, // the last thing a named opponent said: { pid, text, event }, for the question card
   voiceN: {}, // how many lines each character has spoken per event, so a character walks through their lines
   lastRecord: null, // what the Trail record made of the trip that just ended (earned achievements, personal bests), for the win card

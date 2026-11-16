@@ -10,7 +10,7 @@ import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
 import * as Assets from './assets.js';
 import { liveStreak, dailyTaken, dailyHistory } from './save.js';
-import { ACHIEVEMENTS, ACH, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, TARGET_NAMES, coverOf, coverUnlocked, titleName } from './record.js';
+import { ACHIEVEMENTS, ACH, JOURNAL_BEFORE, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, TARGET_NAMES, coverOf, coverUnlocked, titleName } from './record.js';
 
 const $ = (s) => document.querySelector(s);
 const last = {};
@@ -115,7 +115,7 @@ export function update() {
   if (sc === 'settings') write($('#scene-settings'), settingsHTML(), 'settings');
   if (sc === 'results') write($('#scene-results'), resultsHTML(), 'results');
   if (sc === 'win') write($('#scene-win'), winHTML(), 'win');
-  if (sc === 'record') write($('#scene-record'), recordHTML(), 'record');
+  if (sc === 'record') { const ceremony = ui.journalCeremony; write($('#scene-record'), recordHTML(), 'record'); if (ceremony) { ui.journalCeremony = false; G.hooks.journalDone(); } }
   if (sc === 'quiz') write($('#scene-quiz'), quizHTML(), 'quiz');
   if (sc === 'game') write($('#panel'), panelHTML(), 'panel');
   const m = ui.crash ? crashHTML() : ui.saveConflict ? saveConflictHTML() : ui.confirm ? confirmHTML() : sc === 'game' ? modalHTML() : '';
@@ -590,10 +590,12 @@ function recordHTML() {
   const cats = CATS.map((c) => { const a = st.cat[c.id] || [0, 0]; return `<li><span class="cat-n">${ico(c.icon, c.color, c.ink, 22)} ${esc(c.id)}</span><span class="cat-bar" aria-hidden="true"><i style="width:${a[1] ? Math.round((100 * a[0]) / a[1]) : 0}%;background:${c.color}"></i></span><span class="cat-v">${a[1] ? `${pct(a[0], a[1])} <small>${a[0]}/${a[1]}</small>` : '<small>no answers yet</small>'}</span></li>`; }).join('');
   // The passport journal: one page per district, opened by the first stamp won there (S3-20).
   const jr = d.journal || {};
-  const pages = DISTRICTS.map((x) => {
+  const opened = DISTRICTS.filter((x) => jr[x.key]).length;
+  const ceremony = ui.journalCeremony && opened === DISTRICTS.length; // the eighth page opened in this visit: the journal marks it once (C4-04)
+  const pages = DISTRICTS.map((x, i) => {
     const got = !!jr[x.key]; const src = got ? artSrc('land-' + x.key) : null;
     return got
-      ? `<li class="jpage got">${src ? `<img src="${src}" alt="" aria-hidden="true" loading="lazy">` : ''}<span><strong>${esc(x.name)}</strong><small>${esc(x.stamp)} stamp · won ${esc(jr[x.key])}</small><em>${esc(x.blurb)}</em></span></li>`
+      ? `<li class="jpage got"${ceremony ? ` style="--i:${i}"` : ''}>${src ? `<img src="${src}" alt="" aria-hidden="true" loading="lazy">` : ''}<span><strong>${esc(x.name)}</strong><small>${esc(x.stamp)} stamp · ${jr[x.key] === JOURNAL_BEFORE ? 'won before the journal was kept' : 'won ' + esc(jr[x.key])}</small><em>${esc(x.blurb)}</em></span></li>`
       : `<li class="jpage lock"><span><strong>${esc(x.name)}</strong><small>Win the ${esc(x.stamp)} stamp to open this page.</small></span></li>`;
   }).join('');
   const eraBest = Object.values(d.best.era || {}).filter((v) => v > 0).length;
@@ -612,7 +614,7 @@ function recordHTML() {
     <h3>Accuracy by category</h3><ul class="rec-cats">${cats}</ul>
     <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${liveStreak(dr, G.today())}</strong></li><li><span>Best Daily streak</span><strong>${dh.best}</strong></li><li><span>Daily Challenges played</span><strong>${dh.played}</strong></li><li><span>Daily answers right</span><strong>${dh.total ? `${pct(dh.right, dh.total)} <small>${dh.right}/${dh.total}</small>` : '—'}</strong></li></ul>
     ${dailyCalendarHTML(dh)}
-    <h3>Passport journal <small>${Object.keys(jr).length} of ${DISTRICTS.length} pages</small></h3><ul class="journal">${pages}</ul>
+    <h3>Passport journal <small>${opened} of ${DISTRICTS.length} pages</small></h3>${opened === DISTRICTS.length ? `<p class="journal-done${ceremony ? ' ceremony' : ''}" role="status">All eight pages are open. Your passport journal is complete.</p>` : ''}<ul class="journal${ceremony ? ' ceremony' : ''}">${pages}</ul>
     <h3>Achievements <small>${earned.length} of ${ACHIEVEMENTS.length}</small></h3><ul class="ach-list">${ach}</ul>
     <h3>Titles</h3><div class="wear-row" role="group" aria-label="Title">${titles}</div>
     <h3>Passport covers</h3><div class="wear-row" role="group" aria-label="Passport cover">${covers}</div>

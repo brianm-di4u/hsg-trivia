@@ -130,10 +130,13 @@ G.hooks.record = (intent) => {
   const r = noted(applyCommittedSettings(G.save.commitProgress({ ...intent, today: G.today() })));
   if (!r.ok) return null;
   UI.toastAchievements(r.earned);
+  if (r.earned.includes('journal-full')) ui.journalCeremony = true; // played when the journal is next opened
   if (G.state.scene === 'record' || G.state.scene === 'title') UI.update();
   return r;
 };
 G.hooks.scene = (n) => scene(n);
+// The journal's full-passport ceremony (C4-04): a bell and a burst of confetti behind the card, drawn only when motion is allowed (the line and the page stamps are drawn in CSS).
+G.hooks.journalDone = () => { sfx('bell'); const n = R.towerTop(); R.burst(n.x, n.y, ['#D7263D', '#1D5BD6', '#F2A90C', '#14904A', '#FFFFFF'], 60, 'confetti'); };
 // Each hop of a walk steps up the pentatonic scale and sounds from where the token is on screen.
 G.hooks.moveToken = (p, path, done, mode = 'walk') => {
   let step = 0;
@@ -568,7 +571,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     say: G.say,
-    ui: { rings: R.view.ringAlpha, ringFirst: R.view.ringFirst, frames: fpsFrames, draws: R.view.draws | 0, keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), listAt: ui.listAt, tip: R.view.tip ? { id: R.view.tip.id, text: R.view.tip.text } : null, nudge: R.view.nudge ? R.view.nudge.id : null, fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    ui: { ceremony: !!ui.journalCeremony, rings: R.view.ringAlpha, ringFirst: R.view.ringFirst, frames: fpsFrames, draws: R.view.draws | 0, keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), listAt: ui.listAt, tip: R.view.tip ? { id: R.view.tip.id, text: R.view.tip.text } : null, nudge: R.view.nudge ? R.view.nudge.id : null, fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));
@@ -644,6 +647,7 @@ window.__game = {
 // ---------- boot ----------
 function boot() {
   noted(G.save.load());
+  noted(G.save.settleJournal(G.today())); // C4-08, C4-04
   if (G.save.newer) UI.announce(UI.NEWER_SAVE_NOTE);
   G.state = newState();
   G.rng = makeRng((Date.now() ^ 0x5eed) >>> 0);

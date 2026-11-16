@@ -184,6 +184,11 @@ body[data-theme="dark"] .star.on { color: #F2C94C; }
 .jpage.got { background: var(--color-bg); border-color: var(--color-success); } .jpage.lock { opacity: 0.75; border-style: dashed; }
 .jpage img { width: 100%; height: 92px; object-fit: cover; border-radius: var(--radius-md); display: block; }
 .jpage small, .jpage em { display: block; color: var(--color-muted); font-style: normal; } .jpage em { font-size: 0.85rem; }
+.journal-done { position: relative; margin: 0 0 8px; padding: 8px 12px; border: 2px solid var(--color-highlight); border-radius: var(--radius-md); background: var(--color-bg); font-family: var(--font-serif-victorian); font-weight: 700; text-align: center; overflow: hidden; }
+.journal-done.ceremony::before { content: ""; position: absolute; inset: -60% -10%; pointer-events: none; background: repeating-conic-gradient(from 0deg, rgba(255,226,140,0.55) 0 7deg, rgba(255,226,140,0) 7deg 18deg); -webkit-mask: radial-gradient(closest-side, #000 40%, transparent 100%); mask: radial-gradient(closest-side, #000 40%, transparent 100%); animation: rays 1.4s ease-out both; }
+.journal.ceremony .jpage.got { animation: deal 0.45s calc(var(--i, 0) * 0.12s) cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+body.reduced .journal-done.ceremony::before, body.reduced .journal.ceremony .jpage.got { animation: none; }
+@media (prefers-reduced-motion: reduce) { .journal-done.ceremony::before, .journal.ceremony .jpage.got { animation: none; } }
 .ach-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .ach-list li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; padding: 6px 8px; border-radius: var(--radius-md); border: 1px solid var(--color-border); }
 .ach-list li.got { background: var(--color-bg); border-color: var(--color-success); } .ach-list li.lock { opacity: 0.75; }

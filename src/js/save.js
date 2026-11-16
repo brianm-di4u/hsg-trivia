@@ -1,6 +1,6 @@
 // Intent-scoped v1 persistence. A preference never writes a cached progress snapshot.
 import { NODES } from './board.js';
-import { freshRecord, cleanRecord, applyIntent } from './record.js';
+import { freshRecord, cleanRecord, applyIntent, settleJournal } from './record.js';
 const KEY = 'hs-trivia-v1';
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -233,6 +233,14 @@ export function createSaveStore({ storage = () => window.localStorage, newGenera
     if (!write(next)) return unavailable();
     store.pending.progress = [];
     return { ok: true, earned, best };
+  };
+  // On load (C4-08, C4-04): a save that shows an eight-stamp win opens its shut journal pages, and a full journal holds its achievement. Written only when something changed.
+  store.settleJournal = (today) => {
+    const current = readOrNull(); if (!current) return unavailable();
+    const next = clone(current);
+    if (!settleJournal(next, today)) return { ok: true, changed: false };
+    if (!write(next)) return unavailable();
+    return { ok: true, changed: true };
   };
   return store;
 }
