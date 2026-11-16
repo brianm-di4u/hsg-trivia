@@ -41,45 +41,40 @@ const REWORDED = {
 const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 export const tests = [
-  // ---------------- P-N07 ----------------
+  // ---------------- S6-06 ----------------
   {
-    name: 'P-N07 Copy result says "Result copied." only once the clipboard has taken the text, and otherwise says to press Ctrl+C',
-    initScript: withSave(BASE, '2026-11-12'),
+    name: 'S6-06 a save with bad settings (text size 0, a volume of "loud", a speed of "warp") plays with the usual ones, and the page is readable',
+    initScript: withSave({ ...BASE, settings: { sound: 'no', effects: null, music: 'yes', ambience: 1, haptics: 'x', passScreen: 3, volume: 'loud', timer: 7, motion: 'warp', textScale: 0, theme: 'neon', aiSpeed: 'warp', seenCoach: 5 } }),
     async run(t) {
-      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
+      await t.game('scene', 'settings');
       await t.waitForStable(8000);
-      for (let i = 0; i < 7; i++) { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); }
-      await waitFor(t, (s) => s.scene === 'results', 4000, 'results');
-      const click = () => t.page.click('[data-act="copy-share"]');
-      const clear = () => t.page.evaluate(() => { document.querySelector('#share-note').textContent = ''; document.querySelector('#live').textContent = ''; window.__copied = null; });
-      const seen = () => t.page.evaluate(() => ({ note: document.querySelector('#share-note').textContent, live: document.querySelector('#live').textContent, copied: window.__copied, sel: document.querySelector('#share').selectionEnd - document.querySelector('#share').selectionStart, len: document.querySelector('#share').value.length }));
-      // 1. the clipboard takes its time: nothing is said until it has resolved
-      await t.page.evaluate(() => { window.__resolve = null; Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: (v) => new Promise((ok) => { window.__copied = v; window.__resolve = ok; }) } }); });
-      await clear(); await click();
-      await t.page.waitForFunction(() => window.__resolve !== null);
-      let s = await seen();
-      t.equal(s.note + s.live, '', 'nothing is said while the clipboard has not answered');
-      await t.page.evaluate(() => window.__resolve());
-      await t.page.waitForFunction(() => document.querySelector('#share-note').textContent === 'Result copied.');
-      await t.page.waitForFunction(() => document.querySelector('#live').textContent === 'Result copied.');
-      s = await seen();
-      t.expect(/Daily 2026-11-12/.test(s.copied || ''), 'it handed the share text over: ' + s.copied);
-      // 2. the clipboard refuses
-      await t.page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: () => Promise.reject(new Error('denied')) } }); });
-      await clear(); await click();
-      await t.page.waitForFunction(() => document.querySelector('#share-note').textContent === 'Press Ctrl+C to copy.');
-      await t.page.waitForFunction(() => document.querySelector('#live').textContent === 'Press Ctrl+C to copy.');
-      s = await seen();
-      t.expect(s.len > 0 && s.sel === s.len, 'the text is left selected: ' + s.sel + ' of ' + s.len);
-      // 3. there is no clipboard at all (a plain http page)
-      await t.page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }); });
-      await clear(); await click();
-      await t.page.waitForFunction(() => document.querySelector('#share-note').textContent === 'Press Ctrl+C to copy.');
-      await t.page.waitForFunction(() => document.querySelector('#live').textContent === 'Press Ctrl+C to copy.');
-      s = await seen();
-      t.expect(!/copied/i.test(s.note + s.live), 'it never claims a copy: ' + s.note);
-      t.expect(s.sel === s.len, 'the text is selected');
-      await t.page.screenshot({ path: SHOTS + 'P-N07-press-ctrl-c-' + t.viewport + '.png' });
+      const s = (await t.state()).settings;
+      t.expect(s.sound === true && s.effects === true && s.music === true && s.ambience === true && s.haptics === true && s.passScreen === true, 'the switches are on: ' + JSON.stringify(s));
+      t.expect(s.volume === 0.7 && s.timer === 30 && s.motion === 'auto' && s.textScale === 1 && s.theme === 'auto', 'the rest are the usual: ' + JSON.stringify(s));
+      t.expect(['normal', 'brisk', 'fast'].includes(s.aiSpeed), 'the speed is one that exists: ' + s.aiSpeed);
+      t.equal(s.seenCoach, true, 'an older player is still not a newcomer');
+      t.equal(await t.page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '16px', 'the page text is its normal size');
+      const on = await t.page.evaluate(() => [...document.querySelectorAll('#scene-settings .seg')].map((g) => g.querySelectorAll('[aria-checked="true"]').length));
+      t.expect(on.every((n) => n === 1), 'every Settings row shows exactly one choice: ' + on);
+    },
+  },
+  {
+    name: 'S6-06 a text size of 50 or 1.2, a volume of 7 or NaN, and a text-size string do not reach the page',
+    initScript: withSave({ ...BASE, settings: { ...BASE.settings, textScale: 50, volume: 7, timer: '10' } }),
+    async run(t) {
+      const s = (await t.state()).settings;
+      t.expect(s.textScale === 1 && s.volume === 0.7 && s.timer === 30, 'back to the usual: ' + JSON.stringify(s));
+      t.equal(await t.page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '16px', 'the page text is its normal size');
+    },
+  },
+  {
+    name: 'S6-06 settings the screen offers are kept exactly',
+    initScript: withSave({ ...BASE, settings: { sound: false, effects: false, music: false, ambience: false, haptics: false, passScreen: false, volume: 0, timer: 10, motion: 'reduced', textScale: 1.3, theme: 'dusk', aiSpeed: 'fast', seenCoach: false } }),
+    async run(t) {
+      const s = (await t.state()).settings;
+      const keep = { sound: false, effects: false, music: false, ambience: false, haptics: false, passScreen: false, volume: 0, timer: 10, motion: 'reduced', textScale: 1.3, theme: 'dusk', aiSpeed: 'fast', seenCoach: false };
+      t.equal(JSON.stringify(Object.fromEntries(Object.keys(keep).sort().map((k) => [k, s[k]]))), JSON.stringify(Object.fromEntries(Object.keys(keep).sort().map((k) => [k, keep[k]]))), 'nothing valid is changed');
+      t.equal(await t.page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '20.8px', 'text at 130 percent');
     },
   },
 

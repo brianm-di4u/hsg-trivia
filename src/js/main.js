@@ -17,7 +17,20 @@ const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: tr
 // What a setting is when the save does not name it: a new profile gets the Brisk AI speed, an older save keeps Normal. An unknown speed falls back to Brisk.
 // seenCoach: only a brand-new profile is a newcomer who gets the first-run tips; a save that has no such key is an older player's.
 const baseSettings = () => ({ ...DEFAULT_SETTINGS, aiSpeed: G.save.fresh ? Game.DEFAULT_AI_SPEED : DEFAULT_SETTINGS.aiSpeed, seenCoach: !G.save.fresh });
-const validSpeed = (s) => ({ ...s, aiSpeed: Game.AI_PACE[s.aiSpeed] ? s.aiSpeed : Game.DEFAULT_AI_SPEED, seenCoach: typeof s.seenCoach === 'boolean' ? s.seenCoach : true, haptics: typeof s.haptics === 'boolean' ? s.haptics : true });
+// S6-06: every setting read from the save is checked before it is used; one that is the wrong type or outside what the Settings screen offers falls back to
+// what it would be without the save (a hand edit or another build must not leave the Settings screen unreadable: text size 0 or 50 would).
+const CHOICES = { timer: [0, 10, 20, 30], motion: ['auto', 'full', 'reduced'], textScale: [1, 1.15, 1.3], theme: ['auto', 'light', 'dark', 'dusk'] };
+const validSettings = (s) => {
+  const base = baseSettings(), out = { ...s };
+  for (const k of Object.keys(DEFAULT_SETTINGS)) {
+    const d = DEFAULT_SETTINGS[k], v = s[k];
+    if (CHOICES[k]) out[k] = CHOICES[k].includes(v) ? v : base[k];
+    else if (k === 'volume') out[k] = typeof v === 'number' && v >= 0 && v <= 1 ? v : base[k]; // (NaN and Infinity are not in 0..1)
+    else if (k === 'aiSpeed') out[k] = Object.keys(Game.AI_PACE).includes(v) ? v : Game.DEFAULT_AI_SPEED;
+    else if (typeof d === 'boolean') out[k] = typeof v === 'boolean' ? v : k === 'seenCoach' || k === 'haptics' ? true : base[k]; // (a save without seenCoach is an older player's; haptics are on)
+  }
+  return out;
+};
 
 // ---------- save ----------
 G.save = createSaveStore({ onConflict() {
@@ -87,7 +100,7 @@ function applySettings() {
 }
 
 function syncSavedSettings() {
-  Object.assign(G.state.settings, validSpeed({ ...baseSettings(), ...G.save.data.settings }));
+  Object.assign(G.state.settings, validSettings({ ...baseSettings(), ...G.save.data.settings }));
   applySettings();
 }
 function applyCommittedSettings(result) {
@@ -163,7 +176,7 @@ G.hooks.effect = (kind, p, purpose) => {
 };
 
 function newState() {
-  return { v: 1, scene: 'title', mode: null, settings: validSpeed({ ...baseSettings(), ...(G.save.data.settings || {}) }), asked: (G.save.data.seen || []).slice(-SEEN_MAX), trail: null, question: null, quiz: null, rngSeed: 1 }; // asked starts from the questions remembered from earlier visits (S3-06)
+  return { v: 1, scene: 'title', mode: null, settings: validSettings({ ...baseSettings(), ...(G.save.data.settings || {}) }), asked: (G.save.data.seen || []).slice(-SEEN_MAX), trail: null, question: null, quiz: null, rngSeed: 1 }; // asked starts from the questions remembered from earlier visits (S3-06)
 }
 
 // ---------- actions (shared by clicks, keys and __game.act) ----------
