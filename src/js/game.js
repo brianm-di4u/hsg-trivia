@@ -175,7 +175,9 @@ export function newTrail({ players, target = 6, qdiff = 'adaptive' }) {
   };
   G.state.question = null; G.lastRecord = null; G.say = null; G.voiceN = {};
   G.state.mode = 'trail';
-  log(`A new trip begins. Collect ${target} stamps, then climb to the Mountain Tower.`);
+  // The departure banner and the standing goal line say what to collect; the log (shown under the turn header on a phone) does not say it a third time (C4-17).
+  // A screen reader is still told the whole sentence.
+  log('A new trip begins.'); G.hooks.announce(`A new trip begins. Collect ${target} stamps, then climb to the Mountain Tower.`);
   G.hooks.save();
   beginTurn();
 }

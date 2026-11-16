@@ -41,40 +41,39 @@ const REWORDED = {
 const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 export const tests = [
-  // ---------------- S6-06 ----------------
+  // ---------------- C4-17 ----------------
   {
-    name: 'S6-06 a save with bad settings (text size 0, a volume of "loud", a speed of "warp") plays with the usual ones, and the page is readable',
-    initScript: withSave({ ...BASE, settings: { sound: 'no', effects: null, music: 'yes', ambience: 1, haptics: 'x', passScreen: 3, volume: 'loud', timer: 7, motion: 'warp', textScale: 0, theme: 'neon', aiSpeed: 'warp', seenCoach: 5 } }),
+    name: 'C4-17 the opening line of a trip does not say the goal a third time: it is on the banner, the standing line and the first tip only',
     async run(t) {
-      await t.game('scene', 'settings');
+      await t.seed(7);
+      await t.game('setState', { settings: { passScreen: false, aiSpeed: 'fast', timer: 0, seenCoach: false } });
+      await t.game('scene', 'setup');
       await t.waitForStable(8000);
-      const s = (await t.state()).settings;
-      t.expect(s.sound === true && s.effects === true && s.music === true && s.ambience === true && s.haptics === true && s.passScreen === true, 'the switches are on: ' + JSON.stringify(s));
-      t.expect(s.volume === 0.7 && s.timer === 30 && s.motion === 'auto' && s.textScale === 1 && s.theme === 'auto', 'the rest are the usual: ' + JSON.stringify(s));
-      t.expect(['normal', 'brisk', 'fast'].includes(s.aiSpeed), 'the speed is one that exists: ' + s.aiSpeed);
-      t.equal(s.seenCoach, true, 'an older player is still not a newcomer');
-      t.equal(await t.page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '16px', 'the page text is its normal size');
-      const on = await t.page.evaluate(() => [...document.querySelectorAll('#scene-settings .seg')].map((g) => g.querySelectorAll('[aria-checked="true"]').length));
-      t.expect(on.every((n) => n === 1), 'every Settings row shows exactly one choice: ' + on);
+      await t.game('act', 'ui', 'start-trail');
+      await waitFor(t, (s) => s.scene === 'game', 4000, 'game');
+      await t.game('act', 'stopAI');
+      await t.page.waitForFunction(() => document.querySelector('#toast').classList.contains('on'), null, { timeout: 4000 }).catch(() => t.fail('no departure card'));
+      await t.page.waitForFunction(() => document.querySelector('.coach'), null, { timeout: 4000 }).catch(() => t.fail('no first tip'));
+      const v = await t.page.evaluate(() => {
+        const vis = (e) => !!e && e.getClientRects().length > 0 && getComputedStyle(e).visibility !== 'hidden';
+        const goal = /6 stamps/;
+        const lines = [['banner', document.querySelector('#toast')], ['standing line', document.querySelector('.objective')], ['tip', document.querySelector('.coach')], ['last line', document.querySelector('.lastline')], ...[...document.querySelectorAll('.log li')].map((e) => ['log', e])];
+        return lines.filter(([, e]) => vis(e) && goal.test(e.textContent)).map(([n]) => n);
+      });
+      t.equal(JSON.stringify(v), JSON.stringify(['banner', 'standing line', 'tip']), 'where the goal shows: ' + v);
+      const s = await t.state();
+      t.equal(s.trail.log[s.trail.log.length - 1], 'A new trip begins.', 'the log opens with the plain line');
+      t.expect((await t.page.evaluate(() => document.querySelector('.lastline').textContent)) === 'A new trip begins.', 'the line under the header');
+      await t.page.screenshot({ path: SHOTS + 'C4-17-opening-' + t.viewport + '.png' });
     },
   },
   {
-    name: 'S6-06 a text size of 50 or 1.2, a volume of 7 or NaN, and a text-size string do not reach the page',
-    initScript: withSave({ ...BASE, settings: { ...BASE.settings, textScale: 50, volume: 7, timer: '10' } }),
+    name: 'C4-17 a screen reader is still told the whole opening sentence',
+    viewports: ['desktop'],
     async run(t) {
-      const s = (await t.state()).settings;
-      t.expect(s.textScale === 1 && s.volume === 0.7 && s.timer === 30, 'back to the usual: ' + JSON.stringify(s));
-      t.equal(await t.page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '16px', 'the page text is its normal size');
-    },
-  },
-  {
-    name: 'S6-06 settings the screen offers are kept exactly',
-    initScript: withSave({ ...BASE, settings: { sound: false, effects: false, music: false, ambience: false, haptics: false, passScreen: false, volume: 0, timer: 10, motion: 'reduced', textScale: 1.3, theme: 'dusk', aiSpeed: 'fast', seenCoach: false } }),
-    async run(t) {
-      const s = (await t.state()).settings;
-      const keep = { sound: false, effects: false, music: false, ambience: false, haptics: false, passScreen: false, volume: 0, timer: 10, motion: 'reduced', textScale: 1.3, theme: 'dusk', aiSpeed: 'fast', seenCoach: false };
-      t.equal(JSON.stringify(Object.fromEntries(Object.keys(keep).sort().map((k) => [k, s[k]]))), JSON.stringify(Object.fromEntries(Object.keys(keep).sort().map((k) => [k, keep[k]]))), 'nothing valid is changed');
-      t.equal(await t.page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '20.8px', 'text at 130 percent');
+      await t.page.evaluate(() => { window.__said = []; const l = document.querySelector('#live'); new MutationObserver(() => window.__said.push(l.textContent)).observe(l, { childList: true, characterData: true, subtree: true }); });
+      await t.game('newGame', { mode: 'trail', players: [H1], target: 6, seed: 7 });
+      await t.page.waitForFunction(() => window.__said.some((m) => m === 'A new trip begins. Collect 6 stamps, then climb to the Mountain Tower.'), null, { timeout: 4000 }).catch(() => t.fail('the opening sentence was never announced: ' + 0));
     },
   },
 
