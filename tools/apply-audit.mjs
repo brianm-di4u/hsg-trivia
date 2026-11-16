@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ladderOffenders } from './distractor-ladder.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dir = process.argv[2];
@@ -69,6 +70,10 @@ console.log('category', count('category'));
 console.log('difficulty', count('difficulty'));
 console.log('era', count('era'));
 console.log(problems.length ? 'PROBLEMS:\n  ' + problems.join('\n  ') : 'no problems');
+// P-N03: a report only (it never adds to the problems above and never fails the run).
+const ladder = ladderOffenders(out);
+console.log(`ladder report: ${ladder.length} numeric question${ladder.length === 1 ? '' : 's'} with two or more wrong answers a power of ten from the right one`);
+for (const l of ladder) console.log(`  ${l.id}: ${l.answer} | ${l.wrong.join(' ; ')}`);
 if (write) {
   const dest = path.resolve(here, '../data/questions.json');
   fs.writeFileSync(dest, JSON.stringify({ ...bank, version: 2, audited: '2026-10-28', questions: out }, null, 1));

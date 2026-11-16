@@ -1,8 +1,9 @@
 // Council wave 4, batch B: controls, rules and play; difficulty, progression and records
 // (S6-12, C4-04, C4-08, S5-20, S3-14, P-N05, S3-25, P-N03).
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createSaveStore } from '../src/js/save.js';
 import { settleJournal, cleanRecord, applyIntent, freshRecord, JOURNAL_KEYS, JOURNAL_BEFORE, ACHIEVEMENTS } from '../src/js/record.js';
 import { H1, soloGame, landOn, waitFor, phase } from './helpers.mjs';
@@ -423,4 +424,30 @@ export const tests = [
     assert.ok(lead.firstToCollectWins <= 70, 'the first to collect every stamp wins ' + lead.firstToCollectWins + ' % of two-traveler games, over 70');
   }),
 
+  // ---------------- P-N03 ----------------
+  node('P-N03 the ladder check lists numeric questions whose wrong answers are powers of ten from the right one, and only those', async () => {
+    const { ladderOffenders } = await import(pathToFileURL(REPO + 'tools/distractor-ladder.mjs').href);
+    const q = (id, answer, wrong) => ({ id, answer, wrong });
+    const got = ladderOffenders([
+      q('a', '$3,000', ['$300', '$30,000', '$300,000']),       // three rungs
+      q('b', 'About 7,200', ['About 720', 'About 1,940', 'About 72,000']), // two rungs and one other
+      q('c', '$7 million', ['$700,000', '$4 million', '$5 million']),       // one rung only
+      q('d', '650,000', ['720,000', '800,000', '900,000']),                // plausible neighbours
+      q('e', 'April 20, 1832', ['March 4, 1921', 'July 4, 1836', 'March 1, 1872']),
+      q('f', 'The Maurice', ['The Fordyce', 'The Buckstaff', 'The Ozark']), // no numbers
+    ]);
+    assert.deepEqual(got.map((x) => x.id), ['a', 'b']);
+    const bank = JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')).questions;
+    const real = ladderOffenders(bank).map((x) => x.id);
+    assert.ok(real.length >= 25 && real.includes('hs-0005') && real.includes('hs-0146') && real.includes('hs-0509'), 'the bank has its ladders: ' + real.length);
+  }),
+  node('P-N03 apply-audit prints the ladder report and still succeeds, and does not touch the question file', () => {
+    const file = REPO + 'data/questions.json'; const before = fs.statSync(file).mtimeMs, text = fs.readFileSync(file, 'utf8');
+    const r = spawnSync(process.execPath, ['tools/apply-audit.mjs', 'research/audit-records'], { cwd: REPO, encoding: 'utf8', timeout: 60000 });
+    assert.equal(r.status, 0, 'the run succeeds with offenders in the bank: ' + r.stderr.slice(0, 200));
+    const m = /ladder report: (\d+) numeric questions?/.exec(r.stdout);
+    assert.ok(m && +m[1] >= 25, 'it reports the offenders: ' + (m && m[0]));
+    assert.ok(/hs-0005: \$3,000/.test(r.stdout) && /no problems/.test(r.stdout), 'it lists them, and the problems check is separate');
+    assert.equal(fs.statSync(file).mtimeMs, before, 'the question file was not written'); assert.equal(fs.readFileSync(file, 'utf8'), text);
+  }),
 ];
