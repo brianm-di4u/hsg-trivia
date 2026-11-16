@@ -9,7 +9,7 @@ import { G, ECON } from './game.js';
 import * as Quiz from './quiz.js';
 import { sfx } from './audio.js';
 import * as Assets from './assets.js';
-import { liveStreak, dailyTaken } from './save.js';
+import { liveStreak, dailyTaken, dailyHistory } from './save.js';
 import { ACHIEVEMENTS, ACH, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, TARGET_NAMES, coverOf, coverUnlocked, titleName } from './record.js';
 
 const $ = (s) => document.querySelector(s);
@@ -567,8 +567,19 @@ function winRecordHTML() {
 
 // ---------- Trail record screen ----------
 const pct = (a, b) => (b ? Math.round((100 * a) / b) + '%' : '—');
+// The last 28 days of Daily Challenges (S3-13): a day played shows its date and how many were right; the bar under it is the share right.
+function dailyCalendarHTML(dh) {
+  if (!dh.calendar.length) return '';
+  const cells = dh.calendar.map((c, i) => {
+    const day = +c.date.slice(8), today = i === dh.calendar.length - 1;
+    const label = c.total ? `${dayWords(c.date)}: ${c.right} of ${c.total} right` : `${dayWords(c.date)}${today ? ' (today)' : ''}: not played`;
+    return `<li class="${c.total ? 'on' : ''}${today ? ' today' : ''}" role="img" aria-label="${label}"><b>${day}</b>${c.total ? `<span>${c.right}</span><i style="width:${Math.round((100 * c.right) / c.total)}%"></i>` : ''}</li>`;
+  }).join('');
+  return `<h3>Daily Challenge, last 28 days</h3><ol class="daily-cal" aria-label="Daily Challenges, oldest first, today last">${cells}</ol><p class="hint">A day played shows how many of its questions were right.</p>`;
+}
 function recordHTML() {
   const d = G.save.data; const st = d.stats; const dr = d.daily || {};
+  const dh = dailyHistory(dr, G.today());
   const earned = ACHIEVEMENTS.filter((a) => d.ach[a.id]);
   const tiles = [['Games', st.games], ['Wins', st.wins], ['Win rate', pct(st.wins, st.games)], ['Longest streak', st.bestStreak], ['Stamps earned', st.stamps], ['Summits reached', st.summits]]
     .map(([k, v]) => `<li><strong>${v}</strong><span>${k}</span></li>`).join('');
@@ -599,7 +610,8 @@ function recordHTML() {
     <h3>Fastest wins</h3><ul class="rec-list">${fastest}</ul>
     <h3>Summit stars</h3><table class="rec-table stars"><thead><tr><th scope="col">Trip</th>${LEVELS.map((l) => `<th scope="col">vs ${LEVEL_NAMES[l]}</th>`).join('')}</tr></thead><tbody>${stars}</tbody></table>
     <h3>Accuracy by category</h3><ul class="rec-cats">${cats}</ul>
-    <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${liveStreak(dr, G.today())}</strong></li><li><span>Daily Challenges played</span><strong>${Object.keys(dr.results || {}).length}</strong></li></ul>
+    <h3>Other modes</h3><ul class="rec-list"><li><span>Best Quick 10</span><strong>${d.best.quick || '—'}</strong></li><li><span>Era Express chapters scored</span><strong>${eraBest} of ${ERA_MODES.length}</strong></li><li><span>Daily Challenge streak</span><strong>${liveStreak(dr, G.today())}</strong></li><li><span>Best Daily streak</span><strong>${dh.best}</strong></li><li><span>Daily Challenges played</span><strong>${dh.played}</strong></li><li><span>Daily answers right</span><strong>${dh.total ? `${pct(dh.right, dh.total)} <small>${dh.right}/${dh.total}</small>` : '—'}</strong></li></ul>
+    ${dailyCalendarHTML(dh)}
     <h3>Passport journal <small>${Object.keys(jr).length} of ${DISTRICTS.length} pages</small></h3><ul class="journal">${pages}</ul>
     <h3>Achievements <small>${earned.length} of ${ACHIEVEMENTS.length}</small></h3><ul class="ach-list">${ach}</ul>
     <h3>Titles</h3><div class="wear-row" role="group" aria-label="Title">${titles}</div>

@@ -46,6 +46,22 @@ export const liveStreak = (daily, today) => {
   return n > 0 && daily.last && (daily.last === today || daily.last === previousDay(today)) ? n : 0;
 };
 
+// S3-13: what the Daily Challenge history shows, worked out from the dated results alone (nothing extra is saved, so a save from before has it all):
+// the longest run of consecutive days, the answers right out of the answers given, and the last 28 days ending `today`, oldest first.
+export const DAILY_CALENDAR_DAYS = 28;
+export const dailyHistory = (daily, today) => {
+  const results = daily && object(daily.results) ? daily.results : {};
+  const days = Object.keys(results).filter((d) => DATE.test(d) && object(results[d])).sort();
+  let best = 0, run = 0, prev = null;
+  for (const d of days) { run = prev && previousDay(d) === prev ? run + 1 : 1; best = Math.max(best, run); prev = d; }
+  let right = 0, total = 0;
+  const of = (r) => { const total = typeof r.marks === 'string' && r.marks.length ? r.marks.length : 7; return { right: Math.max(0, Math.min(total, Number.isFinite(r.right) ? r.right : 0)), total }; };
+  for (const d of days) { const o = of(results[d]); right += o.right; total += o.total; }
+  const calendar = [];
+  if (DATE.test(today || '')) { let d = today; for (let i = 0; i < DAILY_CALENDAR_DAYS; i++) { const r = object(results[d]) ? { date: d, ...of(results[d]) } : { date: d, right: null, total: null }; calendar.unshift(r); d = previousDay(d); } }
+  return { best, played: days.length, right, total, calendar };
+};
+
 // S6-18: the days whose Daily Challenge was started, kept beside the results (a save from before has none): a Daily played again after its first run,
 // finished or not, is practice and is not counted. At most DAILY_STARTED_MAX days are kept, the newest.
 const DAILY_STARTED_MAX = 30;

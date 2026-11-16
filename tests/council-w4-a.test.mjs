@@ -1,7 +1,7 @@
 // Council wave 4, batch A: saves, lifecycle and robustness; controls, rules and play
 // (C4-01, C4-12, C4-13, C4-14, C4-15, C4-16, S3-13, S6-11, S1-09, S5-19).
 import assert from 'node:assert/strict';
-import { createSaveStore, isNewerSave } from '../src/js/save.js';
+import { createSaveStore, isNewerSave, dailyHistory } from '../src/js/save.js';
 import { fileURLToPath } from 'node:url';
 import { H1, H2, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
@@ -10,6 +10,17 @@ const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', i
 const withRaw = (raw) => {
   const f = () => {};
   f.toString = () => `() => { if (!sessionStorage.getItem('seeded')) { sessionStorage.setItem('seeded', '1'); localStorage.setItem('hs-trivia-v1', ${JSON.stringify(raw)}); } }`;
+  return f;
+};
+// A save with Daily Challenges on 2026-11-02 to 04 (three in a row), 2026-11-08 and 2026-11-09, and today 2026-11-12: a best run of 3, a current run of 1.
+const DAILY_SAVE = (() => {
+  const r = (right, score) => ({ score, right, marks: '1111111'.slice(0, right).padEnd(7, '0') });
+  return { v: 1, settings: { sound: true, volume: 0.7, timer: 0, aiSpeed: 'normal', seenCoach: true }, best: { quick: 0, era: {} },
+    daily: { last: '2026-11-12', streak: 1, results: { '2026-11-02': r(7, 700), '2026-11-03': r(5, 500), '2026-11-04': r(6, 600), '2026-11-08': r(3, 300), '2026-11-09': r(4, 400), '2026-11-12': r(7, 700) } }, trail: null };
+})();
+const withDate = (obj, today) => {
+  const f = () => {};
+  f.toString = () => `() => { window.__TEST_DATE__ = ${JSON.stringify(today)}; if (!sessionStorage.getItem('seeded')) { sessionStorage.setItem('seeded', '1'); localStorage.setItem('hs-trivia-v1', ${JSON.stringify(JSON.stringify(obj))}); } }`;
   return f;
 };
 const NEWER = JSON.stringify({ v: 2, settings: { sound: false, volume: 0.3, timer: 15 }, best: { quick: 777, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, future: { keep: [1, 2, 3] } });
@@ -154,6 +165,47 @@ export const tests = [
       await guard(t, 0);
       await press(t, 0);
       await waitFor(t, (x) => x.trail.phase !== 'choose', 3000, 'the later A to pick');
+    },
+  },
+
+  // ---------------- S3-13 ----------------
+  node('S3-13 the Daily history: best run, accuracy and the last 28 days come from the dated results', () => {
+    const h = dailyHistory(DAILY_SAVE.daily, '2026-11-12');
+    assert.equal(h.best, 3, 'the longest run of consecutive days'); assert.equal(h.played, 6);
+    assert.equal(h.right, 7 + 5 + 6 + 3 + 4 + 7); assert.equal(h.total, 42);
+    assert.equal(h.calendar.length, 28); assert.equal(h.calendar[27].date, '2026-11-12', 'today is last'); assert.equal(h.calendar[0].date, '2026-10-16', 'oldest first, 28 days');
+    assert.deepEqual(h.calendar.find((c) => c.date === '2026-11-03'), { date: '2026-11-03', right: 5, total: 7 });
+    assert.equal(h.calendar.find((c) => c.date === '2026-11-05').total, null, 'a day not played');
+    const none = dailyHistory({ last: null, streak: 0, results: {} }, '2026-11-12'); assert.deepEqual([none.best, none.played, none.total], [0, 0, 0]);
+    assert.equal(dailyHistory(undefined, '2026-11-12').calendar.length, 28, 'a missing daily record still draws an empty month');
+    assert.equal(dailyHistory({ results: { '2026-11-02': 'x', 'junk': { right: 3 }, '2026-11-03': { right: 99, marks: '101' } } }, '2026-11-12').right, 3, 'damaged rows are skipped or clamped to their marks');
+  }),
+  {
+    name: 'S3-13 the Trail record shows the best Daily streak, accuracy and a 28-day calendar',
+    initScript: withDate(DAILY_SAVE, '2026-11-12'),
+    async run(t) {
+      await t.game('scene', 'record');
+      await t.waitForStable(8000);
+      const cal = await t.page.evaluate(() => [...document.querySelectorAll('.daily-cal li')].map((li) => ({ on: li.classList.contains('on'), today: li.classList.contains('today'), label: li.getAttribute('aria-label') })));
+      t.equal(cal.length, 28, 'four weeks of days'); t.equal(cal.filter((c) => c.on).length, 6, 'six days played');
+      t.expect(cal[27].today && cal[27].on, 'today is last and marked'); t.equal(cal[27].label, 'Nov 12: 7 of 7 right'); t.equal(cal[0].label, 'Oct 16: not played');
+      const text = await t.page.evaluate(() => document.querySelector('.record-card').innerText);
+      t.expect(/Best Daily streak\s*3/.test(text), 'best streak 3'); t.expect(/Daily Challenge streak\s*1/.test(text), 'current streak 1'); t.expect(/Daily answers right\s*76%/.test(text), 'accuracy 32 of 42');
+      await t.page.evaluate(() => document.querySelector('.daily-cal').scrollIntoView({ block: 'center' }));
+      await t.checkLayout({ allowScrollY: true });
+      const box = await t.page.evaluate(() => { const r = document.querySelector('.daily-cal').getBoundingClientRect(); return { l: r.left, r: r.right, vw: innerWidth, minH: Math.min(...[...document.querySelectorAll('.daily-cal li')].map((li) => li.getBoundingClientRect().height)) }; });
+      t.expect(box.l >= 0 && box.r <= box.vw, 'the calendar fits the width'); t.expect(box.minH >= 40, 'cells are tall enough to read: ' + box.minH);
+      await t.page.screenshot({ path: SHOTS + 'S3-13-daily-calendar-' + t.viewport + '.png' });
+    },
+  },
+  {
+    name: 'S3-13 a save with no Daily results draws an empty calendar and no accuracy',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.game('scene', 'record');
+      await t.waitForStable(8000);
+      t.equal(await t.page.locator('.daily-cal li.on').count(), 0, 'nothing played');
+      t.expect(/Daily answers right\s*—/.test(await t.page.evaluate(() => document.querySelector('.record-card').innerText)), 'a dash for accuracy');
     },
   },
 ];

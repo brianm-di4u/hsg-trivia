@@ -173,6 +173,12 @@ body[data-theme="dark"] .star.on { color: #F2C94C; }
 .rec-cats li { display: grid; grid-template-columns: minmax(120px, 190px) 1fr minmax(70px, auto); align-items: center; gap: 10px; }
 .cat-n { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; } .cat-v { text-align: right; font-weight: 600; } .cat-v small { color: var(--color-muted); font-weight: 400; }
 .cat-bar { height: 10px; border-radius: 6px; background: var(--color-border); overflow: hidden; } .cat-bar i { display: block; height: 100%; }
+.daily-cal { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.daily-cal li { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 44px; padding: 3px 0 7px; border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-muted); font-size: 0.8rem; overflow: hidden; }
+.daily-cal li b { font-weight: 600; line-height: 1.2; } .daily-cal li span { font-size: 0.72rem; line-height: 1.1; }
+.daily-cal li.on { background: var(--color-bg); border-color: var(--color-success); color: var(--color-text); } .daily-cal li.on b { font-weight: 800; }
+.daily-cal li.today { border-style: dashed; border-color: var(--color-highlight); } .daily-cal li.today.on { border-style: solid; }
+.daily-cal li i { position: absolute; left: 0; bottom: 0; height: 4px; background: var(--color-success); }
 .journal { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .jpage { display: grid; gap: 4px; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--color-border); align-content: start; }
 .jpage.got { background: var(--color-bg); border-color: var(--color-success); } .jpage.lock { opacity: 0.75; border-style: dashed; }
