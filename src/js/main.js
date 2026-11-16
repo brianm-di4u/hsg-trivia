@@ -208,7 +208,7 @@ const ACTIONS = {
     syncSavedSettings();
     R.resetTokens();
     if (open) { G.state.question = open; scene('game'); } // back to the question that was on screen, with its time left
-    else { scene('game'); Game.beginTurn(); }
+    else { G.state.trail.phase = 'roll'; G.state.trail.pending = null; scene('game'); Game.beginTurn(); } // a question that is no longer in the bank (or has a new answer) is not drawn: the turn starts afresh
   },
   'start-trail': () => {
     const su = ui.setup;

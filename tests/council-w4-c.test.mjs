@@ -45,7 +45,7 @@ export const tests = [
   node('C4-03 C4-05 the sixteen approved questions are in the question file exactly, and nothing else about them moved', () => {
     const all = bank(), by = new Map(all.map((q) => [q.id, q]));
     for (const [id, want] of Object.entries(REWORDED)) assert.equal(plain(by.get(id).question), plain(want), id);
-    assert.equal(all.length, 619, 'no question added or removed');
+    assert.equal(all.length, 608, 'the bank holds 619 less the eleven questions the owner retired in C4-10');
     const original = JSON.parse(fs.readFileSync(REPO + 'research/trivia-bank.json', 'utf8'));
     assert.ok(Array.isArray(original.questions || original), 'the original bank is still there');
   }),

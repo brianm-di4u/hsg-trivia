@@ -1740,7 +1740,7 @@
     "The Lamar",
     "The Quapaw"
    ],
-   "explanation": "The Superior Bathhouse Brewery and Distillery has occupied the Superior Bathhouse since 2012.",
+   "explanation": "The brewery's own history says it opened in the Superior Bathhouse in 2013.",
    "source": "Wikipedia: Hot Springs, Arkansas",
    "sourceUrl": "https://en.wikipedia.org/wiki/Hot_Springs,_Arkansas",
    "confidence": "confirmed"
@@ -2302,23 +2302,6 @@
     "2, both largemouth"
    ],
    "explanation": "The possession limit is triple the daily limit.",
-   "source": "AGFC: Statewide lengths and daily limits",
-   "sourceUrl": "https://www.agfc.com/education/statewide-lengths-and-daily-limits/",
-   "confidence": "confirmed"
-  },
-  {
-   "id": "hs-0136",
-   "category": "Nature & Lakes",
-   "difficulty": "easy",
-   "era": "modern",
-   "question": "What is Arkansas's statewide daily crappie limit?",
-   "answer": "30",
-   "wrong": [
-    "5",
-    "10",
-    "100"
-   ],
-   "explanation": "Black and white crappie are combined in the limit; area-specific rules may differ.",
    "source": "AGFC: Statewide lengths and daily limits",
    "sourceUrl": "https://www.agfc.com/education/statewide-lengths-and-daily-limits/",
    "confidence": "confirmed"
@@ -3831,7 +3814,7 @@
     "1968",
     "1999"
    ],
-   "explanation": "It had 1,114 students in 2023-24.",
+   "explanation": "Wikipedia says the Garland County school was founded in 1928.",
    "source": "Wikipedia: Lakeside High School",
    "sourceUrl": "https://en.wikipedia.org/wiki/Lakeside_High_School_(Hot_Springs,_Arkansas)",
    "confidence": "confirmed"
@@ -4351,14 +4334,14 @@
    "category": "Sports",
    "difficulty": "easy",
    "era": "modern",
-   "question": "How long is the shot clock in Arkansas high school basketball, as used by Hot Springs teams?",
+   "question": "What length of basketball shot clock did the Arkansas Activities Association vote in 2020 to make mandatory for all member schools?",
    "answer": "35 seconds",
    "wrong": [
     "24 seconds",
     "30 seconds",
     "45 seconds"
    ],
-   "explanation": "A resolution making the 35-second shot clock mandatory for all schools by 2022-23 passed in 2020.",
+   "explanation": "The 2020 resolution made the 35-second shot clock mandatory for every school by the 2022-23 school year.",
    "source": "Delta Plex News: AAA shot clock resolution",
    "sourceUrl": "https://www.deltaplexnews.com/?p=102513",
    "confidence": "confirmed"
@@ -4375,7 +4358,7 @@
     "Wolf Stadium",
     "Majestic Park"
    ],
-   "explanation": "KAIT listed the 2026 finals weekend at Bank OZK Arena in Hot Springs, with games on March 12, 13 and 14.",
+   "explanation": "KAIT's finals-weekend results page, published March 1 and updated March 13, 2026, is headed Bank OZK Arena and lists scores from the March 12 and 13 games.",
    "source": "KAIT: 2026 State Basketball Finals Weekend continues in Hot Springs",
    "sourceUrl": "https://www.kait8.com/2026/03/01/2026-state-basketball-tournament-central/",
    "confidence": "confirmed"
@@ -4487,14 +4470,14 @@
    "category": "Sports",
    "difficulty": "hard",
    "era": "modern",
-   "question": "How many Kentucky Derby winners had the Arkansas Derby produced, per a Visit Hot Springs article?",
-   "answer": "Eight",
+   "question": "Which Arkansas Derby winner went on to win the 1983 Kentucky Derby?",
+   "answer": "Sunny's Halo",
    "wrong": [
-    "One",
-    "Twenty",
-    "Thirty-six"
+    "Lil E. Tee",
+    "Grindstone",
+    "Super Saver"
    ],
-   "explanation": "The article lists winners from Sunny's Halo (1983) through Mystik Dan (2024).",
+   "explanation": "Visit Hot Springs lists Sunny's Halo (1983) first among eight Arkansas Derby winners that took the Kentucky Derby; Lil E. Tee, Grindstone and Super Saver on the same list won in 1992, 1996 and 2010.",
    "source": "Visit Hot Springs: Arkansas Derby history",
    "sourceUrl": "https://hotsprings.org/blog/arkansas-derby-history-lives-in-hot-springs-national-park-arkansas/",
    "confidence": "confirmed"
@@ -4684,23 +4667,6 @@
    "explanation": "It sits near Lake Hamilton and Lake Catherine.",
    "source": "Wikipedia: Lake Hamilton High School",
    "sourceUrl": "https://en.wikipedia.org/wiki/Lake_Hamilton_High_School",
-   "confidence": "confirmed"
-  },
-  {
-   "id": "hs-0276",
-   "category": "Sports",
-   "difficulty": "easy",
-   "era": "any",
-   "question": "At which stadium did Lakeside beat Lake Hamilton 49-42 on Aug. 25, 2023?",
-   "answer": "Wolf Stadium",
-   "wrong": [
-    "Joe C. Reese Stadium",
-    "War Memorial Stadium",
-    "Chick Austin Field"
-   ],
-   "explanation": "The Sentinel-Record's photo caption places the game at Wolf Stadium.",
-   "source": "Sentinel-Record (Aug 2023)",
-   "sourceUrl": "https://www.hotsr.com/news/2023/aug/26/lakeside-downs-lake-hamilton-in-pearcy-makes/",
    "confidence": "confirmed"
   },
   {
@@ -5933,13 +5899,13 @@
    "difficulty": "hard",
    "era": "gilded-spa",
    "question": "What had W. N. Benton done before buying Mountain Valley Spring Water in 1879?",
-   "answer": "Sold insurance in St. Louis",
+   "answer": "Worked as an insurance agent",
    "wrong": [
     "Ran a Mississippi steamboat",
     "Managed the Arlington Hotel",
     "Coached the White Stockings"
    ],
-   "explanation": "EoA says W. N. Benton, an insurance agent formerly of St. Louis, bought the business from the Greene brothers in 1879.",
+   "explanation": "The Encyclopedia of Arkansas says W. N. Benton, an insurance agent formerly of St. Louis, bought the business from the Greene brothers in 1879.",
    "source": "Encyclopedia of Arkansas: Mountain Valley Spring Water",
    "sourceUrl": "https://encyclopediaofarkansas.net/entries/mountain-valley-spring-water-2148/",
    "confidence": "confirmed"
@@ -6098,23 +6064,6 @@
    "confidence": "confirmed"
   },
   {
-   "id": "hs-0360",
-   "category": "Food & Culture",
-   "difficulty": "easy",
-   "era": "modern",
-   "question": "What new restaurant focused on wings and tenders did Magic Springs announce for 2026?",
-   "answer": "The Chicken Coop",
-   "wrong": [
-    "The Rib Shack",
-    "Twister Treats",
-    "The Gator Grill"
-   ],
-   "explanation": "A park official said in May 2026 there would be no new rides or attractions that season.",
-   "source": "Sentinel-Record (May 11, 2026)",
-   "sourceUrl": "https://www.hotsr.com/news/2026/may/11/magic-springs-theme-and-water-park-touts-concerts/",
-   "confidence": "confirmed"
-  },
-  {
    "id": "hs-0361",
    "category": "Food & Culture",
    "difficulty": "easy",
@@ -6228,7 +6177,7 @@
     "Brush Row",
     "Canvas Creek"
    ],
-   "explanation": "Visit Hot Springs calls it a free, two-day art festival and showcase; it listed Arts & the Park as April 24 to May 3 in 2020.",
+   "explanation": "Visit Hot Springs describes Art Springs as a free, two-day art festival and showcase within its Arts & the Park celebration; a 2026 listing shows it again that spring.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -6370,23 +6319,6 @@
    "confidence": "confirmed"
   },
   {
-   "id": "hs-0376",
-   "category": "Food & Culture",
-   "difficulty": "medium",
-   "era": "modern",
-   "question": "Which cheerleading squad was announced for Hot Springs' 2026 St. Patrick's Day parade alongside grand marshal Carmen Electra?",
-   "answer": "Dallas Cowboys Cheerleaders",
-   "wrong": [
-    "Razorback Cheer Squad",
-    "Laker Girls",
-    "Rockettes"
-   ],
-   "explanation": "IrishCentral said it would be the squad's 12th return to Hot Springs since 2013.",
-   "source": "IrishCentral: 2026 grand marshal",
-   "sourceUrl": "https://www.irishcentral.com/events/carmen-electra-grand-marshal-23rd-annual-worlds-shortest-st-patricks-day-parade",
-   "confidence": "confirmed"
-  },
-  {
    "id": "hs-0377",
    "category": "Food & Culture",
    "difficulty": "medium",
@@ -6500,7 +6432,7 @@
     "2016",
     "2023"
    ],
-   "explanation": "Organizers cited \"an abundance of caution\" over the COVID-19 pandemic when moving the races.",
+   "explanation": "Organizers cited an abundance of caution over COVID-19 when moving the races; a 2026 Visit Hot Springs release says no races were held in 2020.",
    "source": "Visit Hot Springs: 2020 version of the World Championship Running of the Tubs (press release)",
    "sourceUrl": "https://hotsprings.org/media-room/press-releases/2020-version-world-championship-running-tubs-batht/",
    "confidence": "confirmed"
@@ -6544,31 +6476,14 @@
    "category": "Food & Culture",
    "difficulty": "medium",
    "era": "modern",
-   "question": "Which race at Hot Springs' Güdrun Mountain Biking Festival is named for a famous conqueror?",
+   "question": "Which race at Hot Springs' Güdrun mountain bike festival is named for a famous conqueror?",
    "answer": "The Attila the Hun race",
    "wrong": [
     "The Genghis Khan Climb",
     "The Napoleon Dash",
     "The Caesar Crank"
    ],
-   "explanation": "The Güdrun Mountain Biking Festival (Nov. 13-15 in the 2020 listing) includes the annual Attila the Hun Mountain Bike Race.",
-   "source": "Visit Hot Springs: A reason to visit every season",
-   "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
-   "confidence": "confirmed"
-  },
-  {
-   "id": "hs-0387",
-   "category": "Food & Culture",
-   "difficulty": "medium",
-   "era": "modern",
-   "question": "What is the free family event with fireworks at Oaklawn around July 3?",
-   "answer": "Spa Blast",
-   "wrong": [
-    "Derby Blast",
-    "Firecracker Fest",
-    "Vapor Night"
-   ],
-   "explanation": "A 2020 Visit Hot Springs preview billed it as free and family-friendly, with fireworks and a Charlie Daniels Band performance.",
+   "explanation": "Visit Hot Springs described the Güdrun festival in 2020 as including the annual Attila the Hun Mountain Bike Race; the 2026 festival, now billed as the Güdrun - Northwoods MTB Festival, still lists an Attila the Hun XC race.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -6585,27 +6500,10 @@
     "Zero K Foot Race",
     "Hot Springs Rally"
    ],
-   "explanation": "The 2020 listing (Nov. 13-15) also included a 10K, a 5K and a 1K for children.",
+   "explanation": "The Spa Running Festival is a November race weekend in Hot Springs with a Summit2Summit half marathon, a 10K, a 5K and a children's Squirt Race; the race's own page describes the course as running through Hot Springs National Park.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
-  },
-  {
-   "id": "hs-0389",
-   "category": "Food & Culture",
-   "difficulty": "medium",
-   "era": "modern",
-   "question": "Which September Hot Springs event does Visit Hot Springs call central Arkansas' largest annual bike rally?",
-   "answer": "Hot Springs Rally",
-   "wrong": [
-    "Spa-Con",
-    "Spa Blast",
-    "Güdrun Festival"
-   ],
-   "explanation": "The 2020 listing (Sept. 10-12) featured a parade, poker runs, a bike show and live music.",
-   "source": "Visit Hot Springs: A reason to visit every season",
-   "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
-   "confidence": "claim"
   },
   {
    "id": "hs-0390",
@@ -6619,24 +6517,7 @@
     "Kansas",
     "Journey"
    ],
-   "explanation": "Blues Traveler was announced for Monday, March 16, the day before the parade.",
-   "source": "Visit Hot Springs: A reason to visit every season",
-   "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
-   "confidence": "confirmed"
-  },
-  {
-   "id": "hs-0391",
-   "category": "Food & Culture",
-   "difficulty": "medium",
-   "era": "modern",
-   "question": "Which Hot Springs plaza hosts the Hot Water Hills Music and Arts Festival?",
-   "answer": "Hill Wheatley Plaza",
-   "wrong": [
-    "Arlington Lawn",
-    "Grand Promenade",
-    "Majestic Park"
-   ],
-   "explanation": "The 2020 listing had the Hot Water Hills festival on Oct. 2-3.",
+   "explanation": "A 2020 Visit Hot Springs listing said Brian Martin and Blues Traveler would play on Monday, March 16, and Foghat on Tuesday, following the parade.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -6693,23 +6574,6 @@
    "confidence": "confirmed"
   },
   {
-   "id": "hs-0395",
-   "category": "Food & Culture",
-   "difficulty": "easy",
-   "era": "any",
-   "question": "In which month was the 34th Hot Springs Documentary Film Festival scheduled to run in 2025?",
-   "answer": "October",
-   "wrong": [
-    "March",
-    "June",
-    "December"
-   ],
-   "explanation": "UALR Public Radio listed the 34th annual festival for October 10-18, 2025.",
-   "source": "UA Little Rock Public Radio: 34th Hot Springs Documentary Film Festival",
-   "sourceUrl": "https://www.ualrpublicradio.org/community-calendar/event/34th-hot-springs-documentary-film-festival-22-08-2025-15-27-11",
-   "confidence": "confirmed"
-  },
-  {
    "id": "hs-0396",
    "category": "Food & Culture",
    "difficulty": "easy",
@@ -6721,7 +6585,7 @@
     "October",
     "December"
    ],
-   "explanation": "Visit Hot Springs listed the 2020 festival as May 31 to June 13.",
+   "explanation": "The festival's own site says it brings over 100 international musicians to Hot Springs each June for two weeks of concerts and open rehearsals.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -7326,14 +7190,14 @@
    "category": "Entertainment",
    "difficulty": "medium",
    "era": "modern",
-   "question": "On what date did Magic Springs reopen after its late-1990s closure?",
+   "question": "On what date did Magic Springs reopen after its mid-1990s closure?",
    "answer": "May 27, 2000",
    "wrong": [
     "July 22, 1978",
     "May 30, 1992",
     "May 2, 2026"
    ],
-   "explanation": "Magic Springs and Crystal Falls reopened on May 27, 2000, after voters approved a bond issue.",
+   "explanation": "Wikipedia says the park closed in 1995 and that Magic Springs and Crystal Falls reopened on May 27, 2000, after Hot Springs voters approved a bond issue.",
    "source": "Wikipedia: Magic Springs",
    "sourceUrl": "https://en.wikipedia.org/wiki/Magic_Springs",
    "confidence": "confirmed"
@@ -7503,7 +7367,7 @@
     "2000",
     "2012"
    ],
-   "explanation": "Magic Springs said the 2025 season marked its official retirement; the coaster remains standing but not operating.",
+   "explanation": "Magic Springs' website said the 2025 season marked the official retirement of the wooden coaster, which it said would stay permanently closed; the park said it would not remove the ride for the foreseeable future.",
    "source": "Wikipedia: Arkansas Twister",
    "sourceUrl": "https://en.wikipedia.org/wiki/Arkansas_Twister",
    "confidence": "claim"
@@ -7628,23 +7492,6 @@
    "confidence": "confirmed"
   },
   {
-   "id": "hs-0450",
-   "category": "Entertainment",
-   "difficulty": "easy",
-   "era": "modern",
-   "question": "According to Magic Springs, about how many seasonal workers does it employ?",
-   "answer": "Nearly 600",
-   "wrong": [
-    "About 60",
-    "About 150",
-    "About 6,000"
-   ],
-   "explanation": "A park official said in May 2026 it employs nearly 600 people for the season, many of them teens in first jobs.",
-   "source": "Sentinel-Record (May 11, 2026)",
-   "sourceUrl": "https://www.hotsr.com/news/2026/may/11/magic-springs-theme-and-water-park-touts-concerts/",
-   "confidence": "claim"
-  },
-  {
    "id": "hs-0451",
    "category": "Entertainment",
    "difficulty": "easy",
@@ -7659,23 +7506,6 @@
    "explanation": "Magic Springs becomes \"Magic Screams\" for a Halloween festival in October.",
    "source": "Wikipedia: Magic Springs",
    "sourceUrl": "https://en.wikipedia.org/wiki/Magic_Springs",
-   "confidence": "confirmed"
-  },
-  {
-   "id": "hs-0452",
-   "category": "Entertainment",
-   "difficulty": "hard",
-   "era": "modern",
-   "question": "What admission price was announced for both Magic Springs parks on 2026 \"Cooler Sundays\"?",
-   "answer": "$36.99",
-   "wrong": [
-    "$3.69",
-    "$69.99",
-    "$295"
-   ],
-   "explanation": "On Cooler Sundays guests could bring their own food, drinks and a cooler.",
-   "source": "Sentinel-Record (May 11, 2026)",
-   "sourceUrl": "https://www.hotsr.com/news/2026/may/11/magic-springs-theme-and-water-park-touts-concerts/",
    "confidence": "confirmed"
   },
   {
@@ -7764,23 +7594,6 @@
    "confidence": "confirmed"
   },
   {
-   "id": "hs-0458",
-   "category": "Entertainment",
-   "difficulty": "medium",
-   "era": "modern",
-   "question": "Which edition of the Hot Springs Documentary Film Festival was scheduled for October 2025?",
-   "answer": "The 34th",
-   "wrong": [
-    "The 10th",
-    "The 21st",
-    "The 50th"
-   ],
-   "explanation": "The listing said it would run Oct. 10-18, 2025, at the Arlington Resort Hotel & Spa.",
-   "source": "UA Little Rock Public Radio calendar (2025 film festival)",
-   "sourceUrl": "https://www.ualrpublicradio.org/community-calendar/event/34th-hot-springs-documentary-film-festival-22-08-2025-15-27-11",
-   "confidence": "confirmed"
-  },
-  {
    "id": "hs-0459",
    "category": "Entertainment",
    "difficulty": "hard",
@@ -7792,7 +7605,7 @@
     "About 25",
     "About 2,500"
    ],
-   "explanation": "Visit Hot Springs lists over 20 concerts and over 250 open rehearsals for the festival's May 31-June 13, 2020 run.",
+   "explanation": "The festival's own site says its two weeks include over 20 concerts and 250 open rehearsals.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -7802,14 +7615,14 @@
    "category": "Entertainment",
    "difficulty": "easy",
    "era": "modern",
-   "question": "Which March indie music festival in Hot Springs brings 140-plus musicians to small venue stages?",
-   "answer": "Valley of the Vapors",
+   "question": "In what year was Hot Springs' Valley of the Vapors Independent Music Festival first held?",
+   "answer": "2005",
    "wrong": [
-    "Hot Water Hills",
-    "Arts & the Park",
-    "Spa Blast"
+    "1995",
+    "2011",
+    "2016"
    ],
-   "explanation": "The 2020 Valley of the Vapors Independent Music Festival (March 20-23) planned 140-plus musicians on small venue stages.",
+   "explanation": "The festival was started by Bill Solleder and Shea Childs, who formed the nonprofit Low Key Arts to run it.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -7870,14 +7683,14 @@
    "category": "Entertainment",
    "difficulty": "hard",
    "era": "modern",
-   "question": "Which 2023 film spent a week shooting at Hot Springs' Malco Theatre?",
+   "question": "Which film spent a week shooting at Hot Springs' Malco Theatre during production in 2023?",
    "answer": "The Magician's Raincoat",
    "wrong": [
     "Elizabethtown",
     "Arkansas",
     "Betrayed Within"
    ],
-   "explanation": "The Sentinel-Record says much of the film was shot in downtown Hot Springs, including a week at the Malco Theatre.",
+   "explanation": "The Sentinel-Record reported in June 2023 that much of the film was shot in downtown Hot Springs, including a week at the Malco Theatre.",
    "source": "Hot Springs Sentinel-Record: The Magician's Raincoat",
    "sourceUrl": "https://www.hotsr.com/news/2023/jun/24/watch-magicians-raincoat-magical-adventure-movie/",
    "confidence": "confirmed"
@@ -7894,7 +7707,7 @@
     "Carmen Electra",
     "Valerie Bertinelli"
    ],
-   "explanation": "The article says Visit Hot Springs' Bill Solleder, the film commissioner, issues film permits.",
+   "explanation": "The Sentinel-Record reported in March 2022 that Little Rock native Joey Lauren Adams was directing the television movie, titled Betrayed Within on a city permit application, which was filmed in part at the Arlington Resort Hotel & Spa.",
    "source": "Sentinel-Record (2022): Adams filming",
    "sourceUrl": "https://www.hotsr.com/news/2022/mar/11/watch-adams-filming-movie-in-hot-springs/",
    "confidence": "confirmed"
@@ -7904,14 +7717,14 @@
    "category": "Entertainment",
    "difficulty": "easy",
    "era": "modern",
-   "question": "Which comic and pop-culture convention was listed for September 18-20, 2020 in Hot Springs?",
-   "answer": "Spa-Con",
+   "question": "In what year did Hot Springs' Spa-Con comics and pop culture convention begin?",
+   "answer": "2016",
    "wrong": [
-    "Comic-Con",
-    "Dragon Con",
-    "Vapor-Con"
+    "2008",
+    "2012",
+    "2019"
    ],
-   "explanation": "The 2020 listing (Sept. 18-20) named guests including actress Lori Petty and Rodger Bumpass, the voice of Squidward.",
+   "explanation": "The name plays on Hot Springs' nickname, the Spa City, and the convention is generally held at the Hot Springs Convention Center.",
    "source": "Visit Hot Springs: A reason to visit every season",
    "sourceUrl": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
    "confidence": "confirmed"
@@ -10386,14 +10199,14 @@
    "category": "Legends & Oddities",
    "difficulty": "hard",
    "era": "gilded-spa",
-   "question": "What everyday object did archeologists find in the Hale Hot Cave, left from when the cave closed in 1896?",
+   "question": "What everyday object did archeologists find in the Hale Hot Cave?",
    "answer": "An alarm clock",
    "wrong": [
     "A pocket watch",
     "A razor strop",
     "A brass spittoon"
    ],
-   "explanation": "The park's archeology page pictures an alarm clock recovered from the Hale Hot Cave, dating to the cave's closing in 1896.",
+   "explanation": "The park's archeology page pictures an alarm clock recovered from the Hale Hot Cave.",
    "source": "NPS: Archeology at Hot Springs",
    "sourceUrl": "https://www.nps.gov/hosp/learn/historyculture/archeology.htm",
    "confidence": "confirmed"

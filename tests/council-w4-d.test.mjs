@@ -2,8 +2,9 @@
 // (C4-06, C4-07, C4-09, C4-10, C4-11).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { soloGame, landOn, phase } from './helpers.mjs';
+import { soloGame, landOn, phase, waitFor } from './helpers.mjs';
 
 const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
 const REPO = fileURLToPath(new URL('..', import.meta.url));
@@ -16,6 +17,15 @@ const withSave = (obj, today = '2026-11-16') => {
   return f;
 };
 const node = (name, run) => ({ name, node: true, run });
+// Runs a snippet of the game's own rules in a separate Node process (the rules read a few globals the page would give them).
+const inNode = (code) => {
+  const head = `import fs from 'node:fs'; import { pathToFileURL } from 'node:url';
+    globalThis.window = {}; for (const [k, f] of [['QUESTIONS','questions'],['TIMELINE','timeline-lite'],['BOARD_GEO','board-geo']]) globalThis[k] = JSON.parse(fs.readFileSync('data/' + f + '.json', 'utf8'));
+    const imp = (f) => import(pathToFileURL(process.cwd() + '/src/js/' + f).href);`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', head + code], { cwd: REPO, encoding: 'utf8', timeout: 120000 });
+  if (r.status !== 0) throw new Error('node snippet failed: ' + r.stderr.slice(0, 600));
+  return JSON.parse(r.stdout.trim().split(/\r?\n/).pop());
+};
 const norm = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
 const approved = () => JSON.parse(fs.readFileSync(APPROVED, 'utf8')).trivia;
 
@@ -220,4 +230,63 @@ export const tests = [
     assert.ok(main.includes('--font-serif-body: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;'));
     assert.deepEqual(fs.readdirSync(REPO + 'vendor/fonts').sort(), ['OFL-kalam.txt', 'OFL-old-standard-tt.txt', 'OFL-rye.txt', 'kalam-latin-400-normal.woff2', 'kalam-latin-700-normal.woff2', 'old-standard-tt-latin-700-normal.woff2', 'rye-latin-400-normal.woff2']);
   }),
+  // ---------------- C4-10, C4-11 ----------------
+  node('C4-10 C4-11 the question file carries every approved change and correction word for word, and the eleven retired questions are out', () => {
+    const A = approved(), file = JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')), by = new Map(file.questions.map((q) => [q.id, q]));
+    const change = { ...A.dated.change, ...A.corrections.change };
+    assert.equal(Object.keys(A.dated.change).length, 17); assert.equal(Object.keys(A.corrections.change).length, 3); assert.equal(A.dated.retire.length, 11);
+    for (const [id, c] of Object.entries(change)) {
+      const q = by.get(id); assert.ok(q, id + ' is still in the bank');
+      for (const k of ['question', 'answer', 'wrong', 'explanation']) {
+        if (c[k] == null) continue;
+        assert.deepEqual(Array.isArray(c[k]) ? c[k].map(norm) : norm(q[k]), Array.isArray(c[k]) ? q[k].map(norm) : norm(c[k]), id + '.' + k);
+        assert.notDeepEqual(norm(JSON.stringify(q[k])), norm(JSON.stringify(c[k + 'Was'])), id + '.' + k + ' is no longer the old wording');
+      }
+      assert.ok(!q.wrong.includes(q.answer) && q.wrong.length === 3, id + ': the right answer is not among three wrong ones');
+    }
+    for (const id of A.dated.retire) assert.ok(!by.has(id), id + ' is retired');
+    assert.equal(file.questions.length, 608, '619 less the eleven');
+    assert.equal(new Set(file.questions.map((q) => q.id)).size, 608, 'no id twice');
+    // the particular three of C4-11
+    assert.ok(!/1896/.test(by.get('hs-0612').question + by.get('hs-0612').explanation), 'the cave question names no closing year');
+    assert.ok(/2013/.test(by.get('hs-0102').explanation) && !/2012/.test(by.get('hs-0102').explanation), 'the brewery opened in 2013');
+    assert.equal(by.get('hs-0350').answer, 'Worked as an insurance agent');
+    // the supplement note still counts the 108 researched questions, none of which was retired
+    assert.equal(file.supplement[0].count, 108); assert.ok(A.dated.retire.every((id) => id < file.supplement[0].from));
+  }),
+  node('C4-10 the retired questions leave the Daily, the era counts and the pools cleanly', () => {
+    const retired = approved().dated.retire;
+    const r = inNode(`const Q = await imp('quiz.js'); const D = await imp('data.js');
+      const out = { bad: [], missing: [], retired: [], bank: D.BANK.length, eras: D.ERA_MODES.map((m) => [m.id, D.eraCount(m)]), thin: [] };
+      for (let i = 0; i < 400; i++) { const date = new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10), ids = Q.dailyIds(date);
+        if (ids.length !== 7 || new Set(ids).size !== 7) out.bad.push(date); for (const id of ids) { if (!D.getQ(id)) out.missing.push(id); if (${JSON.stringify(retired)}.includes(id)) out.retired.push(id); } }
+      for (const c of D.CATS) for (const d of ['easy', 'medium', 'hard']) if (D.BANK.filter((q) => q.category === c.id && q.difficulty === d).length < 10) out.thin.push(c.id + ' ' + d);
+      console.log(JSON.stringify(out));`);
+    assert.deepEqual([r.bad, r.missing, r.retired, r.thin], [[], [], [], []], 'every Daily of 400 dates has seven live questions, none retired');
+    assert.equal(r.bank, 608);
+    for (const [id, n] of r.eras) assert.ok(n >= 30, id + ' still has a full chapter: ' + n);
+  }),
+  {
+    name: 'C4-10 a save that names a retired question loads and plays: in the seen list, and as the open question of a trip',
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const types = (await t.state()).board.types;
+      await landOn(t, types.indexOf('cat')); await phase(t, 'question');
+      await t.page.evaluate(() => {
+        const k = 'hs-trivia-v1', d = JSON.parse(localStorage.getItem(k));
+        if (!d.trail || !d.trail.question) throw new Error('the open question was not saved');
+        d.trail.question.id = 'hs-0450'; d.seen = ['hs-0136', 'hs-0450', 'hs-0001'];
+        d.asked = ['hs-0136', 'hs-0450'];
+        localStorage.setItem(k, JSON.stringify(d));
+      });
+      await t.reload();
+      t.equal(await t.page.locator('[data-act="continue-trail"]').count(), 1, 'the trip can still be continued');
+      await t.game('act', 'ui', 'continue-trail');
+      const s = await waitFor(t, (x) => x.scene === 'game' && x.trail, 4000, 'continued trip');
+      t.expect(!s.question || s.question.id !== 'hs-0450', 'the retired question is not brought back');
+      t.equal(await t.page.evaluate(() => JSON.parse(localStorage.getItem('hs-trivia-v1')).seen.includes('hs-0136')), true, 'the seen list is left as it was (nothing is lost)');
+      await t.game('newGame', { mode: 'quick' });
+      const q = await t.state(); t.expect(!!q.question && !['hs-0136', 'hs-0450'].includes(q.question.id), 'a quiz starts and draws a live question');
+    },
+  },
 ];

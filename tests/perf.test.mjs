@@ -59,7 +59,7 @@ export const tests = [
           viaSearch: q.filter((x) => /via search/i.test(x.source)).length,
         };
       });
-      t.equal(info.n, 619, '511 audited questions plus the 108 researched and owner-approved on 2026-11-13');
+      t.equal(info.n, 608, '511 audited questions plus the 108 researched and owner-approved on 2026-11-13, less the 11 the owner retired in wave 4 (C4-10)');
       t.equal(info.version, 2, 'audited bank version');
       t.expect(!info.dropped, 'dropped question absent');
       t.equal(info.bad, [], 'every question has 3 distractors, an explanation and a source');
