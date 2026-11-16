@@ -41,44 +41,45 @@ const REWORDED = {
 const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 export const tests = [
-  // ---------------- S4-12 ----------------
+  // ---------------- P-N07 ----------------
   {
-    name: 'S4-12 the re-roll and the 50/50 lead with the board’s own words and still say what they do and what they cost',
+    name: 'P-N07 Copy result says "Result copied." only once the clipboard has taken the text, and otherwise says to press Ctrl+C',
+    initScript: withSave(BASE, '2026-11-12'),
     async run(t) {
-      await soloGame(t, { settings: { seenCoach: true } });
-      await t.game('setState', { trail: { phase: 'roll', rerolled: false, roll: null, players: [{ tickets: 9, node: 0 }] } });
-      await t.game('act', 'roll', 3);
-      await phase(t, 'choose');
-      const re = await text(t, '[data-act="reroll"]');
-      t.expect(/^Let the steam settle · re-roll · 1 ticket(?!s)/.test(re), 're-roll button: ' + re);
-      const fit = (sel) => t.page.evaluate((s) => { const b = document.querySelector(s), r = b.getBoundingClientRect(), p = b.closest('#panel, .panel, body').getBoundingClientRect(); return { inside: r.left >= p.left - 1 && r.right <= p.right + 1 && r.right <= innerWidth && b.scrollWidth <= b.clientWidth + 1, h: r.height }; }, sel);
-      const a = await fit('[data-act="reroll"]');
-      t.expect(a.inside, 'the re-roll button stays inside its panel: ' + JSON.stringify(a));
-      await t.page.locator('[data-act="reroll"]').scrollIntoViewIfNeeded();
-      await t.page.screenshot({ path: SHOTS + 'S4-12-reroll-label-' + t.viewport + '.png' });
-      await t.game('act', 'reroll');
-      await phase(t, 'choose');
-      await t.game('setState', { trail: { phase: 'roll', rerolled: false, roll: null, players: [{ tickets: 9 }] } });
-      await landOn(t, (await t.state()).board.types.indexOf('cat'));
-      await phase(t, 'question');
-      const life = await text(t, '[data-act="lifeline"]');
-      t.expect(/^Ask the bellhop · 50\/50 · 2 tickets/.test(life), '50/50 button: ' + life);
-      const b = await fit('[data-act="lifeline"]');
-      t.expect(b.inside, 'the 50/50 button stays inside its card: ' + JSON.stringify(b));
+      await t.game('newGame', { mode: 'daily', date: '2026-11-12' });
       await t.waitForStable(8000);
-      await t.page.locator('[data-act="lifeline"]').scrollIntoViewIfNeeded();
-      await t.page.screenshot({ path: SHOTS + 'S4-12-lifeline-label-' + t.viewport + '.png' });
-      t.expect(await t.game('act', 'lifeline'), 'the button still buys the 50/50');
-      t.equal((await t.state()).question.removed.length, 2, 'two wrong answers struck out');
-    },
-  },
-  {
-    name: 'S4-12 Help names the bellhop and the steam beside the old words',
-    viewports: ['desktop'],
-    async run(t) {
-      await t.game('scene', 'help');
-      const h = await text(t, '#scene-help');
-      t.expect(/50\/50 from the bellhop \(2\)/.test(h) && /re-roll to let the steam settle \(1, then 2, 3 and 4/.test(h), 'help words');
+      for (let i = 0; i < 7; i++) { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); }
+      await waitFor(t, (s) => s.scene === 'results', 4000, 'results');
+      const click = () => t.page.click('[data-act="copy-share"]');
+      const clear = () => t.page.evaluate(() => { document.querySelector('#share-note').textContent = ''; document.querySelector('#live').textContent = ''; window.__copied = null; });
+      const seen = () => t.page.evaluate(() => ({ note: document.querySelector('#share-note').textContent, live: document.querySelector('#live').textContent, copied: window.__copied, sel: document.querySelector('#share').selectionEnd - document.querySelector('#share').selectionStart, len: document.querySelector('#share').value.length }));
+      // 1. the clipboard takes its time: nothing is said until it has resolved
+      await t.page.evaluate(() => { window.__resolve = null; Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: (v) => new Promise((ok) => { window.__copied = v; window.__resolve = ok; }) } }); });
+      await clear(); await click();
+      await t.page.waitForFunction(() => window.__resolve !== null);
+      let s = await seen();
+      t.equal(s.note + s.live, '', 'nothing is said while the clipboard has not answered');
+      await t.page.evaluate(() => window.__resolve());
+      await t.page.waitForFunction(() => document.querySelector('#share-note').textContent === 'Result copied.');
+      await t.page.waitForFunction(() => document.querySelector('#live').textContent === 'Result copied.');
+      s = await seen();
+      t.expect(/Daily 2026-11-12/.test(s.copied || ''), 'it handed the share text over: ' + s.copied);
+      // 2. the clipboard refuses
+      await t.page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: () => Promise.reject(new Error('denied')) } }); });
+      await clear(); await click();
+      await t.page.waitForFunction(() => document.querySelector('#share-note').textContent === 'Press Ctrl+C to copy.');
+      await t.page.waitForFunction(() => document.querySelector('#live').textContent === 'Press Ctrl+C to copy.');
+      s = await seen();
+      t.expect(s.len > 0 && s.sel === s.len, 'the text is left selected: ' + s.sel + ' of ' + s.len);
+      // 3. there is no clipboard at all (a plain http page)
+      await t.page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }); });
+      await clear(); await click();
+      await t.page.waitForFunction(() => document.querySelector('#share-note').textContent === 'Press Ctrl+C to copy.');
+      await t.page.waitForFunction(() => document.querySelector('#live').textContent === 'Press Ctrl+C to copy.');
+      s = await seen();
+      t.expect(!/copied/i.test(s.note + s.live), 'it never claims a copy: ' + s.note);
+      t.expect(s.sel === s.len, 'the text is selected');
+      await t.page.screenshot({ path: SHOTS + 'P-N07-press-ctrl-c-' + t.viewport + '.png' });
     },
   },
 

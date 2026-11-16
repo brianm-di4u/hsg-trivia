@@ -271,7 +271,13 @@ const ACTIONS = {
   },
   'save-conflict-dismiss': () => { ui.saveConflict = false; UI.update(); },
   'save-conflict-title': () => { ui.saveConflict = false; scene('title'); },
-  'copy-share': () => { const ta = document.querySelector('#share'); if (!ta) return; ta.select(); try { navigator.clipboard.writeText(ta.value).catch(() => {}); } catch (e) { /* select fallback */ } UI.announce('Result copied.'); },
+  // The text is selected either way. It is only said to be copied once the clipboard has taken it; without a clipboard (plain http) or if it refuses, the player is told to copy it themselves (P-N07).
+  'copy-share': () => {
+    const ta = document.querySelector('#share'); if (!ta) return; ta.select();
+    const say = (msg) => { UI.announce(msg); const note = document.querySelector('#share-note'); if (note) note.textContent = msg; };
+    const refused = () => say('Press Ctrl+C to copy.');
+    try { navigator.clipboard.writeText(ta.value).then(() => say('Result copied.'), refused); } catch (e) { refused(); }
+  },
 };
 function act(name, arg) { const f = ACTIONS[name]; if (f) f(arg); }
 

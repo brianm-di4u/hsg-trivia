@@ -504,7 +504,7 @@ function resultsHTML() {
     <h2>${right} of ${qz.total} right</h2>
     <p class="score">${pts(qz.score)} points (${right} of ${qz.total} right${qz.timer ? ', ' + timerWords(qz.timer) : ''}) · best streak ${qz.bestStreak}${best ? ` · personal best ${bestWords(best, bestMeta)}` : ''}</p>
     ${qz.practice ? '<p class="practice">Practice (not counted): today’s Daily was already taken, so this run changes no result and no streak.</p>' : ''}
-    ${qz.kind === 'daily' && !qz.practice ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}` : ''}
+    ${qz.kind === 'daily' && !qz.practice ? `<p>Daily streak: <strong>${(G.save.data.daily && G.save.data.daily.streak) || 1}</strong></p><label for="share" class="sr-only">Share text</label><textarea id="share" readonly rows="3" data-key="share">${esc(Quiz.shareText(qz))}</textarea>${btn('copy-share', 'Copy result')}<p class="hint" id="share-note" aria-hidden="true"></p>` : ''}
     <ol class="review">${rows}</ol>
     <div class="row">${btn('goto', 'Title', { arg: 'title', cls: 'ghost' })}${qz.kind === 'daily' ? '' : btn(qz.kind === 'era' ? 'era-start' : 'quick', 'Play again', { arg: qz.era || '', cls: 'primary', auto: true })}</div></div>`;
 }
