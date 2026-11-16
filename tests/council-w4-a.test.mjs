@@ -148,6 +148,7 @@ export const tests = [
       await t.game('act', 'roll', 6);
       await phase(t, 'choose');
       await guard(t, 60000);
+      await t.page.evaluate(() => document.querySelector('.dest').focus()); // a focused button is clicked by A directly, not through the key path
       await press(t, 0);
       t.equal((await t.state()).trail.phase, 'choose', 'the list is still open');
       await guard(t, 0);
