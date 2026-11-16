@@ -308,6 +308,7 @@ function wireInput() {
   const showTip = (id) => R.setTip(id, UI.spaceLabel(id));
   const endPress = () => { if (down && down.timer) clearTimeout(down.timer); down = null; };
   cv.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return; // a right or middle click is not a tap
     endPress(); clearTimeout(tipTimer); R.setTip(null);
     down = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: false, long: false };
     cv.setPointerCapture(e.pointerId); unlockAudio();
