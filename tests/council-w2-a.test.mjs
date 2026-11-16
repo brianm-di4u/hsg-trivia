@@ -229,6 +229,9 @@ export const tests = [
         await t.game('act', 'roll', firstCat - s0.board.start);
         await t.game('act', 'choose', firstCat); await t.game('act', 'finishAnim');
         await phase(t, 'question');
+        // Since wave 3 (S5-17) a cue struck again within 80 ms of its last start is dropped. A player never answers twice
+        // that fast, but these hooks do on a quiet machine, and the second "correct" then never reaches the log: let the gap pass.
+        await t.page.waitForTimeout(100);
         await t.game('act', 'answer', ans);
         await t.game('act', 'continue'); await phase(t, 'roll');
       };
