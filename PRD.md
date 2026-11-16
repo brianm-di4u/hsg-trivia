@@ -51,7 +51,7 @@ answer the **Summit question** correctly. First to do so wins.
 | District space (icon) | Answer a question in the district's category. Correct: +1 / +2 / +3 tickets for easy / medium / hard |
 | **Landmark** (gold ring) | Answer a district question. Correct: that district's **stamp** (if new) + 2 tickets |
 | **Steam vent** | You may ride the steam to the paired vent across town |
-| **Post Time** (Oaklawn) | Wager 0–5 tickets, then answer a question. Correct: win the wager (×2 if hard). Wrong: lose it |
+| **Post Time** (Oaklawn) | Wager 0–5 tickets (a quarter of the hoard when that is more, up to 10; the whole hoard on a Grand Tour), then answer a question. Correct: win the wager (×2 if hard). Wrong: lose it |
 | **Time Warp** | Put three historical events in order. Correct: warp to any landmark you lack and answer its question now |
 | **Postcard** | Read a historical postcard and take 1 ticket |
 | **Grand Jury** | Answer a Legends & Oddities question or lose your next turn |
@@ -160,7 +160,7 @@ Settings, best scores, daily streak and an in-progress Trail Game autosave in `l
 - AC9 District spaces ask a question of the district's category; correct answers pay tickets by difficulty.
 - AC10 Landmarks award the district stamp on a correct answer; the passport shows it.
 - AC11 Steam vents offer a ride to the paired vent.
-- AC12 Post Time takes a 0–5 wager and settles it on the answer.
+- AC12 Post Time takes a wager of 0–5 tickets (up to a quarter of the hoard, at most 10; the whole hoard on a Grand Tour) and settles it on the answer.
 - AC13 Time Warp asks to order three dated events; success lets the player warp to a missing landmark and answer.
 - AC14 Postcards show a timeline event and pay 1 ticket.
 - AC15 Grand Jury: a wrong Legends answer makes the player skip the next turn.

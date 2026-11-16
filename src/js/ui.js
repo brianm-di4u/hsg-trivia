@@ -386,11 +386,12 @@ function modalHTML() {
         <div class="row">${ai ? '<p class="hint">Deciding…</p>' : btn('vent', 'Ride the steam', { arg: '1', cls: 'primary', hint: 'Y', auto: true }) + btn('vent', 'Stay here', { arg: '0', cls: 'ghost', hint: 'N' })}</div></div>`;
     }
     case 'wager': {
-      const max = Game.wagerCap(p);
-      const opts = Array.from({ length: max + 1 }, (_, i) => btn('wager', String(i), { arg: String(i), cls: 'chip' + (i === Math.min(2, max) ? ' primary' : ''), hint: '', auto: i === Math.min(2, max), dis: ai })).join('');
+      const usual = Game.usualWagerCap(p), max = Game.wagerCap(p), allIn = max > usual; // a Grand Tour lets the whole hoard go in (S3-14)
+      const opts = Array.from({ length: usual + 1 }, (_, i) => btn('wager', String(i), { arg: String(i), cls: 'chip' + (i === Math.min(2, usual) ? ' primary' : ''), hint: '', auto: i === Math.min(2, usual), dis: ai })).join('')
+        + (allIn ? btn('wager', `All in · ${max}`, { arg: String(max), cls: 'chip', hint: '', dis: ai }) : '');
       return `<div class="mcard"><div class="mhead">${ico('wager', '#56B4E9', '#10233A', 44)}<h2 id="mtitle">Post Time at Oaklawn</h2></div>
-        <p>Wager up to ${max} of your ${plural(p.tickets, 'ticket')} on the next question (any category). Right: win the wager — <strong>double</strong> on a hard question. Wrong: lose it.</p>
-        <div class="chips" aria-label="Wager">${opts}</div>${ai ? '<p class="hint">Placing a bet…</p>' : `<p class="hint key-hint">${max > 9 ? 'Keys 0–9, or tap 10' : `Keys 0–${max}`}</p>`}</div>`;
+        <p>Wager up to ${usual} of your ${plural(p.tickets, 'ticket')} on the next question (any category)${allIn ? `, or go all in with ${max} on this Grand Tour` : ''}. Right: win the wager — <strong>double</strong> on a hard question. Wrong: lose it.</p>
+        <div class="chips" aria-label="Wager">${opts}</div>${ai ? '<p class="hint">Placing a bet…</p>' : `<p class="hint key-hint">${usual > 9 ? 'Keys 0–9, or tap 10' : `Keys 0–${usual}`}${allIn ? ', A for all in' : ''}</p>`}</div>`;
     }
     case 'order': case 'orderResult': {
       const done = t.phase === 'orderResult';
@@ -699,7 +700,7 @@ export function coachAction(kind) {
 // ---------- help & settings ----------
 function helpHTML() {
   const legend = CATS.map((c) => { const d = DISTRICTS.find((x) => x.cat === c.id); return `<li>${ico(c.icon, c.color, c.ink, 30)}<span><strong>${esc(c.id)}</strong><small>${esc(d.name)} · stamp: ${esc(d.stamp)}</small></span></li>`; }).join('');
-  const sp = [['landmark', 'star', 'Landmark (gold ring): answer correctly for the district stamp + 2 tickets'], ['vent', 'vent', 'Steam vent: ride to the paired vent across town'], ['wager', 'wager', 'Post Time (Oaklawn): wager 5 tickets, or a quarter of your hoard (up to 10), on a question'], ['warp', 'warp', 'Time Warp: put three events in order, then warp to a landmark'], ['postcard', 'postcard', 'Postcard: a piece of history and 1 ticket'], ['jury', 'jury', 'Grand Jury: miss a Legends question and lose a turn'], ['trolley', 'trolley', 'Trolley stop: next turn, pay 2 tickets to ride to another stop'], ['trail', 'trailhead', 'Mountain trail: opens once you hold your stamp target. Short Cut spaces cost 2 steps']];
+  const sp = [['landmark', 'star', 'Landmark (gold ring): answer correctly for the district stamp + 2 tickets'], ['vent', 'vent', 'Steam vent: ride to the paired vent across town'], ['wager', 'wager', 'Post Time (Oaklawn): wager 5 tickets, or a quarter of your hoard (up to 10), on a question; on a Grand Tour you may stake the whole hoard'], ['warp', 'warp', 'Time Warp: put three events in order, then warp to a landmark'], ['postcard', 'postcard', 'Postcard: a piece of history and 1 ticket'], ['jury', 'jury', 'Grand Jury: miss a Legends question and lose a turn'], ['trolley', 'trolley', 'Trolley stop: next turn, pay 2 tickets to ride to another stop'], ['trail', 'trailhead', 'Mountain trail: opens once you hold your stamp target. Short Cut spaces cost 2 steps']];
   return `<div class="page-card help-card"><h2>How to play</h2>
     <p><strong>Goal:</strong> collect your stamp target (4, 6 or 8 district stamps), climb from the Grand Promenade trailhead to the Mountain Tower, and answer the Summit question.</p>
     <ol class="rules"><li>Roll the steam gauge (1–6) and move exactly that many spaces, either way. Highlighted spaces show where you can stop.</li>

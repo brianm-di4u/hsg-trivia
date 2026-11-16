@@ -4,6 +4,8 @@
 // Usage: node tools/econ-sim.mjs [games per row = 300] [row numbers, comma separated = all]
 // PACE=normal|brisk|fast node tools/econ-sim.mjs 30 1   reports seconds per AI turn (waits from the rules engine, walks estimated at 245 ms a step).
 // ECON='{"EXPRESS_COST":8}' node tools/econ-sim.mjs 200 1   overrides constants in game.js ECON for one run.
+// ALL_IN=1 node tools/econ-sim.mjs 300 13,14   seat 0 stakes the most it may at every Post Time (S3-14): the boldest a human could play the wager.
+// Every row also reports `postTime`: how many Post Time visits there were per game, the share of them where the hoard was above the usual cap (BASE_CAP), and the biggest hoard seen there.
 import fs from 'node:fs';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -21,7 +23,7 @@ const { G, AI_ACC } = Game;
 if (process.env.ECON && Game.ECON) { const o = JSON.parse(process.env.ECON); for (const k of Object.keys(o)) Game.ECON[k] = (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) ? { ...Game.ECON[k], ...o[k] } : o[k]; }
 const ORIG = JSON.parse(JSON.stringify(AI_ACC));
 const N = +(process.argv[2] || 300);
-let hopMs = 0, rolls = 0, SPEED = 'fast';
+let hopMs = 0, rolls = 0, SPEED = 'fast', pt = { visits: 0, big: 0, max: 0 };
 const HOP_MS = 245; // the average walk step in render.js (170 to 320 ms), scaled by the AI speed's hop factor
 function runGame(seats, target, seed, ev) {
   q = []; now = 0;
@@ -34,7 +36,10 @@ function runGame(seats, target, seed, ev) {
   let guard = 0;
   while (G.state.trail.phase !== 'over' && guard++ < 2e6) {
     q.sort((a, b) => a.t - b.t || a.id - b.id);
-    const n = q.shift(); if (!n) break; now = n.t; n.fn();
+    const n = q.shift(); if (!n) break; now = n.t;
+    const tr = G.state.trail;
+    if (tr.phase === 'wager') { const p = tr.players[tr.turn]; pt.visits++; if (p.tickets > Game.ECON.WAGER_BASE_CAP) pt.big++; pt.max = Math.max(pt.max, p.tickets); if (process.env.ALL_IN && tr.turn === 0) Game.setWager(Game.wagerCap(p)); }
+    n.fn();
     if (G.state.trail.round > 400) break;
   }
   const t = G.state.trail;
@@ -44,7 +49,7 @@ const med = (a) => { const s = a.slice().sort((x, y) => x - y); return s[Math.fl
 function batch(label, seats, target, n = N, profile = null) {
   for (const l of ['easy', 'medium', 'hard']) Object.assign(AI_ACC[l], ORIG[l]);
   if (profile) Object.assign(AI_ACC.hard, profile);
-  const ev = { reroll: 0, express: 0, hint: 0, fifty: 0, trolley: 0, wager: 0 };
+  const ev = { reroll: 0, express: 0, hint: 0, fifty: 0, trolley: 0, wager: 0 }; pt = { visits: 0, big: 0, max: 0 };
   let totalNow = 0; hopMs = 0; rolls = 0;
   const wins = seats.map(() => 0); const rounds = []; const tix = seats.map(() => []); let done = 0;
   for (let i = 0; i < n; i++) {
@@ -56,7 +61,7 @@ function batch(label, seats, target, n = N, profile = null) {
   if (process.env.PACE) { const out = { label, speed: SPEED, games: done, turns: rolls, waitMsPerTurn: Math.round(totalNow / rolls), hopMsPerTurn: Math.round(hopMs / rolls), secondsPerTurn: +((totalNow + hopMs) / rolls / 1000).toFixed(2) }; console.log(JSON.stringify(out)); return out; }
   const mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
   const out = { label, games: done, win: wins.map((w) => +(100 * w / done).toFixed(1)), roundsMedian: rounds[Math.floor(rounds.length / 2)],
-    endTicketsMedian: tix.map(med), endTicketsMean: tix.map((a) => +mean(a).toFixed(1)), per_game: Object.fromEntries(Object.entries(ev).map(([k, v]) => [k, +(v / done).toFixed(1)])) };
+    endTicketsMedian: tix.map(med), endTicketsMean: tix.map((a) => +mean(a).toFixed(1)), per_game: Object.fromEntries(Object.entries(ev).map(([k, v]) => [k, +(v / done).toFixed(1)])), postTime: { visitsPerGame: +(pt.visits / done).toFixed(1), shareHoardOverCap: pt.visits ? +(100 * pt.big / pt.visits).toFixed(1) : 0, maxHoard: pt.max } };
   console.log(JSON.stringify(out));
   return out;
 }
@@ -72,6 +77,8 @@ const ROWS = [
   () => batch('AI easy vs hard', ['easy', 'hard'], 6),
   () => batch('AI easy vs medium', ['easy', 'medium'], 6),
   ...Object.entries(HUMANS).map(([k, acc]) => () => batch('HUMAN ' + k + ' vs Medium AI', ['hard', 'medium'], 6, N, acc)),
+  () => batch('HUMAN fan vs Medium AI target8', ['hard', 'medium'], 8, N, HUMANS.fan),
+  () => batch('HUMAN strong vs Medium AI target8', ['hard', 'medium'], 8, N, HUMANS.strong),
 ];
 if (process.env.PACE) { SPEED = process.env.PACE; }
 const pick = (process.argv[3] || ROWS.map((_, i) => i).join(',')).split(',').map(Number);

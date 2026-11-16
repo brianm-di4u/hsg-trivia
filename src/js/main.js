@@ -448,7 +448,10 @@ function onKey(e) {
       if (lower === 's' && t.phase === 'summit') { act('summit-redraw'); return done(); }
       break;
     case 'vent': if (lower === 'y') { act('vent', '1'); return done(); } if (lower === 'n') { act('vent', '0'); return done(); } break;
-    case 'wager': if (/^[0-9]$/.test(k) && +k <= Game.wagerCap(p)) { act('wager', k); return done(); } break;
+    case 'wager':
+      if (/^[0-9]$/.test(k) && +k <= Game.usualWagerCap(p)) { act('wager', k); return done(); }
+      if (lower === 'a' && Game.wagerCap(p) > Game.usualWagerCap(p)) { act('wager', String(Game.wagerCap(p))); return done(); } // all in on a Grand Tour (S3-14)
+      break;
     case 'order': if (/^[1-3]$/.test(k)) { act('order-pick', +k - 1); return done(); } break;
     case 'warp': if (/^[1-9]$/.test(k) && +k <= t.pending.options.length) { act('warp', t.pending.options[+k - 1]); return done(); } break;
     default:

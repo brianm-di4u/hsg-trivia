@@ -293,4 +293,67 @@ export const tests = [
       t.expect(win && win.tier === 2, 'the Summit win is the perfect tier: ' + JSON.stringify(win));
     },
   },
+
+  // ---------------- S3-14 ----------------
+  {
+    name: 'S3-14 on a Grand Tour the whole hoard may go in: an All in chip and the A key; on a shorter trip the cap stays at 10',
+    async run(t) {
+      await soloGame(t, { target: 8 });
+      const toWager = async (tickets) => {
+        await t.game('setState', { trail: { phase: 'roll', players: [{ tickets }] } });
+        await landOn(t, (await t.state()).board.types.indexOf('wager'));
+        t.equal((await t.state()).trail.phase, 'wager', 'on the wager space');
+      };
+      const finish = async () => { await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); await phase(t, ['roll', 'landed']); };
+      const allIn = () => t.page.locator('.chips [data-act="wager"]', { hasText: 'All in' });
+      // 40 tickets: the usual chips 0 to 10 and one more for the lot
+      await toWager(40);
+      t.equal(await t.page.locator('.chips [data-act="wager"]').count(), 12, '0 to 10, and All in');
+      t.equal(await allIn().count(), 1, 'one All in chip');
+      t.equal((await allIn().innerText()).replace(/s+/g, ' '), 'All in · 40', 'it says how many');
+      const txt = await t.page.locator('.mcard').textContent();
+      t.expect(/go all in with 40 on this Grand Tour/.test(txt) && /A for all in/.test(txt), 'the card says so and names the key: ' + txt.replace(/s+/g, ' ').slice(0, 260));
+      await t.shot('S3-14-all-in-chip');
+      await t.checkLayout({ allowScrollY: true });
+      await allIn().click();
+      t.equal((await t.state()).trail.pending.wager, 40, 'the chip stakes all 40');
+      await finish();
+      // a smaller hoard: 12 tickets, usual cap 5, all in is 12; the key A does it
+      await toWager(12);
+      t.equal(await t.page.locator('.chips [data-act="wager"]').count(), 7, '0 to 5, and All in');
+      await t.page.keyboard.press('a');
+      t.equal((await t.state()).trail.pending.wager, 12, 'A stakes all 12');
+      await finish();
+      // a hoard the usual cap already covers has no All in
+      await toWager(4);
+      t.equal(await allIn().count(), 0, 'no All in chip at 4 tickets');
+      t.equal(await t.page.locator('.chips [data-act="wager"]').count(), 5, '0 to 4');
+      await t.page.keyboard.press('a');
+      t.equal((await t.state()).trail.phase, 'wager', 'A does nothing there');
+      await t.game('act', 'wager', 99);
+      t.equal((await t.state()).trail.pending.wager, 4, 'and a bigger wager is clamped to the hoard');
+      await finish();
+      // the digits still work as before
+      await toWager(40);
+      await t.page.keyboard.press('7');
+      t.equal((await t.state()).trail.pending.wager, 7, 'key 7 wagers 7');
+      await finish();
+    },
+  },
+  {
+    name: 'S3-14 a Day Trip or a Weekend has no All in: the cap is 10 whatever the hoard',
+    viewports: ['desktop'],
+    async run(t) {
+      for (const target of [4, 6]) {
+        await soloGame(t, { target });
+        await t.game('setState', { trail: { phase: 'roll', players: [{ tickets: 40 }] } });
+        await landOn(t, (await t.state()).board.types.indexOf('wager'));
+        t.equal(await t.page.locator('.chips [data-act="wager"]').count(), 11, target + ' stamps: chips 0 to 10');
+        t.equal(await t.page.locator('.chips [data-act="wager"]', { hasText: 'All in' }).count(), 0, target + ' stamps: no All in chip');
+        await t.game('act', 'wager', 99);
+        t.equal((await t.state()).trail.pending.wager, 10, target + ' stamps: a bigger wager is clamped to 10');
+      }
+    },
+  },
+
 ];

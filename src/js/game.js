@@ -48,6 +48,7 @@ export const ECON = {
   EXPRESS_COST: 6, // new: jump to the nearest landmark that has no stamp yet, then answer its question
   TROLLEY_COST: 2, // unchanged
   WAGER_BASE_CAP: 5, WAGER_MAX_CAP: 10, WAGER_HOARD_SHARE: 0.25, // was a flat cap of 5: now the larger of 5 and 25% of the hoard, up to 10
+  WAGER_ALL_IN_TARGET: 8, // S3-14: on a trip of this many stamps (the Grand Tour) a traveler may stake the whole hoard at Post Time (0 turns it off: the cap stays at most 10 whatever the hoard)
   SUMMIT_REDRAWS: 1, // S3-07: how many times a human may spin the Summit vane again for another category (0 turns the button off)
   FINAL_LAP_EXPRESS: 3, // S3-03: when the first traveler holds every stamp, the bell rings and each of the others may ride this many free Expresses (0 turns the Final Lap off; before wave 3 there was none)
   AI_EASY_RANDOM_MOVE: 0.1, // how often an Easy computer picks its destination at random instead of the best-scored one (S3-09: was 0.6)
@@ -299,8 +300,10 @@ export function summitRedraw() {
   return true;
 }
 
-// The most a traveler may wager: 5, or a quarter of the hoard when that is more, never above 10 or what they hold.
-export const wagerCap = (p = cur()) => Math.min(p.tickets, Math.max(ECON.WAGER_BASE_CAP, Math.min(ECON.WAGER_MAX_CAP, Math.floor(p.tickets * ECON.WAGER_HOARD_SHARE))));
+// The usual most a traveler may wager: 5, or a quarter of the hoard when that is more, never above 10 or what they hold.
+export const usualWagerCap = (p = cur()) => Math.min(p.tickets, Math.max(ECON.WAGER_BASE_CAP, Math.min(ECON.WAGER_MAX_CAP, Math.floor(p.tickets * ECON.WAGER_HOARD_SHARE))));
+// On a Grand Tour the whole hoard may go in (S3-14); on any other trip it is the usual cap.
+export const wagerCap = (p = cur()) => (ECON.WAGER_ALL_IN_TARGET && T().target === ECON.WAGER_ALL_IN_TARGET ? p.tickets : usualWagerCap(p));
 export function setWager(n) {
   const t = T(); const p = cur(); if (t.phase !== 'wager') return false;
   const w = clamp(n | 0, 0, wagerCap(p));
