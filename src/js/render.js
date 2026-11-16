@@ -378,6 +378,9 @@ export function burst(x, y, colors, n = 26, kind = 'spark') {
 }
 
 // ---------- frame ----------
+// S6-11: with reduced motion nothing on the board moves by itself, so an idle screen is not redrawn every other frame. It is redrawn at once when anything
+// animates, is shown or changes (busy, dirty), and otherwise every IDLE_REDRAW_S as a safety net for a change that did not say so (was: every other frame, 30 a second).
+export const IDLE_REDRAW_S = 0.5;
 export function frame(dt, st) {
   view.time += dt;
   stepDusk(st, dt);
@@ -398,7 +401,10 @@ export function frame(dt, st) {
   const t = st && st.trail; const pulsing = t && st.mode === 'trail' && !view.backdrop && ['choose', 'warp'].includes(t.phase);
   const busy = view.anims.length || view.particles.length || !camSettled() || pulsing || view.dirty || view.bubble || view.tip || view.nudge;
   view.odd = !view.odd;
-  if (busy || view.odd) { view.dirty = false; draw(st, dt + (busy ? 0 : view.lastSkip || 0)); view.lastSkip = 0; } else view.lastSkip = dt;
+  if (document.hidden) return; // a hidden tab draws nothing (the browser stops its frames too); the state above still steps
+  if (view.reduced && !busy) { view.idleFor = (view.idleFor || 0) + dt; if (view.idleFor < IDLE_REDRAW_S) return; }
+  view.idleFor = 0;
+  if (busy || view.odd || view.reduced) { view.dirty = false; view.draws = (view.draws | 0) + 1; draw(st, dt + (busy ? 0 : view.lastSkip || 0)); view.lastSkip = 0; } else view.lastSkip = dt;
 }
 
 function draw(st, dt) {

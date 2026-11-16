@@ -208,4 +208,36 @@ export const tests = [
       t.expect(/Daily answers right\s*—/.test(await t.page.evaluate(() => document.querySelector('.record-card').innerText)), 'a dash for accuracy');
     },
   },
+
+  // ---------------- S6-11 ----------------
+  // Counted by state, never by a frame rate: the game counts its frames and its canvas draws, and the test waits for 90 more frames.
+  // A frame is at most 50 ms of game time, so 90 frames are at least 4.5 s of it: the reduced-motion heartbeat (one draw each half second) gives at most 10 draws.
+  {
+    name: 'S6-11 with reduced motion an idle title is not redrawn every other frame, and a change still draws',
+    reducedMotion: true,
+    viewports: ['desktop'],
+    async run(t) {
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      const a = await t.state();
+      const b = await waitFor(t, (x) => x.ui.frames >= a.ui.frames + 90, 30000, '90 more frames');
+      const frames = b.ui.frames - a.ui.frames, draws = b.ui.draws - a.ui.draws;
+      t.expect(draws <= Math.ceil(frames / 9) + 1, 'idle draws ' + draws + ' in ' + frames + ' frames');
+      const before = (await t.state()).ui.draws;
+      await t.game('newGame', { mode: 'trail', players: [H1], target: 6, seed: 3 });
+      await waitFor(t, (x) => x.ui.draws > before + 2, 8000, 'the new game to be drawn');
+    },
+  },
+  {
+    name: 'S6-11 with motion on, the idle title still redraws about every other frame',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.game('scene', 'title');
+      await t.waitForStable(8000);
+      const a = await t.state();
+      const b = await waitFor(t, (x) => x.ui.frames >= a.ui.frames + 90, 30000, '90 more frames');
+      const frames = b.ui.frames - a.ui.frames, draws = b.ui.draws - a.ui.draws;
+      t.expect(draws >= frames / 3, 'ambient motion draws ' + draws + ' in ' + frames + ' frames');
+    },
+  },
 ];
