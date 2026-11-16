@@ -391,7 +391,7 @@ export function proceed() {
   const t = T(); const p = cur(); const q = G.state.question;
   if (t.phase === 'feedback') {
     if (q && q.purpose === 'summit') {
-      if (q.correct) { t.phase = 'over'; G.state.question = null; t.final = closing(t); G.lastRecord = finishRecord(t); G.hooks.effect('win', p); sfx('win'); G.hooks.save(); G.hooks.scene('win'); G.hooks.update(); return; }
+      if (q.correct) { t.phase = 'over'; G.state.question = null; t.final = closing(t); G.lastRecord = finishRecord(t); G.hooks.effect('win', p); sfx('win', { tier: 2 }); G.hooks.save(); G.hooks.scene('win'); G.hooks.update(); return; }
       G.state.question = null; t.phase = 'moving'; G.hooks.update();
       G.hooks.moveToken(p, [p.node, TRAILHEAD], () => { p.node = TRAILHEAD; endTurn(); }, 'jump');
       return;

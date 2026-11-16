@@ -211,14 +211,27 @@ const PRESETS = {
     tone({ type: 'sawtooth', f: 330, f2: 220, d: 0.26, v: 0.3, q: 1300, pan, pair: 9 }); tone({ type: 'sawtooth', f: 247, f2: 123, t: 0.22, d: 0.42, v: 0.3, q: 1000, pan, pair: 9 });
     noise({ d: 0.5, v: 0.1, type: 'lowpass', f: 700, pan });
   },
-  win: () => { const pan = rand(-0.15, 0.15); [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.12, d: 0.45, v: 0.3, pan, pair: 6 })); [523.25, 659.25, 783.99].forEach((f) => tone({ type: 'sine', f, t: 0.7, d: 1.2, v: 0.16, pan })); },
+  // The win fanfare in three tiers (S5-20): tier 0 (good) is the five rising notes and the chord, as it always was; tier 1 (great) adds a bass note under them;
+  // tier 2 (perfect, and the Summit win) adds a bell tail and a pad of long soft notes that outlasts the chord.
+  win: (o) => {
+    const pan = rand(-0.15, 0.15), tier = Math.min(2, Math.max(0, o.tier | 0));
+    [392, 523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone({ type: 'triangle', f, t: i * 0.12, d: 0.45, v: 0.3, pan, pair: 6 }));
+    [523.25, 659.25, 783.99].forEach((f) => tone({ type: 'sine', f, t: 0.7, d: 1.2, v: 0.16, pan }));
+    if (tier >= 1) { tone({ type: 'sine', f: 130.81, t: 0, d: 0.9, v: 0.26, pan, j: 0.4 }); tone({ type: 'sine', f: 196, t: 0.48, d: 1.1, v: 0.2, pan, j: 0.4 }); }
+    if (tier >= 2) {
+      [1, 2.76, 5.4].forEach((m, i) => tone({ type: 'sine', f: 1046.5 * m, t: 0.62, d: 1.5 - i * 0.4, v: 0.14 / (i + 1), pan }));
+      [261.63, 329.63, 392].forEach((f) => tone({ type: 'sine', f, t: 0.6, a: 0.45, d: 2.1, v: 0.08, pan, j: 0.4 }));
+    }
+  },
+  // A quiz result under 70 %: three soft notes falling, kinder than the paper rustle it replaces (S5-20).
+  consolation: () => { const pan = rand(-0.15, 0.15); [[587.33, 0], [493.88, 0.16], [392, 0.32]].forEach(([f, t], i) => { tone({ type: 'sine', f, t, d: 0.5 - i * 0.06, v: 0.22, pan, pair: 5 }); tone({ type: 'triangle', f: f * 2, t, d: 0.18, v: 0.03, pan, pair: 6 }); }); },
   page: () => noise({ d: 0.18, v: 0.14, f: 3000, f2: 1500, qv: 0.5, pan: rand(-0.3, 0.3) }),
   // An achievement: a small two-note bell (a fifth apart) with a soft shimmer, short enough to sit on top of play.
   achieve: () => { const pan = rand(-0.15, 0.15); [[783.99, 0], [1174.66, 0.13]].forEach(([f, t]) => { tone({ type: 'sine', f, t, d: 0.7, v: 0.3, pan }); tone({ type: 'triangle', f: f * 2.01, t, d: 0.35, v: 0.07, pan, pair: 6 }); }); noise({ t: 0.13, d: 0.3, v: 0.05, type: 'highpass', f: 6000, pan }); },
 };
 // How loud each cue sits at the default volume: the preset's own shape is kept, this trims the whole cue so that the ones
 // the player must notice peak near 0.3 (measured by audioRender). click and tick are quiet interface sounds.
-const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, page: 6.6, gauge: 3.2, tick: 1, timeout: 0.8, streak: 1.5, turn: 2.5, ask: 1.5, chip: 4 };
+const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, consolation: 0.75, page: 6.6, gauge: 3.2, tick: 1, timeout: 0.8, streak: 1.5, turn: 2.5, ask: 1.5, chip: 4 };
 const play = (name, o) => { trim = TRIM[name] || 1; const base = cueBase; cueBase += o.at || 0; try { PRESETS[name](o); } finally { trim = 1; cueBase = base; } };
 // The big cues the music steps back for.
 const DUCKS = { correct: 6, wrong: 6, timeout: 6, win: 8, stamp: 5 };
@@ -234,7 +247,7 @@ export function sfx(name, o = {}) {
   const at = performance.now();
   if (at - (lastAt[name] === undefined ? -1 : lastAt[name]) < (MIN_GAP[name] || DEFAULT_GAP)) return;
   lastAt[name] = at;
-  try { play(name, o); audioStats.played++; audioStats.log.push({ name, ...o }); if (audioStats.log.length > 40) audioStats.log.shift(); if (DUCKS[name] && kit) kit.music.duck(DUCKS[name], name === 'win' ? 1600 : 700); } catch (e) { /* audio must never break the game */ }
+  try { play(name, o); audioStats.played++; audioStats.log.push({ name, ...o }); if (audioStats.log.length > 40) audioStats.log.shift(); if (DUCKS[name] && kit) kit.music.duck(DUCKS[name], name === 'win' ? (o.tier >= 2 ? 2600 : 1600) : 700); } catch (e) { /* audio must never break the game */ }
 }
 export const SOUND_NAMES = Object.keys(PRESETS);
 
@@ -260,7 +273,7 @@ export function audioRender(name, seconds = 30, wantWav = false, volume = DEFAUL
     const cue = (n, at, o = {}) => { const live = { ac, sfxIn, noiseBuf }; ac = oc; sfxIn = s; noiseBuf = makeNoise(oc); cueBase = at; try { play(n, o); } finally { ({ ac, sfxIn, noiseBuf } = live); cueBase = 0; } };
     if (SCORES[name]) { k.music.play(SCORES[name], { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); return () => k.music.info(); }
     if (SCENES[name]) { k.amb.play(SCENES[name], { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); return () => ({ scene: name }); }
-    if (name === 'mix') { k.music.play(SCORES.board, { fade: 0.02, at: 0 }); k.amb.play(SCENES.row, { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); cue('win', 5); return () => k.music.info(); }
+    if (name === 'mix') { k.music.play(SCORES.board, { fade: 0.02, at: 0 }); k.amb.play(SCENES.row, { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); cue('win', 5, { tier: 2 }); return () => k.music.info(); }
     if (name === 'busy') { k.music.play(SCORES.board, { fade: 0.02, at: 0 }); k.amb.play(SCENES.row, { fade: 0.02, at: 0 }); k.scheduleUntil(seconds); for (const n of ['stamp', 'correct']) cue(n, 5, { streak: 3, i: 2 }); cue('coin', 5.3); return () => k.music.info(); }
     if (name.startsWith('cue:') && PRESETS[name.slice(4)]) { cue(name.slice(4), 0, o); return () => ({ cue: name.slice(4) }); }
     throw new Error('unknown audio piece: ' + name);

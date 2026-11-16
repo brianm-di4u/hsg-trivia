@@ -3,7 +3,20 @@
 import assert from 'node:assert/strict';
 import { createSaveStore } from '../src/js/save.js';
 import { settleJournal, cleanRecord, applyIntent, freshRecord, JOURNAL_KEYS, JOURNAL_BEFORE, ACHIEVEMENTS } from '../src/js/record.js';
-import { soloGame, landOn, waitFor, phase } from './helpers.mjs';
+import { H1, soloGame, landOn, waitFor, phase } from './helpers.mjs';
+
+const ALL = ['Sports', 'Entertainment', 'Nature & Lakes', 'People', 'History', 'Places & Landmarks', 'Food & Culture', 'Legends & Oddities'];
+const render = (t, ...a) => t.page.evaluate((x) => window.__game.audioRender(...x), a);
+const unlock = async (t) => { await t.page.mouse.click(5, 5); await waitFor(t, (s) => s.audio.state === 'running', 3000, 'audio running'); };
+// How much of one frequency a WAV render holds in a window (seconds): a Goertzel sum over the left channel.
+const power = (b64, f, from, to) => {
+  const b = Buffer.from(b64, 'base64'), rate = b.readUInt32LE(24), w = (2 * Math.PI * f) / rate;
+  let re = 0, im = 0;
+  for (let i = Math.floor(from * rate); i < Math.floor(to * rate); i++) { const x = b.readInt16LE(44 + i * 4); re += x * Math.cos(w * i); im += x * Math.sin(w * i); }
+  return re * re + im * im;
+};
+const median = (a) => a.slice().sort((x, y) => x - y)[Math.floor((a.length - 1) / 2)];
+const wavOf = async (t, tier) => (await render(t, 'cue:win', 4, true, undefined, { tier })).wav;
 
 const KEY = 'hs-trivia-v1';
 const stored = (t) => t.page.evaluate((k) => JSON.parse(localStorage.getItem(k) || 'null'), KEY);
@@ -201,6 +214,83 @@ export const tests = [
       const anim = await t.page.evaluate(() => [getComputedStyle(document.querySelector('.journal-done'), '::before').animationName, getComputedStyle(document.querySelector('.jpage.got')).animationName]);
       t.equal(anim.join(), 'none,none', 'no animation under reduced motion: ' + anim);
       t.expect(await t.page.locator('#scene-record .journal-done').isVisible(), 'the line is there');
+    },
+  },
+
+  // ---------------- S5-20 ----------------
+  {
+    name: 'S5-20 the win cue has three tiers: good is the fanfare as it was, great adds a bass, perfect adds a bell tail and a pad',
+    viewports: ['desktop'],
+    async run(t) {
+      const w = [await wavOf(t, 0), await wavOf(t, 1), await wavOf(t, 2)];
+      t.expect(w.every((x) => typeof x === 'string' && x.length > 1000), 'each tier renders a WAV');
+      // A bass note under the fanfare (C3 for the first half second): present from tier 1, absent in tier 0.
+      const bass = w.map((x) => power(x, 130.81, 0, 0.5));
+      t.expect(bass[1] > bass[0] * 4 && bass[2] > bass[0] * 4, 'the bass: ' + bass.map((x) => x.toExponential(2)).join(' '));
+      // The pad (E4 held from 0.6 s to about 3 s) and the bell tail (an inharmonic partial of the top note) are tier 2 only.
+      const pad = w.map((x) => power(x, 329.63, 1.8, 2.8));
+      t.expect(pad[2] > pad[0] * 20 && pad[2] > pad[1] * 20, 'the pad outlasts the chord: ' + pad.map((x) => x.toExponential(2)).join(' '));
+      const bell = w.map((x) => power(x, 1046.5 * 2.76, 0.8, 1.6));
+      t.expect(bell[2] > bell[0] * 5 && bell[2] > bell[1] * 5, 'the bell tail: ' + bell.map((x) => x.toExponential(2)).join(' '));
+    },
+  },
+  {
+    name: 'S5-20 every tier sits at a cue level at the default volume and stays under 0.95 at full volume',
+    viewports: ['desktop'],
+    async run(t) {
+      for (const tier of [0, 1, 2]) {
+        const soft = [], loud = [];
+        for (let i = 0; i < 7; i++) soft.push((await render(t, 'cue:win', 4, false, undefined, { tier })).peak);
+        for (let i = 0; i < 20; i++) loud.push((await render(t, 'cue:win', 4, false, 1, { tier })).peak);
+        t.log('tier ' + tier + ': median peak ' + median(soft) + ' at the default volume, loudest of 20 at full volume ' + Math.max(...loud));
+        t.expect(median(soft) >= 0.2 && median(soft) <= 0.45, 'tier ' + tier + ' median peak ' + median(soft) + ' is a cue level');
+        t.expect(Math.max(...loud) < 0.95, 'tier ' + tier + ' at full volume peaks at ' + Math.max(...loud));
+      }
+      for (let i = 0; i < 3; i++) { const r = await render(t, 'mix', 9, false, 1); t.log('win moment peak ' + r.peak); t.expect(r.peak < 0.95, 'the win moment (board piece, Row bed, perfect win) at full volume peaks at ' + r.peak); }
+    },
+  },
+  {
+    name: 'S5-20 a poor result is a soft falling line, not a paper rustle',
+    viewports: ['desktop'],
+    async run(t) {
+      const w = (await render(t, 'cue:consolation', 1.5, true)).wav;
+      const at = (f, a, z) => power(w, f, a, z);
+      t.expect(at(587.33, 0, 0.14) > at(392, 0, 0.14) * 4, 'it starts high');
+      t.expect(at(392, 0.34, 0.6) > at(587.33, 0.34, 0.6) * 4, 'and ends low');
+      const peaks = []; for (let i = 0; i < 7; i++) peaks.push((await render(t, 'cue:consolation', 1.5, false)).peak);
+      t.log('consolation median peak ' + median(peaks));
+      t.expect(median(peaks) >= 0.12 && median(peaks) <= 0.3, 'soft but heard: ' + median(peaks));
+      const loud = []; for (let i = 0; i < 10; i++) loud.push((await render(t, 'cue:consolation', 1.5, false, 1)).peak);
+      t.expect(Math.max(...loud) < 0.95, 'under 0.95 at full volume: ' + Math.max(...loud));
+    },
+  },
+  {
+    name: 'S5-20 a quiz result plays the tier its score earns, and the Summit win plays the top one',
+    viewports: ['desktop'],
+    async run(t) {
+      await t.seed(11);
+      await t.game('setState', { settings: { timer: 0, seenCoach: true } });
+      await unlock(t);
+      const run = async (rights) => {
+        await t.game('newGame', { mode: 'quick' });
+        for (let i = 0; i < 10; i++) { await t.game('act', 'answer', i < rights ? 'correct' : 'wrong'); await t.game('act', 'continue'); }
+        await waitFor(t, (s) => s.scene === 'results', 4000, 'the results');
+        const log = (await t.state()).audio.log;
+        return log.filter((x) => x.name === 'win' || x.name === 'consolation' || x.name === 'page').pop();
+      };
+      for (const [rights, name, tier] of [[10, 'win', 2], [9, 'win', 1], [7, 'win', 0], [6, 'consolation', undefined]]) {
+        const c = await run(rights);
+        t.expect(c && c.name === name && c.tier === tier, rights + ' of 10 plays ' + name + (tier === undefined ? '' : ' tier ' + tier) + ': ' + JSON.stringify(c));
+      }
+      await t.game('scene', 'title');
+      await soloGame(t, { players: [H1] });
+      const s0 = await t.state();
+      await t.game('setState', { trail: { phase: 'roll', players: [{ tickets: 9, node: 0, stamps: ALL.slice(0, 6) }] } });
+      await landOn(t, s0.board.tower);
+      await phase(t, 'summit'); await t.game('act', 'continue'); await phase(t, 'question');
+      await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); await phase(t, 'over');
+      const win = (await t.state()).audio.log.filter((x) => x.name === 'win').pop();
+      t.expect(win && win.tier === 2, 'the Summit win is the perfect tier: ' + JSON.stringify(win));
     },
   },
 ];

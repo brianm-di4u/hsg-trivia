@@ -75,7 +75,8 @@ export function settle() {
 function finish() {
   const q = G.state.quiz;
   q.done = true; G.state.question = null;
-  sfx(q.results.filter((r) => r.correct).length >= q.total * 0.7 ? 'win' : 'page');
+  const share = q.results.filter((r) => r.correct).length / q.total;
+  if (share < 0.7) sfx('consolation'); else sfx('win', { tier: share >= 1 ? 2 : share >= 0.9 ? 1 : 0 }); // good, great, perfect (S5-20)
   G.hooks.saveQuiz(q);
   G.hooks.scene('results');
   G.hooks.update();
