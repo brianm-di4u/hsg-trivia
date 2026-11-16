@@ -616,8 +616,11 @@ export const tests = [
         // The winner is always the first traveler. The computer may have a beat in flight when stopAI lands: put the first traveler's turn
         // back to the roll and wait until the game shows that traveler on the space before the tower, then roll (a loaded machine is slow to settle).
         await t.game('act', 'finishAnim');
-        await t.game('setState', { trail: { phase: 'roll', turn: 0, players: [{ node: s0.board.tower - 1 }] } });
+        // C4-13: stop the computer again after the state is set (in the same call, so no beat can start between them), wait for the first traveler's
+        // roll, and stop it once more just before moving, so a computer that is first traveler cannot roll for itself.
+        await t.page.evaluate((n) => { const g = window.__game; g.act('stopAI'); g.setState({ trail: { phase: 'roll', turn: 0, players: [{ node: n }] } }); g.act('stopAI'); }, s0.board.tower - 1);
         await waitFor(t, (x) => x.trail.phase === 'roll' && x.trail.turn === 0 && x.trail.players[0].node === s0.board.tower - 1, 4000, 'the first traveler on the space before the tower');
+        await t.game('act', 'stopAI');
         await moveTo(t, s0.board.tower - 1, 1, s0.board.tower);
         await t.game('act', 'continue');
         await phase(t, 'question', 20000);
