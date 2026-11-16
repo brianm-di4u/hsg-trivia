@@ -277,7 +277,9 @@ export const tests = [
       for (const m of [...fan.endTicketsMedian, ...strong.endTicketsMedian]) t.expect(m < 8, `human-profile median unspent ${m} is under 8`);
       t.expect(fan.win[0] >= 76.7 - 10, `fan profile still wins ${fan.win[0]} % against Medium (was 76.7 %; run is small, so a 10-point band)`);
       // S3-03 (wave 3): the Final Lap gives the trailing traveler free Expresses, so the stronger player's edge is smaller on purpose (88 % to 73 % over 300 games); it must still be a clear edge.
-      t.expect(strong.win[0] >= 89 - 25, `strong profile still wins ${strong.win[0]} % against Medium (was 89 %, 73 % with the Final Lap)`);
+      // C4-16: the floor is the seeded 300-game measurement at the wave-3 tip, 80.3 % (tools/econ-sim.mjs 300 10; 72.7 % before the personas), less the same 10-point band as the fan profile.
+      // The run is seeded, so these 120 games give the same 81.7 % every time; a Final Lap or persona twice as strong would drop below 70.3 %.
+      t.expect(strong.win[0] >= 80.3 - 10, `strong profile still wins ${strong.win[0]} % against Medium (80.3 % over 300 games at the wave-3 tip; was 89 % before the Final Lap)`);
       const [mh, em] = run('6,8', 80);
       t.expect(mh.win[1] > 55, `Hard beats Medium (${mh.win[1]} %; S3-09 pulled the tiers to about 65/35, it was above 70)`);
       t.expect(em.win[1] > 55, `Medium beats Easy (${em.win[1]} %; S3-09 pulled the tiers to about 65/35, it was above 85)`);
