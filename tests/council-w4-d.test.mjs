@@ -138,4 +138,86 @@ export const tests = [
       t.expect(!/federal judge|poll tax/i.test(await t.page.locator('#modal').innerText()), 'and nothing about 1946');
     },
   },
+  // ---------------- C4-09 ----------------
+  {
+    name: 'C4-09 the title and headings are set in the bundled Old Standard TT Bold on every screen, from file://, and none is drawn in a made-up weight',
+    fileUrl: true,
+    async run(t) {
+      const probe = () => t.page.evaluate(async () => {
+        await document.fonts.ready;
+        const out = { bold: [], other: [], wrongWeight: [], first: {} };
+        for (const e of document.querySelectorAll('body *')) {
+          const r = e.getBoundingClientRect(); if (!r.width || !r.height) continue;
+          const cs = getComputedStyle(e); if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+          const fam = cs.fontFamily.split(',')[0].replace(/["']/g, '').trim();
+          if (fam === 'Old Standard TT') { out.bold.push(e.className || e.tagName); if (+cs.fontWeight < 700) out.wrongWeight.push((e.className || e.tagName) + ' ' + cs.fontWeight); }
+        }
+        const q = (s) => { const e = document.querySelector(s); return e ? getComputedStyle(e).fontFamily.split(',')[0].replace(/["']/g, '').trim() : null; };
+        out.first = { logo: q('.logo'), brand: q('.brand'), h2: q('.page-card h2'), qtext: q('.qtext'), mh2: q('.mcard h2'), pc: q('.pc-text'), tname: q('.tname') };
+        out.loaded = document.fonts.check('700 16px "Old Standard TT"') && [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Old Standard TT' && f.status === 'loaded');
+        out.over = document.documentElement.scrollWidth > innerWidth;
+        return out;
+      });
+      const noMadeUp = (p, where) => t.equal(p.wrongWeight, [], where + ': every heading in the face is drawn at its own bold weight');
+      await t.game('setState', { settings: { seenCoach: true } });
+      await t.game('scene', 'title');
+      await t.page.locator('.logo').waitFor();
+      let p = await probe();
+      t.expect(p.loaded, 'the face is loaded and document.fonts.check() says so');
+      t.equal(p.first.logo, 'Old Standard TT', 'the title leads with it'); t.equal(p.first.brand, 'Old Standard TT', 'so does the bar brand');
+      noMadeUp(p, 'title'); t.expect(!p.over, 'the title screen does not scroll sideways');
+      await t.page.screenshot({ path: SHOTS + 'C4-09-title-after-' + t.viewport + '.png' });
+      await t.page.addStyleTag({ content: ':root{--font-serif-victorian:var(--font-serif-body)}' });
+      await t.page.screenshot({ path: SHOTS + 'C4-09-title-before-' + t.viewport + '.png' });
+      const before = await t.page.evaluate(() => { const r = document.querySelector('.logo').getBoundingClientRect(); return [r.width, r.height]; });
+      await t.reload();
+      await t.game('setState', { settings: { seenCoach: true } });
+      await t.game('scene', 'title');
+      await t.page.locator('.logo').waitFor();
+      const after = await t.page.evaluate(() => { const r = document.querySelector('.logo').getBoundingClientRect(); return [r.width, r.height]; });
+      t.expect(after[1] <= before[1] * 1.6, 'the title is no more than a line taller than it was: ' + before[1] + ' to ' + after[1]);
+      await t.page.locator('#scene-title [data-arg="record"]').click();
+      await t.page.locator('#scene-record h2').waitFor();
+      p = await probe(); t.equal(p.first.h2, 'Old Standard TT', 'a card heading leads with it'); noMadeUp(p, 'record'); t.expect(!p.over, 'no sideways scroll on the record');
+      await t.page.screenshot({ path: SHOTS + 'C4-09-record-after-' + t.viewport + '.png' });
+      await soloGame(t, { settings: { seenCoach: true } });
+      const types = (await t.state()).board.types;
+      await landOn(t, types.indexOf('postcard')); await phase(t, 'postcard');
+      await t.page.locator('.pc-text').waitFor();
+      p = await probe(); t.expect(p.first.pc !== 'Old Standard TT', 'the postcard sentence keeps the system serif: ' + p.first.pc); noMadeUp(p, 'postcard');
+      await t.game('act', 'continue'); await phase(t, 'roll');
+      await landOn(t, types.indexOf('jury')); await phase(t, 'jury');
+      p = await probe(); t.equal(p.first.mh2, 'Old Standard TT', 'a card title leads with it'); noMadeUp(p, 'jury card');
+      await t.game('act', 'continue'); await phase(t, 'question');
+      await t.page.locator('.qtext').waitFor();
+      p = await probe(); t.equal(p.first.qtext, 'Old Standard TT', 'the question leads with it'); noMadeUp(p, 'question'); t.expect(!p.over, 'no sideways scroll on a question');
+      await t.page.screenshot({ path: SHOTS + 'C4-09-question-after-' + t.viewport + '.png' });
+      await t.checkLayout();
+    },
+  },
+  {
+    name: 'C4-09 Help credits the face and its licence once, inside the screen',
+    async run(t) {
+      await t.game('scene', 'help');
+      const line = t.page.locator('#font-credit'); await line.waitFor();
+      const txt = (await line.innerText()).trim();
+      t.expect(txt.includes('Old Standard TT') && txt.includes('SIL Open Font License'), 'it names the face and the licence: ' + txt);
+      t.equal(await t.page.locator('#font-credit').count(), 1, 'said once');
+      const b = await line.evaluate((e) => { const r = e.getBoundingClientRect(); return [r.left, r.right, innerWidth, document.documentElement.scrollWidth]; });
+      t.expect(b[0] >= 0 && b[1] <= b[2] && b[3] <= b[2], 'inside the screen with no sideways scroll');
+      await line.scrollIntoViewIfNeeded();
+      await t.page.screenshot({ path: SHOTS + 'C4-09-font-credit-' + t.viewport + '.png' });
+      await t.checkLayout({ allowScrollY: true });
+    },
+  },
+  node('C4-09 the font file, its licence and its rule are in the repo, and the old stack stays behind the new face', () => {
+    const css = fs.readFileSync(REPO + 'src/styles/fonts.css', 'utf8');
+    assert.ok(css.includes('font-family:"Old Standard TT";font-style:normal;font-weight:700;font-display:block;src:url(data:font/woff2;base64,'));
+    assert.equal((css.match(/font-family:"Old Standard TT"/g) || []).length, 1, 'only the bold weight is bundled');
+    assert.ok(fs.existsSync(REPO + 'vendor/fonts/old-standard-tt-latin-700-normal.woff2') && /SIL Open Font License/.test(fs.readFileSync(REPO + 'vendor/fonts/OFL-old-standard-tt.txt', 'utf8')));
+    const main = fs.readFileSync(REPO + 'src/styles/main.css', 'utf8');
+    assert.ok(main.includes('--font-serif-victorian: "Old Standard TT", var(--font-serif-body);'));
+    assert.ok(main.includes('--font-serif-body: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;'));
+    assert.deepEqual(fs.readdirSync(REPO + 'vendor/fonts').sort(), ['OFL-kalam.txt', 'OFL-old-standard-tt.txt', 'OFL-rye.txt', 'kalam-latin-400-normal.woff2', 'kalam-latin-700-normal.woff2', 'old-standard-tt-latin-700-normal.woff2', 'rye-latin-400-normal.woff2']);
+  }),
 ];

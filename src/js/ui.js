@@ -725,6 +725,7 @@ function helpHTML() {
     <h3>About the map</h3><p>The board is a model of the real valley, seen from the west: Bathhouse Row’s eight bathhouses stand in their true north-to-south order (Superior, Hale, Maurice, Fordyce, Quapaw, Ozark, Buckstaff, Lamar), with Hot Springs Mountain and its tower behind. Downtown is magnified and Central Avenue is drawn wider so both sidewalks can carry spaces; directions from the Row are true. Oaklawn and the three lakes are moved closer and ringed with a dashed line, and their plates give the real distance. The paintings on question cards are illustrations, not photographs.</p>
     <p class="hint">Terrain: USGS 3DEP. Streets: US Census TIGER. Lakes and creeks: USGS National Hydrography Dataset (all public domain). Building footprints and trails: © OpenStreetMap contributors (ODbL).</p>
     <p class="hint" id="art-credit">Art: painted with AI image tools for this game.</p>
+    <p class="hint" id="font-credit">Type: Old Standard TT for the title and headings, Rye and Kalam on the map, all under the SIL Open Font License.</p>
     <div class="row">${btn('back', 'Back', { cls: 'primary', auto: true })}</div></div>`;
 }
 

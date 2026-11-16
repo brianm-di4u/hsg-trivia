@@ -7,7 +7,8 @@
   --color-success: #2E6A3C; --color-danger: #9A2A1C; --color-highlight: #D9A23A; --color-border: #CDBF9F;
   --card-bg: #FBF6EA; --card-text: #1F2F5C; --card-muted: #4A5675; --card-edge: #E3D5B5;
   --page-bg: rgba(242, 239, 232, 0.985); --scrim: rgba(31, 42, 36, 0.45);
-  --font-serif-victorian: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+  --font-serif-body: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+  --font-serif-victorian: "Old Standard TT", var(--font-serif-body);
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Courier New", Courier, ui-monospace, Menlo, Consolas, monospace;
   --space-2: 4px; --space-3: 8px; --space-4: 12px; --space-5: 16px; --space-6: 24px; --space-7: 32px;
@@ -207,7 +208,7 @@ body[data-theme="dark"] .badge.claim { color: #FFB38A; } body[data-theme="dark"]
 .pc-greet { font-family: "Kalam", "Brush Script MT", "Segoe Script", cursive; font-size: 1.7rem; line-height: 1.15; margin: 0 96px 6px 0; color: var(--color-primary); }
 .pc-stamp { position: absolute; right: 14px; top: 14px; width: 74px; height: 86px; border: 3px dashed var(--color-primary); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 800; font-size: 1.3rem; color: var(--color-primary); transform: rotate(4deg); }
 .pc-year { font-weight: 700; color: var(--card-muted); margin: 0; }
-.pc-text { font-size: 1.25rem; font-family: var(--font-serif-victorian); margin: 10px 90px 10px 0; }
+.pc-text { font-size: 1.25rem; font-family: var(--font-serif-body); margin: 10px 90px 10px 0; }
 .passport .stamps { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .stamp { display: flex; gap: 8px; align-items: center; } .stamp small { display: block; color: var(--card-muted); font-size: 0.8rem; }
 .stamp:not(.have) strong { color: var(--card-muted); }
