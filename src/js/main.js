@@ -593,7 +593,7 @@ function publicState() {
       types: NODES.map((n) => n.type), cats: NODES.map((n) => n.cat || null), costs: NODES.map((n) => n.cost) },
     coach: { step: ui.coachStep, tip: ui.coachSaid, input: ui.input },
     say: G.say,
-    ui: { ceremony: !!ui.journalCeremony, rings: R.view.ringAlpha, ringFirst: R.view.ringFirst, frames: fpsFrames, draws: R.view.draws | 0, keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), listAt: ui.listAt, tip: R.view.tip ? { id: R.view.tip.id, text: R.view.tip.text } : null, nudge: R.view.nudge ? R.view.nudge.id : null, fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
+    ui: { ceremony: !!ui.journalCeremony, rings: R.view.ringAlpha, ringFirst: R.view.ringFirst, frames: fpsFrames, draws: R.view.draws | 0, cacheBuilds: R.view.cacheBuilds, cacheWidth: R.view.cache ? R.view.cache.width : 0, keyGuard: keyGuardLeft(), keyGuardMs: keyGuardMs(), listAt: ui.listAt, tip: R.view.tip ? { id: R.view.tip.id, text: R.view.tip.text } : null, nudge: R.view.nudge ? R.view.nudge.id : null, fx: { ...R.view.fx }, bubble: R.view.bubble ? R.view.bubble.text : null, modal: ui.modal, menu: ui.menuOpen, camera: R.view.mode, reduced: R.view.reduced, theme: document.body.dataset.theme, dusk: R.view.duskA, focus: document.activeElement ? (document.activeElement.dataset.key || document.activeElement.id || document.activeElement.tagName) : null },
     bank: BANK.length, storage: G.save.ok, audio: { ...audioStats },
     art: { enabled: ART.enabled, pending: ART.pending, failed: ART.failed.slice(), loaded: Object.keys(ART.imgs).filter((k) => ART.imgs[k].ok) },
   }));
@@ -602,6 +602,7 @@ function publicState() {
 window.__game = {
   seed(n) { G.state.rngSeed = n; G.rng = makeRng(n); return n; },
   getState: publicState,
+  resizeSettle(ms) { R.view.settleMs = ms; }, // test hook: how long a resize must be still before the board cache is rebuilt for a small change of size
   audioList,
   coachTexts: (input) => UI.coachTexts(input),
   voices: () => Game.AI_LINES,

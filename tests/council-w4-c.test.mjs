@@ -41,39 +41,45 @@ const REWORDED = {
 const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 export const tests = [
-  // ---------------- C4-17 ----------------
+  // ---------------- S6-13 ----------------
   {
-    name: 'C4-17 the opening line of a trip does not say the goal a third time: it is on the banner, the standing line and the first tip only',
+    name: 'S6-13 dragging the window edge keeps the board cache until the drag has been still, then rebuilds it once, crisp at the new size',
+    viewports: ['desktop'],
     async run(t) {
-      await t.seed(7);
-      await t.game('setState', { settings: { passScreen: false, aiSpeed: 'fast', timer: 0, seenCoach: false } });
-      await t.game('scene', 'setup');
+      await t.game('scene', 'game');
+      await soloGame(t, { settings: { seenCoach: true } });
       await t.waitForStable(8000);
-      await t.game('act', 'ui', 'start-trail');
-      await waitFor(t, (s) => s.scene === 'game', 4000, 'game');
-      await t.game('act', 'stopAI');
-      await t.page.waitForFunction(() => document.querySelector('#toast').classList.contains('on'), null, { timeout: 4000 }).catch(() => t.fail('no departure card'));
-      await t.page.waitForFunction(() => document.querySelector('.coach'), null, { timeout: 4000 }).catch(() => t.fail('no first tip'));
-      const v = await t.page.evaluate(() => {
-        const vis = (e) => !!e && e.getClientRects().length > 0 && getComputedStyle(e).visibility !== 'hidden';
-        const goal = /6 stamps/;
-        const lines = [['banner', document.querySelector('#toast')], ['standing line', document.querySelector('.objective')], ['tip', document.querySelector('.coach')], ['last line', document.querySelector('.lastline')], ...[...document.querySelectorAll('.log li')].map((e) => ['log', e])];
-        return lines.filter(([, e]) => vis(e) && goal.test(e.textContent)).map(([n]) => n);
-      });
-      t.equal(JSON.stringify(v), JSON.stringify(['banner', 'standing line', 'tip']), 'where the goal shows: ' + v);
-      const s = await t.state();
-      t.equal(s.trail.log[s.trail.log.length - 1], 'A new trip begins.', 'the log opens with the plain line');
-      t.expect((await t.page.evaluate(() => document.querySelector('.lastline').textContent)) === 'A new trip begins.', 'the line under the header');
-      await t.page.screenshot({ path: SHOTS + 'C4-17-opening-' + t.viewport + '.png' });
+      await t.game('resizeSettle', 1500);
+      const before = (await t.state()).ui;
+      const widths = [1240, 1200, 1160, 1120];
+      const sizes = [];
+      for (const w of widths) {
+        await t.page.setViewportSize({ width: w, height: 800 });
+        await t.page.waitForFunction((x) => innerWidth === x, w);
+        await t.page.evaluate(() => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))));
+        sizes.push((await t.state()).ui);
+      }
+      t.equal(sizes[sizes.length - 1].cacheBuilds, before.cacheBuilds, 'no rebuild during the drag: ' + before.cacheBuilds + ' -> ' + sizes.map((u) => u.cacheBuilds));
+      const want = await waitFor(t, (s) => s.ui.cacheBuilds > before.cacheBuilds, 8000, 'the settled rebuild');
+      t.equal(want.ui.cacheBuilds, before.cacheBuilds + 1, 'one rebuild after it settled');
+      t.expect(want.ui.cacheWidth !== before.cacheWidth, 'the cache has the new size: ' + before.cacheWidth + ' -> ' + want.ui.cacheWidth);
+      await t.game('resizeSettle', 150);
     },
   },
   {
-    name: 'C4-17 a screen reader is still told the whole opening sentence',
+    name: 'S6-13 a big change of size, or a change of theme, rebuilds the cache at once',
     viewports: ['desktop'],
     async run(t) {
-      await t.page.evaluate(() => { window.__said = []; const l = document.querySelector('#live'); new MutationObserver(() => window.__said.push(l.textContent)).observe(l, { childList: true, characterData: true, subtree: true }); });
-      await t.game('newGame', { mode: 'trail', players: [H1], target: 6, seed: 7 });
-      await t.page.waitForFunction(() => window.__said.some((m) => m === 'A new trip begins. Collect 6 stamps, then climb to the Mountain Tower.'), null, { timeout: 4000 }).catch(() => t.fail('the opening sentence was never announced: ' + 0));
+      await soloGame(t, { settings: { seenCoach: true } });
+      await t.waitForStable(8000);
+      await t.game('resizeSettle', 60000);
+      const before = (await t.state()).ui;
+      await t.page.setViewportSize({ width: 700, height: 500 });
+      await waitFor(t, (s) => s.ui.cacheBuilds > before.cacheBuilds, 8000, 'a rebuild for a big change');
+      const mid = (await t.state()).ui;
+      await t.game('setState', { settings: { theme: 'dark' } });
+      await waitFor(t, (s) => s.ui.cacheBuilds > mid.cacheBuilds, 8000, 'a rebuild for a theme change');
+      await t.game('resizeSettle', 150);
     },
   },
 

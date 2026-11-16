@@ -17,7 +17,7 @@ const TOK = { w: 208, h: 240, fx: 104, fy: 169.5, unit: 66.67, r: 20 };
 
 export const view = {
   canvas: null, ctx: null, w: 0, h: 0, dpr: 1, theme: 'light', T: THEMES.light, fontsReady: false,
-  cache: null, cacheKey: '', cam: { x: BW / 2, y: BH / 2, z: 1 }, camTarget: { x: BW / 2, y: BH / 2, z: 1 },
+  cache: null, cacheKey: '', cacheBase: '', cacheBuilds: 0, resizedAt: -1e9, settleMs: 150, settleTimer: 0, cam: { x: BW / 2, y: BH / 2, z: 1 }, camTarget: { x: BW / 2, y: BH / 2, z: 1 },
   duskOn: false, duskA: 0, duskStep: 0, mode: 'fit', backdrop: true, reduced: false, tok: {}, anims: [], particles: [], fx: { slump: 0, chill: 0 }, drag: null, manual: false, time: 0,
 };
 
@@ -28,7 +28,7 @@ const edgePts = (a, b) => EDGE_PTS.get(a + ',' + b) || [[NODES[a].x, NODES[a].y]
 
 export function initView(canvas) {
   view.canvas = canvas; view.ctx = canvas.getContext('2d');
-  const ro = new ResizeObserver(() => resize()); ro.observe(canvas.parentElement);
+  const ro = new ResizeObserver(() => { view.resizedAt = performance.now(); resize(); }); ro.observe(canvas.parentElement);
   Assets.onLoad(() => { view.cacheKey = ''; });
   // Canvas text never starts a font load: ask for the board's faces (inlined in the CSS) before the first bake.
   Promise.allSettled(['700 16px Kalam', '400 16px Kalam', '16px Rye'].map((f) => document.fonts.load(f)))
@@ -94,6 +94,7 @@ export function requestArt() {
 }
 export const artBusy = () => Assets.loading() || !view.fontsReady;
 
+const RESIZE_KEEP = 0.25; // a resize-driven change of resolution up to this share of the cache is waited out
 function ensureCache() {
   const a = boardArt();
   const hi = Assets.img(a.hi), lo = Assets.img(a.lo);
@@ -103,6 +104,14 @@ function ensureCache() {
   const dusk = view.duskOn && view.duskStep > 0 ? (wantRes() > 1700 && hiN ? hiN : loN || hiN) : null; // the painted night, to fade in
   const key = `${view.theme}:${res}:${art ? art.width : 0}:${view.fontsReady}:${dusk ? view.duskStep + ':' + dusk.width : 0}`;
   if (key === view.cacheKey && view.cache) return;
+  // S6-13: while the window is being dragged the resolution key steps every few pixels. A small step in size, with nothing else changed, keeps the cache
+  // it has (drawn scaled, which costs nothing) until the resize has been still for view.settleMs, then rebuilds once. A big step, or any other change, rebuilds at once.
+  const base = `${view.theme}:${art ? art.width : 0}:${view.fontsReady}:${dusk ? view.duskStep + ':' + dusk.width : 0}`;
+  const wait = view.settleMs - (performance.now() - view.resizedAt);
+  if (view.cache && view.cacheBase === base && wait > 0 && res !== view.cache.width && Math.abs(res - view.cache.width) <= view.cache.width * RESIZE_KEEP) {
+    if (!view.settleTimer) view.settleTimer = setTimeout(() => { view.settleTimer = 0; view.dirty = true; }, wait + 5);
+    return;
+  }
   const c = view.cache && view.cache.width === res ? view.cache : document.createElement('canvas');
   c.width = res; c.height = Math.round(res * BH / BW);
   const g = c.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, c.width, c.height);
@@ -119,7 +128,7 @@ function ensureCache() {
   }
   drawPlates(g, T, !!art);
   drawSpaces(g, T);
-  view.cache = c; view.cacheKey = key;
+  view.cache = c; view.cacheKey = key; view.cacheBase = base; view.cacheBuilds++;
 }
 
 // The Mountain Tower's top (the goal's glow, plate and win focus): measured on the painting by the illustrator.
