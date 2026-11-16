@@ -240,4 +240,41 @@ export const tests = [
       t.expect(draws >= frames / 3, 'ambient motion draws ' + draws + ' in ' + frames + ' frames');
     },
   },
+
+  // ---------------- S1-09 ----------------
+  // ui.ringFirst is how visible the rings of the places were in the first frame that drew them after a roll; ui.rings is how visible they are now.
+  {
+    name: "S1-09 the rings of a person's roll fade in after the roll lands, and the list works at once",
+    async run(t) {
+      await soloGame(t, { seed: 4, settings: { seenCoach: true } });
+      await t.game('act', 'roll', 3);
+      const first = await waitFor(t, (x) => x.trail.phase === 'choose' && x.ui.ringFirst !== null && x.ui.ringFirst !== undefined, 8000, 'the first frame of rings');
+      t.equal(first.ui.ringFirst, 0, 'the first frame after the roll draws no rings yet');
+      t.expect(first.trail.dests.length > 0 && first.ui.keyGuard >= 0, 'the destinations are in the state at once');
+      const later = await waitFor(t, (x) => x.ui.rings === 1, 8000, 'the rings fully shown');
+      t.equal(later.trail.phase, 'choose', 'still choosing');
+      await t.page.screenshot({ path: SHOTS + 'S1-09-rings-after-the-beat-' + t.viewport + '.png' });
+      t.equal(await t.page.locator('.dest').count(), first.trail.dests.length, 'and the panel list was there throughout');
+      await t.game('act', 'choose', first.trail.dests[0]);
+      await t.game('act', 'finishAnim');
+    },
+  },
+  {
+    name: 'S1-09 a second traveler on the same list gets the beat too; a computer and reduced motion do not wait',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { seed: 5, players: [H1, H2], settings: { seenCoach: true } });
+      await t.game('act', 'roll', 3);
+      await waitFor(t, (x) => x.ui.rings === 1, 8000, 'the first list fully shown');
+      await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], turn: 1 } });
+      await t.game('act', 'roll', 3);
+      const second = await waitFor(t, (x) => x.trail.phase === 'choose' && x.trail.turn === 1 && x.ui.ringFirst === 0, 8000, 'the second list starts unseen');
+      t.equal(second.ui.ringFirst, 0, 'the same list, again from nothing');
+      await t.page.emulateMedia({ reducedMotion: 'reduce' });
+      await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], turn: 0 } });
+      await t.game('act', 'roll', 2);
+      const calm = await waitFor(t, (x) => x.trail.phase === 'choose' && x.ui.reduced && x.ui.ringFirst === 1, 8000, 'rings at once with reduced motion');
+      t.equal(calm.ui.ringFirst, 1, 'no wait with reduced motion');
+    },
+  },
 ];

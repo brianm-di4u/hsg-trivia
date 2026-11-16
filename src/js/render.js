@@ -436,7 +436,7 @@ function draw(st, dt) {
       ctx.fillStyle = '#2E6A3C'; ctx.beginPath(); ctx.arc(bx, by, 6, 0, 7); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.stroke();
       ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(bx - 3, by); ctx.lineTo(bx - 0.6, by + 2.4); ctx.lineTo(bx + 3.2, by - 2.6); ctx.stroke();
     }
-    if (trail.phase === 'choose') drawDests(ctx, trail, T);
+    if (trail.phase === 'choose') drawDests(ctx, trail, T); else { view.destSig = ''; view.ringFirst = null; }
     if (trail.phase === 'warp' && trail.pending) drawTargets(ctx, trail.pending.options, T);
     if (view.nudge) { if (['choose', 'warp'].includes(trail.phase)) drawNudge(ctx); else view.nudge = null; }
     drawTokens(ctx, trail, T);
@@ -500,7 +500,23 @@ function strokePath(ctx, path) {
   ctx.stroke();
 }
 
+// S1-09: a person's roll has a beat of suspense: the rings of the places to stop show after DEST_DELAY_S, fading in over DEST_FADE_S, so the needle and the
+// roll sound land first. The list is in the panel at once and a tap, key or click works at once: only the rings on the board wait. Not for a computer's roll,
+// and not with reduced motion. (Was: the rings were there in the same frame as the roll.)
+export const DEST_DELAY_S = 0.25, DEST_FADE_S = 0.15;
+export const destAlpha = (age) => Math.max(0, Math.min(1, (age - DEST_DELAY_S) / DEST_FADE_S));
 function drawDests(ctx, trail, T) {
+  const sig = [trail.round, trail.turn, trail.roll, trail.rerolled ? 1 : 0, ...trail.dests.map((d) => d.node)].join(',');
+  if (view.destSig !== sig) { view.destSig = sig; view.destAt = view.time; view.ringFirst = null; }
+  const waits = !view.reduced && trail.players[trail.turn].kind === 'human';
+  const alpha = waits ? destAlpha(view.time - view.destAt) : 1;
+  view.ringAlpha = alpha; if (view.ringFirst === null) view.ringFirst = alpha;
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha *= alpha;
+  drawDestRings(ctx, trail, T);
+  ctx.restore();
+}
+function drawDestRings(ctx, trail, T) {
   const pulse = view.reduced ? 0.5 : 0.5 + 0.5 * Math.sin(view.time * 6);
   const p = trail.players[trail.turn];
   const sel = trail.dests[trail.sel];
