@@ -352,13 +352,13 @@ export const tests = [
     async run(t) {
       await t.seed(7);
       await t.game('setState', { settings: { passScreen: false, aiSpeed: 'normal', timer: 0 } });
+      // C4-15: every wait is stretched a thousand times (800 ms becomes about 13 minutes), so the roll can only come from the key, on any machine.
+      await t.page.evaluate(() => { window.__TEST_BEAT_STRETCH = 1000; });
       await t.game('newGame', { mode: 'trail', players: [{ kind: 'ai', level: 'medium' }, H1], target: 6, seed: 7 });
       let s = await t.state();
       t.equal(s.trail.phase, 'roll', 'the AI is about to roll (800 ms away at Relaxed)');
-      const t0 = Date.now();
       await t.page.keyboard.press('x');
-      s = await waitFor(t, (x) => x.trail.phase !== 'roll', 600, 'the roll after one key');
-      t.expect(Date.now() - t0 < 600, `rolled at once (${Date.now() - t0} ms)`);
+      s = await waitFor(t, (x) => x.trail.phase !== 'roll', 15000, 'the roll after one key');
       await t.game('act', 'stopAI');
       await t.game('setState', { trail: { phase: 'roll', turn: 1 } });
       await t.page.keyboard.press('x');
@@ -372,15 +372,14 @@ export const tests = [
     async run(t) {
       await t.seed(7);
       await t.game('setState', { settings: { passScreen: false, aiSpeed: 'normal', timer: 0 } });
+      await t.page.evaluate(() => { window.__TEST_BEAT_STRETCH = 1000; }); // C4-15: only the tap can end the wait
       await t.game('newGame', { mode: 'trail', players: [{ kind: 'ai', level: 'medium' }, H1], target: 6, seed: 7 });
       await t.game('act', 'stopAI');
       await t.shot('S1-03-ai-turn-hint', { wait: false });
       await t.game('scene', 'game');
       const r = await t.page.locator('#board').boundingBox();
-      const t0 = Date.now();
       if (t.viewport === 'mobile') await t.tap([r.x + r.width / 2, r.y + r.height / 2]); else await t.page.mouse.click(r.x + r.width / 2, r.y + r.height / 2);
-      await waitFor(t, (x) => x.trail.phase !== 'roll', 600, 'the roll after a tap');
-      t.expect(Date.now() - t0 < 600, 'rolled at once');
+      await waitFor(t, (x) => x.trail.phase !== 'roll', 15000, 'the roll after a tap');
     },
   },
   {

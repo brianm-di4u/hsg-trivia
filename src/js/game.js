@@ -134,6 +134,7 @@ let beats = []; // the timers `later` has armed with what they will run, so skip
 function clearTimers() { for (const id of G.timers) clearTimeout(id); G.timers = []; beats = []; }
 function later(ms, fn) {
   if (G.paused) return;
+  ms *= globalThis.__TEST_BEAT_STRETCH || 1; // (a test stretches every wait so that only a skip, never the timer, can end it)
   const b = { at: Date.now() + ms, fn };
   b.id = setTimeout(() => { G.timers = G.timers.filter((x) => x !== b.id); beats = beats.filter((x) => x !== b); fn(); }, ms);
   G.timers.push(b.id); beats.push(b);
