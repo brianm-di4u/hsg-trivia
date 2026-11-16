@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { createSaveStore, isNewerSave } from '../src/js/save.js';
 import { fileURLToPath } from 'node:url';
-import { H1, soloGame, waitFor } from './helpers.mjs';
+import { H1, H2, soloGame, waitFor, phase } from './helpers.mjs';
 
 const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
@@ -76,6 +76,36 @@ export const tests = [
       await t.page.evaluate(() => window.__game.setState({ settings: { volume: 0.4 } }));
       t.equal(await t.page.evaluate(() => localStorage.getItem('hs-trivia-v1.bad')), DAMAGED, 'kept under .bad');
       t.expect(!/newer version/.test(await t.page.evaluate(() => document.body.innerText)), 'no newer-version notice');
+    },
+  },
+
+  // ---------------- C4-12 ----------------
+  // ui.listAt is when the list of places last appeared; the Enter/Space hold of S1-04 is measured from it, so every new list must restamp it.
+  {
+    name: 'C4-12 a second traveler on the same space rolling the same number gets the list held again',
+    async run(t) {
+      await soloGame(t, { seed: 5, players: [H1, H2] });
+      await t.game('act', 'roll', 3);
+      const first = await phase(t, 'choose');
+      const a = first.ui.listAt;
+      await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], turn: 1 } });
+      await t.game('act', 'roll', 3);
+      const second = await phase(t, 'choose');
+      t.equal(second.trail.turn, 1, 'the second traveler');
+      t.equal(second.trail.dests.join(), first.trail.dests.join(), 'the very same list of places');
+      t.expect(second.ui.listAt > a, 'the hold was stamped again: ' + a + ' then ' + second.ui.listAt);
+    },
+  },
+  {
+    name: 'C4-12 a re-roll (which rolls at once, with no other phase between) holds its new list',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { seed: 5 });
+      await t.game('act', 'roll', 3);
+      const first = await phase(t, 'choose');
+      await t.game('act', 'reroll');
+      const second = await waitFor(t, (x) => x.trail.phase === 'choose' && x.trail.rerolled, 4000, 'the re-rolled list');
+      t.expect(second.ui.listAt > first.ui.listAt, 'the hold was stamped again, even if the number came up the same');
     },
   },
 ];

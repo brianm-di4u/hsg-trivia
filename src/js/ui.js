@@ -258,6 +258,7 @@ function panelHTML() {
   const p = Game.cur(); const ai = p.kind === 'ai';
   let action = '';
   const who = `<strong>${esc(p.name)}</strong>`;
+  if (t.phase !== 'choose') ui.listSig = '';
   switch (t.phase) {
     case 'roll':
       action = ai ? `<p class="status">${who} is getting ready…</p>` :
@@ -266,7 +267,8 @@ function panelHTML() {
          ${expressOffer(p)}${nearestLine(p)}`;
       break;
     case 'choose': {
-      const sig = t.dests.map((d) => d.node).join(','); if (ui.listSig !== sig) { ui.listSig = sig; ui.listAt = performance.now(); } // (S1-04: when the list of places appeared)
+      // The list is new when its places, the turn, the roll or the re-roll differ, and always after any other phase (C4-12): the same list twice running is held twice.
+      const sig = [t.round, t.turn, t.roll, t.rerolled ? 1 : 0, ...t.dests.map((d) => d.node)].join(','); if (ui.listSig !== sig) { ui.listSig = sig; ui.listAt = performance.now(); } // (S1-04: when the list of places appeared)
       const list = t.dests.map((d, i) => {
         const n = NODES[d.node]; const c = n.cat ? CAT[n.cat] : null;
         const kind = kindOf(n); const dn = spaceDistrict(n);
