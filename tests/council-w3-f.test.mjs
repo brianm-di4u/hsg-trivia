@@ -7,6 +7,7 @@ const render = (t, ...a) => t.page.evaluate((x) => window.__game.audioRender(...
 // A gamepad of the standard layout whose pressed buttons are listed in window.__pad.
 const fakePad = () => {
   window.__pad = {};
+  window.__TEST_KEY_GUARD_MS = 0; // wave 4 (C4-14): a pad's A is held back for a moment after a question or a list appears; these cases press at once, and the hold has its own test
   navigator.getGamepads = () => [{ connected: true, buttons: Array.from({ length: 17 }, (_, i) => ({ pressed: !!window.__pad[i] })) }];
 };
 // Press a button for a few frames and let go: one press, however long it is held.

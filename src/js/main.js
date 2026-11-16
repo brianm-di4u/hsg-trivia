@@ -460,6 +460,11 @@ function padPress(i) {
   const st = G.state, q = st.question;
   const over = ui.modal || ui.menuOpen || ui.confirm || ui.saveConflict || ui.crash;
   const asking = !over && q && q.chosen === null && (st.scene === 'quiz' || (st.scene === 'game' && st.trail && st.trail.phase === 'question'));
+  // C4-14: the same moment the keys wait (S1-04) holds a face button back: an A that confirmed a place must not also answer the question it opened,
+  // and a second A must not pick the first place of a list that has just appeared.
+  const now = performance.now();
+  if (asking && i <= 3 && now - ui.revealAt < keyGuardMs()) return;
+  if (!over && i === 0 && st.scene === 'game' && st.trail && st.trail.phase === 'choose' && now - ui.listAt < keyGuardMs()) return;
   if (asking && i <= 3) return onKey({ key: 'abcd'[i], preventDefault() {} });
   const menuLike = over || (st.scene !== 'game' && st.scene !== 'quiz');
   if (menuLike && i >= 12 && i <= 15) {

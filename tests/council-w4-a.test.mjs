@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { createSaveStore, isNewerSave } from '../src/js/save.js';
 import { fileURLToPath } from 'node:url';
-import { H1, H2, soloGame, waitFor, phase } from './helpers.mjs';
+import { H1, H2, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
 const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
@@ -14,6 +14,14 @@ const withRaw = (raw) => {
 };
 const NEWER = JSON.stringify({ v: 2, settings: { sound: false, volume: 0.3, timer: 15 }, best: { quick: 777, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null, future: { keep: [1, 2, 3] } });
 const DAMAGED = '{"v":1,"settings":{"sound":false';
+// A gamepad of the standard layout whose pressed buttons are listed in window.__pad (the same fake as tests/council-w3-f.test.mjs).
+const fakePad = () => {
+  window.__pad = {};
+  navigator.getGamepads = () => [{ connected: true, buttons: Array.from({ length: 17 }, (_, i) => ({ pressed: !!window.__pad[i] })) }];
+};
+const frames = (t, n) => t.page.evaluate((k) => new Promise((ok) => { let i = 0; const f = () => (++i >= k ? ok() : requestAnimationFrame(f)); requestAnimationFrame(f); }), n);
+const press = async (t, i) => { await t.page.evaluate((b) => { window.__pad[b] = true; }, i); await frames(t, 4); await t.page.evaluate((b) => { window.__pad[b] = false; }, i); await frames(t, 2); };
+const guard = (t, ms) => t.page.evaluate((m) => { window.__TEST_KEY_GUARD_MS = m; }, ms);
 const node = (name, run) => ({ name, node: true, run });
 
 const memoryStorage = (raw) => { const m = { 'hs-trivia-v1': raw }; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = v; }, m }; };
@@ -106,6 +114,45 @@ export const tests = [
       await t.game('act', 'reroll');
       const second = await waitFor(t, (x) => x.trail.phase === 'choose' && x.trail.rerolled, 4000, 'the re-rolled list');
       t.expect(second.ui.listAt > first.ui.listAt, 'the hold was stamped again, even if the number came up the same');
+    },
+  },
+
+  // ---------------- C4-14 ----------------
+  // The moment is 250 ms in the game. The cases widen it to a minute so a slow machine cannot let it run out between the card and the press,
+  // then take it away to show that the same press works afterwards.
+  {
+    name: 'C4-14 a pad button just after a question appears does not answer it; a later one does',
+    viewports: ['desktop'],
+    initScript: fakePad,
+    async run(t) {
+      await soloGame(t, { seed: 9 });
+      const s0 = await t.state();
+      await guard(t, 60000);
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await press(t, 0);
+      t.equal((await t.state()).question.chosen, null, 'A within the moment answered nothing');
+      await press(t, 2);
+      t.equal((await t.state()).question.chosen, null, 'neither did X');
+      await guard(t, 0);
+      await press(t, 2);
+      t.equal((await t.state()).question.chosen, 2, 'a later X answers C');
+    },
+  },
+  {
+    name: 'C4-14 a second A just after the list of places appears does not pick the first place; a later one does',
+    viewports: ['desktop'],
+    initScript: fakePad,
+    async run(t) {
+      await soloGame(t, { seed: 9 });
+      await t.game('act', 'roll', 6);
+      await phase(t, 'choose');
+      await guard(t, 60000);
+      await press(t, 0);
+      t.equal((await t.state()).trail.phase, 'choose', 'the list is still open');
+      await guard(t, 0);
+      await press(t, 0);
+      await waitFor(t, (x) => x.trail.phase !== 'choose', 3000, 'the later A to pick');
     },
   },
 ];
