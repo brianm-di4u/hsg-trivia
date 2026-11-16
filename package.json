@@ -7,6 +7,7 @@
   "scripts": {
     "setup": "cd shared/test-harness && npm install && npx playwright install chromium",
     "build": "node shared/tools/inline.mjs .",
-    "test": "node shared/test-harness/run.mjs ."
+    "test": "node shared/test-harness/run.mjs .",
+    "sim": "node tools/econ-sim.mjs 80 1,6,8 && node tools/lead-sim.mjs 100 2p"
   }
 }

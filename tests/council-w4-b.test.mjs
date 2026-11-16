@@ -408,4 +408,19 @@ export const tests = [
       t.equal(s.trail.pending.options.length, 8, 'and the player may warp to any landmark');
     },
   },
+  // ---------------- S3-25 ----------------
+  node('S3-25 the balance guard: unspent tickets, the edge of the first traveler to collect and the spacing of the computer levels stay inside the limits the review set', () => {
+    // tools/econ-sim.mjs and tools/lead-sim.mjs play whole games with the real rules on fixed seeds, so the numbers are the same every run.
+    // Limits from the review: median end tickets at most 12, the first traveler to collect every stamp wins at most 70 % of two-traveler games,
+    // and a computer level beats the one below it by no more than 75 to 25. Measured at the wave-4 tip: end tickets 5, leader 61 %, Hard over Medium 72.5 %, Medium over Easy 62.5 %.
+    const sim = (file, args) => { const r = spawnSync(process.execPath, ['tools/' + file, ...args], { cwd: REPO, encoding: 'utf8', timeout: 600000 }); if (r.status !== 0) throw new Error(file + ' failed: ' + r.stderr.slice(0, 400)); return r.stdout.trim().split(String.fromCharCode(10)).map((l) => JSON.parse(l)); };
+    const [med, mh, em] = sim('econ-sim.mjs', ['80', '1,6,8']);
+    for (const row of [med, mh, em]) for (const m of row.endTicketsMedian) assert.ok(m <= 12, row.label + ': median unspent tickets ' + m + ' is over 12');
+    assert.ok(mh.win[1] <= 75, 'Hard over Medium ' + mh.win[1] + ' % is over 75');
+    assert.ok(em.win[1] <= 75, 'Medium over Easy ' + em.win[1] + ' % is over 75');
+    assert.ok(mh.win[1] > 50 && em.win[1] > 50, 'and each level still beats the one below');
+    const [lead] = sim('lead-sim.mjs', ['100', '2p']);
+    assert.ok(lead.firstToCollectWins <= 70, 'the first to collect every stamp wins ' + lead.firstToCollectWins + ' % of two-traveler games, over 70');
+  }),
+
 ];
