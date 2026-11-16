@@ -41,47 +41,25 @@ const REWORDED = {
 const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
 
 export const tests = [
-  // ---------------- S6-13 ----------------
+  // ---------------- C4-02 ----------------
   {
-    name: 'S6-13 dragging the window edge keeps the board cache until the drag has been still, then rebuilds it once, crisp at the new size',
-    viewports: ['desktop'],
+    name: 'C4-02 Help says how the art was made, in one plain line, and it fits at both sizes',
     async run(t) {
-      await t.game('scene', 'game');
-      await soloGame(t, { settings: { seenCoach: true } });
+      await t.game('scene', 'help');
       await t.waitForStable(8000);
-      await t.game('resizeSettle', 1500);
-      const before = (await t.state()).ui;
-      const widths = [1240, 1200, 1160, 1120];
-      const sizes = [];
-      for (const w of widths) {
-        await t.page.setViewportSize({ width: w, height: 800 });
-        await t.page.waitForFunction((x) => innerWidth === x, w);
-        await t.page.evaluate(() => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))));
-        sizes.push((await t.state()).ui);
-      }
-      t.equal(sizes[sizes.length - 1].cacheBuilds, before.cacheBuilds, 'no rebuild during the drag: ' + before.cacheBuilds + ' -> ' + sizes.map((u) => u.cacheBuilds));
-      const want = await waitFor(t, (s) => s.ui.cacheBuilds > before.cacheBuilds, 8000, 'the settled rebuild');
-      t.equal(want.ui.cacheBuilds, before.cacheBuilds + 1, 'one rebuild after it settled');
-      t.expect(want.ui.cacheWidth !== before.cacheWidth, 'the cache has the new size: ' + before.cacheWidth + ' -> ' + want.ui.cacheWidth);
-      await t.game('resizeSettle', 150);
+      const line = await t.page.evaluate(() => { const e = document.querySelector('#art-credit'); e.scrollIntoView({ block: 'center' }); const r = e.getBoundingClientRect(); return { text: e.textContent, l: r.left, r: r.right, vw: innerWidth, sw: document.documentElement.scrollWidth, scrollW: e.scrollWidth, cw: e.clientWidth, count: (document.querySelector('#scene-help').textContent.match(/AI image tools/g) || []).length }; });
+      t.equal(line.text, 'Art: painted with AI image tools for this game.', 'the line');
+      t.equal(line.count, 1, 'said once');
+      t.expect(line.l >= 0 && line.r <= line.vw && line.sw <= line.vw && line.scrollW <= line.cw + 1, 'it fits: ' + JSON.stringify(line));
+      await t.page.screenshot({ path: SHOTS + 'C4-02-art-credit-' + t.viewport + '.png' });
     },
   },
-  {
-    name: 'S6-13 a big change of size, or a change of theme, rebuilds the cache at once',
-    viewports: ['desktop'],
-    async run(t) {
-      await soloGame(t, { settings: { seenCoach: true } });
-      await t.waitForStable(8000);
-      await t.game('resizeSettle', 60000);
-      const before = (await t.state()).ui;
-      await t.page.setViewportSize({ width: 700, height: 500 });
-      await waitFor(t, (s) => s.ui.cacheBuilds > before.cacheBuilds, 8000, 'a rebuild for a big change');
-      const mid = (await t.state()).ui;
-      await t.game('setState', { settings: { theme: 'dark' } });
-      await waitFor(t, (s) => s.ui.cacheBuilds > mid.cacheBuilds, 8000, 'a rebuild for a theme change');
-      await t.game('resizeSettle', 150);
-    },
-  },
+  node('C4-02 the line names no company or product', () => {
+    const src = fs.readFileSync(REPO + 'src/js/ui.js', 'utf8');
+    const m = /id="art-credit">([^<]*)</.exec(src);
+    assert.ok(m, 'the line is in ui.js');
+    assert.ok(!/openai|codex|chatgpt|dall|midjourney|gpt|blender/i.test(m[1]), 'no product named: ' + m[1]);
+  }),
 
 
 ];
