@@ -14,7 +14,7 @@ import { ACHIEVEMENTS, ACH, COVERS, TITLES, LEVELS, LEVEL_NAMES, TARGET_SIZES, T
 
 const $ = (s) => document.querySelector(s);
 const last = {};
-export const ui = { input: (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) ? 'touch' : 'mouse', coachStep: 0, coachAt: 0, coachSaid: '', finishCoach() {}, modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null };
+export const ui = { input: (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) ? 'touch' : 'mouse', coachStep: 0, coachAt: 0, coachSaid: '', finishCoach() {}, modal: null, setup: null, menuOpen: false, confirm: null, saveConflict: false, crash: false, focusNext: null, modalAt: 0, revealAt: 0, revealQ: null, listAt: 0, listSig: '' };
 
 // ---------- small render helpers ----------
 const ico = (icon, color, ink, size = 28, cls = '') => `<canvas class="ico ${cls}" width="${size * 2}" height="${size * 2}" style="width:${size}px;height:${size}px" data-icon="${icon}" data-color="${color || ''}" data-ink="${ink}" aria-hidden="true"></canvas>`;
@@ -265,6 +265,7 @@ function panelHTML() {
          ${expressOffer(p)}${nearestLine(p)}`;
       break;
     case 'choose': {
+      const sig = t.dests.map((d) => d.node).join(','); if (ui.listSig !== sig) { ui.listSig = sig; ui.listAt = performance.now(); } // (S1-04: when the list of places appeared)
       const list = t.dests.map((d, i) => {
         const n = NODES[d.node]; const c = n.cat ? CAT[n.cat] : null;
         const kind = kindOf(n); const dn = spaceDistrict(n);

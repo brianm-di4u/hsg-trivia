@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { H1, H2, soloGame, moveTo, waitFor, phase } from './helpers.mjs';
+import { H1, H2, soloGame, moveTo, landOn, waitFor, phase } from './helpers.mjs';
 
 const REPO = fileURLToPath(new URL('..', import.meta.url));
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
@@ -110,6 +110,66 @@ export const tests = [
     },
   },
 
+  {
+    name: 'S1-04 an Enter or Space just after a question appears does not answer the focused first answer; a later one does',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      const s0 = await t.state();
+      await landOn(t, s0.board.types.indexOf('cat'));
+      await phase(t, 'question');
+      await waitFor(t, (x) => x.ui.focus === 'ans0', 3000, 'the first answer to be focused');
+      await t.page.evaluate(() => { window.__TEST_KEY_GUARD_MS = 8000; }); // (the moment is 250 ms in the game; widened so that a slow machine cannot outlast it)
+      await t.page.keyboard.press('Enter');
+      await t.page.keyboard.press('Space');
+      let s = await t.state();
+      t.equal(s.trail.phase, 'question', 'the question is still open');
+      t.equal(s.question.chosen, null, 'neither key answered it');
+      await t.page.evaluate(() => { window.__TEST_KEY_GUARD_MS = 0; });
+      await keysArmed(t);
+      await t.page.keyboard.press('Enter');
+      s = await phase(t, 'feedback');
+      t.equal(s.question.chosen, 0, 'a deliberate Enter answers the focused first answer');
+    },
+  },
+  {
+    name: 'S1-04 an Enter just after the list of places appears does not pick the first place; a later one does',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      await t.game('act', 'roll', 3);
+      await phase(t, 'choose');
+      await t.page.evaluate(() => { window.__TEST_KEY_GUARD_MS = 8000; });
+      await t.page.keyboard.press('Enter');
+      t.equal((await t.state()).trail.phase, 'choose', 'the list is still open');
+      await t.page.evaluate(() => { window.__TEST_KEY_GUARD_MS = 0; });
+      await keysArmed(t);
+      await t.page.keyboard.press('Enter');
+      await waitFor(t, (x) => x.trail.phase !== 'choose', 3000, 'the later Enter to pick');
+      await t.game('act', 'finishAnim');
+    },
+  },
+  {
+    name: 'S1-04 an arrow key just after the list appears shows the player knows the list: the Enter after it picks',
+    viewports: ['desktop'],
+    async run(t) {
+      await soloGame(t, { settings: { seenCoach: true } });
+      let s = null;
+      for (let n = 1; n <= 6; n++) {
+        await t.game('act', 'roll', n);
+        s = await phase(t, 'choose');
+        if (s.trail.dests.length >= 2) break;
+        await t.game('setState', { trail: { phase: 'roll', roll: null, dests: [], rerolled: false } });
+      }
+      t.expect(s.trail.dests.length >= 2, 'found a roll with two destinations');
+      await t.page.evaluate(() => { window.__TEST_KEY_GUARD_MS = 8000; });
+      await t.page.keyboard.press('ArrowRight');
+      await t.page.keyboard.press('Enter');
+      await t.game('act', 'finishAnim');
+      s = await waitFor(t, (x) => x.trail.phase !== 'moving' && x.trail.phase !== 'choose', 4000, 'the move to finish');
+      t.equal(s.trail.players[0].node, s.trail.dests[1] ?? s.trail.players[0].node, 'the second place was picked');
+    },
+  },
   // ---------------- S1-07 ----------------
   {
     name: 'S1-07 a tap that misses pulses the nearest destination, a sloppy tap still counts, a cancelled press does nothing, and a space is named by a long press',

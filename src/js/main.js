@@ -364,6 +364,13 @@ function onKey(e) {
     if (keyGuardLeft() > 0) return e.preventDefault();
     lastActKey = performance.now();
   }
+  // S1-04: the first answer of a question that has just appeared is focused, and so is the first place of a list: an Enter or Space meant
+  // for the card before it must not answer or choose. They are ignored for the same moment after a question or a list is shown.
+  if ((k === 'Enter' || k === ' ') && G.state.scene === 'game' && G.state.trail && !ui.modal && !ui.menuOpen) {
+    const ph = G.state.trail.phase, shown = ph === 'question' ? ui.revealAt : ph === 'choose' ? ui.listAt : -1e9;
+    if (performance.now() - shown < keyGuardMs()) return e.preventDefault();
+  }
+  if (k.startsWith('Arrow') && G.state.scene === 'game') ui.listAt = -1e9; // a player who moves the choice knows what is under it
   // Let a focused button handle its own Enter/Space activation.
   if ((k === 'Enter' || k === ' ') && ae && ae.tagName === 'BUTTON') return;
   const st = G.state; const sc = st.scene; const lower = k.toLowerCase();
