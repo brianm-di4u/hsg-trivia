@@ -8,7 +8,8 @@ import { soloGame, landOn, phase, waitFor } from './helpers.mjs';
 
 const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
 const REPO = fileURLToPath(new URL('..', import.meta.url));
-const APPROVED = fileURLToPath(new URL('../../_council/owner-review/approved-wording.json', import.meta.url));
+// The owner's approved strings this file checks, kept in the repo so that the tests need nothing outside it (copied from the owner's approved-wording file: the trivia journalFacts, grandJury, dated and corrections).
+const APPROVED = fileURLToPath(new URL('./fixtures/approved-wording.json', import.meta.url));
 const BASE = { v: 1, settings: { sound: true, volume: 0.7, timer: 0, aiSpeed: 'normal', seenCoach: true }, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null };
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
 const withSave = (obj, today = '2026-11-16') => {
