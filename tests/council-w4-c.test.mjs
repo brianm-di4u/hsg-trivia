@@ -18,7 +18,7 @@ const text = (t, sel) => t.page.evaluate((s) => document.querySelector(s).textCo
 const bank = () => JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')).questions;
 const node = (name, run) => ({ name, node: true, run });
 
-// The question strings the owner approved (decisions 29 and 31): the two C4-03 rewordings and the fourteen that no longer open with "According to".
+// The approved question strings from decisions 29 and 31, including decision 85's later Zero K correction.
 const REWORDED = {
   'hs-0104': 'What did the Ozark Bathhouse on Bathhouse Row reopen as in 2014?',
   'hs-0291': 'Which architect designed Hot Springs’ Maurice Bathhouse?',
@@ -27,7 +27,7 @@ const REWORDED = {
   'hs-0155': 'Which dissolved constituent is most concentrated in Hot Springs’ thermal water?',
   'hs-0181': 'Which big cat left the Hot Springs area after European settlement?',
   'hs-0369': 'In what year was the first World’s Shortest St. Patrick’s Day Parade held?',
-  'hs-0507': 'How long is Hot Springs’ "Zero K Foot Race"?',
+  'hs-0507': 'How long is the course of Hot Springs’ "Zero K Foot Race"?',
   'hs-0131': 'DeGray Lake is described as the first Corps of Engineers impoundment able to do what?',
   'hs-0358': 'Mountain Valley water is said to have been served in which legislative chamber since the 1920s?',
   'hs-0479': 'Where is Hot Springs’ Rix Tower said to have stood before it was moved to the mountain?',
@@ -42,7 +42,7 @@ const plain = (s) => String(s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"
 
 export const tests = [
   // ---------------- C4-03, C4-05 ----------------
-  node('C4-03 C4-05 the sixteen approved questions are in the question file exactly, and nothing else about them moved', () => {
+  node('C4-03 C4-05 the sixteen approved rewordings include the later Zero K correction', () => {
     const all = bank(), by = new Map(all.map((q) => [q.id, q]));
     for (const [id, want] of Object.entries(REWORDED)) assert.equal(plain(by.get(id).question), plain(want), id);
     assert.equal(all.length, 608, 'the bank holds 619 less the eleven questions the owner retired in C4-10');
@@ -55,18 +55,18 @@ export const tests = [
     assert.deepEqual([o.answer, o.wrong, o.explanation, o.source], ['Hot Springs NP Cultural Center', ['The park visitor center', 'A brewery and distillery', 'A nine-room hotel'], 'It reopened in 2014 as a cultural center showing artist-in-residence work.', 'Wikipedia: Bathhouse Row']);
     assert.deepEqual([m.answer, m.wrong, m.explanation, m.source], ['George Gleim Jr.', ['Harry C. Schwebke', 'George Mann', 'W. T. Bailey'], 'The Maurice was built 1911–12 and remodeled by Mann & Stern in 1915.', 'Wikipedia: Bathhouse Row']);
   }),
-  node('C4-05 the six questions that keep "According to" are untouched, and no other live question opens with it', () => {
+  node('C4-05 the seven approved attributions retain "According to", including the disputed peak year', () => {
     const all = bank();
-    for (const id of ['hs-0184', 'hs-0377', 'hs-0498', 'hs-0501', 'hs-0503', 'hs-0580']) assert.match(all.find((q) => q.id === id).question, /According to/, id);
+    for (const id of ['hs-0184', 'hs-0377', 'hs-0498', 'hs-0501', 'hs-0503', 'hs-0525', 'hs-0580']) assert.match(all.find((q) => q.id === id).question, /According to/, id);
     // (hs-0450 was approved and then retired by the owner, item C4-10: it is left to that item)
     const left = all.filter((q) => /According to/.test(q.question) && q.id !== 'hs-0450').map((q) => q.id).sort();
-    assert.equal(left.join(','), 'hs-0184,hs-0377,hs-0498,hs-0501,hs-0503,hs-0580', 'only the six: ' + left);
+    assert.equal(left.join(','), 'hs-0184,hs-0377,hs-0498,hs-0501,hs-0503,hs-0525,hs-0580', 'the seven approved attributions: ' + left);
   }),
-  node('C4-05 the four explanations that name their source now say it, and the answers and wrong answers of the fourteen are as they were', () => {
+  node('C4-05 the four explanations name their sources and include the approved Zero K update', () => {
     const by = new Map(bank().map((q) => [q.id, q]));
     assert.equal(by.get('hs-0155').explanation, "Wikipedia's water-chemistry table lists bicarbonate at 130.0 ppm, ahead of silica (53.0) and calcium (47.0).");
     assert.equal(by.get('hs-0369').explanation, 'The Encyclopedia of Arkansas says "The First Ever First Annual" parade was held March 17, 2004; the idea came from a 2003 gathering.');
-    assert.equal(by.get('hs-0507').explanation, 'Visit Hot Springs lists the race at 250 feet. It follows directly after the Running of the Tubs races.');
+    assert.equal(by.get('hs-0507').explanation, 'Visit Hot Springs says the course is 299 feet long, starting on 98-foot Bridge Street and ending across the intersection on Convention Boulevard. For 2020 it was cut to 250 feet when the race moved to follow the Running of the Tubs.');
     assert.equal(by.get('hs-0567').explanation, 'The Encyclopedia of Arkansas says Angela Graboys-Rudner was appointed rabbi of Congregation House of Israel in 1989, a first for Arkansas.');
     for (const id of Object.keys(REWORDED)) assert.equal(by.get(id).wrong.length, 3, id);
   }),
