@@ -266,6 +266,22 @@ export const tests = [
     assert.equal(r.bank, 608);
     for (const [id, n] of r.eras) assert.ok(n >= 30, id + ' still has a full chapter: ' + n);
   }),
+  node('C4-10 the seven reframed questions stay out of the Daily, so the boards of dates that did not draw a retired question are the ones wave 3 dealt', () => {
+    const held = ['hs-0225', 'hs-0264', 'hs-0388', 'hs-0396', 'hs-0459', 'hs-0460', 'hs-0466'];
+    // Boards dealt at the end of wave 3 (the question file before C4-10), for dates whose board no retired question touches.
+    const wave3 = {
+      '2026-11-16': ['hs-0004', 'hs-0429', 'hs-0472', 'hs-0078', 'hs-0309', 'hs-0203', 'hs-0113'],
+      '2026-11-26': ['hs-0330', 'hs-0002', 'hs-0463', 'hs-0208', 'hs-0351', 'hs-0113', 'hs-0542'],
+      '2027-03-01': ['hs-0361', 'hs-0013', 'hs-0481', 'hs-0128', 'hs-0279', 'hs-0536', 'hs-0418'],
+      '2027-08-08': ['hs-0320', 'hs-0003', 'hs-0120', 'hs-0385', 'hs-0446', 'hs-0533', 'hs-0221'],
+    };
+    const r = inNode(`const Q = await imp('quiz.js'); const out = { held: 0, boards: {} };
+      for (let i = 0; i < 400; i++) { const d = new Date(Date.UTC(2026, 10, 16 + i)).toISOString().slice(0, 10), ids = Q.dailyIds(d); out.held += ids.filter((id) => ${JSON.stringify(held)}.includes(id)).length; }
+      for (const d of ${JSON.stringify(Object.keys(wave3))}) out.boards[d] = Q.dailyIds(d);
+      console.log(JSON.stringify(out));`);
+    assert.equal(r.held, 0, 'none of the seven is ever dealt in 400 Dailies');
+    assert.deepEqual(r.boards, wave3);
+  }),
   {
     name: 'C4-10 a save that names a retired question loads and plays: in the seen list, and as the open question of a trip',
     async run(t) {

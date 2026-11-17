@@ -16,6 +16,10 @@ export function newQuiz(kind, { era, date } = {}) {
   next();
 }
 
+// C4-10: seven questions were reframed so that they name no 2020s year or price, which would let them into the Daily and move the boards of most dates.
+// A Daily is an index into its pool, so the pool is kept as it was in wave 3: these stay out of it (they are still in every other mode).
+const DAILY_HELD_OUT = new Set(['hs-0225', 'hs-0264', 'hs-0388', 'hs-0396', 'hs-0459', 'hs-0460', 'hs-0466']);
+
 // Seven questions fixed by the date: confirmed items, seven different categories, easy → hard.
 export function dailyIds(date) {
   const r = makeRng(hash32('hs-trivia-daily:' + date));
@@ -24,7 +28,7 @@ export function dailyIds(date) {
   const ramp = ['easy', 'easy', 'medium', 'medium', 'medium', 'hard', 'hard'];
   const out = [];
   for (let k = 0; k < DAILY_LEN; k++) {
-    const lasting = (q) => q.category === cats[k] && q.confidence === 'confirmed' && !isDated(q); // S4-10: nothing dated in the Daily
+    const lasting = (q) => q.category === cats[k] && q.confidence === 'confirmed' && !isDated(q) && !DAILY_HELD_OUT.has(q.id); // S4-10: nothing dated in the Daily
     let pool = BANK.filter((q) => lasting(q) && q.difficulty === ramp[k]);
     if (!pool.length) pool = BANK.filter(lasting);
     out.push(pool[r.int(pool.length)].id);
