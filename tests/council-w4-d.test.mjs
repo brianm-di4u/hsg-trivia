@@ -235,7 +235,7 @@ export const tests = [
   node('C4-10 C4-11 the question file carries every approved change and correction word for word, and the eleven retired questions are out', () => {
     const A = approved(), file = JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')), by = new Map(file.questions.map((q) => [q.id, q]));
     const change = { ...A.dated.change, ...A.corrections.change };
-    assert.equal(Object.keys(A.dated.change).length, 17); assert.equal(Object.keys(A.corrections.change).length, 3); assert.equal(A.dated.retire.length, 11);
+    assert.equal(Object.keys(A.dated.change).length, 17); assert.equal(Object.keys(A.corrections.change).length, 33); assert.equal(A.dated.retire.length, 11);
     for (const [id, c] of Object.entries(change)) {
       const q = by.get(id); assert.ok(q, id + ' is still in the bank');
       for (const k of ['question', 'answer', 'wrong', 'explanation']) {

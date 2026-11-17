@@ -351,7 +351,7 @@
    }
   },
   "corrections": {
-   "about": "Decisions 64 to 66 (15 November 2026): three questions that said more than their sources. Same shape as dated.change.",
+   "about": "Decisions 64 to 66 (15 November 2026): three questions that said more than their sources. Same shape as dated.change. Decision 82 added new wrong answers for 30 number questions.",
    "change": {
     "hs-0102": {
      "explanation": "The brewery's own history says it opened in the Superior Bathhouse in 2013.",
@@ -368,6 +368,366 @@
      "explanation": "The Encyclopedia of Arkansas says W. N. Benton, an insurance agent formerly of St. Louis, bought the business from the Greene brothers in 1879.",
      "answerWas": "Sold insurance in St. Louis",
      "explanationWas": "EoA says W. N. Benton, an insurance agent formerly of St. Louis, bought the business from the Greene brothers in 1879."
+    },
+    "hs-0005": {
+     "wrong": [
+      "$2,000",
+      "$5,000",
+      "$10,000"
+     ],
+     "wrongWas": [
+      "$300",
+      "$30,000",
+      "$300,000"
+     ]
+    },
+    "hs-0020": {
+     "wrong": [
+      "64,320",
+      "96,150",
+      "118,700"
+     ],
+     "wrongWas": [
+      "870",
+      "8,704",
+      "870,400"
+     ]
+    },
+    "hs-0021": {
+     "wrong": [
+      "25 to 40 cents",
+      "90 cents to $1.20",
+      "$1.50 to $2"
+     ],
+     "wrongWas": [
+      "5 to 8 cents",
+      "$5 to $8",
+      "$25 to $30"
+     ]
+    },
+    "hs-0023": {
+     "wrong": [
+      "10 cents",
+      "35 cents",
+      "50 cents"
+     ],
+     "wrongWas": [
+      "2 cents",
+      "$2",
+      "$20"
+     ]
+    },
+    "hs-0029": {
+     "wrong": [
+      "Fewer than 500",
+      "500 to 1,200",
+      "1,300 to 2,400"
+     ],
+     "wrongWas": [
+      "About 25",
+      "About 250",
+      "About 25,000"
+     ]
+    },
+    "hs-0038": {
+     "wrong": [
+      "Fewer than 5,000",
+      "5,000 to 14,000",
+      "15,000 to 30,000"
+     ],
+     "wrongWas": [
+      "About 320",
+      "About 3,200",
+      "About 320,000"
+     ]
+    },
+    "hs-0050": {
+     "wrong": [
+      "About 62,000",
+      "About 140,000",
+      "About 210,000"
+     ],
+     "wrongWas": [
+      "About 9,600",
+      "About 960,000",
+      "About 9.6 million"
+     ]
+    },
+    "hs-0052": {
+     "wrong": [
+      "About $22.4 million",
+      "About $27.9 million",
+      "About $44.7 million"
+     ],
+     "wrongWas": [
+      "About $3.16 million",
+      "About $316 million",
+      "About $1 million"
+     ]
+    },
+    "hs-0072": {
+     "wrong": [
+      "About 300",
+      "About 400",
+      "About 700"
+     ],
+     "wrongWas": [
+      "About 50",
+      "About 150",
+      "About 5,000"
+     ]
+    },
+    "hs-0122": {
+     "wrong": [
+      "About 5,500",
+      "About 1,940",
+      "About 9,000"
+     ],
+     "wrongWas": [
+      "About 720",
+      "About 1,940",
+      "About 72,000"
+     ]
+    },
+    "hs-0127": {
+     "wrong": [
+      "About 120",
+      "About 300",
+      "About 450"
+     ],
+     "wrongWas": [
+      "About 20",
+      "About 12",
+      "About 2,000"
+     ]
+    },
+    "hs-0141": {
+     "wrong": [
+      "150",
+      "320",
+      "5,839"
+     ],
+     "wrongWas": [
+      "21",
+      "2,100",
+      "5,839"
+     ]
+    },
+    "hs-0145": {
+     "wrong": [
+      "About 1,800 years",
+      "About 7,500 years",
+      "About 12,000 years"
+     ],
+     "wrongWas": [
+      "About 44 years",
+      "About 440,000 years",
+      "About 4.4 million years"
+     ]
+    },
+    "hs-0146": {
+     "wrong": [
+      "Under 100,000 gallons",
+      "100,000 to 300,000 gallons",
+      "350,000 to 600,000 gallons"
+     ],
+     "wrongWas": [
+      "About 7,000 gallons",
+      "About 70 million gallons",
+      "About 7 billion gallons"
+     ]
+    },
+    "hs-0163": {
+     "wrong": [
+      "About 0.2 mile",
+      "About 1 mile",
+      "About 2.5 miles"
+     ],
+     "wrongWas": [
+      "About 0.05 mile",
+      "About 2.5 miles",
+      "About 5 miles"
+     ]
+    },
+    "hs-0214": {
+     "wrong": [
+      "$2,500",
+      "$10,000",
+      "$15,000"
+     ],
+     "wrongWas": [
+      "$500",
+      "$50,000",
+      "$5 million"
+     ]
+    },
+    "hs-0249": {
+     "wrong": [
+      "$1.5 million",
+      "$5.5 million",
+      "$12.5 million"
+     ],
+     "wrongWas": [
+      "About $850,000",
+      "About $1.5 million",
+      "About $85 million"
+     ]
+    },
+    "hs-0355": {
+     "wrong": [
+      "$5",
+      "$15",
+      "$25"
+     ],
+     "wrongWas": [
+      "$1",
+      "$100",
+      "$1,000"
+     ]
+    },
+    "hs-0377": {
+     "wrong": [
+      "About 5,000",
+      "About 12,000",
+      "About 21,000"
+     ],
+     "wrongWas": [
+      "About 300",
+      "About 3,000",
+      "About 300,000"
+     ]
+    },
+    "hs-0384": {
+     "wrong": [
+      "Nearly 2 million",
+      "Nearly 3.5 million",
+      "Nearly 7 million"
+     ],
+     "wrongWas": [
+      "About 5,000",
+      "About 50,000",
+      "About 500 million"
+     ]
+    },
+    "hs-0385": {
+     "wrong": [
+      "About 60,000",
+      "About 100,000",
+      "About 250,000"
+     ],
+     "wrongWas": [
+      "About 1,500",
+      "About 15,000",
+      "About 15 million"
+     ]
+    },
+    "hs-0419": {
+     "wrong": [
+      "$2,500",
+      "$25,000",
+      "$50,000"
+     ],
+     "wrongWas": [
+      "$1,000",
+      "$100,000",
+      "$10 million"
+     ]
+    },
+    "hs-0439": {
+     "wrong": [
+      "2,000",
+      "3,000",
+      "8,000"
+     ],
+     "wrongWas": [
+      "500",
+      "1,500",
+      "50,000"
+     ]
+    },
+    "hs-0448": {
+     "wrong": [
+      "$4 million",
+      "$5.5 million",
+      "$10 million"
+     ],
+     "wrongWas": [
+      "$700,000",
+      "$4 million",
+      "$70 million"
+     ]
+    },
+    "hs-0453": {
+     "wrong": [
+      "10 minutes",
+      "45 minutes",
+      "90 minutes"
+     ],
+     "wrongWas": [
+      "30 seconds",
+      "3 minutes",
+      "3 hours"
+     ]
+    },
+    "hs-0455": {
+     "wrong": [
+      "0.5 million",
+      "1 million",
+      "3 million"
+     ],
+     "wrongWas": [
+      "1,500",
+      "15,000",
+      "150 million"
+     ]
+    },
+    "hs-0459": {
+     "wrong": [
+      "About 100",
+      "About 150",
+      "About 400"
+     ],
+     "wrongWas": [
+      "About 5",
+      "About 25",
+      "About 2,500"
+     ]
+    },
+    "hs-0507": {
+     "wrong": [
+      "150 feet",
+      "400 feet",
+      "600 feet"
+     ],
+     "wrongWas": [
+      "25 feet",
+      "2,500 feet",
+      "26.2 miles"
+     ]
+    },
+    "hs-0509": {
+     "wrong": [
+      "About 65 feet",
+      "About 140 feet",
+      "About 200 feet"
+     ],
+     "wrongWas": [
+      "About 9.8 feet",
+      "About 980 feet",
+      "About 9,800 feet"
+     ]
+    },
+    "hs-0550": {
+     "wrong": [
+      "About 90 million years",
+      "About 180 million years",
+      "About 320 million years"
+     ],
+     "wrongWas": [
+      "About 4 million years",
+      "About 40 million years",
+      "About 4 billion years"
+     ]
     }
    }
   }

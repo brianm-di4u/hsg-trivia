@@ -87,9 +87,9 @@
    "question": "How much money did Congress appropriate for the 1804–05 Dunbar–Hunter expedition to the hot springs?",
    "answer": "$3,000",
    "wrong": [
-    "$300",
-    "$30,000",
-    "$300,000"
+    "$2,000",
+    "$5,000",
+    "$10,000"
    ],
    "explanation": "Congress appropriated $3,000 for the expedition.",
    "source": "Encyclopedia of Arkansas: Hunter-Dunbar Expedition",
@@ -342,9 +342,9 @@
    "question": "About how many free baths did the Hot Springs Government Free Bathhouse give in 1919?",
    "answer": "87,040",
    "wrong": [
-    "870",
-    "8,704",
-    "870,400"
+    "64,320",
+    "96,150",
+    "118,700"
    ],
    "explanation": "Applicants swore they could not pay; a false oath carried a fine up to $25, up to 30 days in jail, or both.",
    "source": "NPS 1920 brochure",
@@ -359,9 +359,9 @@
    "question": "In 1920, what range did single-bath prices at Hot Springs' bathhouses span, before attendant fees?",
    "answer": "50 to 80 cents",
    "wrong": [
-    "5 to 8 cents",
-    "$5 to $8",
-    "$25 to $30"
+    "25 to 40 cents",
+    "90 cents to $1.20",
+    "$1.50 to $2"
    ],
    "explanation": "Rates were fixed by the Secretary of the Interior; the 1920 scale ran from $0.50 to $0.80 per single bath.",
    "source": "NPS 1920 brochure",
@@ -393,9 +393,9 @@
    "question": "What was the maximum attendant fee per single bath at Hot Springs in 1920?",
    "answer": "20 cents",
    "wrong": [
-    "2 cents",
-    "$2",
-    "$20"
+    "10 cents",
+    "35 cents",
+    "50 cents"
    ],
    "explanation": "Attendant fees were capped at 20 cents a bath or $4 a course.",
    "source": "NPS 1920 brochure",
@@ -495,9 +495,9 @@
    "question": "Roughly how many people were left homeless by Hot Springs' 1913 fire?",
    "answer": "More than 2,500",
    "wrong": [
-    "About 25",
-    "About 250",
-    "About 25,000"
+    "Fewer than 500",
+    "500 to 1,200",
+    "1,300 to 2,400"
    ],
    "explanation": "The entry puts the damage at $10 million.",
    "source": "Encyclopedia of Arkansas: Fire of 1913",
@@ -648,9 +648,9 @@
    "question": "About how many service members did Hot Springs' WWII Army redistribution center process?",
    "answer": "More than 32,000",
    "wrong": [
-    "About 320",
-    "About 3,200",
-    "About 320,000"
+    "Fewer than 5,000",
+    "5,000 to 14,000",
+    "15,000 to 30,000"
    ],
    "explanation": "The Army took over most of the hotels in August 1944; the center closed in December 1945.",
    "source": "Wikipedia: Hot Springs, Arkansas",
@@ -852,9 +852,9 @@
    "question": "By 1979, about how many baths a year were given on Hot Springs' Bathhouse Row?",
    "answer": "About 96,000",
    "wrong": [
-    "About 9,600",
-    "About 960,000",
-    "About 9.6 million"
+    "About 62,000",
+    "About 140,000",
+    "About 210,000"
    ],
    "explanation": "In 1946 a record 649,270 baths were taken; bathhouse visitation decreased after 1946.",
    "source": "Wikipedia: Bathhouse Row",
@@ -886,9 +886,9 @@
    "question": "About how much is the Maurice Bathhouse restoration that broke ground in August 2025?",
    "answer": "About $31.6 million",
    "wrong": [
-    "About $3.16 million",
-    "About $316 million",
-    "About $1 million"
+    "About $22.4 million",
+    "About $27.9 million",
+    "About $44.7 million"
    ],
    "explanation": "NPS celebrated the groundbreaking on Aug. 19, 2025; the Maurice is the last Bathhouse Row building to undergo rehabilitation.",
    "source": "NPS: Groundbreaking celebrated for Maurice Bathhouse rehabilitation",
@@ -1226,9 +1226,9 @@
    "question": "About how many rooms did Hot Springs' Eastman Hotel have?",
    "answer": "About 500",
    "wrong": [
-    "About 50",
-    "About 150",
-    "About 5,000"
+    "About 300",
+    "About 400",
+    "About 700"
    ],
    "explanation": "The Baseball Trail calls it 'the elegant, 500-room Eastman Hotel.'",
    "source": "Hot Springs Historic Baseball Trail: The Eastman Hotel",
@@ -2076,9 +2076,9 @@
    "question": "About how many acres is Lake Hamilton?",
    "answer": "About 7,200",
    "wrong": [
-    "About 720",
+    "About 5,500",
     "About 1,940",
-    "About 72,000"
+    "About 9,000"
    ],
    "explanation": "Wikipedia gives Lake Hamilton as 7,200 acres; Lake Catherine, the smaller of the two lakes, is about 1,940 acres.",
    "source": "Wikipedia: Lake Hamilton",
@@ -2161,9 +2161,9 @@
    "question": "About how many islands does Lake Ouachita have?",
    "answer": "About 200",
    "wrong": [
-    "About 20",
-    "About 12",
-    "About 2,000"
+    "About 120",
+    "About 300",
+    "About 450"
    ],
    "explanation": "Wikipedia's infobox lists 200 islands for the lake.",
    "source": "Wikipedia: Lake Ouachita",
@@ -2382,8 +2382,8 @@
    "question": "How many acres is Garvan Woodland Gardens on Lake Hamilton?",
    "answer": "210",
    "wrong": [
-    "21",
-    "2,100",
+    "150",
+    "320",
     "5,839"
    ],
    "explanation": "The University of Arkansas owns the garden.",
@@ -2450,9 +2450,9 @@
    "question": "About how old is most Hot Springs thermal water, per USGS tritium and carbon-14 dating?",
    "answer": "About 4,400 years",
    "wrong": [
-    "About 44 years",
-    "About 440,000 years",
-    "About 4.4 million years"
+    "About 1,800 years",
+    "About 7,500 years",
+    "About 12,000 years"
    ],
    "explanation": "USGS found the water is a mix: a very small amount under 20 years old and a preponderance about 4,400 years old.",
    "source": "USGS Professional Paper 1044-C: Abstract (npshistory.com mirror)",
@@ -2467,9 +2467,9 @@
    "question": "Per the National Park Service, about how much water do the Hot Springs thermal springs produce per day?",
    "answer": "Over 700,000 gallons",
    "wrong": [
-    "About 7,000 gallons",
-    "About 70 million gallons",
-    "About 7 billion gallons"
+    "Under 100,000 gallons",
+    "100,000 to 300,000 gallons",
+    "350,000 to 600,000 gallons"
    ],
    "explanation": "NPS says the springs produce over 700,000 gallons of water a day.",
    "source": "NPS: Maurice Historic Display Spring",
@@ -2756,9 +2756,9 @@
    "question": "How long is the Grand Promenade, the National Recreation Trail in Hot Springs National Park?",
    "answer": "About 0.5 mile",
    "wrong": [
-    "About 0.05 mile",
-    "About 2.5 miles",
-    "About 5 miles"
+    "About 0.2 mile",
+    "About 1 mile",
+    "About 2.5 miles"
    ],
    "explanation": "It is a National Recreation Trail and the entry point from downtown.",
    "source": "NPS: Hot Springs & North Mountain Trails",
@@ -3623,9 +3623,9 @@
    "question": "What was the purse of the first Arkansas Derby at Oaklawn in 1936?",
    "answer": "$5,000",
    "wrong": [
-    "$500",
-    "$50,000",
-    "$5 million"
+    "$2,500",
+    "$10,000",
+    "$15,000"
    ],
    "explanation": "The first Arkansas Derby ran at Oaklawn Park in 1936 with a purse of $5,000.",
    "source": "Encyclopedia of Arkansas: Oaklawn Park",
@@ -4218,9 +4218,9 @@
    "question": "How large a bond did Hot Springs seek to secure for the total renovation of Majestic Park?",
    "answer": "$8.5 million",
    "wrong": [
-    "About $850,000",
-    "About $1.5 million",
-    "About $85 million"
+    "$1.5 million",
+    "$5.5 million",
+    "$12.5 million"
    ],
    "explanation": "A $500,000 grant from the Oaklawn Foundation was also received to initiate the renovation.",
    "source": "Wikipedia: Majestic Park",
@@ -5986,9 +5986,9 @@
    "question": "How much did the traveler who traded McClard's its sauce recipe owe for his two-month stay?",
    "answer": "$10",
    "wrong": [
-    "$1",
-    "$100",
-    "$1,000"
+    "$5",
+    "$15",
+    "$25"
    ],
    "explanation": "He offered \"the world's greatest bar-b-que sauce\" recipe instead.",
    "source": "Encyclopedia of Arkansas: McClard's Bar-B-Q",
@@ -6326,9 +6326,9 @@
    "question": "According to organizers, roughly how many people watch Hot Springs' 98-foot St. Patrick's Day parade each year?",
    "answer": "About 30,000",
    "wrong": [
-    "About 300",
-    "About 3,000",
-    "About 300,000"
+    "About 5,000",
+    "About 12,000",
+    "About 21,000"
    ],
    "explanation": "Organizers say more than 30,000 people watch each year; the first parade, in 2004, drew about 1,500.",
    "source": "AP via KY3: Arkansas city boasts world's shortest St. Patrick's Day parade at 98 feet",
@@ -6445,9 +6445,9 @@
    "question": "Roughly how many lights make up Garvan Woodland Gardens' Holiday Lights near Hot Springs?",
    "answer": "Nearly 5 million",
    "wrong": [
-    "About 5,000",
-    "About 50,000",
-    "About 500 million"
+    "Nearly 2 million",
+    "Nearly 3.5 million",
+    "Nearly 7 million"
    ],
    "explanation": "Visit Hot Springs describes a multi-week display featuring nearly 5 million lights.",
    "source": "Visit Hot Springs: A reason to visit every season",
@@ -6462,9 +6462,9 @@
    "question": "About how many tulips bloom at Garvan Woodland Gardens' Tulip Extravaganza?",
    "answer": "About 150,000",
    "wrong": [
-    "About 1,500",
-    "About 15,000",
-    "About 15 million"
+    "About 60,000",
+    "About 100,000",
+    "About 250,000"
    ],
    "explanation": "The Tulip Extravaganza runs mid-March through mid-April in the Sensory Garden, per Visit Hot Springs.",
    "source": "Visit Hot Springs: A reason to visit every season",
@@ -6972,9 +6972,9 @@
    "question": "How much did Magic Springs pay for the used Arkansas Twister coaster in 1991?",
    "answer": "$10,000",
    "wrong": [
-    "$1,000",
-    "$100,000",
-    "$10 million"
+    "$2,500",
+    "$25,000",
+    "$50,000"
    ],
    "explanation": "Magic Springs spent close to $900,000 relocating the ride.",
    "source": "Wikipedia: Arkansas Twister",
@@ -7312,9 +7312,9 @@
    "question": "How many seats does Magic Springs' Timberwood Amphitheater have?",
    "answer": "5,000",
    "wrong": [
-    "500",
-    "1,500",
-    "50,000"
+    "2,000",
+    "3,000",
+    "8,000"
    ],
    "explanation": "Lawn seating is free; 26 rows of reserved benches face the stage.",
    "source": "Wikipedia: Magic Springs",
@@ -7465,9 +7465,9 @@
    "question": "What did The Gauntlet coaster at Magic Springs cost?",
    "answer": "$7 million",
    "wrong": [
-    "$700,000",
     "$4 million",
-    "$70 million"
+    "$5.5 million",
+    "$10 million"
    ],
    "explanation": "Wikipedia's infobox lists the cost as $7,000,000; the ride opened April 10, 2004.",
    "source": "Wikipedia: The Gauntlet",
@@ -7516,9 +7516,9 @@
    "question": "How long were 12 X-Coaster riders stuck upside down at Magic Springs in 2007?",
    "answer": "30 minutes",
    "wrong": [
-    "30 seconds",
-    "3 minutes",
-    "3 hours"
+    "10 minutes",
+    "45 minutes",
+    "90 minutes"
    ],
    "explanation": "A power outage left them 150 ft up on June 9, 2007.",
    "source": "Wikipedia: Magic Springs",
@@ -7550,9 +7550,9 @@
    "question": "How many volts does the Mid-America Science Museum's Tesla coil produce?",
    "answer": "1.5 million",
    "wrong": [
-    "1,500",
-    "15,000",
-    "150 million"
+    "0.5 million",
+    "1 million",
+    "3 million"
    ],
    "explanation": "Guinness recognized it in 2007 as the most powerful conical Tesla coil.",
    "source": "Encyclopedia of Arkansas: Mid-America Science Museum",
@@ -7601,9 +7601,9 @@
    "question": "Roughly how many open rehearsals does the Hot Springs Music Festival offer?",
    "answer": "About 250",
    "wrong": [
-    "About 5",
-    "About 25",
-    "About 2,500"
+    "About 100",
+    "About 150",
+    "About 400"
    ],
    "explanation": "The festival's own site says its two weeks include over 20 concerts and 250 open rehearsals.",
    "source": "Visit Hot Springs: A reason to visit every season",
@@ -8417,9 +8417,9 @@
    "question": "How long is Hot Springs' \"Zero K Foot Race\"?",
    "answer": "250 feet",
    "wrong": [
-    "25 feet",
-    "2,500 feet",
-    "26.2 miles"
+    "150 feet",
+    "400 feet",
+    "600 feet"
    ],
    "explanation": "Visit Hot Springs lists the race at 250 feet. It follows directly after the Running of the Tubs races.",
    "source": "Visit Hot Springs: A reason to visit every season",
@@ -8451,9 +8451,9 @@
    "question": "About how long is Hot Springs' Bridge Street, billed as the world's shortest street in everyday use?",
    "answer": "About 98 feet",
    "wrong": [
-    "About 9.8 feet",
-    "About 980 feet",
-    "About 9,800 feet"
+    "About 65 feet",
+    "About 140 feet",
+    "About 200 feet"
    ],
    "explanation": "The Encyclopedia of Arkansas says Ripley's Believe It or Not! recognized Bridge Street as the world's shortest street in everyday use; it is ninety-eight feet long.",
    "source": "Encyclopedia of Arkansas: World's Shortest St. Patrick's Day Parade",
@@ -9148,9 +9148,9 @@
    "question": "The Park Service says the story of the thermal springs begins with rocks formed about how long ago?",
    "answer": "About 400 million years",
    "wrong": [
-    "About 4 million years",
-    "About 40 million years",
-    "About 4 billion years"
+    "About 90 million years",
+    "About 180 million years",
+    "About 320 million years"
    ],
    "explanation": "The park traces the springs to rocks laid down more than 400 million years ago.",
    "source": "National Park Service: Natural Features & Ecosystems (Hot Springs NP)",
