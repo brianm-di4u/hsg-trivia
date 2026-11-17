@@ -11,7 +11,7 @@ const MASTER_K = 0.5, SFX_LEVEL = 2.2, MUSIC_LEVEL = 1.2, AMB_LEVEL = 1.2, DEFAU
 const PENTA = [0, 2, 4, 7, 9]; // major pentatonic: a hop walks up it and a run of right answers climbs
 
 let ac = null, master = null, sfxIn = null, noiseBuf = null, kit = null, cueBase = 0, trim = 1;
-const opts = { on: true, volume: DEFAULT_VOLUME, effects: true, music: true, ambience: true };
+const opts = { on: true, volume: DEFAULT_VOLUME, effects: true, music: true, ambience: true, softSteam: false };
 export const audioStats = { played: 0, log: [], noiseStarts: [], ctx: false, get noiseSeconds() { return noiseBuf ? noiseBuf.duration : 0; }, get state() { return ac ? ac.state : 'none'; } };
 
 // S5-19: the noise every hop, gavel and steam cue is cut from. It is NOISE_SECONDS long (was 1 s) and each cue starts at a random place in the first
@@ -90,12 +90,13 @@ export function setSoundscape(next) {
   else if (kit) { kit.music.intensity(want.tension); kit.amb.set('wind', want.wind); }
 }
 
-export function setAudio({ on, volume, effects, music, ambience }) {
+export function setAudio({ on, volume, effects, music, ambience, softSteam }) {
   if (on !== undefined) opts.on = on;
   if (volume !== undefined) opts.volume = volume;
   if (effects !== undefined) opts.effects = effects !== false;
   if (music !== undefined) opts.music = music !== false;
   if (ambience !== undefined) opts.ambience = ambience !== false;
+  if (softSteam !== undefined) opts.softSteam = softSteam === true;
   applyGains();
   applyLayers();
 }
@@ -187,7 +188,13 @@ const PRESETS = {
     noise({ d: 0.1, v: 0.1, type: 'lowpass', f: 500, pan });
   },
   stamp: () => { tone({ type: 'sine', f: 140, f2: 60, d: 0.18, v: 0.6 }); noise({ d: 0.12, v: 0.3, type: 'lowpass', f: 900 }); noise({ t: 0.08, d: 0.25, v: 0.1, f: 3500, qv: 0.6 }); },
-  steam: () => { noise({ d: 0.9, v: 0.26, f: 600, f2: 4000, qv: 0.7, pan: rand(-0.3, 0.3) }); },
+  // K-02: the Steam sound setting. 'Classic' (the default) is the band-passed sweep it always was. 'Softer' (o.soft) is a low-passed noise fill: no resonant peak, a slower
+  // sweep that stays under 2.4 kHz, a longer swell; its trim is set so that its peak matches the classic one at the default volume and at full volume (measured in tests/council-w4-k.test.mjs).
+  steam: (o) => {
+    const pan = rand(-0.3, 0.3);
+    if (o.soft) { trim *= STEAM_SOFT_TRIM; noise({ d: 1.1, v: 0.26, type: 'lowpass', f: 500, f2: 2200, qv: 0.3, pan }); return; }
+    noise({ d: 0.9, v: 0.26, f: 600, f2: 4000, qv: 0.7, pan });
+  },
   coin: (o) => { const pan = rand(-0.2, 0.2), k = o.k || 1; tone({ type: 'square', f: 988 * k, d: 0.06, v: 0.12, q: 4000, pan }); tone({ type: 'square', f: 1319 * k, t: 0.06, d: 0.22, v: 0.12, q: 4000, pan }); },
   // A run of right answers reaches 3 or 5: a quick rising chime (a fourth note for the 5) on top of the answer's own cue.
   streak: (o) => { const pan = rand(-0.2, 0.2); (o.n >= 5 ? [1046.5, 1318.5, 1568, 2093] : [1046.5, 1318.5, 1568]).forEach((f, i) => { tone({ type: 'sine', f, t: i * 0.07, d: 0.3, v: 0.22, pan }); tone({ type: 'triangle', f: f * 2.01, t: i * 0.07, d: 0.18, v: 0.05, pan, pair: 6 }); }); },
@@ -231,6 +238,7 @@ const PRESETS = {
 };
 // How loud each cue sits at the default volume: the preset's own shape is kept, this trims the whole cue so that the ones
 // the player must notice peak near 0.3 (measured by audioRender). click and tick are quiet interface sounds.
+const STEAM_SOFT_TRIM = 1.3; // the softer steam's level against the classic one (the classic is 1, which was also the softer one's first try); measured so the two peak alike
 const TRIM = { hop: 2.4, correct: 0.7, wrong: 0.56, stamp: 2.5, steam: 3.1, coin: 3.6, bell: 1.45, trolley: 0.9, bugle: 1.1, warp: 1.8, gavel: 2.4, win: 0.85, consolation: 0.75, page: 6.6, gauge: 3.2, tick: 1, timeout: 0.8, streak: 1.5, turn: 2.5, ask: 1.5, chip: 4 };
 const play = (name, o) => { trim = TRIM[name] || 1; const base = cueBase; cueBase += o.at || 0; try { PRESETS[name](o); } finally { trim = 1; cueBase = base; } };
 // The big cues the music steps back for.
@@ -247,6 +255,7 @@ export function sfx(name, o = {}) {
   const at = performance.now();
   if (at - (lastAt[name] === undefined ? -1 : lastAt[name]) < (MIN_GAP[name] || DEFAULT_GAP)) return;
   lastAt[name] = at;
+  if (name === 'steam' && opts.softSteam) o = { ...o, soft: true };
   try { play(name, o); audioStats.played++; audioStats.log.push({ name, ...o }); if (audioStats.log.length > 40) audioStats.log.shift(); if (DUCKS[name] && kit) kit.music.duck(DUCKS[name], name === 'win' ? (o.tier >= 2 ? 2600 : 1600) : 700); } catch (e) { /* audio must never break the game */ }
 }
 export const SOUND_NAMES = Object.keys(PRESETS);

@@ -13,7 +13,7 @@ import { ART } from './assets.js';
 import { createSaveStore, validTrail, validOpenQuestion, SEEN_MAX } from './save.js';
 
 const SAVE_KEY = 'hs-trivia-v1';
-const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, haptics: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal', seenCoach: true }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
+const DEFAULT_SETTINGS = { sound: true, effects: true, music: true, ambience: true, softSteam: false, haptics: true, volume: 0.7, timer: 30, motion: 'auto', textScale: 1, theme: 'auto', passScreen: true, aiSpeed: 'normal', seenCoach: true }; // aiSpeed 'normal' is what a save from before the setting existed meant; a new profile starts at Brisk (see baseSettings)
 // What a setting is when the save does not name it: a new profile gets the Brisk AI speed, an older save keeps Normal. An unknown speed falls back to Brisk.
 // seenCoach: only a brand-new profile is a newcomer who gets the first-run tips; a save that has no such key is an older player's.
 const baseSettings = () => ({ ...DEFAULT_SETTINGS, aiSpeed: G.save.fresh ? Game.DEFAULT_AI_SPEED : DEFAULT_SETTINGS.aiSpeed, seenCoach: !G.save.fresh });
@@ -87,7 +87,7 @@ const mq = (q) => (window.matchMedia ? window.matchMedia(q).matches : false);
 let appliedTheme = null;
 function applySettings() {
   const s = G.state.settings;
-  setAudio({ on: s.sound, volume: s.volume, effects: s.effects, music: s.music, ambience: s.ambience });
+  setAudio({ on: s.sound, volume: s.volume, effects: s.effects, music: s.music, ambience: s.ambience, softSteam: s.softSteam });
   const dark = s.theme === 'dark' || (s.theme === 'auto' && mq('(prefers-color-scheme: dark)'));
   document.body.dataset.theme = dark ? 'dark' : 'light';
   if (R.view.duskOn !== (s.theme === 'dusk')) { R.setDusk(s.theme === 'dusk'); R.requestArt(); }
@@ -281,7 +281,7 @@ const ACTIONS = {
   set: (a) => {
     const [k, v] = a.split('='); const s = G.state.settings;
     const value = v === 'true' ? true : v === 'false' ? false : isNaN(+v) ? v : +v;
-    changeSettings({ [k]: value }); sfx('click'); UI.update();
+    changeSettings({ [k]: value }); sfx(k === 'softSteam' ? 'steam' : 'click'); UI.update(); // the Steam sound switch plays the steam it has just chosen
   },
   'save-conflict-dismiss': () => { ui.saveConflict = false; UI.update(); },
   'save-conflict-title': () => { ui.saveConflict = false; scene('title'); },

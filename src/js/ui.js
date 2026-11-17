@@ -733,7 +733,7 @@ function helpHTML() {
 const canVibrate = () => typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function' && typeof matchMedia === 'function' && matchMedia('(any-pointer: coarse)').matches;
 function settingsHTML() {
   const s = G.state.settings;
-  const SEG_LABEL = { sound: 'Sound', effects: 'Sound effects', music: 'Music', ambience: 'Ambience', haptics: 'Vibration', timer: 'Answer timer', motion: 'Motion', textScale: 'Text size', theme: 'Theme', passScreen: 'Hot-seat pass screen', aiSpeed: 'AI speed' };
+  const SEG_LABEL = { sound: 'Sound', effects: 'Sound effects', music: 'Music', ambience: 'Ambience', softSteam: 'Steam sound', haptics: 'Vibration', timer: 'Answer timer', motion: 'Motion', textScale: 'Text size', theme: 'Theme', passScreen: 'Hot-seat pass screen', aiSpeed: 'AI speed' };
   const seg = (key, opts) => `<div class="seg" role="radiogroup" aria-label="${SEG_LABEL[key] || key}">${opts.map(([v, l], i) => `<button class="seg-b${String(s[key]) === String(v) ? ' on' : ''}" role="radio" aria-checked="${String(s[key]) === String(v)}" tabindex="${stop(String(s[key]) === String(v), i, opts.some(([w]) => String(s[key]) === String(w)))}" data-act="set" data-arg="${key}=${v}" data-key="set-${key}-${v}">${l}</button>`).join('')}</div>`;
   return `<div class="page-card settings-card"><h2>Settings</h2>
     <h3>Sound</h3>${seg('sound', [[true, 'On'], [false, 'Off']])}
@@ -741,6 +741,7 @@ function settingsHTML() {
     <h3>Sound effects</h3>${seg('effects', [[true, 'On'], [false, 'Off']])}
     <h3>Music</h3>${seg('music', [[true, 'On'], [false, 'Off']])}
     <h3>Ambience</h3>${seg('ambience', [[true, 'On'], [false, 'Off']])}
+    <h3>Steam sound</h3>${seg('softSteam', [[false, 'Classic'], [true, 'Softer']])}
     ${canVibrate() ? `<h3>Vibration</h3>${seg('haptics', [[true, 'On'], [false, 'Off']])}` : ''}
     <h3>Answer timer</h3>${seg('timer', [[0, 'Off'], [30, '30 s'], [20, '20 s'], [10, '10 s']])}
     <h3>Motion</h3>${seg('motion', [['auto', 'System'], ['full', 'Full'], ['reduced', 'Reduced']])}
