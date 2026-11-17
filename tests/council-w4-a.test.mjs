@@ -122,9 +122,13 @@ export const tests = [
       await soloGame(t, { seed: 5 });
       await t.game('act', 'roll', 3);
       const first = await phase(t, 'choose');
+      // Seed 14 deals a 3 as its next die, so the re-roll comes up with the same number and the very same list of places: only the re-roll itself tells the lists apart.
+      await t.seed(14);
       await t.game('act', 'reroll');
       const second = await waitFor(t, (x) => x.trail.phase === 'choose' && x.trail.rerolled, 4000, 'the re-rolled list');
-      t.expect(second.ui.listAt > first.ui.listAt, 'the hold was stamped again, even if the number came up the same');
+      t.equal(second.trail.roll, 3, 'the number came up the same');
+      t.equal(second.trail.dests.join(), first.trail.dests.join(), 'and so did the list of places');
+      t.expect(second.ui.listAt > first.ui.listAt, 'the hold was stamped again: ' + first.ui.listAt + ' then ' + second.ui.listAt);
     },
   },
 
