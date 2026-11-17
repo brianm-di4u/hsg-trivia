@@ -351,7 +351,7 @@
    }
   },
   "corrections": {
-   "about": "Decisions 64 to 66 (15 November 2026): three questions that said more than their sources. Same shape as dated.change. Decision 82 added new wrong answers for 30 number questions.",
+   "about": "Decisions 64 to 66 (15 November 2026): three questions that said more than their sources. Same shape as dated.change. Decision 82 added new wrong answers for 30 number questions. Decision 85 corrected or reworded hs-0050, hs-0525, hs-0507, hs-0508 and hs-0377, and replaced hs-0504 with a new question.",
    "change": {
     "hs-0102": {
      "explanation": "The brewery's own history says it opened in the Superior Bathhouse in 2013.",
@@ -451,7 +451,11 @@
       "About 9,600",
       "About 960,000",
       "About 9.6 million"
-     ]
+     ],
+     "explanationWas": "In 1946 a record 649,270 baths were taken; bathhouse visitation decreased after 1946.",
+     "explanation": "Wikipedia says bathhouse visitation decreased after 1946, a record year. The NPS chronology counts 952,467 baths in the pay bathhouses in 1946.",
+     "sourceWas": "Wikipedia: Bathhouse Row",
+     "source": "Wikipedia: Bathhouse Row; NPS chronology of Hot Springs (Shugart, 2004)"
     },
     "hs-0052": {
      "wrong": [
@@ -595,7 +599,9 @@
       "About 300",
       "About 3,000",
       "About 300,000"
-     ]
+     ],
+     "questionWas": "According to organizers, roughly how many people watch Hot Springs' 98-foot St. Patrick's Day parade each year?",
+     "question": "According to organizers, roughly how many people watch Hot Springs' World's Shortest St. Patrick's Day Parade each year?"
     },
     "hs-0384": {
      "wrong": [
@@ -703,7 +709,17 @@
       "25 feet",
       "2,500 feet",
       "26.2 miles"
-     ]
+     ],
+     "questionWas": "How long is Hot Springs' \"Zero K Foot Race\"?",
+     "question": "How long is the course of Hot Springs' \"Zero K Foot Race\"?",
+     "answerWas": "250 feet",
+     "answer": "299 feet",
+     "explanationWas": "Visit Hot Springs lists the race at 250 feet. It follows directly after the Running of the Tubs races.",
+     "explanation": "Visit Hot Springs says the course is 299 feet long, starting on 98-foot Bridge Street and ending across the intersection on Convention Boulevard. For 2020 it was cut to 250 feet when the race moved to follow the Running of the Tubs.",
+     "sourceWas": "Visit Hot Springs: A reason to visit every season",
+     "source": "Visit Hot Springs press release: registration open for the Fourth Ever Zero K",
+     "sourceUrlWas": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
+     "sourceUrl": "https://hotsprings.org/media-room/press-releases/registration-now-open-for-fourth-ever-zero-k-race-as-part-of-two-day-revelry-surrounding-hot-springs-first-ever-22nd-annual/"
     },
     "hs-0509": {
      "wrong": [
@@ -728,6 +744,44 @@
       "About 40 million years",
       "About 4 billion years"
      ]
+    },
+    "hs-0504": {
+     "wrong": [
+      "Connecticut",
+      "Massachusetts",
+      "Maine"
+     ],
+     "wrongWas": [
+      "89 feet",
+      "198 feet",
+      "9.8 feet"
+     ],
+     "questionWas": "How long is the route of the St. Patrick's Day parade that Hot Springs bills as the world's shortest?",
+     "question": "In early 2024 it emerged that a village in which state had been hosting a St. Patrick's Day parade nine feet shorter than Hot Springs'?",
+     "answerWas": "98 feet",
+     "answer": "Rhode Island",
+     "explanationWas": "The Encyclopedia of Arkansas calls it a ninety-eight-foot parade route; Adamsville, R.I.'s rival parade was 89 feet.",
+     "explanation": "The Encyclopedia of Arkansas says the village of Adamsville, Rhode Island, had for three years held an 89-foot parade, nine feet shorter than Hot Springs' 98-foot route.",
+     "confidenceWas": "confirmed",
+     "confidence": "claim"
+    },
+    "hs-0525": {
+     "questionWas": "In what year did bathing in Hot Springs peak, with over one million baths taken?",
+     "question": "According to the Encyclopedia of Arkansas, in what year did bathing in Hot Springs peak?",
+     "explanationWas": "Bathing peaked in 1946, then began a steady decline as the bathhouses lost business.",
+     "explanation": "The Encyclopedia of Arkansas says bathing peaked in 1946, with over one million baths taken, and then began a steady decline. National Park Service pages do not agree: its chronology counts 952,467 baths in the pay bathhouses in 1946, one of its pages puts the peak around 1947, and its staff FAQ gives over 1,050,000 baths as the most in one year, right before 1947.",
+     "confidenceWas": "confirmed",
+     "confidence": "claim"
+    },
+    "hs-0508": {
+     "questionWas": "What is placed at the halfway point of Hot Springs' 250-foot Zero K Foot Race?",
+     "question": "What does Hot Springs' Zero K Foot Race provide partway along its course?",
+     "explanationWas": "Visit Hot Springs says the 250-foot race includes a hydration station at the halfway mark.",
+     "explanation": "The race page says a hydration station waits at 150 feet on the 299-foot course. In 2020, on a 250-foot course, Visit Hot Springs put it at the halfway mark.",
+     "sourceWas": "Visit Hot Springs: A reason to visit every season",
+     "source": "Hot Springs Zero K race page (RunSignup); Visit Hot Springs press release, 2020",
+     "sourceUrlWas": "https://hotsprings.org/blog/dont-miss-a-reason-to-visit-for-every-season/",
+     "sourceUrl": "https://runsignup.com/Race/Info/AR/HotSprings/StPatricksDayZeroK"
     }
    }
   }

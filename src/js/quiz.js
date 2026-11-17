@@ -17,7 +17,8 @@ export function newQuiz(kind, { era, date } = {}) {
 }
 
 // C4-10: seven questions were reframed so that they name no 2020s year or price, which would let them into the Daily and move the boards of most dates.
-// A Daily is an index into its pool, so the pool is kept as it was in wave 3: these stay out of it (they are still in every other mode).
+// A Daily is an index into its pool, so these stay out of it (they are still in every other mode).
+// Decision 85 also removes newly dated or disputed questions through the normal eligibility checks.
 const DAILY_HELD_OUT = new Set(['hs-0225', 'hs-0264', 'hs-0388', 'hs-0396', 'hs-0459', 'hs-0460', 'hs-0466']);
 
 // Seven questions fixed by the date: confirmed items, seven different categories, easy → hard.

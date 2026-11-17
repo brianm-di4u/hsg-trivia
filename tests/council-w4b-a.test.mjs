@@ -23,11 +23,11 @@ const withSave = (obj) => {
 
 export const tests = [
   // ---------------- K-01 ----------------
-  node('K-01 the thirty number questions carry their three approved wrong answers, in order', () => {
+  node('K-01 the thirty number questions and approved replacement carry their three wrong answers, in order', () => {
     const A = JSON.parse(fs.readFileSync(FIXTURE, 'utf8')).trivia.corrections.change;
     const by = new Map(JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')).questions.map((q) => [q.id, q]));
     const ids = Object.keys(A).filter((id) => A[id].wrong);
-    assert.equal(ids.length, 30);
+    assert.equal(ids.length, 31);
     for (const id of ids) {
       const q = by.get(id), want = A[id];
       assert.ok(q, id + ' is in the bank');

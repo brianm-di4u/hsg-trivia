@@ -235,10 +235,10 @@ export const tests = [
   node('C4-10 C4-11 the question file carries every approved change and correction word for word, and the eleven retired questions are out', () => {
     const A = approved(), file = JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')), by = new Map(file.questions.map((q) => [q.id, q]));
     const change = { ...A.dated.change, ...A.corrections.change };
-    assert.equal(Object.keys(A.dated.change).length, 17); assert.equal(Object.keys(A.corrections.change).length, 33); assert.equal(A.dated.retire.length, 11);
+    assert.equal(Object.keys(A.dated.change).length, 17); assert.equal(Object.keys(A.corrections.change).length, 36); assert.equal(A.dated.retire.length, 11);
     for (const [id, c] of Object.entries(change)) {
       const q = by.get(id); assert.ok(q, id + ' is still in the bank');
-      for (const k of ['question', 'answer', 'wrong', 'explanation']) {
+      for (const k of ['question', 'answer', 'wrong', 'explanation', 'source', 'sourceUrl', 'confidence']) {
         if (c[k] == null) continue;
         assert.deepEqual(Array.isArray(c[k]) ? c[k].map(norm) : norm(q[k]), Array.isArray(c[k]) ? q[k].map(norm) : norm(c[k]), id + '.' + k);
         assert.notDeepEqual(norm(JSON.stringify(q[k])), norm(JSON.stringify(c[k + 'Was'])), id + '.' + k + ' is no longer the old wording');
@@ -267,9 +267,10 @@ export const tests = [
     assert.equal(r.bank, 608);
     for (const [id, n] of r.eras) assert.ok(n >= 30, id + ' still has a full chapter: ' + n);
   }),
-  node('C4-10 the seven reframed questions stay out of the Daily, so the boards of dates that did not draw a retired question are the ones wave 3 dealt', () => {
+  node('C4-10 dated and disputed corrections stay out of the Daily, and unaffected seeded sets stay the same', () => {
     const held = ['hs-0225', 'hs-0264', 'hs-0388', 'hs-0396', 'hs-0459', 'hs-0460', 'hs-0466'];
-    // Boards dealt at the end of wave 3 (the question file before C4-10), for dates whose board no retired question touches.
+    const excluded = [...held, 'hs-0504', 'hs-0507', 'hs-0508', 'hs-0525'];
+    // These seeded sets are unaffected by the approved retirements and decision 85's Daily pool corrections.
     const wave3 = {
       '2026-11-16': ['hs-0004', 'hs-0429', 'hs-0472', 'hs-0078', 'hs-0309', 'hs-0203', 'hs-0113'],
       '2026-11-26': ['hs-0330', 'hs-0002', 'hs-0463', 'hs-0208', 'hs-0351', 'hs-0113', 'hs-0542'],
@@ -277,10 +278,10 @@ export const tests = [
       '2027-08-08': ['hs-0320', 'hs-0003', 'hs-0120', 'hs-0385', 'hs-0446', 'hs-0533', 'hs-0221'],
     };
     const r = inNode(`const Q = await imp('quiz.js'); const out = { held: 0, boards: {} };
-      for (let i = 0; i < 400; i++) { const d = new Date(Date.UTC(2026, 10, 16 + i)).toISOString().slice(0, 10), ids = Q.dailyIds(d); out.held += ids.filter((id) => ${JSON.stringify(held)}.includes(id)).length; }
+      for (let i = 0; i < 400; i++) { const d = new Date(Date.UTC(2026, 10, 16 + i)).toISOString().slice(0, 10), ids = Q.dailyIds(d); out.held += ids.filter((id) => ${JSON.stringify(excluded)}.includes(id)).length; }
       for (const d of ${JSON.stringify(Object.keys(wave3))}) out.boards[d] = Q.dailyIds(d);
       console.log(JSON.stringify(out));`);
-    assert.equal(r.held, 0, 'none of the seven is ever dealt in 400 Dailies');
+    assert.equal(r.held, 0, 'none of the eleven excluded questions is dealt in 400 Dailies');
     assert.deepEqual(r.boards, wave3);
   }),
   {

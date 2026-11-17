@@ -442,7 +442,7 @@ export const tests = [
     assert.deepEqual(got.map((x) => x.id), ['a', 'b']);
     const bank = JSON.parse(fs.readFileSync(REPO + 'data/questions.json', 'utf8')).questions;
     const real = ladderOffenders(bank).map((x) => x.id);
-    assert.ok(real.length >= 25 && real.includes('hs-0005') && real.includes('hs-0146') && real.includes('hs-0509'), 'the bank has its ladders: ' + real.length);
+    assert.deepEqual(real, [], 'the approved wrong answers remove the ladders from the playable bank');
   }),
   node('P-N03 apply-audit prints the ladder report and still succeeds, and does not touch the question file', () => {
     const file = REPO + 'data/questions.json'; const before = fs.statSync(file).mtimeMs, text = fs.readFileSync(file, 'utf8');
