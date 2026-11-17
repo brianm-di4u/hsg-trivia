@@ -264,6 +264,23 @@ export const tests = [
     },
   },
   {
+    name: 'S1-09 the beat is 0.25 s and the fade 0.15 s: nothing at 0.2 s, everything at 0.4 s, half way between',
+    viewports: ['desktop'],
+    async run(t) {
+      const a = await t.page.evaluate(() => [0, 0.2, 0.25, 0.325, 0.4, 5].map((age) => window.__game.destAlpha(age)));
+      t.equal(a[0], 0, 'nothing at the roll');
+      t.equal(a[1], 0, 'still nothing at 0.2 s, so a delay of 0 fails');
+      t.equal(a[2], 0, 'the fade starts at 0.25 s');
+      t.expect(Math.abs(a[3] - 0.5) < 1e-9, 'half shown half way: ' + a[3]);
+      t.equal(a[4], 1, 'all shown at 0.4 s');
+      t.equal(a[5], 1, 'and it stays at 1');
+      await soloGame(t, { seed: 4, settings: { seenCoach: true } });
+      await t.game('act', 'roll', 3);
+      const first = await waitFor(t, (x) => x.trail.phase === 'choose' && x.ui.ringFirst !== null && x.ui.ringFirst !== undefined, 8000, 'the first frame of rings');
+      t.equal(first.ui.ringFirst, 0, 'the first drawn frame after a roll shows no rings');
+    },
+  },
+  {
     name: 'S1-09 a second traveler on the same list gets the beat too; a computer and reduced motion do not wait',
     viewports: ['desktop'],
     async run(t) {

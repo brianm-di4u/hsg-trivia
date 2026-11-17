@@ -603,6 +603,7 @@ function publicState() {
 window.__game = {
   seed(n) { G.state.rngSeed = n; G.rng = makeRng(n); return n; },
   getState: publicState,
+  destAlpha: (age) => R.destAlpha(age), // test hook: how visible the rings of the places are at a given age after a roll (S1-09)
   resizeSettle(ms) { R.view.settleMs = ms; }, // test hook: how long a resize must be still before the board cache is rebuilt for a small change of size
   audioList,
   coachTexts: (input) => UI.coachTexts(input),
