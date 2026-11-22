@@ -2,13 +2,16 @@
 // (K-01, K-02, K-03, K-04).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { H1, waitFor } from './helpers.mjs';
 
 const REPO = fileURLToPath(new URL('..', import.meta.url));
 const FIXTURE = REPO + 'tests/fixtures/approved-wording.json';
-const OWNER_FILE = fileURLToPath(new URL('../../_council/owner-review/approved-wording.json', import.meta.url));
-const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4b/shots/', import.meta.url));
+// The owner's original lives in the workspace's archived council folder. Compare against it only when HSG_WORKSPACE is set
+// (opt-in), so a test run never reads outside this repo by default.
+const OWNER_FILE = process.env.HSG_WORKSPACE ? path.join(process.env.HSG_WORKSPACE, '_council', 'owner-review', 'approved-wording.json') : '';
+const SHOTS = fileURLToPath(new URL('../screenshots/council/wave-4b/shots/', import.meta.url));
 const KEY = 'hs-trivia-v1';
 const node = (name, run) => ({ name, node: true, run });
 const render = (t, ...a) => t.page.evaluate((x) => window.__game.audioRender(...x), a);
@@ -130,7 +133,7 @@ export const tests = [
   node('K-04 the in-repo copy of the approved wording equals the owner\'s file when it is there', (t) => {
     const mine = JSON.parse(fs.readFileSync(FIXTURE, 'utf8')).trivia;
     assert.deepEqual(Object.keys(mine).sort(), ['corrections', 'dated', 'grandJury', 'journalFacts'], 'the fixture holds the four keys');
-    if (!fs.existsSync(OWNER_FILE)) { t.log('skipped: ' + OWNER_FILE + ' is not here (a clone of this game on its own), so the fixture was not compared'); return; }
+    if (!OWNER_FILE || !fs.existsSync(OWNER_FILE)) { t.log('skipped: ' + (OWNER_FILE ? OWNER_FILE + ' is not there' : 'HSG_WORKSPACE is not set') + ', so the fixture was not compared with the owner\'s file (set HSG_WORKSPACE to the workspace root to compare)'); return; }
     const owner = JSON.parse(fs.readFileSync(OWNER_FILE, 'utf8')).trivia;
     for (const k of Object.keys(mine)) assert.deepEqual(mine[k], owner[k], 'tests/fixtures/approved-wording.json: "' + k + '" differs from the owner\'s approved-wording.json; copy the owner\'s text into the fixture');
     t.log('compared the four keys with ' + OWNER_FILE + ': equal');

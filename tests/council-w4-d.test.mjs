@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { soloGame, landOn, phase, waitFor } from './helpers.mjs';
 
-const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
+const SHOTS = fileURLToPath(new URL('../screenshots/council/wave-4/shots/', import.meta.url));
 const REPO = fileURLToPath(new URL('..', import.meta.url));
 // The owner's approved strings this file checks, kept in the repo so that the tests need nothing outside it (copied from the owner's approved-wording file: the trivia journalFacts, grandJury, dated and corrections).
 const APPROVED = fileURLToPath(new URL('./fixtures/approved-wording.json', import.meta.url));
