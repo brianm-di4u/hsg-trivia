@@ -28,3 +28,7 @@ art-src/tokens/*.png
 # Public-domain reference photos for the landmark paintings (consult only, never shipped; sources in sources.json)
 art-src/photo-refs/**
 !art-src/photo-refs/sources.json
+
+# Python bytecode
+__pycache__/
+*.pyc
