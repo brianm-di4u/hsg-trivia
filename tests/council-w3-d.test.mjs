@@ -24,7 +24,7 @@ const inNode = (code) => {
   return JSON.parse(r.stdout.trim().split('\n').pop());
 };
 const keysArmed = (t) => waitFor(t, (s) => s.ui.keyGuard === 0, 3000, 'the key guard to run out');
-const shotDir = '../_council/hsg-trivia/wave-3/shots';
+const shotDir = 'screenshots/council/wave-3/shots';
 
 export const tests = [
   // ---------------- S1-04 ----------------

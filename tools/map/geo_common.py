@@ -6,8 +6,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 GAME = os.path.normpath(os.path.join(HERE, '..', '..'))
 # Raw geodata (git-ignored, refetchable). In the Hot Springs Games workspace it is shared: reference/geo/downtown/
 # holds the TIGER, NHD and OSM downloads, reference/geo/elevation/ the 3DEP DEM tiles (also used by hsg-tub-rally).
-# A checkout outside the workspace keeps both in art-src/geo/raw/. HSG_GEO_DIR overrides reference/geo.
-_GEO = os.environ.get('HSG_GEO_DIR') or os.path.normpath(os.path.join(GAME, '..', '..', 'reference', 'geo'))
+# A checkout outside the workspace keeps both in art-src/geo/raw/. HSG_GEO_DIR overrides reference/geo;
+# HSG_WORKSPACE overrides the workspace root (default: this repo's grandparent).
+WORKSPACE = os.environ.get('HSG_WORKSPACE') or os.path.normpath(os.path.join(GAME, '..', '..'))
+_GEO = os.environ.get('HSG_GEO_DIR') or os.path.join(WORKSPACE, 'reference', 'geo')
 if os.path.isdir(_GEO):
     RAW, DEM_DIR = os.path.join(_GEO, 'downtown'), os.path.join(_GEO, 'elevation')
 else:

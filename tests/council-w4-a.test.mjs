@@ -5,7 +5,7 @@ import { createSaveStore, isNewerSave, dailyHistory } from '../src/js/save.js';
 import { fileURLToPath } from 'node:url';
 import { H1, H2, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
-const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
+const SHOTS = fileURLToPath(new URL('../screenshots/council/wave-4/shots/', import.meta.url));
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
 const withRaw = (raw) => {
   const f = () => {};

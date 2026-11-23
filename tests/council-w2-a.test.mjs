@@ -4,7 +4,7 @@ import path from 'node:path';
 import { soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
 const WAV_DIR = process.env.HS_WAV_DIR || '';
-const SHOTS = path.resolve('..', '_council', 'hsg-trivia', 'wave-2', 'shots');
+const SHOTS = path.resolve('screenshots', 'council', 'wave-2', 'shots');
 const BPM = { board: 92, question: 100, summit: 120, title: 78 };
 const MUSIC = Object.keys(BPM);
 const SCENES = ['valley', 'row', 'bridge', 'central', 'oaklawn', 'lakes', 'ballfields', 'hollow', 'park', 'mountain'];

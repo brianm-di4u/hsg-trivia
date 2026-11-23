@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { H1, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
-const SHOTS = fileURLToPath(new URL('../../_council/hsg-trivia/wave-4/shots/', import.meta.url));
+const SHOTS = fileURLToPath(new URL('../screenshots/council/wave-4/shots/', import.meta.url));
 const REPO = fileURLToPath(new URL('..', import.meta.url));
 const BASE = { v: 1, settings: { sound: true, volume: 0.7, timer: 0, aiSpeed: 'normal', seenCoach: true }, best: { quick: 0, era: {} }, daily: { last: null, streak: 0, results: {} }, trail: null };
 // The harness serializes initScript with toString, so a per-case script carries its data in its own source.
