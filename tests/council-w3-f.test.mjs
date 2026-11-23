@@ -3,6 +3,13 @@ import { H1, soloGame, landOn, waitFor, phase } from './helpers.mjs';
 
 const unlock = async (t) => { await t.page.mouse.click(5, 5); await waitFor(t, (s) => s.audio.state === 'running', 3000, 'audio running'); };
 const names = async (t) => (await t.state()).audio.log.map((x) => x.name);
+// The game does not strike a cue again within 80 ms of its own last start (src/js/audio.js, MIN_GAP / DEFAULT_GAP: a long cue would
+// otherwise stack on itself at the Fast AI speed). Driven through the API, the next question can open well inside that gap, and the
+// cue is then dropped as designed, so wait the gap out before an action that should strike the same cue again. Count the cues since a
+// mark from the running total, not from the log, which keeps only the last 40.
+const cueGap = (t) => t.page.waitForTimeout(100);
+const mark = async (t) => (await t.state()).audio.played;
+const since = async (t, m) => { const a = (await t.state()).audio, k = a.played - m; return k > 0 ? a.log.slice(-Math.min(k, a.log.length)).map((x) => x.name) : []; };
 const render = (t, ...a) => t.page.evaluate((x) => window.__game.audioRender(...x), a);
 // A gamepad of the standard layout whose pressed buttons are listed in window.__pad.
 const fakePad = () => {
@@ -35,30 +42,32 @@ export const tests = [
       await t.game('setState', { trail: { players: [{ tickets: 6 }] } });
       await landOn(t, w);
       await phase(t, 'wager');
-      const n0 = (await names(t)).length;
+      await cueGap(t);
+      const n0 = await mark(t);
       await t.game('act', 'wager', 2);
       await phase(t, 'question');
-      const after = (await names(t)).slice(n0);
+      const after = await since(t, n0);
       t.expect(after.includes('chip') && after.includes('ask') && after.indexOf('chip') < after.indexOf('ask'), 'a chip, then the question: ' + after.join());
       await t.game('act', 'answer', 'wrong'); await t.game('act', 'continue'); await phase(t, 'roll');
       // the Grand Jury: facing the jury opens a question
       await landOn(t, s0.board.types.indexOf('jury'));
       await phase(t, 'jury');
-      const n1 = (await names(t)).filter((x) => x === 'ask').length;
+      await cueGap(t); // the wager question's ask was a moment ago
+      const n1 = await mark(t);
       await t.game('act', 'continue');
       await phase(t, 'question');
-      t.equal((await names(t)).filter((x) => x === 'ask').length, n1 + 1, 'facing the jury sounds the question cue');
+      t.equal((await since(t, n1)).filter((x) => x === 'ask').length, 1, 'facing the jury sounds the question cue');
       await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); await phase(t, ['roll', 'landed']);
       // the trolley sheet opens with a page turn, and closing it does too
       await t.game('setState', { trail: { phase: 'roll', players: [{ tickets: 9, node: s0.board.trolleys[0] }] } });
       await t.page.waitForTimeout(120); // the page turn is held back for 80 ms after the last one
-      const p0 = (await names(t)).filter((x) => x === 'page').length;
+      const p0 = await mark(t);
       await t.game('act', 'ui', 'trolley-open');
       t.equal((await t.state()).ui.modal, 'trolley', 'the sheet is open');
-      t.equal((await names(t)).filter((x) => x === 'page').length, p0 + 1, 'opening the trolley sheet turns a page');
+      t.equal((await since(t, p0)).filter((x) => x === 'page').length, 1, 'opening the trolley sheet turns a page');
       await t.page.waitForTimeout(120);
       await t.game('act', 'ui', 'close-modal');
-      t.equal((await names(t)).filter((x) => x === 'page').length, p0 + 2, 'closing it does too');
+      t.equal((await since(t, p0)).filter((x) => x === 'page').length, 2, 'closing it does too');
     },
   },
   {

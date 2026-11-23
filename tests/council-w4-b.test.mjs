@@ -284,12 +284,18 @@ export const tests = [
       await t.seed(11);
       await t.game('setState', { settings: { timer: 0, seenCoach: true } });
       await unlock(t);
+      // A whole quick quiz takes about 40 ms through the API, and the game does not strike a cue again within 80 ms of its own last
+      // start (src/js/audio.js, DEFAULT_GAP). So wait that gap out before each quiz, or its win is dropped as designed and the log
+      // still ends with the last quiz's. Then wait for the result cue itself, counted from a mark, not just for the results scene.
+      const isResult = (x) => x.name === 'win' || x.name === 'consolation';
       const run = async (rights) => {
+        await t.page.waitForTimeout(100);
+        const m = (await t.state()).audio.played;
         await t.game('newGame', { mode: 'quick' });
         for (let i = 0; i < 10; i++) { await t.game('act', 'answer', i < rights ? 'correct' : 'wrong'); await t.game('act', 'continue'); }
         await waitFor(t, (s) => s.scene === 'results', 4000, 'the results');
-        const log = (await t.state()).audio.log;
-        return log.filter((x) => x.name === 'win' || x.name === 'consolation' || x.name === 'page').pop();
+        const s = await waitFor(t, (x) => x.audio.played > m && x.audio.log.slice(-Math.min(x.audio.played - m, x.audio.log.length)).some(isResult), 4000, 'the result cue');
+        return s.audio.log.slice(-Math.min(s.audio.played - m, s.audio.log.length)).filter(isResult).pop();
       };
       for (const [rights, name, tier] of [[10, 'win', 2], [9, 'win', 1], [7, 'win', 0], [6, 'consolation', undefined]]) {
         const c = await run(rights);
@@ -301,6 +307,7 @@ export const tests = [
       await t.game('setState', { trail: { phase: 'roll', players: [{ tickets: 9, node: 0, stamps: ALL.slice(0, 6) }] } });
       await landOn(t, s0.board.tower);
       await phase(t, 'summit'); await t.game('act', 'continue'); await phase(t, 'question');
+      await t.page.waitForTimeout(100); // the cue gap again, after the last quick quiz's win
       await t.game('act', 'answer', 'correct'); await t.game('act', 'continue'); await phase(t, 'over');
       const win = (await t.state()).audio.log.filter((x) => x.name === 'win').pop();
       t.expect(win && win.tier === 2, 'the Summit win is the perfect tier: ' + JSON.stringify(win));
